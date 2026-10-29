@@ -1408,7 +1408,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
         <h4>Mesures</h4>
         <div class="bggrid2"><button id="bgIns">+ Avant</button><button id="bgApp">+ Après</button><button id="bgDupRow">Dupliquer la ligne</button><button id="bgDel" class="bgdanger">Supprimer</button></div>
         <h4>Section</h4>
-        <div class="bggrid2"><button id="bgSecAdd" class="bgblue">+ Section</button><button id="bgSecRen">Renommer</button><button id="bgSec34" class="bgteal">Section en 3/4</button><button id="bgSecDel" class="bgdanger">Supprimer la section</button></div>
+        <div class="bggrid2"><button id="bgSecAdd" class="bgblue">+ Section</button><button id="bgSecCut" class="bgblue">✂ Couper ici</button><button id="bgSecRen">Renommer</button><button id="bgSec34" class="bgteal">Section en 3/4</button><button id="bgSecDel" class="bgdanger">Supprimer la section</button></div>
       </aside>
     </div>
     <div class="bgformed">
@@ -5158,6 +5158,13 @@ $('#bgSecRen').onclick=()=>bgRename(BG.sel.si);
 $('#bgSecAdd').onclick=()=>{const names=['Intro','Couplet','Refrain','Pont','Solo','Outro'], used=new Set(BG.g.secs.map(x=>x.n)), def=names.find(x=>!used.has(x))||'Section';
   const n=prompt('Nom de la nouvelle section :',def); if(n==null)return;
   bgSet(()=>{const per=+BG.g.per||4; BG.g.secs.push({n:n.trim(),bars:Array.from({length:per},()=>[''])}); BG.g.form.push(BG.g.secs.length-1); BG.sel={si:BG.g.secs.length-1,bi:0,k:0};});};
+// couper la section à la mesure choisie : la suite devient une nouvelle section, juste après, dont on écrit le nom
+$('#bgSecCut').onclick=()=>{const g=BG.g, si=BG.sel.si, bi=BG.sel.bi, sc=g.secs[si];
+  if(bi<1){toast('Choisis la 1re mesure de la nouvelle section (pas la toute première)'); return;}
+  bgSet(()=>{const ns={n:'',bars:sc.bars.slice(bi)}; if(sc.m)ns.m=sc.m; if(sc.mt){const mt=sc.mt.slice(bi); if(mt.some(Boolean))ns.mt=mt; sc.mt=sc.mt.slice(0,bi); if(!sc.mt.some(Boolean))delete sc.mt;}
+    sc.bars=sc.bars.slice(0,bi); g.secs.splice(si+1,0,ns);
+    const f=[]; g.form.forEach(i=>{if(i===si){f.push(si,si+1);} else f.push(i>si?i+1:i);}); g.form=f; BG.f=null; BG.sel={si:si+1,bi:0,k:0};});
+  const el=$(`#bgMain .bgsec[data-si="${si+1}"] .bgname`); if(el){el.scrollIntoView({block:'nearest'}); bgRenameInline(el);}};
 $('#bgSecDel').onclick=()=>{const g=BG.g, si=BG.sel.si; if(g.secs.length<2){toast('Il faut garder au moins une section');return;} if(!confirm('Supprimer la section « '+(g.secs[si].n||'—')+' » et la retirer de la structure ?'))return;
   bgSet(()=>{g.secs.splice(si,1); g.form=g.form.filter(i=>i!==si).map(i=>i>si?i-1:i); BG.f=null; BG.sel={si:Math.max(0,si-1),bi:0,k:0};});};
 $('#bgSec34').onclick=()=>bgSet(()=>{const g=BG.g, sc=g.secs[BG.sel.si], base=+g.meter||4, m=bgMeter(BG.sel.si), nm=m===3?4:3; if(nm===base)delete sc.m; else sc.m=nm;});
