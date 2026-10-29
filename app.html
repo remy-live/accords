@@ -720,6 +720,7 @@ audio{display:none}
     <button id="scanBtn" aria-label="Scanner un QR code" title="Scanner un QR code">📷</button>
     <button id="rejoinBtn" class="hbtn" hidden title="Suivre à nouveau le dernier musicien">↪ Rejoindre</button>
     <button id="linkBtn" aria-label="Taper l'adresse d'un musicien" title="Taper l'adresse d'un musicien (si l'appareil photo ne marche pas)">🔗</button>
+    <button id="gdBtn" hidden title="Google Drive : toucher pour synchroniser">☁</button>
     <button id="settingsBtn" aria-label="Réglages">⚙</button>
   </div>
 
@@ -850,10 +851,17 @@ audio{display:none}
       </section>
       <section data-cat="save" hidden><h3>Sauvegarde automatique</h3>
   <p class="lab" id="autoBackInfo"></p>
-  <h3>Synchronisation (dossier cloud)</h3>
+  <h3>Synchronisation Google Drive</h3>
+  <div class="opt"><span id="gdInfo" class="lab"></span><span><button id="gdLogin" class="pri">Se connecter avec Google</button><button id="gdSync" hidden>Synchroniser</button><button id="gdOut" hidden>Se déconnecter</button></span></div>
+  <p class="lab">Ta bibliothèque et tes playlists vont dans un dossier « Accords » de <b>ton</b> Drive, et se retrouvent sur ton téléphone, ta tablette et ton ordinateur. Accords ne voit que les fichiers qu'il a créés. Chaque musicien se connecte avec son propre compte.</p>
+  <div id="syncFolderBox">
+  <h3>Ou un dossier de l'appareil</h3>
   <div class="opt"><span id="syncPath" class="lab">Aucun dossier choisi</span><button id="syncPick">Choisir le dossier</button></div>
-  <div class="opt"><span id="syncStatus" class="lab"></span><span><button id="syncNow">Synchroniser</button><button id="syncOff">Déconnecter</button></span></div>
-  <p class="lab">Choisis un dossier synchronisé par Drive, Dropbox, un NAS… Chaque morceau et chaque playlist y est un fichier. Les bandes son ne sont pas synchronisées.</p>
+  <div class="opt"><span><button id="syncNow">Synchroniser</button><button id="syncOff">Déconnecter</button></span></div>
+  <p class="lab">Un dossier synchronisé par Dropbox, un NAS… Chaque morceau et chaque playlist y est un fichier.</p>
+  </div>
+  <p class="lab" id="syncStatus"></p>
+  <p class="lab">Les bandes son et les images des partitions ne sont pas synchronisées.</p>
       </section>
       <section data-cat="io" hidden>
   <h3>Importer</h3>
@@ -4886,9 +4894,103 @@ function sx(op,name,content){
     if(op==='write')return Promise.resolve(window.Android.syncWrite(name,content)?'1':''); return Promise.resolve(window.Android.syncDelete(name)?'1':'');}
   return new Promise(res=>{const id='s'+(++SX.n); SX.cb[id]=res; window.Android.syncAsync(id,op,name||'',content||'');});
 }
+/* ---------- Google Drive : chacun synchronise dans SON Drive (accès limité aux fichiers créés par Accords) ---------- */
+const GOOGLE={web:'',desktop:'',secret:'',scope:'https://www.googleapis.com/auth/drive.file',port:8766};
+try{const o=JSON.parse(localStorage.getItem('accords-gcfg')||'null'); if(o)Object.assign(GOOGLE,o);}catch(e){}   // réglage de test
+const GD={tok:null,exp:0,tc:null,ids:{},folder:null,
+  ok(){return APP?!!(GOOGLE.desktop&&GOOGLE.secret&&window.Android.gAuth):!!GOOGLE.web;},
+  on(){return !!(S.gd&&S.gd.on);},
+  valid(){return !!this.tok&&Date.now()<this.exp-60000;},
+  setTok(t,sec){this.tok=t; this.exp=Date.now()+(+sec||3600)*1000; if(!APP){try{localStorage.setItem('accords-gtok',JSON.stringify({t,exp:this.exp}));}catch(e){}}},
+  // web : la bibliothèque Google est chargée d'avance, pour que la fenêtre de connexion s'ouvre directement au toucher
+  async prep(){if(APP||!GOOGLE.web||this.tc)return; try{await loadScript('https://accounts.google.com/gsi/client');
+    this.tc=google.accounts.oauth2.initTokenClient({client_id:GOOGLE.web,scope:GOOGLE.scope,callback:t=>{const cb=this.cb; this.cb=null; if(t&&t.access_token){this.setTok(t.access_token,t.expires_in); cb&&cb(this.tok);} else cb&&cb(null);},error_callback:()=>{const cb=this.cb; this.cb=null; cb&&cb(null);}});}catch(e){}},
+  async token(interactive){
+    if(this.valid())return this.tok;
+    if(!APP){
+      try{const c=JSON.parse(localStorage.getItem('accords-gtok')||'null'); if(c&&c.exp>Date.now()+60000){this.tok=c.t; this.exp=c.exp; return this.tok;}}catch(e){}
+      if(!interactive)return null;
+      if(!this.tc){await this.prep(); if(!this.tc){toast('Google inaccessible (hors connexion ?)'); return null;}}
+      return await new Promise(res=>{this.cb=res; this.tc.requestAccessToken({prompt:this.on()?'':'consent'});});
+    }
+    if(S.gd&&S.gd.rt){
+      const r=await httpReq('POST','https://oauth2.googleapis.com/token',{'Content-Type':'application/x-www-form-urlencoded'},new URLSearchParams({client_id:GOOGLE.desktop,client_secret:GOOGLE.secret,refresh_token:S.gd.rt,grant_type:'refresh_token'}).toString());
+      if(r.status===200){try{const j=JSON.parse(r.body); this.setTok(j.access_token,j.expires_in); return this.tok;}catch(e){}}
+      else if(r.status===400||r.status===401){S.gd.rt=null; save();}   // accès retiré dans le compte Google
+    }
+    return interactive?await this.loginApp():null;
+  },
+  // appli : connexion dans le navigateur du téléphone, retour sur 127.0.0.1 (écouté par l'appli), puis jeton longue durée
+  async loginApp(){
+    const a=new Uint8Array(48); crypto.getRandomValues(a); const v=btoa(String.fromCharCode(...a)).replace(/[^A-Za-z0-9]/g,'').slice(0,64), st=uid(), redir='http://127.0.0.1:'+GOOGLE.port;
+    const u='https://accounts.google.com/o/oauth2/v2/auth?'+new URLSearchParams({client_id:GOOGLE.desktop,redirect_uri:redir,response_type:'code',scope:GOOGLE.scope,code_challenge:await SP.challenge(v),code_challenge_method:'S256',access_type:'offline',prompt:'consent',state:st});
+    toast('Connexion à Google dans le navigateur…');
+    const q=await new Promise(res=>{window.gAuthDone=x=>{window.gAuthDone=null; res(x||'');}; try{window.Android.gAuth(u,GOOGLE.port);}catch(e){res('error='+e.message);}});
+    const p=new URLSearchParams(q); if(p.get('state')!==st||!p.get('code')){toast(p.get('error')==='access_denied'?'Connexion Google annulée':'Connexion Google impossible'+(p.get('error')?' : '+p.get('error'):'')); return null;}
+    const r=await httpReq('POST','https://oauth2.googleapis.com/token',{'Content-Type':'application/x-www-form-urlencoded'},new URLSearchParams({client_id:GOOGLE.desktop,client_secret:GOOGLE.secret,code:p.get('code'),code_verifier:v,grant_type:'authorization_code',redirect_uri:redir}).toString());
+    if(r.status!==200){toast('Connexion Google refusée ('+r.status+')'); return null;}
+    const j=JSON.parse(r.body); this.setTok(j.access_token,j.expires_in); S.gd={...(S.gd||{}),on:true,rt:j.refresh_token||(S.gd&&S.gd.rt)||null}; save(); return this.tok;
+  },
+  async api(method,url,headers,body){
+    const t=await this.token(false); if(!t)throw new Error('reconnecte-toi à Google (Réglages › Sauvegarde)');
+    const go=tk=>{let m=method, h={Authorization:'Bearer '+tk,...(headers||{})}; if(APP&&(m==='PATCH'||m==='DELETE')){h['X-HTTP-Method-Override']=m; m='POST'; if(body==null)body='';} return httpReq(m,url,h,body);};
+    let r=await go(t); if(r.status===401){this.tok=null; try{localStorage.removeItem('accords-gtok');}catch(e){} const t2=await this.token(false); if(t2)r=await go(t2);}
+    if(r.status===0)throw new Error('pas de connexion');
+    if(r.status>=400){let m=''; try{m=JSON.parse(r.body).error.message;}catch(e){} const er=new Error('Google Drive '+r.status+(m?' : '+m:'')); er.status=r.status; throw er;}
+    return r;
+  },
+  async dir(){
+    if(this.folder)return this.folder; if(S.gd&&S.gd.folder){this.folder=S.gd.folder; return this.folder;}
+    const r=await this.api('GET','https://www.googleapis.com/drive/v3/files?'+new URLSearchParams({q:"name='Accords' and mimeType='application/vnd.google-apps.folder' and trashed=false",fields:'files(id)',spaces:'drive'}));
+    let id=((JSON.parse(r.body).files||[])[0]||{}).id;
+    if(!id){const c=await this.api('POST','https://www.googleapis.com/drive/v3/files?fields=id',{'Content-Type':'application/json'},JSON.stringify({name:'Accords',mimeType:'application/vnd.google-apps.folder'})); id=JSON.parse(c.body).id;}
+    this.folder=id; S.gd.folder=id; save(); return id;
+  },
+  async list(){
+    let d=await this.dir(), out=[], pt=''; this.ids={};
+    const one=async()=>{const r=await this.api('GET','https://www.googleapis.com/drive/v3/files?'+new URLSearchParams({q:`'${d}' in parents and trashed=false`,fields:'nextPageToken,files(id,name,appProperties)',pageSize:'1000',spaces:'drive',...(pt?{pageToken:pt}:{})})); return JSON.parse(r.body);};
+    do{let j; try{j=await one();}catch(e){if(e.status===404&&!pt){this.folder=null; S.gd.folder=null; d=await this.dir(); j=await one();} else throw e;}
+      (j.files||[]).forEach(f=>{this.ids[f.name]=f.id; const up=f.appProperties&&f.appProperties.up; out.push({name:f.name,up:up!=null&&up!==''?+up:null});}); pt=j.nextPageToken||'';}while(pt);
+    return out;
+  },
+  async read(name){const id=this.ids[name]; if(!id)throw new Error('absent : '+name); return (await this.api('GET','https://www.googleapis.com/drive/v3/files/'+id+'?alt=media')).body;},
+  async write(name,txt){
+    let up=null; try{const o=JSON.parse(txt); if(o&&o.up!=null)up=String(o.up);}catch(e){}
+    const id=this.ids[name], meta=id?{appProperties:{up:up||''}}:{name,parents:[await this.dir()],mimeType:'application/json',appProperties:{up:up||''}}, B='accords'+Date.now().toString(36);
+    const body=`--${B}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(meta)}\r\n--${B}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${txt}\r\n--${B}--`;
+    const r=await this.api(id?'PATCH':'POST','https://www.googleapis.com/upload/drive/v3/files'+(id?'/'+id:'')+'?uploadType=multipart&fields=id',{'Content-Type':'multipart/related; boundary='+B},body);
+    try{this.ids[name]=JSON.parse(r.body).id;}catch(e){} return true;
+  },
+  async remove(name){const id=this.ids[name]; if(!id)return; try{await this.api('DELETE','https://www.googleapis.com/drive/v3/files/'+id);}catch(e){} delete this.ids[name];},
+  async login(){
+    if(!this.ok()){toast('La connexion Google n\'est pas encore configurée dans cette version.'); return;}
+    const t=await this.token(true); if(!t)return;
+    S.gd={...(S.gd||{}),on:true}; save(); Sync.mode='drive'; Sync.ready=true; Sync.label='Google Drive'; Sync.refreshUI(); Sync.run(false);
+  },
+  async logout(){
+    if(!confirm('Se déconnecter de Google Drive ?\n\nTes morceaux restent sur cet appareil et dans ton Drive ; la synchro s\'arrête.'))return;
+    const t=this.tok, rt=S.gd&&S.gd.rt;
+    try{if(rt||t)httpReq('POST','https://oauth2.googleapis.com/revoke',{'Content-Type':'application/x-www-form-urlencoded'},'token='+encodeURIComponent(rt||t));}catch(e){}
+    this.tok=null; this.exp=0; this.folder=null; this.ids={}; try{localStorage.removeItem('accords-gtok');}catch(e){}
+    S.gd=null; save(); Sync.mode=null; Sync.ready=false; Sync.label=''; await Sync.init();
+  },
+  ui(){
+    const on=this.on(), ok=this.ok();
+    $('#gdInfo').innerHTML=!ok?'Connexion Google pas encore configurée.':on?(this.valid()||APP&&S.gd.rt?'✓ Connecté : dossier « Accords » de ton Drive':'Connecté, mais Google demande de te reconnecter : touche « Synchroniser ».'):'Non connecté';
+    $('#gdLogin').hidden=on; $('#gdLogin').disabled=!ok; $('#gdOut').hidden=!on; $('#gdSync').hidden=!on;
+    $('#syncFolderBox').hidden=on;
+    const b=$('#gdBtn'); if(b)b.hidden=!(on&&!APP&&!this.valid());
+  }
+};
+$('#gdLogin').onclick=()=>GD.login();
+$('#gdOut').onclick=()=>GD.logout();
+$('#gdSync').onclick=()=>Sync.run(false);
+$('#gdBtn').onclick=()=>Sync.run(false);
+setInterval(()=>{if(GD.on())GD.ui();},60000);
 const Sync={
-  ready:false, handle:null, busy:false, label:'',
+  ready:false, handle:null, busy:false, label:'', mode:null,
   async init(){
+    if(S.gd&&S.gd.on){this.mode='drive'; this.ready=true; this.label='Google Drive'; this.refreshUI(); GD.prep(); this.run(true); return;}
     if(APP){try{this.label=window.Android.syncPath()||''; this.ready=!!this.label;}catch(e){}}
     else if(window.showDirectoryPicker){
       const h=await kvGet('syncDir'); if(h){this.handle=h; try{const p=await h.queryPermission({mode:'readwrite'}); this.ready=p==='granted'; this.label=h.name+(this.ready?'':' (toucher « Synchroniser » pour réautoriser)');}catch(e){}}
@@ -4901,14 +5003,15 @@ const Sync={
     try{const h=await window.showDirectoryPicker({mode:'readwrite'}); await kvSet('syncDir',h); this.handle=h; this.ready=true; this.label=h.name; this.refreshUI(); this.run(true);}catch(e){}
   },
   async off(){if(APP)window.Android.syncOff(); else await kvSet('syncDir',null); this.ready=false; this.handle=null; this.label=''; this.refreshUI();},
-  refreshUI(){$('#syncPath').textContent=this.label?'Dossier : '+this.label:'Aucun dossier choisi'; $('#syncNow').disabled=!this.label; $('#syncOff').disabled=!this.label; $('#syncStatus').textContent=S.lastSync?'Dernière synchro : '+new Date(S.lastSync).toLocaleString('fr-FR'):'';},
+  refreshUI(){try{GD.ui();}catch(e){} $('#syncPath').textContent=this.label?'Dossier : '+this.label:'Aucun dossier choisi'; $('#syncNow').disabled=!this.label; $('#syncOff').disabled=!this.label; $('#syncStatus').textContent=S.lastSync?'Dernière synchro : '+new Date(S.lastSync).toLocaleString('fr-FR'):'';},
   // couche fichiers
-  async list(){if(APP)return JSON.parse((await sx('list'))||'[]'); const out=[]; for await(const [name,h] of this.handle.entries()){if(h.kind==='file'&&name.endsWith('.json'))out.push({name});} return out;},
-  async read(name){if(APP)return await sx('read',name); const h=await this.handle.getFileHandle(name); return await (await h.getFile()).text();},
-  async write(name,txt){if(APP)return (await sx('write',name,txt))==='1'; const h=await this.handle.getFileHandle(name,{create:true}); const w=await h.createWritable(); await w.write(txt); await w.close(); return true;},
-  async remove(name){try{if(APP)await sx('delete',name); else await this.handle.removeEntry(name);}catch(e){}},
+  async list(){if(this.mode==='drive')return GD.list(); if(APP)return JSON.parse((await sx('list'))||'[]'); const out=[]; for await(const [name,h] of this.handle.entries()){if(h.kind==='file'&&name.endsWith('.json'))out.push({name});} return out;},
+  async read(name){if(this.mode==='drive')return GD.read(name); if(APP)return await sx('read',name); const h=await this.handle.getFileHandle(name); return await (await h.getFile()).text();},
+  async write(name,txt){if(this.mode==='drive')return GD.write(name,txt); if(APP)return (await sx('write',name,txt))==='1'; const h=await this.handle.getFileHandle(name,{create:true}); const w=await h.createWritable(); await w.write(txt); await w.close(); return true;},
+  async remove(name){try{if(this.mode==='drive')return await GD.remove(name); if(APP)await sx('delete',name); else await this.handle.removeEntry(name);}catch(e){}},
   async run(quiet){
     if(!this.ready||this.busy)return; this.busy=true; $('#syncStatus').textContent='Synchronisation…';
+    if(this.mode==='drive'){const t=await GD.token(!quiet); if(!t){$('#syncStatus').textContent='Google Drive : touche « Synchroniser » pour te reconnecter.'; this.busy=false; GD.ui(); return;}}
     try{
       if(!APP&&this.handle&&(await this.handle.queryPermission({mode:'readwrite'}))!=='granted'){const p=await this.handle.requestPermission({mode:'readwrite'}); if(p!=='granted')throw new Error('refusé');}
       const files=await this.list(), names=new Set(files.map(f=>f.name)); let changed=false, pulled=0, pushed=0, fails=0, done=0;
@@ -4921,8 +5024,13 @@ const Sync={
       // morceaux et playlists distants
       for(const f of files){
         const m=/^(song|list)-(.+)\.json$/.exec(f.name); if(!m)continue;
-        let rem; try{rem=JSON.parse(await this.read(f.name));}catch(e){continue;}
-        const kind=m[1]==='song'?'songs':'lists', id=m[2]; if(!keep(kind,{id,up:rem.up})){await this.remove(f.name);continue;}
+        const kind=m[1]==='song'?'songs':'lists', id=m[2];
+        if(f.up!=null){ // Google Drive donne la date de modification sans ouvrir le fichier
+          if(!keep(kind,{id,up:f.up})){await this.remove(f.name); continue;}
+          const l0=kind==='songs'?songById(id):listById(id);
+          if(l0&&(l0.up||0)===f.up)continue;
+          if(l0&&(l0.up||0)>f.up){await put(f.name,JSON.stringify(kind==='songs'?stripSong(l0):l0)); continue;}}
+        let rem; try{rem=JSON.parse(await this.read(f.name));}catch(e){continue;} if(!keep(kind,{id,up:rem.up})){await this.remove(f.name);continue;}
         const loc=(kind==='songs'?songById(id):listById(id));
         if(!loc){rem.id=id; (kind==='songs'?S.songs:S.lists).push(rem); pulled++; changed=true;}
         else if((rem.up||0)>(loc.up||0)){await this.write(`backup-${id}-${loc.up||0}.json`,JSON.stringify(stripSong(loc))); Object.assign(loc,rem,{id}); delete loc._r; pulled++; changed=true;}
@@ -5048,7 +5156,7 @@ $('#tri').onchange=e=>{S.sort=e.target.value; save(); renderAll();};
 $('#libView').onchange=e=>{S.libView=e.target.value; S.libNavAt=null; save(); renderAll();};
 $('#libNav').onchange=e=>{S.libNav=e.target.value; S.libNavAt=null; save(); renderAll();};
 $('#scene').onclick=()=>{if(S.cur!=='lib'&&curList)openViewer(listEntries(curList),-1,curList); else openViewer(libEntries(),-1);};
-$('#settingsBtn').onclick=()=>{$('#meName').value=(S.me&&S.me.n)||''; $('#meInst').value=(S.me&&S.me.i)||''; $('#setSpSub').textContent=S.spot?'Connecté':'Non connecté'; modal('#settings',true);};
+$('#settingsBtn').onclick=()=>{try{GD.prep(); GD.ui();}catch(e){} $('#meName').value=(S.me&&S.me.n)||''; $('#meInst').value=(S.me&&S.me.i)||''; $('#setSpSub').textContent=S.spot?'Connecté':'Non connecté'; modal('#settings',true);};
 $('#setNav').onclick=e=>{const b=e.target.closest('[data-cat]'); if(!b)return; $$('#setNav [data-cat]').forEach(x=>x.setAttribute('aria-pressed',x===b)); $$('.setpanes section').forEach(x=>x.hidden=x.dataset.cat!==b.dataset.cat);};
 ['#meName','#meInst'].forEach(x=>$(x).addEventListener('change',()=>{S.me={n:$('#meName').value.trim(),i:$('#meInst').value.trim()}; S.setUp=Date.now(); save();}));
 micify($('#meName'));
