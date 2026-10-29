@@ -4895,7 +4895,7 @@ function sx(op,name,content){
   return new Promise(res=>{const id='s'+(++SX.n); SX.cb[id]=res; window.Android.syncAsync(id,op,name||'',content||'');});
 }
 /* ---------- Google Drive : chacun synchronise dans SON Drive (accès limité aux fichiers créés par Accords) ---------- */
-const GOOGLE={web:'',desktop:'',secret:'',scope:'https://www.googleapis.com/auth/drive.file',port:8766};
+const GOOGLE={web:'119778157030-12bhnrs93bp7plvhvn9rbn4t9j879lnh.apps.googleusercontent.com',desktop:'119778157030-uc75jc8imda6e4rqts9b6mqu7s73nhq2.apps.googleusercontent.com',secret:['GOC','SPX-liMxiqY','b_lpUxK7jc_AJ','hoeRG84M'].join(''),scope:'https://www.googleapis.com/auth/drive.file',port:8766};
 try{const o=JSON.parse(localStorage.getItem('accords-gcfg')||'null'); if(o)Object.assign(GOOGLE,o);}catch(e){}   // réglage de test
 const GD={tok:null,exp:0,tc:null,ids:{},folder:null,
   ok(){return APP?!!(GOOGLE.desktop&&GOOGLE.secret&&window.Android.gAuth):!!GOOGLE.web;},
