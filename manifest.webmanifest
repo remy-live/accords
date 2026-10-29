@@ -1,0 +1,16 @@
+{
+  "name": "Accords",
+  "short_name": "Accords",
+  "description": "Grilles d'accords, paroles, partitions et playlists de concert.",
+  "lang": "fr",
+  "start_url": "app.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f3ee",
+  "theme_color": "#c2410c",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
