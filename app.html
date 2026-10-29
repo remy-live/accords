@@ -1408,7 +1408,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
         <h4>Mesures</h4>
         <div class="bggrid2"><button id="bgIns">+ Avant</button><button id="bgApp">+ Après</button><button id="bgDupRow">Dupliquer la ligne</button><button id="bgDel" class="bgdanger">Supprimer</button></div>
         <h4>Section</h4>
-        <div class="bggrid2"><button id="bgSecAdd" class="bgblue">+ Section</button><button id="bgSecCut" class="bgblue">✂ Couper ici</button><button id="bgSecRen">Renommer</button><button id="bgSec34" class="bgteal">Section en 3/4</button><button id="bgSecDel" class="bgdanger">Supprimer la section</button></div>
+        <div class="bggrid2"><button id="bgSecAdd" class="bgblue">+ Section</button><button id="bgSecCut" class="bgblue">✂ Couper ici</button><button id="bgSecGlue" class="bgblue">⤒ Recoller</button><button id="bgSecRen">Renommer</button><button id="bgSec34" class="bgteal">Section en 3/4</button><button id="bgSecDel" class="bgdanger">Supprimer la section</button></div>
       </aside>
     </div>
     <div class="bgformed">
@@ -5165,6 +5165,14 @@ $('#bgSecCut').onclick=()=>{const g=BG.g, si=BG.sel.si, bi=BG.sel.bi, sc=g.secs[
     sc.bars=sc.bars.slice(0,bi); g.secs.splice(si+1,0,ns);
     const f=[]; g.form.forEach(i=>{if(i===si){f.push(si,si+1);} else f.push(i>si?i+1:i);}); g.form=f; BG.f=null; BG.sel={si:si+1,bi:0,k:0};});
   const el=$(`#bgMain .bgsec[data-si="${si+1}"] .bgname`); if(el){el.scrollIntoView({block:'nearest'}); bgRenameInline(el);}};
+// recoller la section choisie à celle du dessus
+$('#bgSecGlue').onclick=()=>{const g=BG.g, si=BG.sel.si; if(si<1){toast('Choisis une mesure de la section à recoller à celle du dessus'); return;}
+  const a=g.secs[si-1], b=g.secs[si]; if((+a.m||+g.meter||4)!==(+b.m||+g.meter||4)){toast('Les deux sections n\'ont pas la même mesure (4/4, 3/4)'); return;}
+  bgSet(()=>{const n=a.bars.length; if(a.mt||b.mt){const mt=(a.mt||[]).slice(0,n); while(mt.length<n)mt.push(null); a.mt=mt.concat(b.mt||[]); if(!a.mt.some(Boolean))delete a.mt;}
+    a.bars=a.bars.concat(b.bars); g.secs.splice(si,1);
+    const f=[]; g.form.forEach((i,j)=>{if(i===si&&f.length&&f[f.length-1]===si-1&&g.form[j-1]===si-1)return; f.push(i===si?si-1:i>si?i-1:i);}); g.form=f;
+    BG.f=null; BG.sel={si:si-1,bi:n,k:0};});
+  toast('Sections recollées');};
 $('#bgSecDel').onclick=()=>{const g=BG.g, si=BG.sel.si; if(g.secs.length<2){toast('Il faut garder au moins une section');return;} if(!confirm('Supprimer la section « '+(g.secs[si].n||'—')+' » et la retirer de la structure ?'))return;
   bgSet(()=>{g.secs.splice(si,1); g.form=g.form.filter(i=>i!==si).map(i=>i>si?i-1:i); BG.f=null; BG.sel={si:Math.max(0,si-1),bi:0,k:0};});};
 $('#bgSec34').onclick=()=>bgSet(()=>{const g=BG.g, sc=g.secs[BG.sel.si], base=+g.meter||4, m=bgMeter(BG.sel.si), nm=m===3?4:3; if(nm===base)delete sc.m; else sc.m=nm;});
