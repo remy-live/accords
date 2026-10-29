@@ -413,6 +413,9 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 .bgrep{padding:3px 9px;border-radius:6px;border:1px solid #5b4712;color:#fcd34d;font:800 14px system-ui}
 .bgm{padding:3px 9px;border-radius:6px;border:1px solid #17504a;color:#2dd4bf;font:800 14px system-ui}
 .bgrow{display:grid}
+.bgc .bgfill{fill:currentColor}.bgc .bgmk{fill:currentColor;font-weight:800}.bgc .bgnote{fill:#fb923c;font-style:italic;font-weight:600}.bgc .bgv{fill:none}
+#viewer.sun .bgc .bgfill,#viewer.sun .bgc .bgmk{fill:#000}
+.bgmeas button{height:46px!important;font-size:12px!important;padding:0 4px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bgc{border:1.5px solid #6b6b74;margin:-.75px;background:#141418;position:relative;color:#7a7a84}
 .bgc svg{display:block;position:absolute;inset:0;width:100%;height:100%}
 .bgc text{fill:#ececf0;font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:700}.bgc text.bgp{fill:#a1a1aa}
@@ -541,7 +544,8 @@ body.fiche-on main{max-width:none;margin:0 490px 0 0}
 #spEmbed{position:fixed;left:12px;bottom:76px;z-index:71;width:min(420px,calc(100vw - 24px));background:#121212;border-radius:14px;box-shadow:0 14px 34px rgba(0,0,0,.4);overflow:hidden}
 #spEmbed[hidden]{display:none}.speh{display:flex;align-items:center;gap:8px;padding:6px 8px 4px 12px;color:#fff;font:600 13px system-ui}.speh .lab{flex:1;color:#b3b3b3;font-size:11px;font-weight:400}
 .speh button{border:0;background:#2a2a2a;color:#fff;border-radius:8px;width:30px;height:28px;padding:0}#speFrame{display:block;width:100%;height:152px;border:0}
-#spEmbed{border-top:3px solid var(--mu,#1db954)}.speh b#speName{color:var(--mu,#1db954)}.speh select{background:#2a2a2a;color:#fff;border:0;border-radius:8px;height:28px;font-size:12px;max-width:96px;min-width:0}.speh #speInfo{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.speh button{white-space:nowrap;flex:none}.speh .speyt{display:flex;gap:4px}.speh .speyt button{width:auto;padding:0 8px;font-size:12px}#speNo{display:block;width:calc(100% - 24px);margin:6px 12px 12px;padding:10px;border-radius:10px;border:1px dashed #555;background:transparent;color:#ddd}#speNo[hidden],.speh [hidden]{display:none!important}
+#spEmbed{border-top:3px solid var(--mu,#1db954)}.speh b#speName{color:var(--mu,#1db954)}#pdfBox h4{margin:12px 0 6px}.pdfseg{display:flex;flex-wrap:wrap}.pdfseg button[aria-pressed=true]{background:#fb923c;color:#111}.pdfseg button[hidden]{display:none}
+.speh select{background:#2a2a2a;color:#fff;border:0;border-radius:8px;height:28px;font-size:12px;max-width:96px;min-width:0}.speh #speInfo{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.speh button{white-space:nowrap;flex:none}.speh .speyt{display:flex;gap:4px}.speh .speyt button{width:auto;padding:0 8px;font-size:12px}#speNo{display:block;width:calc(100% - 24px);margin:6px 12px 12px;padding:10px;border-radius:10px;border:1px dashed #555;background:transparent;color:#ddd}#speNo[hidden],.speh [hidden]{display:none!important}
 .fmu{background:var(--c)!important;color:var(--f)!important;border-color:transparent!important;font-weight:600}
 #muSvcs{display:flex;flex-direction:column;gap:2px;margin:8px 0}.murow{display:flex;align-items:center;gap:8px;padding:6px 2px;border-bottom:1px solid var(--line)}.murow b{min-width:96px}.mudot{width:12px;height:12px;border-radius:50%;flex:none}.murow .lab{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #muRes{display:flex;flex-direction:column;gap:6px;max-height:42vh;overflow-y:auto}#muRes button{display:flex;align-items:center;gap:10px;text-align:left;padding:6px}#muRes img{width:44px;height:44px;border-radius:4px;object-fit:cover;flex:none;background:#333}#muRes small{display:block;color:var(--mute)}#muMsg{min-height:1.2em}
@@ -1154,6 +1158,14 @@ audio{display:none}
   <div class="row"><span class="lab grow" id="spCur"></span><button class="sm" id="spUnlink">Retirer le lien</button></div>
 </div></div>
 
+<div id="pdfBox" class="modal" hidden><div class="box">
+  <h2>📄 Créer un PDF <button class="close">✕</button></h2>
+  <h4 class="lab">Quoi</h4><div class="seg2 pdfseg" id="pdfView"><button data-v="grille">Grille (accords + paroles)</button><button data-v="paroles">Paroles seules</button><button data-v="accords">Grille basse</button></div>
+  <h4 class="lab">Pour</h4><div class="seg2 pdfseg" id="pdfScope"><button data-v="one">Ce morceau</button><button data-v="all">Toute la playlist</button></div>
+  <p class="lab" id="pdfInfo"></p>
+  <div class="row"><span class="grow"></span><button class="pri" id="pdfGo">Créer le PDF</button></div>
+</div></div>
+
 <div id="lmsgBox" class="modal" hidden><div class="box">
   <h2>📣 Message au groupe <button class="close">✕</button></h2>
   <p class="lab" id="lmsgWho"></p>
@@ -1241,7 +1253,7 @@ audio{display:none}
         <button id="vedit" class="cl"><i>✎</i>Éditer</button>
         <button id="vsearch" class="cl"><i>🔍</i>Chercher</button>
         <button id="vtuner" class="cl"><i>🎵</i>Accordeur</button>
-        <button id="vspot" class="cl"><i>🎧</i>Écouter</button>
+        <button id="vspot" class="cl"><i>🎧</i>Écouter</button><button id="vpdf" class="cl"><i>📄</i>PDF</button>
         <button id="vyt" class="cl"><i>▶</i>YouTube</button>
         <button id="vkara" class="cl"><i>📺</i>Projecteur</button>
         <button id="vlive" class="cl"><i>📡</i>Diffuser</button><button id="vmsgItem" class="cl" hidden><i>📣</i>Message</button>
@@ -1355,6 +1367,7 @@ audio{display:none}
         <div class="bgph"><b id="bgWhere"></b></div>
         <h4>Découpage</h4><div class="bggrid4" id="bgSplit"></div>
         <h4>Temps</h4><div class="bgslots" id="bgSlots"></div>
+        <h4>Signes de la mesure</h4><div class="bggrid4 bgmeas" id="bgMeas"></div>
         <h4>Accords du morceau</h4><div class="bgchips" id="bgChips"></div>
         <div class="bggrid2"><button id="bgOther">Autre accord…</button><button id="bgPct">% même mesure</button></div>
         <h4>Mesures</h4>
@@ -1560,23 +1573,36 @@ function bgLines(g,cn){
   g.secs.forEach((sc,si)=>{
     if(si)out.push({t:'b',s:''});
     out.push({t:'s',s:'['+(sc.n||'—')+((+sc.m||+g.meter)===3?' · 3/4':'')+']'});
-    for(let i=0;i<sc.bars.length;i+=per)out.push({t:'c',s:'| '+sc.bars.slice(i,i+per).map(b=>b.map(t=>bgName(t,cn)).join(' ').padEnd(7)).join('| ')+'|',raw:-2});
+    const bt=(b,bi)=>{const mt=bgMtOf(sc,bi)||{}, ch=(bgKind(b,+sc.m||+g.meter||4)==='3b'?b.slice(0,3):b).map(t=>bgName(t,cn)).join(' '); return ((mt.v?mt.v+'. ':'')+(mt.rs?'‖: ':'')+ch+(mt.re?' :‖'+(mt.re>2?'×'+mt.re:''):'')+(mt.n?' «'+mt.n+'»':'')).padEnd(7);};
+    for(let i=0;i<sc.bars.length;i+=per)out.push({t:'c',s:'| '+sc.bars.slice(i,i+per).map((b,j)=>bt(b,i+j)).join('| ')+'|',raw:-2});
   });
   const f=bgForm(g); if(f.length){out.push({t:'b',s:''}); out.push({t:'k',s:'Structure : '+f.map(x=>x.n+(x.k>1?' ×'+x.k:'')).join(' · ')});}
   return out;
 }
-const BG_BEATS={4:{1:['1–4'],2:['1–2','3–4'],3:['1–2','3','4'],4:['1','2','3','4']},3:{1:['1–3'],2:['1–2','3'],3:['1','2','3']}};
-function bgCellSVG(bar,w,h,cn,fs){
-  const LN='currentColor', T=(t,x,y,f,cls)=>`<text x="${x}" y="${y}" font-size="${f}" class="${cls||''}" text-anchor="middle" dominant-baseline="central">${esc(t)}</text>`;
-  const n=bar.map(t=>bgName(t,cn)), L=(a,b,c,d)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" class="bgl"/>`;
+const BG_BEATS={4:{1:['1–4'],2:['1–2','3–4'],3:['1–2','3','4'],'3b':['1','2','3–4'],4:['1','2','3','4']},3:{1:['1–3'],2:['1–2','3'],3:['1','2','3']}};
+// découpage d'une mesure : '1','2','3' (2+1+1 en 4/4, 1+1+1 en 3/4), '3b' (1+1+2, rangé [C,G,Am,'=']), '4', '%'
+function bgKind(bar,m){if(bar.length===1)return bar[0]==='%'?'%':'1'; if(bar.length===4&&bar[3]==='=')return '3b'; return String(Math.min(4,bar.length));}
+const bgSlotsOf=(bar,m)=>bgKind(bar,m)==='3b'?[[0],[1],[2]]:bar.map((_,i)=>[i]);
+function bgCellSVG(bar,w,h,cn,fs,m,mt){
+  const T=(t,x,y,f,cls)=>`<text x="${x}" y="${y}" font-size="${f}" class="${cls||''}" text-anchor="middle" dominant-baseline="central">${esc(t)}</text>`;
+  const n=bar.map(t=>bgName(t,cn)), L=(a,b,c,d)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" class="bgl"/>`, k=bgKind(bar,m);
   let in_='';
-  if(bar.length===1&&bar[0]==='%')in_=T('%',w/2,h/2,fs*1.05,'bgp');
-  else if(bar.length===1)in_=T(n[0],w/2,h/2,fs);
-  else if(bar.length===2)in_=L(0,h,w,0)+T(n[0],w*.28,h*.3,fs*.72)+T(n[1],w*.72,h*.7,fs*.72);
-  else if(bar.length===3)in_=L(0,h,w,0)+L(0,0,w/2,h/2)+T(n[0],w*.14,h*.52,fs*.56)+T(n[1],w*.5,h*.2,fs*.56)+T(n[2],w*.74,h*.72,fs*.56);
+  if(k==='%')in_=T('%',w/2,h/2,fs*1.05,'bgp');
+  else if(k==='1')in_=T(n[0],w/2,h/2,fs);
+  else if(k==='2')in_=L(0,h,w,0)+T(n[0],w*.28,h*.3,fs*.72)+T(n[1],w*.72,h*.7,fs*.72);
+  else if(k==='3'&&(m||4)===4)in_=L(0,h,w,0)+L(w/2,h/2,w,h)+T(n[0],w*.3,h*.32,fs*.66)+T(n[1],w*.52,h*.8,fs*.54)+T(n[2],w*.86,h*.5,fs*.54);   // 2+1+1
+  else if(k==='3'||k==='3b')in_=L(0,h,w,0)+L(0,0,w/2,h/2)+T(n[0],w*.14,h*.52,fs*.56)+T(n[1],w*.5,h*.2,fs*.56)+T(n[2],w*.7,h*.7,fs*.66);   // 1+1+2 (ou 1+1+1 en 3/4)
   else in_=L(0,h,w,0)+L(0,0,w,h)+T(n[0],w*.13,h*.5,fs*.5)+T(n[1],w*.5,h*.19,fs*.5)+T(n[2],w*.5,h*.81,fs*.5)+T(n[3],w*.87,h*.5,fs*.5);
+  if(mt){const d=Math.max(2.2,h*.045), sw=Math.max(3,w*.022);
+    if(mt.rs)in_+=`<rect x="1" y="0" width="${sw}" height="${h}" class="bgfill"/><line x1="${sw+4}" y1="0" x2="${sw+4}" y2="${h}" class="bgl"/><circle cx="${sw+11}" cy="${h*.38}" r="${d}" class="bgfill"/><circle cx="${sw+11}" cy="${h*.62}" r="${d}" class="bgfill"/>`;
+    if(mt.re)in_+=`<rect x="${w-1-sw}" y="0" width="${sw}" height="${h}" class="bgfill"/><line x1="${w-sw-5}" y1="0" x2="${w-sw-5}" y2="${h}" class="bgl"/><circle cx="${w-sw-12}" cy="${h*.38}" r="${d}" class="bgfill"/><circle cx="${w-sw-12}" cy="${h*.62}" r="${d}" class="bgfill"/>`+(mt.re>2?`<text x="${w-sw-16}" y="${h*.16}" font-size="${fs*.4}" text-anchor="end" dominant-baseline="central" class="bgmk">×${mt.re}</text>`:'');
+    if(mt.v)in_+=`<polyline points="2,${h*.3} 2,3 ${w-3},3" fill="none" class="bgl bgv"/><text x="${8+(mt.rs?sw+14:0)}" y="${h*.15}" font-size="${fs*.4}" dominant-baseline="central" class="bgmk">${mt.v}.</text>`;
+    if(mt.n)in_+=`<text x="${w-5-(mt.re?sw+16:0)}" y="${h-6}" font-size="${Math.max(10,fs*.34)}" text-anchor="end" class="bgnote">${esc(mt.n)}</text>`;}
   return `<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}">${in_}</svg>`;
 }
+const bgMtOf=(sc,bi)=>(sc.mt&&sc.mt[bi])||null;
+// ajouter / enlever des mesures en gardant leurs signes (reprises, notes) alignés
+function bgSplice(sc,i,del,...bars){sc.mt=sc.mt||[]; while(sc.mt.length<sc.bars.length)sc.mt.push(null); sc.bars.splice(i,del,...bars); sc.mt.splice(i,del,...bars.map(()=>null)); if(!sc.mt.some(Boolean))delete sc.mt;}
 // dessin d'une grille : sections, cases, structure en dessous
 function bgHTML(g,cn,W,H,opt){
   opt=opt||{}; const per=+g.per||4, cw=Math.floor((W-2)/per);
@@ -1590,7 +1616,7 @@ function bgHTML(g,cn,W,H,opt){
     const m=+sc.m||+g.meter||4, rep=bgForm(g).filter(x=>x.i===si).map(x=>x.k).sort((a,b)=>b-a)[0];
     h+=`<div class="bgsec" data-si="${si}"><span class="bgname">${esc(sc.n||'—')}</span>${m===3&&+g.meter!==3?'<span class="bgm">3/4</span>':''}${rep>1?'<span class="bgrep">×'+rep+'</span>':''}</div><div class="bgrow" data-si="${si}" style="grid-template-columns:repeat(${per},${cw}px)">`;
     const bars=sc.bars.length?sc.bars:[['']];
-    bars.forEach((b,bi)=>{const on=sel.si===si&&sel.bi===bi; h+=`<div class="bgc${on?' on':''}" data-si="${si}" data-bi="${bi}" style="height:${ch}px">${bgCellSVG(b,cw,ch,cn,fs)}</div>`;});
+    bars.forEach((b,bi)=>{const on=sel.si===si&&sel.bi===bi; h+=`<div class="bgc${on?' on':''}" data-si="${si}" data-bi="${bi}" style="height:${ch}px">${bgCellSVG(b,cw,ch,cn,fs,m,bgMtOf(sc,bi))}</div>`;});
     h+='</div>';
   });
   const f=bgForm(g); if(f.length&&!opt.noForm)h+=`<div class="bgform"><b>Structure</b> ${f.map(x=>`<span>${esc(x.n)}${x.k>1?' <i>×'+x.k+'</i>':''}</span>`).join('<em>›</em>')}</div>`;
@@ -1872,7 +1898,39 @@ function loadJsPDF(){
   const load=src=>new Promise((ok,ko)=>{const sc=document.createElement('script'); sc.src=src; sc.onload=()=>window.jspdf?ok(window.jspdf):ko(); sc.onerror=ko; document.head.appendChild(sc);});
   return jspdfP||(jspdfP=load('jspdf.umd.min.js').catch(()=>load('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js')).catch(e=>{jspdfP=null;throw new Error('jsPDF');}));
 }
-async function makePDF(entries,title){
+
+// grille basse dans le PDF : vraies cases, diagonales, reprises et notes
+function pdfBass(doc,e,top,o){
+  const {PW,PH,M,clean}=o, g=e._r.bg, cn=e._r.cn, per=+g.per||4, cw=(PW-2*M)/per, ch=Math.min(64,cw*.5), fs=Math.min(ch*.46,cw*.2);
+  let y=top+4; const T=(t,x,yy,f)=>{doc.setFontSize(f); doc.text(clean(t||''),x,yy,{align:'center',baseline:'middle'});};
+  g.secs.forEach(sc=>{
+    const m=+sc.m||+g.meter||4, rows=Math.max(1,Math.ceil(sc.bars.length/per));
+    if(y+24+ch>PH-M){doc.addPage(); y=M;}
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(15,118,110); doc.text(clean((sc.n||'—')+(m===3&&+g.meter!==3?'  (3/4)':'')),M,y+12); y+=20;
+    for(let r=0;r<rows;r++){
+      if(y+ch>PH-M){doc.addPage(); y=M;}
+      for(let c=0;c<per;c++){const bi=r*per+c, bar=sc.bars[bi]; if(!bar)break; const x=M+c*cw, k=bgKind(bar,m), n=bar.map(t=>bgName(t,cn)), mt=bgMtOf(sc,bi)||{};
+        doc.setDrawColor(40); doc.setLineWidth(1); doc.rect(x,y,cw,ch); doc.setLineWidth(.6); doc.setTextColor(20); doc.setFont('helvetica','bold');
+        const L=(a,b,c2,d)=>doc.line(x+a*cw,y+b*ch,x+c2*cw,y+d*ch);
+        if(k==='%')T('%',x+cw/2,y+ch/2,fs);
+        else if(k==='1')T(n[0],x+cw/2,y+ch/2,fs);
+        else if(k==='2'){L(0,1,1,0); T(n[0],x+cw*.28,y+ch*.3,fs*.72); T(n[1],x+cw*.72,y+ch*.7,fs*.72);}
+        else if(k==='3'&&m===4){L(0,1,1,0); L(.5,.5,1,1); T(n[0],x+cw*.3,y+ch*.32,fs*.66); T(n[1],x+cw*.52,y+ch*.8,fs*.54); T(n[2],x+cw*.86,y+ch*.5,fs*.54);}
+        else if(k==='3'||k==='3b'){L(0,1,1,0); L(0,0,.5,.5); T(n[0],x+cw*.14,y+ch*.52,fs*.56); T(n[1],x+cw*.5,y+ch*.2,fs*.56); T(n[2],x+cw*.7,y+ch*.7,fs*.66);}
+        else {L(0,1,1,0); L(0,0,1,1); T(n[0],x+cw*.13,y+ch*.5,fs*.5); T(n[1],x+cw*.5,y+ch*.19,fs*.5); T(n[2],x+cw*.5,y+ch*.81,fs*.5); T(n[3],x+cw*.87,y+ch*.5,fs*.5);}
+        doc.setFillColor(20);
+        if(mt.rs){doc.rect(x+1,y,3,ch,'F'); doc.line(x+7,y,x+7,y+ch); doc.circle(x+11,y+ch*.38,1.6,'F'); doc.circle(x+11,y+ch*.62,1.6,'F');}
+        if(mt.re){doc.rect(x+cw-4,y,3,ch,'F'); doc.line(x+cw-7,y,x+cw-7,y+ch); doc.circle(x+cw-11,y+ch*.38,1.6,'F'); doc.circle(x+cw-11,y+ch*.62,1.6,'F'); if(mt.re>2){doc.setFontSize(8); doc.text('×'+mt.re,x+cw-14,y+8,{align:'right'});}}
+        if(mt.v){doc.line(x+1,y-6,x+cw-2,y-6); doc.line(x+1,y-6,x+1,y+ch*.25); doc.setFontSize(8); doc.text(mt.v+'.',x+4,y-1);}
+        if(mt.n){doc.setFont('helvetica','italic'); doc.setFontSize(Math.max(7,fs*.34)); doc.setTextColor(194,65,12); doc.text(clean(mt.n),x+cw-(mt.re?16:4),y+ch-4,{align:'right'}); doc.setTextColor(20);}
+      }
+      y+=ch;
+    }
+    y+=10;
+  });
+  const f=bgForm(g); if(f.length){if(y+20>PH-M){doc.addPage(); y=M;} doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(180,83,9); doc.text(clean('Structure : '+f.map(x=>x.n+(x.k>1?' ×'+x.k:'')).join(' · ')),M,y+12);}
+}
+async function makePDF(entries,title,view){
   let lib; try{lib=await loadJsPDF();}catch(e){toast('Module PDF indisponible (internet nécessaire la première fois).');return null;}
   const doc=new lib.jsPDF({unit:'pt',format:'a4'});
   const PW=595.28,PH=841.89,M=34,GAP=26,LH=1.22;
@@ -1885,14 +1943,19 @@ async function makePDF(entries,title){
     doc.setTextColor(120); doc.text('Durée totale ≈ '+fmtDur(tot),M,y+10);
     doc.addPage();
   }
-  entries.forEach((e,i)=>{
+  for(const [i,e] of entries.entries()){
     if(i) doc.addPage();
     doc.setFont('helvetica','bold'); doc.setFontSize(15); doc.setTextColor(20); doc.text(clean(e.s.q),M,M+10);
     const info=eKey(e)+(e.s.tempo?'  ·  ♩ '+e.s.tempo:''); if(info.trim()){doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(110); doc.text(clean(info),PW-M,M+10,{align:'right'});}
     doc.setDrawColor(210); doc.line(M,M+18,PW-M,M+18);
     let top=M+30; const notes=eNotes(e);
     if(notes){doc.setFont('helvetica','italic'); doc.setFontSize(9); doc.setTextColor(140,90,0); const nl=doc.splitTextToSize(clean(notes),PW-2*M); doc.text(nl,M,top); top+=nl.length*11+4;}
-    const H=PH-top-M, lines=eLines(e);
+    if(isSheet(e.s)){ // partition : les pages en images
+      for(const [pi,p] of (e.s.pages||[]).entries()){if(pi)doc.addPage(); const b=await Media.get('pg:'+p.pid); if(!b)continue; const d=await blobToData(b), t0=pi?M:top, k=Math.min((PW-2*M)/p.w,(PH-t0-M)/p.h); try{doc.addImage(d,'JPEG',M,t0,p.w*k,p.h*k);}catch(er){}}
+      continue;}
+    const vw=view||e.s.view||'grille';
+    if(vw==='accords'&&e._r.bg&&e._r.bg.secs.length){pdfBass(doc,e,top,{PW,PH,M,clean}); doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150); doc.text(`${i+1} / ${entries.length}`,PW/2,PH-14,{align:'center'}); continue;}
+    const H=PH-top-M, lines=view==='paroles'?e._r.lyr:view==='grille'?e._r.grid:view==='accords'?e._r.bars:eLines(e);
     const f=fit(lines,PW-2*M,H,.6,LH,13,GAP,3), size=Math.floor(f.size*10)/10;
     let x=M;
     f.cols.forEach((col,ci)=>{
@@ -1910,7 +1973,7 @@ async function makePDF(entries,title){
     });
     doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(150);
     doc.text(`${i+1} / ${entries.length}`,PW/2,PH-14,{align:'center'});
-  });
+  }
   return doc.output('blob');
 }
 const safeName=s=>s.replace(/[\\/:*?"<>|]/g,'').trim()||'accords';
@@ -4915,8 +4978,8 @@ function openBG(e,si,bi){
 function bgClamp(){const g=BG.g, c=BG.sel; c.si=Math.max(0,Math.min(c.si,g.secs.length-1)); const sc=g.secs[c.si]; if(!sc.bars.length)sc.bars.push(['']); c.bi=Math.max(0,Math.min(c.bi,sc.bars.length-1)); c.k=Math.max(0,Math.min(c.k,sc.bars[c.bi].length-1));}
 const bgMeter=si=>+(BG.g.secs[si]||{}).m||+BG.g.meter||4;
 const bgBar=()=>BG.g.secs[BG.sel.si].bars[BG.sel.bi];
-function bgMini(n,on){const w=50,h=26,L=(a,b,c,d)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="currentColor" stroke-width="2"/>`;
-  return `<svg width="${w}" height="${h}"><rect x="1" y="1" width="${w-2}" height="${h-2}" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>${n>=2?L(2,h-2,w-2,2):''}${n===3?L(2,2,w/2,h/2):''}${n===4?L(2,2,w-2,h-2):''}</svg>`;}
+function bgMini(n,m){const w=50,h=26,L=(a,b,c,d)=>`<line x1="${a}" y1="${b}" x2="${c}" y2="${d}" stroke="currentColor" stroke-width="2"/>`;
+  return `<svg width="${w}" height="${h}"><rect x="1" y="1" width="${w-2}" height="${h-2}" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>${n!=='1'&&n!==1?L(2,h-2,w-2,2):''}${(n===3&&m===4)?L(w/2,h/2,w-2,h-2):''}${n==='3b'||(n===3&&m!==4)?L(2,2,w/2,h/2):''}${n===4?L(2,2,w-2,h-2):''}</svg>`;}
 function bgDraw(){
   bgClamp(); const g=BG.g, c=BG.sel, cn=BG.r.cn, main=$('#bgMain');
   const top=main.scrollTop; main.innerHTML=bgHTML(g,cn,main.clientWidth-36,9999,{cellH:Math.max(64,Math.min(96,Math.round(innerHeight/9))),sel:c,noForm:true}); main.scrollTop=top;
@@ -4924,11 +4987,13 @@ function bgDraw(){
   $$('#bgMeter button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===(+g.meter||4)));
   const sc=g.secs[c.si], bar=bgBar(), m=bgMeter(c.si), nb=g.secs.slice(0,c.si).reduce((a,x)=>a+x.bars.length,0)+c.bi+1;
   $('#bgWhere').textContent='Mesure '+nb+' · '+(sc.n||'—')+(m===3?' · 3/4':'');
-  const n=bar[0]==='%'?0:bar.length;
-  $('#bgSplit').style.gridTemplateColumns=`repeat(${m},minmax(0,1fr))`;
-  $('#bgSplit').innerHTML=[1,2,3,4].slice(0,m).map(k=>`<button data-n="${k}" aria-pressed="${k===n}">${bgMini(k)}${k} accord${k>1?'s':''}</button>`).join('');
-  const lab=(BG_BEATS[m]||BG_BEATS[4])[Math.min(bar.length,m)]||[];
-  $('#bgSlots').innerHTML=bar[0]==='%'?'<span class="lab">% : on rejoue la mesure d\'avant.</span>':bar.map((t,i)=>`<button data-k="${i}" aria-pressed="${i===c.k}"><span>${lab[i]||''}</span><b>${esc(bgName(t,cn)||'—')}</b></button>`).join('');
+  const kd=bgKind(bar,m), opts=m===4?[[1,'1'],[2,'2'],[3,'2+1+1'],['3b','1+1+2'],[4,'4']]:[[1,'1'],[2,'2+1'],[3,'1+1+1']];
+  $('#bgSplit').style.gridTemplateColumns=`repeat(${opts.length},minmax(0,1fr))`;
+  $('#bgSplit').innerHTML=opts.map(([k,l])=>`<button data-n="${k}" aria-pressed="${String(k)===kd}">${bgMini(k,m)}${l}</button>`).join('');
+  const lab=(BG_BEATS[m]||BG_BEATS[4])[kd==='3b'?'3b':Math.min(bar.length,m)]||[], slots=bgSlotsOf(bar,m); if(c.k>=slots.length)c.k=slots.length-1;
+  $('#bgSlots').innerHTML=bar[0]==='%'?'<span class="lab">% : on rejoue la mesure d\'avant.</span>':slots.map((ix,i)=>`<button data-k="${i}" aria-pressed="${i===c.k}"><span>${lab[i]||''}</span><b>${esc(bgName(bar[ix[0]],cn)||'—')}</b></button>`).join('');
+  const mt=bgMtOf(sc,c.bi)||{};
+  $('#bgMeas').innerHTML=`<button data-mm="rs" aria-pressed="${!!mt.rs}">‖: Début</button><button data-mm="re" aria-pressed="${!!mt.re}">:‖ Fin${mt.re>2?' ×'+mt.re:''}</button><button data-mm="v" aria-pressed="${!!mt.v}">${mt.v?mt.v+'. fois':'1. / 2.'}</button><button data-mm="n" aria-pressed="${!!mt.n}">✎ ${mt.n?esc(mt.n):'Note'}</button>`;
   const chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].slice(0,15);
   $('#bgChips').innerHTML=chips.map(x=>`<button>${esc(x)}</button>`).join('');
   $('#bgSec34').textContent=m===3&&+g.meter!==3?'Section en 4/4':+g.meter===3?(m===3?'Section en 4/4':'Section en 3/4'):'Section en 3/4';
@@ -4938,17 +5003,23 @@ function bgDraw(){
   ['#bgFL','#bgFR','#bgFX'].forEach(x=>$(x).disabled=BG.f==null);
 }
 function bgSet(fn){fn(); BG.dirty=true; bgDraw();}
-function bgNext(){const g=BG.g, c=BG.sel; if(c.k<bgBar().length-1&&bgBar()[0]!=='%'){c.k++; return;}
+function bgNext(){const g=BG.g, c=BG.sel; if(c.k<bgSlotsOf(bgBar(),bgMeter(c.si)).length-1&&bgBar()[0]!=='%'){c.k++; return;}
   c.k=0; if(c.bi<g.secs[c.si].bars.length-1){c.bi++; return;}
   if(c.si<g.secs.length-1){c.si++; c.bi=0; return;}
-  g.secs[c.si].bars.push(['']); c.bi++;}
-function bgPut(name){const src=toSource(BG.r,name)||name; bgSet(()=>{const b=bgBar(); if(b[0]==='%'){b.splice(0,b.length,'');} b[BG.sel.k]=src; bgNext();});}
+  bgSplice(g.secs[c.si],g.secs[c.si].bars.length,0,['']); c.bi++;}
+function bgPut(name){const src=toSource(BG.r,name)||name; bgSet(()=>{const b=bgBar(); if(b[0]==='%'){b.splice(0,b.length,'');} bgSlotsOf(b,bgMeter(BG.sel.si))[Math.min(BG.sel.k,bgSlotsOf(b,bgMeter(BG.sel.si)).length-1)].forEach(i=>b[i]=src); bgNext();});}
 $('#bgMain').onclick=ev=>{if(Date.now()-(BG.noClick||0)<400)return; const nm=ev.target.closest('.bgname'); if(nm){bgRenameInline(nm); return;}
   const t=ev.target.closest('.bgc,.bgsec'); if(!t)return; const si=+t.dataset.si;
-  if(t.classList.contains('bgsec')){BG.sel={si,bi:0,k:0};} else {const bi=+t.dataset.bi; if(BG.sel.si===si&&BG.sel.bi===bi&&bgBar().length>1)BG.sel.k=(BG.sel.k+1)%bgBar().length; else BG.sel={si,bi,k:0};}
+  if(t.classList.contains('bgsec')){BG.sel={si,bi:0,k:0};} else {const bi=+t.dataset.bi; if(BG.sel.si===si&&BG.sel.bi===bi&&bgBar().length>1)BG.sel.k=(BG.sel.k+1)%bgSlotsOf(bgBar(),bgMeter(si)).length; else BG.sel={si,bi,k:0};}
   bgDraw();};
-$('#bgSplit').onclick=ev=>{const b=ev.target.closest('button'); if(!b)return; const n=+b.dataset.n; bgSet(()=>{const bar=bgBar(); if(bar[0]==='%'){let p=null; const sc=BG.g.secs[BG.sel.si]; for(let i=BG.sel.bi-1;i>=0;i--)if(sc.bars[i][0]!=='%'){p=sc.bars[i];break;} bar.splice(0,1,...(p?[p[p.length-1]]:['']));}
-  while(bar.length<n)bar.push(bar[bar.length-1]||''); bar.length=n; BG.sel.k=Math.min(BG.sel.k,n-1); if(n>1&&bar[1]===bar[0])BG.sel.k=1;});};
+$('#bgSplit').onclick=ev=>{const b=ev.target.closest('button'); if(!b)return; const n3b=b.dataset.n==='3b', n=n3b?3:+b.dataset.n; bgSet(()=>{const bar=bgBar(); if(bar[0]==='%'){let p=null; const sc=BG.g.secs[BG.sel.si]; for(let i=BG.sel.bi-1;i>=0;i--)if(sc.bars[i][0]!=='%'){p=sc.bars[i];break;} bar.splice(0,1,...(p?[p[p.length-1]]:['']));}
+  if(bgKind(bar,bgMeter(BG.sel.si))==='3b')bar.length=3;
+  while(bar.length<n)bar.push(bar[bar.length-1]||''); bar.length=n; if(n3b)bar.push('='); BG.sel.k=Math.min(BG.sel.k,n-1); if(n>1&&bar[1]===bar[0])BG.sel.k=1;});};
+$('#bgMeas').onclick=async ev=>{const b=ev.target.closest('[data-mm]'); if(!b)return; const a=b.dataset.mm, sc=BG.g.secs[BG.sel.si], bi=BG.sel.bi;
+  let v; if(a==='n'){const cur=(bgMtOf(sc,bi)||{}).n||''; v=await ask('Note en bas de la mesure','levée, stop, ritardando…',null,cur); if(v==null)return; v=v.trim();}
+  bgSet(()=>{sc.mt=sc.mt||[]; while(sc.mt.length<sc.bars.length)sc.mt.push(null); const mt=sc.mt[bi]||{};
+    if(a==='rs')mt.rs=mt.rs?0:1; else if(a==='re')mt.re=!mt.re?2:mt.re<4?mt.re+1:0; else if(a==='v')mt.v=!mt.v?1:mt.v<3?mt.v+1:0; else mt.n=v;
+    Object.keys(mt).forEach(k=>{if(!mt[k])delete mt[k];}); sc.mt[bi]=Object.keys(mt).length?mt:null; if(!sc.mt.some(Boolean))delete sc.mt;});};
 $('#bgSlots').onclick=ev=>{const b=ev.target.closest('[data-k]'); if(!b)return; BG.sel.k=+b.dataset.k; bgDraw();};
 $('#bgChips').onclick=ev=>{if(Date.now()-(BG.noClick||0)<400)return; const b=ev.target.closest('button'); if(b)bgPut(b.textContent);};
 // nom de section modifiable sur place
@@ -4961,16 +5032,17 @@ function bgRenameInline(el){
 /* glisser un accord : depuis la palette ou depuis une case (il est alors déplacé)
    entre deux cases = nouvelle mesure · dans le vide = supprimé · sur un accord = même → fusion, sinon la case se divise (2 puis 4) */
 const BG_R={4:{1:[4],2:[2,2],3:[2,1,1],4:[1,1,1,1]},3:{1:[3],2:[2,1],3:[1,1,1]}};
-function bgToBeats(bar,m){const R=(BG_R[m]||BG_R[4])[bar.length]||(BG_R[4][bar.length])||[4]; const out=[]; bar.forEach((c,i)=>{for(let j=0;j<(R[i]||1);j++)out.push(c);}); return out;}
-function bgFromBeats(b,m){
+function bgToBeats(bar,m){const R=(BG_R[m]||BG_R[4])[bar.length]||(BG_R[4][bar.length])||[4]; const out=[]; bar.forEach((c,i)=>{if(c==='=')c=out[out.length-1]; for(let j=0;j<(R[i]||1);j++)out.push(c);}); return out;}
+function bgFromBeats(b,m){const r=bgFromBeats0(b,m); if(r.length===4&&r[2]===r[3]&&r[0]!==r[1]&&r[1]!==r[2])r[3]='='; return r;}
+function bgFromBeats0(b,m){
   if(b.every(x=>x===b[0]))return [b[0]];
   if(b.length===3)return b[0]===b[1]?[b[0],b[2]]:b.slice();
   if(b[0]===b[1]&&b[2]===b[3])return [b[0],b[2]]; if(b[0]===b[1])return [b[0],b[2],b[3]]; return b.slice();
 }
-function bgPartAt(n,rx,ry){
+function bgPartAt(n,rx,ry,m){
   if(n<=1)return 0; const up=ry<1-rx;
   if(n===2)return up?0:1;
-  if(n===3)return !up?2:(ry>rx&&rx<.5?0:1);
+  if(n===3)return m===3?(!up?2:(ry>rx&&rx<.5?0:1)):(up?0:(ry>rx?1:2));
   if(rx<ry&&rx<1-ry)return 0; if(ry<rx&&ry<1-rx)return 1; if(ry>rx&&ry>1-rx)return 2; return 3;
 }
 let BGD=null; const BGS='\u0001';
@@ -4980,7 +5052,7 @@ function bgTarget(x,y){
   const c=el.closest('#bgMain .bgc');
   if(c){const si=+c.dataset.si, bi=+c.dataset.bi, rc=c.getBoundingClientRect(), rx=(x-rc.left)/rc.width, ry=(y-rc.top)/rc.height;
     if(rx<.13)return {si,ins:bi,el:c,cls:'dropl'}; if(rx>.87)return {si,ins:bi+1,el:c,cls:'dropr'};
-    const bar=BG.g.secs[si].bars[bi]; return {si,bi,k:bgPartAt(bar[0]==='%'?1:bar.length,rx,ry),first:ry<1-rx,el:c,cls:'dropon'};}
+    const bar=BG.g.secs[si].bars[bi]; return {si,bi,k:bgPartAt(bar[0]==='%'?1:bar.length,rx,ry,bgMeter(si)),first:ry<1-rx,el:c,cls:'dropon'};}
   const row=el.closest('#bgMain .bgrow'); if(row){const si=+row.dataset.si; return {si,ins:BG.g.secs[si].bars.length,el:row.lastElementChild,cls:'dropr'};}
   return {void:1};
 }
@@ -4999,7 +5071,7 @@ function bgDragEnd(cancel){
   if(f&&t.bi===f.bi&&t.si===f.si&&t.k===f.k)return;
   bgSet(()=>{
     const g=BG.g; if(f)g.secs[f.si].bars[f.bi][f.k]=BGS;
-    if(t.ins!=null){g.secs[t.si].bars.splice(t.ins,0,[X]); BG.sel={si:t.si,bi:t.ins,k:0};}
+    if(t.ins!=null){bgSplice(g.secs[t.si],t.ins,0,[X]); BG.sel={si:t.si,bi:t.ins,k:0};}
     else if(t.bi!=null){
       const bar=g.secs[t.si].bars[t.bi], m=bgMeter(t.si);
       if(bar[0]==='%'||bar.every(x=>!x))bar.splice(0,bar.length,X);
@@ -5014,7 +5086,7 @@ function bgDragEnd(cancel){
     }
     // l'accord déplacé laisse sa place : sa case se refusionne, ou disparaît s'il était seul
     g.secs.forEach((sc,si)=>{for(let bi=sc.bars.length-1;bi>=0;bi--){const bar=sc.bars[bi]; if(!bar.includes(BGS))continue; const m=bgMeter(si), b=bgToBeats(bar,m);
-      if(b.every(x=>x===BGS)){sc.bars.splice(bi,1); if(BG.sel.si===si&&BG.sel.bi>bi)BG.sel.bi--; continue;}
+      if(b.every(x=>x===BGS)){bgSplice(sc,bi,1); if(BG.sel.si===si&&BG.sel.bi>bi)BG.sel.bi--; continue;}
       for(let i=0;i<b.length;i++)if(b[i]===BGS){let j=i-1; while(j>=0&&b[j]===BGS)j--; if(j<0){j=i+1; while(b[j]===BGS)j++;} b[i]=b[j];}
       sc.bars[bi]=bgFromBeats(b,m);}
       if(!sc.bars.length)sc.bars.push(['']);});
@@ -5024,7 +5096,7 @@ $('#bgEd').addEventListener('pointerdown',ev=>{
   if(ev.button>0||BGD)return; let chord=null, from=null;
   const chip=ev.target.closest('#bgChips button'); const cell=ev.target.closest('#bgMain .bgc');
   if(chip)chord=toSource(BG.r,chip.textContent)||chip.textContent;
-  else if(cell){const si=+cell.dataset.si, bi=+cell.dataset.bi, bar=BG.g.secs[si].bars[bi], rc=cell.getBoundingClientRect(), k=bgPartAt(bar.length,(ev.clientX-rc.left)/rc.width,(ev.clientY-rc.top)/rc.height); if(bar[k]&&bar[k]!=='%'){chord=bar[k]; from={si,bi,k};}}
+  else if(cell){const si=+cell.dataset.si, bi=+cell.dataset.bi, bar=BG.g.secs[si].bars[bi], rc=cell.getBoundingClientRect(), k=bgPartAt(bar.length,(ev.clientX-rc.left)/rc.width,(ev.clientY-rc.top)/rc.height,bgMeter(si)); if(bar[k]==='=')k=2; if(bar[k]&&bar[k]!=='%'){chord=bar[k]; from={si,bi,k};}}
   if(!chord)return;
   BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord,from,on:false,timer:setTimeout(bgDragOn,300)};
 });
@@ -5038,10 +5110,10 @@ document.addEventListener('touchmove',ev=>{if(!BGD)return; const t=ev.touches[0]
 document.addEventListener('touchend',ev=>{if(BGD&&BGD.on){const t=ev.changedTouches[0]; if(t)bgDragMove(t.clientX,t.clientY); bgDragEnd(false);}});
 $('#bgOther').onclick=()=>chordDialog({mode:'pick',r:BG.r,cb:n=>bgPut(n)});
 $('#bgPct').onclick=()=>bgSet(()=>{const b=bgBar(); b.splice(0,b.length,'%'); BG.sel.k=0; bgNext();});
-$('#bgIns').onclick=()=>bgSet(()=>{BG.g.secs[BG.sel.si].bars.splice(BG.sel.bi,0,['']); BG.sel.k=0;});
-$('#bgApp').onclick=()=>bgSet(()=>{BG.g.secs[BG.sel.si].bars.splice(BG.sel.bi+1,0,['']); BG.sel.bi++; BG.sel.k=0;});
-$('#bgDel').onclick=()=>bgSet(()=>{const sc=BG.g.secs[BG.sel.si]; sc.bars.splice(BG.sel.bi,1); if(!sc.bars.length)sc.bars.push(['']);});
-$('#bgDupRow').onclick=()=>bgSet(()=>{const per=+BG.g.per||4, sc=BG.g.secs[BG.sel.si], a=Math.floor(BG.sel.bi/per)*per, row=JSON.parse(JSON.stringify(sc.bars.slice(a,a+per))); sc.bars.splice(a+row.length,0,...row); BG.sel.bi=a+row.length;});
+$('#bgIns').onclick=()=>bgSet(()=>{bgSplice(BG.g.secs[BG.sel.si],BG.sel.bi,0,['']); BG.sel.k=0;});
+$('#bgApp').onclick=()=>bgSet(()=>{bgSplice(BG.g.secs[BG.sel.si],BG.sel.bi+1,0,['']); BG.sel.bi++; BG.sel.k=0;});
+$('#bgDel').onclick=()=>bgSet(()=>{const sc=BG.g.secs[BG.sel.si]; bgSplice(sc,BG.sel.bi,1); if(!sc.bars.length)sc.bars.push(['']);});
+$('#bgDupRow').onclick=()=>bgSet(()=>{const per=+BG.g.per||4, sc=BG.g.secs[BG.sel.si], a=Math.floor(BG.sel.bi/per)*per, row=JSON.parse(JSON.stringify(sc.bars.slice(a,a+per))), rmt=JSON.parse(JSON.stringify((sc.mt||[]).slice(a,a+per))); bgSplice(sc,a+row.length,0,...row); if(rmt.some(Boolean)){sc.mt=sc.mt||[]; rmt.forEach((x,j)=>{sc.mt[a+row.length+j]=x;});} BG.sel.bi=a+row.length;});
 function bgRename(si){const sc=BG.g.secs[si], n=prompt('Nom de la section :',sc.n||''); if(n==null)return; bgSet(()=>sc.n=n.trim());}
 $('#bgSecRen').onclick=()=>bgRename(BG.sel.si);
 $('#bgSecAdd').onclick=()=>{const names=['Intro','Couplet','Refrain','Pont','Solo','Outro'], used=new Set(BG.g.secs.map(x=>x.n)), def=names.find(x=>!used.has(x))||'Section';
@@ -5560,6 +5632,21 @@ try{matchMedia('(max-width:560px)').addEventListener('change',()=>{renderAll(); 
 
 // hors ligne : sur le site (https), un service worker garde l'appli et ses fichiers en cache
 if(!APP&&(location.protocol==='https:'||/^(localhost|127\.0\.0\.1)$/.test(location.hostname))&&'serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{});}
+
+/* ---------- PDF depuis la scène : grille, paroles ou grille basse ---------- */
+const PDFC={view:'grille',scope:'one'};
+function pdfUI(){const e=V.list[V.i];
+  $$('#pdfView button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===PDFC.view)); $$('#pdfScope button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===PDFC.scope));
+  const all=$('#pdfScope [data-v="all"]'); all.hidden=V.list.length<2; all.textContent=(V.listRef&&V.listRef.name?'« '+V.listRef.name+' »':'Toute la liste')+' ('+V.list.length+')'; if(V.list.length<2)PDFC.scope='one';
+  $('#pdfInfo').textContent=e&&isSheet(e.s)&&PDFC.scope==='one'?'Partition : le PDF reprend les pages et leurs annotations.':PDFC.view==='accords'?'La grille du bassiste en cases, avec reprises, notes et structure.':'';}
+$('#vpdf').onclick=()=>{$('#vmenu').hidden=true; PDFC.view=(V.list[V.i]&&V.list[V.i].s.view)||'grille'; if(!['grille','paroles','accords'].includes(PDFC.view))PDFC.view='grille'; pdfUI(); modal('#pdfBox',true);};
+$('#pdfView').onclick=e=>{const b=e.target.closest('[data-v]'); if(b){PDFC.view=b.dataset.v; pdfUI();}};
+$('#pdfScope').onclick=e=>{const b=e.target.closest('[data-v]'); if(b){PDFC.scope=b.dataset.v; pdfUI();}};
+$('#pdfGo').onclick=async()=>{const one=PDFC.scope==='one', es=(one?[V.list[V.i]]:V.list).filter(Boolean).map(x=>{x._r=x._r||compute(x.s,x.item?{target:x.item.target,capo:x.item.capo}:null); return x;});
+  if(!es.length)return; $('#pdfGo').disabled=true; $('#pdfGo').textContent='Création…';
+  try{const ttl=one?null:(V.listRef&&V.listRef.name)||'Playlist', blob=await makePDF(es,ttl,PDFC.view), suf={grille:'',paroles:' - paroles',accords:' - grille basse'}[PDFC.view], name=safeName((one?es[0].s.q:ttl)+suf);
+    if(blob){modal('#pdfBox',false); shareBlob(name+'.pdf',blob,name);}}
+  finally{$('#pdfGo').disabled=false; $('#pdfGo').textContent='Créer le PDF';}};
 </script>
 </body>
 </html>
