@@ -773,6 +773,36 @@ audio{display:none}
   .vhead small,.vhead span#vsub{font-size:11px}
   .hempty{padding:14px}
 }
+
+/* ===================== éditeurs sur téléphone ===================== */
+@media (max-width:560px){
+  /* grille du bassiste : la grille en haut, les commandes en dessous, la structure sur une ligne qui défile */
+  .bghead{padding:6px 8px;gap:6px}.bghead button,#bgEd .bghead button{height:36px!important;font-size:13px!important;padding:0 10px!important}
+  .bghead .lab,.bghead small{display:none}
+  .bghead .bgt{flex:1 1 45%;min-width:0;order:1}.bghead .bgt b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#bgBack{order:0}#bgSave{order:2}.bghead .grow{display:none}#bgPer,#bgMeter,#bgRegen{order:3}#bgRegen{flex:1 1 0;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bgbody{display:flex!important;flex-direction:column}
+  #bgEd #bgMain{flex:1 1 auto;min-height:32vh;padding:8px 8px}
+  #bgPad{flex:0 1 auto;max-height:42vh!important;border-left:0!important;border-top:1px solid #26262b;padding:8px}
+  #bgEd #bgPad button{height:40px;font-size:13px;padding:0 6px}
+  .bggrid4{grid-template-columns:repeat(4,minmax(0,1fr))}#bgSplit{grid-template-columns:repeat(5,minmax(0,1fr))!important}#bgSplit button{height:54px!important;font-size:10.5px!important}#bgSplit svg{width:40px}
+  .bgchips{grid-template-columns:repeat(5,minmax(0,1fr))}.bgchips button{font-size:14px!important}
+  .bgformed{flex-wrap:nowrap;overflow-x:auto;padding:6px 8px;gap:6px;scrollbar-width:none}.bgformed::-webkit-scrollbar{display:none}
+  .bgformed>*{flex:none}#bgForm,#bgAddForm{display:flex!important;flex-wrap:nowrap;gap:6px}
+  #bgEd .bgformed button{height:36px;font-size:13px;padding:0 10px}
+  /* tablature : toute la fenêtre défile, la tab montre ses 6 cordes, le pavé tient dans la largeur */
+  .tabbox{height:100dvh!important;padding:8px 10px!important;gap:8px!important;overflow-y:auto!important;display:block!important}
+  .tbhead{gap:6px}.tbname{flex:1 1 100%}.tbname input{min-width:0;width:100%;font-size:16px}
+  .tbhead .lab{font-size:13px}#tabTune{display:none}.tbhead #tabPlay,.tbhead #tabSave{height:38px;padding:0 12px;font-size:14px}
+  .tbbody{display:flex;flex-direction:column;gap:8px;margin-top:8px}
+  .tbleft .tabgrid{flex:none;max-height:none;overflow-x:auto;padding:8px 10px}
+  .tabtxt{font-size:15px;line-height:1.45}
+  .tbtools{gap:6px}.tbtools button{font-size:12.5px;padding:6px 9px}
+  .tbpad{grid-template-columns:1fr!important;gap:8px}
+  .tbpadkeys{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:5px}.tbpadkeys button{height:44px;font-size:17px}
+  .tbtech{grid-template-columns:repeat(auto-fill,minmax(42px,1fr))}.tbtech button{height:42px}
+  .tbarrows{grid-template-columns:repeat(4,minmax(0,1fr))}.tbarrows button{height:42px}
+  #tabStep button,.tbchord button{height:42px}
+}
 @media print{body{background:#fff;color:#000}.noprint,textarea,.links,.info{display:none!important}.card{border:none}}
 
 /* ===================== designs ===================== */
