@@ -252,6 +252,7 @@ pre .k{color:var(--warn);font-weight:700}
 #vedbar[hidden]{display:none}
 #vedbar button{background:#1d1d21;color:#eee;border-color:#444;font-size:14px;padding:5px 10px}
 #vstage.edit .ch{outline:1px dashed var(--hl,#fb923c);outline-offset:1px;border-radius:3px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;display:inline-block;position:relative}
+#vstage.edit,#vstage.edit *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #vstage.edit .ch.chdrag{background:var(--hl,#fb923c);color:var(--onhl,#111);outline:0;box-shadow:0 10px 24px rgba(0,0,0,.55);z-index:5;transition:none}
 #vstage.edit .ch.chdel{background:#dc2626;color:#fff;opacity:.85}
 .wphl{position:fixed;z-index:60;border-radius:4px;background:rgba(var(--hlrgb,251,146,60),.28);outline:2px solid var(--hl,#fb923c);pointer-events:none}
@@ -1566,7 +1567,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
     <div class="vtfoot">
       <span class="lab">Accords</span><div id="vtChips"></div><button id="vtOther" class="vtother">Autre…</button>
       <span class="grow"></span>
-      <button id="vtSec" class="vtsec">+ Section</button><button id="vtTabEd" class="vttab" hidden>✎ Tablature au pavé</button><button id="vtTabUp" class="vttab" hidden aria-label="Monter la tablature">▲</button><button id="vtTabDn" class="vttab" hidden aria-label="Descendre la tablature">▼</button><button id="vtTab" class="vttab">+ Tablature</button>
+      <button id="vtSec" class="vtsec">+ Section</button><button id="vtTabEd" class="vttab" hidden>✎ Tablature au pavé</button><button id="vtTabUp" class="vttab" hidden aria-label="Monter la tablature">▲</button><button id="vtTabDn" class="vttab" hidden aria-label="Descendre la tablature">▼</button><button id="vtTab" class="vttab">+ Tablature</button><button id="vtDrum" class="vttab">+ Batterie</button>
       <button id="vtKbd">⌨ Écrire</button><button id="vtUndo" aria-label="Annuler la dernière modification">↶</button><button id="vtRedo" aria-label="Rétablir">↷</button>
     </div>
   </div>
@@ -1622,6 +1623,8 @@ function suggestChord(t){
     c.replace(/^(do|ré|re|mi|fa|sol|la|si)/i,x=>x[0].toUpperCase()+x.slice(1).toLowerCase()),c.replace(/\s+/g,''),c.replace(/^([A-G][#b]?)-$/,'$1m'),c.replace(/6\/9$/,'6add9')];
   for(const x of tries)if(x&&x!==t&&tokChord(x))return x; return null;
 }
+const DRUM_RE=/^\s*(HH|OH|SD|S|BD|B|K|C|CC|CR|R|RD|T1|T2|T3|FT|HT|MT|LT|··)\s*\|[-xXoOgf@#|·0-9ea+ ]{4,}$/;
+const isDrumBlock=rows=>rows.length>0&&rows.every(r=>DRUM_RE.test(r))&&rows.some(r=>/^\s*(HH|SD|BD|C|R|T1|FT)\s*\|/.test(r));
 function analyzeText(text){
   const raw=String(text||'').split('\n'), p=parseSheet(text||''), kind=raw.map(()=> 'b'), warn=[];
   p.lines.forEach(L=>{if(kind[L.i]!=='c')kind[L.i]=L.t;});
@@ -1673,6 +1676,7 @@ function parseSheet(raw){
       const m=/capo[^0-9\n]{0,15}(\d+)/i.exec(s); if(m) capo=+m[1]; lines.push({t:'m',s,i}); return;}
     if(!s.trim()){lines.push({t:'b',s:'',i});return;}
     if(/^\s*!\s*\S/.test(s)){lines.push({t:'k',s:s.replace(/^\s*!\s*/,''),i});return;}  // repère de jeu
+    if(DRUM_RE.test(s)){lines.push({t:'x',s,i});return;}
     if(isChordLine(s)){lines.push({t:'c',s,i});return;}
     if(s.includes('[')){const sp=inlineSplit(s); if(sp){lines.push({t:'c',s:sp[0],i,inline:true}); if(sp[1].trim()) lines.push({t:'l',s:sp[1],i}); return;}}
     if(/^\s*(intro|outro|couplet|refrain|pont|bridge|chorus|verse|solo|instrumental|interlude|riff|repeat|reprise|bis)\b.{21,}$/i.test(s)
@@ -2914,7 +2918,7 @@ addEventListener('resize',()=>wpClose());
     if(!V.edit||V.emode==='text'||FOLLOW)return; const ch=e.target.closest('.ch'); if(!ch)return;
     const line=ch.parentElement, raw=+line.dataset.raw; if(!(raw>=0))return;
     D={ch,line,raw,k:+ch.dataset.k,x0:e.clientX,y0:e.clientY,on:false};
-    D.t=setTimeout(()=>{if(!D)return; D.on=true; wpClose();
+    D.t=setTimeout(()=>{if(!D)return; D.on=true; wpClose(); try{getSelection().removeAllRanges();}catch(e){}
       const cr=ch.getBoundingClientRect(), ly=st.querySelector(`.ly[data-raw="${raw+1}"]`), ref=ly||line, rr=ref.getClientRects()[0]||ref.getBoundingClientRect();
       D.left0=cr.left; D.ref=rr; D.cw=charW(ref)||cr.width/Math.max(1,ch.textContent.length); D.col=null;
       ch.classList.add('chdrag'); const hl=document.createElement('div'); hl.className='wphl wpcol'; document.body.appendChild(hl); D.hl=hl; V.noClick=Date.now()+60000;
@@ -3029,6 +3033,7 @@ function openTabEditorRaw(song,rawIdx){ // tablature écrite dans le texte du mo
   const text=normText(song.text), lines=text.split('\n'), p=parseSheet(text);
   const isX=i=>p.lines.some(L=>L.i===i&&L.t==='x'); if(!isX(rawIdx))return;
   let a=rawIdx,b=rawIdx; while(a>0&&isX(a-1))a--; while(b<lines.length-1&&isX(b+1))b++;
+  if(isDrumBlock(lines.slice(a,b+1).filter(r=>r.trim())))return openDrumEditor(song,-1,{mode:'raw',a,b,rows:lines.slice(a,b+1)});
   const rows=lines.slice(a,b+1), tu=tuneFromLabels(rows.map(r=>(LBL_RE.exec(r)||[])[1]||'?'));
   tabCtx=newCtx({song,mode:'raw',a,b,tuning:tu.tuning,custom:tu.custom,rows:tabLoad(rows)});
   $('#tabName').value='Tablature du texte'; $('#tabName').disabled=true; $('#tabDelete').hidden=true; tabOpen();
@@ -3250,11 +3255,11 @@ function drParse(rows){ // texte -> grille (pour un rythme sans données)
   const meter=Object.keys(DR_METERS).find(k=>{const m=DR_METERS[k]; return m.b*m.p===n;})||'4/16';
   return {g,bars,meter};
 }
-function openDrumEditor(song,idx){
-  const tb=idx>=0?song.tabs[idx]:null, d=tb&&tb.drum?JSON.parse(JSON.stringify(tb.drum)):tb?drParse(tb.rows):{g:JSON.parse(JSON.stringify(DR_MODELS.Rock.g)),bars:1,meter:'4/8'};
-  DR={song,idx,g:d.g||{},bars:d.bars||1,meter:DR_METERS[d.meter]?d.meter:'4/16',hist:[],playing:false,tempo:+(tb&&tb.tempo)||+song.tempo||90};
+function openDrumEditor(song,idx,ta){
+  const tb=idx>=0?song.tabs[idx]:null, d=ta&&ta.rows?drParse(ta.rows):tb&&tb.drum?JSON.parse(JSON.stringify(tb.drum)):tb?drParse(tb.rows):{g:JSON.parse(JSON.stringify(DR_MODELS.Rock.g)),bars:1,meter:'4/8'};
+  DR={song,idx,ta:ta||null,g:d.g||{},bars:d.bars||1,meter:DR_METERS[d.meter]?d.meter:'4/16',hist:[],playing:false,tempo:+(tb&&tb.tempo)||+(song&&song.tempo)||90};
   drFit();
-  $('#drName').value=tb?tb.name||'':''; $('#drDelete').hidden=idx<0; $('#drTempo').value=DR.tempo;
+  $('#drName').value=tb?tb.name||'':''; $('#drName').parentElement.hidden=!!ta; $('#drDelete').hidden=ta?ta.a<0:idx<0; $('#drTempo').value=DR.tempo;
   $('#drMeter').innerHTML=Object.entries(DR_METERS).map(([k,m])=>`<option value="${k}">${m.n}</option>`).join('');
   $('#drModels').innerHTML=Object.keys(DR_MODELS).map(k=>`<button data-m="${esc(k)}">${esc(k)}</button>`).join('')+'<button data-m="">Vider</button>';
   modal('#drumBox',true); drRender();
@@ -3312,12 +3317,17 @@ function drStop(){if(!DR)return; DR.playing=false; cancelAnimationFrame(DR.raf);
 $('#drPlay').onclick=drPlay;
 $('#drumBox .close').addEventListener('click',()=>drStop());
 $('#drSave').onclick=()=>{
-  drStop(); const {song,idx}=DR; beginEdit(song); song.tabs=song.tabs||[];
+  drStop(); const {song,idx}=DR;
+  if(DR.ta&&DR.ta.mode==='raw'){const t=DR.ta, lines=song.text.split('\n'); beginEdit(song); lines.splice(t.a,t.b-t.a+1,...drRows()); song.text=lines.join('\n'); afterEdit(song); modal('#drumBox',false); return;}
+  if(DR.ta){const t=DR.ta, ta=$('#vtextArea'), lines=ta.value.split('\n'), rows=drRows(), at=t.a<0?t.at:t.a;
+    if(t.a<0){const blk=[...(at>0&&lines[at-1].trim()?['']:[]),'[Batterie]',...rows,''];lines.splice(at,0,...blk);} else lines.splice(t.a,t.b-t.a+1,...rows);
+    ta.value=lines.join('\n'); modal('#drumBox',false); vtAnalyze(); vtCaret(); return;} beginEdit(song); song.tabs=song.tabs||[];
   const old=idx>=0?song.tabs[idx]:{}, tb={...old,kind:'drum',name:$('#drName').value.trim(),rows:drRows(),drum:{g:DR.g,bars:DR.bars,meter:DR.meter},tempo:DR.tempo};
   delete tb.tuning; delete tb.custom; if(idx>=0)song.tabs[idx]=tb; else song.tabs.push(tb);
   afterEdit(song); modal('#drumBox',false);
 };
-$('#drDelete').onclick=()=>{const {song,idx}=DR; if(idx>=0&&confirm('Supprimer ce rythme ?')){drStop(); beginEdit(song); song.tabs.splice(idx,1); afterEdit(song);} modal('#drumBox',false);};
+$('#drDelete').onclick=()=>{if(DR.ta&&DR.ta.mode==='raw'){const t=DR.ta, song=DR.song; if(confirm('Supprimer ce rythme ?')){const lines=song.text.split('\n'); beginEdit(song); lines.splice(t.a,t.b-t.a+1); song.text=lines.join('\n'); afterEdit(song);} drStop(); modal('#drumBox',false); return;}
+  if(DR.ta){const t=DR.ta; if(t.a>=0&&confirm('Supprimer ce rythme ?')){const ta=$('#vtextArea'), lines=ta.value.split('\n'); lines.splice(t.a,t.b-t.a+1); ta.value=lines.join('\n'); vtAnalyze(); vtCaret();} drStop(); modal('#drumBox',false); return;} const {song,idx}=DR; if(idx>=0&&confirm('Supprimer ce rythme ?')){drStop(); beginEdit(song); song.tabs.splice(idx,1); afterEdit(song);} modal('#drumBox',false);};
 
 /* ======================================================================
    9. Diagrammes d'accords
@@ -5044,7 +5054,7 @@ function vtTabAt(){ // lignes de la tablature où se trouve le curseur
   const ta=$('#vtextArea'), v=ta.value, L=v.slice(0,ta.selectionStart).split('\n').length-1, k=analyzeText(v).kind;
   if(k[L]!=='x'&&!(k[L]==='s'&&k[L+1]==='x'))return null; let a=L,b=L; if(k[L]==='s'){a=b=L+1;} while(a>0&&k[a-1]==='x')a--; while(b<k.length-1&&k[b+1]==='x')b++; return {a,b,k,h:a>0&&k[a-1]==='s'?a-1:a};
 }
-function vtCaret(){const t=vtTabAt(); ['#vtTabEd','#vtTabUp','#vtTabDn'].forEach(x=>$(x).hidden=!t);}
+function vtCaret(){const t=vtTabAt(); ['#vtTabEd','#vtTabUp','#vtTabDn'].forEach(x=>$(x).hidden=!t); if(t)$('#vtTabEd').textContent=isDrumBlock($('#vtextArea').value.split('\n').slice(t.a,t.b+1))?'✎ Batterie au pavé':'✎ Tablature au pavé';}
 ['click','keyup','select','focus'].forEach(ev=>$('#vtextArea').addEventListener(ev,()=>setTimeout(vtCaret,0)));
 function vtTabPad(a,b,at){
   const ta=$('#vtextArea'), lines=ta.value.split('\n'), rows=a>=0?lines.slice(a,b+1):['e','B','G','D','A','E'].map(x=>x+' |'+'-'.repeat(32)+'|');
@@ -5054,7 +5064,9 @@ function vtTabPad(a,b,at){
 }
 $('#vtTab').onclick=()=>{const ta=$('#vtextArea'), v=ta.value, L=v.slice(0,ta.selectionStart).split('\n').length-1, k=analyzeText(v).kind;
   let at=L; if(k[at]==='l'&&k[at-1]==='c')at--; vtTabPad(-1,-1,at);};
-$('#vtTabEd').onclick=()=>{const t=vtTabAt(); if(t)vtTabPad(t.a,t.b);};
+$('#vtTabEd').onclick=()=>{const t=vtTabAt(); if(!t)return; const rows=$('#vtextArea').value.split('\n').slice(t.a,t.b+1); if(isDrumBlock(rows))openDrumEditor(ED&&ED.s,-1,{mode:'ta',a:t.a,b:t.b,rows}); else vtTabPad(t.a,t.b);};
+$('#vtDrum').onclick=()=>{const ta=$('#vtextArea'), v=ta.value, L=v.slice(0,ta.selectionStart).split('\n').length-1, k=analyzeText(v).kind;
+  let at=L; if(k[at]==='l'&&k[at-1]==='c')at--; openDrumEditor(ED&&ED.s,-1,{mode:'ta',a:-1,b:-1,at});};
 function vtTabMove(dir){
   const t0=vtTabAt(); if(!t0)return; const t={...t0,a:t0.h}; const ta=$('#vtextArea'), lines=ta.value.split('\n'), k=t.k, blk=lines.slice(t.a,t.b+1);
   let to;
