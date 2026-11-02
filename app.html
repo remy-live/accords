@@ -474,6 +474,18 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 .bgghost{position:fixed;z-index:80;transform:translate(-50%,-120%);pointer-events:none;padding:8px 14px;border-radius:12px;background:var(--hl,#fb923c);color:var(--onhl,#111);font:800 22px ui-monospace,Menlo,monospace;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .bgghost.del{background:#b91c1c;color:#fff}
 .bgnamein{font:700 15px system-ui;padding:4px 8px;border-radius:6px;border:2px solid #93c5fd;background:var(--s0,#0e0e10);color:#ececf0;width:200px}#bgMain .bgsec{cursor:pointer}
+#bgMain .bgc.rng{background:#3a2412;box-shadow:inset 0 0 0 2px var(--hl,#fb923c);z-index:2}
+#bgMain .bgc .bgh{position:absolute;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;background:var(--hl,#fb923c);border:3px solid #0e0e10;z-index:4;touch-action:none;cursor:ew-resize}
+#bgMain .bgc .bghA{left:-10px}#bgMain .bgc .bghB{right:-10px}
+#bgMain .bgc .bgh::after{content:'';position:absolute;inset:-14px}
+#bgPad.rngmode>*:not(#bgRngPad){display:none!important}
+#bgRngPad{display:flex;flex-direction:column;gap:8px}#bgRngPad[hidden]{display:none}
+.bgrt{font-size:17px;color:#ececf0}.bgrs{font-size:12px;color:#a1a1aa}
+#bgClip{position:relative;display:flex;flex-direction:column;gap:6px;padding:10px;border-radius:12px;background:rgba(45,212,191,.08);border:1px solid #115e59}#bgClip[hidden]{display:none}
+.bgck{font:700 11px system-ui;letter-spacing:.08em;color:#5eead4}#bgClipTxt{font:700 14px ui-monospace,Menlo,monospace;color:#ececf0;padding-right:30px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bgcx{position:absolute;right:6px;top:6px;width:30px;height:30px!important;padding:0!important;border-radius:8px}
+#bgMain .bgc{touch-action:pan-y}
+@media (max-width:560px){#bgPad .bgph .bgrs{display:none}}
 #bgPad{border-left:1px solid #26262b;background:var(--s1,#121215);padding:10px 12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
 #bgPad h4{margin:4px 0 0;font-size:11px;color:#a1a1aa;letter-spacing:.6px;text-transform:uppercase}
 .bgph{font-size:13px;color:#a1a1aa}.bgph b{color:#ececf0}
@@ -1534,7 +1546,17 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
     <div class="bgbody">
       <main id="bgMain"></main>
       <aside id="bgPad">
-        <div class="bgph"><b id="bgWhere"></b></div>
+        <div id="bgRngPad" hidden>
+          <b class="bgrt" id="bgRngN"></b><span class="bgrs" id="bgRngW"></span>
+          <h4>Avec ces mesures</h4>
+          <div class="bggrid2"><button id="bgRDup" class="bgok">⧉ Dupliquer</button><button id="bgRCopy">Copier</button><button id="bgRCut">Couper</button><button id="bgRErase">Effacer</button></div>
+          <span class="bgrs">Dupliquer = les recopier juste après, en un geste.</span>
+          <h4>Section</h4><button id="bgRSec" class="bgblue">+ En faire une section…</button>
+          <button id="bgRNone">✕ Annuler la sélection</button>
+        </div>
+        <div class="bgph"><b id="bgWhere"></b><span class="bgrs"> · glisse le doigt sur les mesures pour en sélectionner plusieurs</span></div>
+        <div id="bgClip" hidden><span class="bgck">EN MÉMOIRE</span><b id="bgClipTxt"></b><span class="bgrs" id="bgClipFrom"></span>
+          <div class="bggrid2"><button id="bgPaste" class="bgok">Coller après</button><button id="bgPasteRep">Remplacer</button></div><button id="bgClipX" class="bgcx" aria-label="Oublier la copie">✕</button></div>
         <h4>Découpage</h4><div class="bggrid4" id="bgSplit"></div>
         <h4>Temps</h4><div class="bgslots" id="bgSlots"></div>
         <h4>Signes de la mesure</h4><div class="bggrid4 bgmeas" id="bgMeas"></div>
@@ -1789,7 +1811,9 @@ function bgHTML(g,cn,W,H,opt){
     const m=+sc.m||+g.meter||4, rep=bgForm(g).filter(x=>x.i===si).map(x=>x.k).sort((a,b)=>b-a)[0];
     h+=`<div class="bgsec" data-si="${si}"><span class="bgname">${esc(sc.n||'—')}</span>${m===3&&+g.meter!==3?'<span class="bgm">3/4</span>':''}${rep>1?'<span class="bgrep">×'+rep+'</span>':''}</div><div class="bgrow" data-si="${si}" style="grid-template-columns:repeat(${per},${cw}px)">`;
     const bars=sc.bars.length?sc.bars:[['']];
-    bars.forEach((b,bi)=>{const on=sel.si===si&&sel.bi===bi; h+=`<div class="bgc${on?' on':''}" data-si="${si}" data-bi="${bi}" style="height:${ch}px">${bgCellSVG(b,cw,ch,cn,fs,m,bgMtOf(sc,bi))}</div>`;});
+    const rg=opt.rng&&opt.rng.si===si?opt.rng:null;
+    bars.forEach((b,bi)=>{const on=!rg&&sel.si===si&&sel.bi===bi, inr=rg&&bi>=Math.min(rg.a,rg.b)&&bi<=Math.max(rg.a,rg.b), A=inr&&bi===Math.min(rg.a,rg.b), B=inr&&bi===Math.max(rg.a,rg.b);
+      h+=`<div class="bgc${on?' on':''}${inr?' rng':''}" data-si="${si}" data-bi="${bi}" style="height:${ch}px">${bgCellSVG(b,cw,ch,cn,fs,m,bgMtOf(sc,bi))}${A?'<i class="bgh bghA" data-h="a"></i>':''}${B?'<i class="bgh bghB" data-h="b"></i>':''}</div>`;});
     h+='</div>';
   });
   const f=bgForm(g); if(f.length&&!opt.noForm)h+=`<div class="bgform"><b>Structure</b> ${f.map(x=>`<span>${esc(x.n)}${x.k>1?' <i>×'+x.k+'</i>':''}</span>`).join('<em>›</em>')}</div>`;
@@ -5386,7 +5410,7 @@ const BG={};
 document.body.appendChild($('#bgEd')); // l'éditeur de grille s'ouvre aussi depuis l'accueil
 function openBG(e,si,bi){
   const s=e.s, r=compute(s,e.item?{target:e.item.target,capo:e.item.capo}:null);
-  BG.e=e; BG.s=s; BG.r=r; BG.g=JSON.parse(JSON.stringify(r.bg)); BG.dirty=false; BG.f=null;
+  BG.e=e; BG.s=s; BG.r=r; BG.g=JSON.parse(JSON.stringify(r.bg)); BG.dirty=false; BG.f=null; BG.rng=null;
   if(!BG.g.secs.length){BG.g.secs=[{n:'Couplet',bars:[[''],[''],[''],['']]}]; BG.g.form=[0];}
   BG.sel={si:Math.min(si||0,BG.g.secs.length-1),bi:bi||0,k:0}; bgClamp();
   $('#bgTitle').textContent=s.q; $('#bgEd').hidden=false; bgDraw();
@@ -5398,7 +5422,7 @@ function bgMini(n,m){const w=50,h=26,L=(a,b,c,d)=>`<line x1="${a}" y1="${b}" x2=
   return `<svg width="${w}" height="${h}"><rect x="1" y="1" width="${w-2}" height="${h-2}" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>${n!=='1'&&n!==1?L(2,h-2,w-2,2):''}${(n===3&&m===4)?L(w/2,h/2,w-2,h-2):''}${n==='3b'||(n===3&&m!==4)?L(2,2,w/2,h/2):''}${n===4?L(2,2,w-2,h-2):''}</svg>`;}
 function bgDraw(){
   bgClamp(); const g=BG.g, c=BG.sel, cn=BG.r.cn, main=$('#bgMain');
-  const top=main.scrollTop; main.innerHTML=bgHTML(g,cn,main.clientWidth-36,9999,{cellH:Math.max(64,Math.min(96,Math.round(innerHeight/9))),sel:c,noForm:true}); main.scrollTop=top;
+  const top=main.scrollTop; main.innerHTML=bgHTML(g,cn,main.clientWidth-36,9999,{cellH:Math.max(64,Math.min(96,Math.round(innerHeight/9))),sel:c,rng:BG.rng,noForm:true}); bgRngUI(); main.scrollTop=top;
   $$('#bgPer button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===(+g.per||4)));
   $$('#bgMeter button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===(+g.meter||4)));
   const sc=g.secs[c.si], bar=bgBar(), m=bgMeter(c.si), nb=g.secs.slice(0,c.si).reduce((a,x)=>a+x.bars.length,0)+c.bi+1;
@@ -5426,6 +5450,7 @@ function bgNext(){const g=BG.g, c=BG.sel; if(c.k<bgSlotsOf(bgBar(),bgMeter(c.si)
 function bgPut(name){const src=toSource(BG.r,name)||name; bgSet(()=>{const b=bgBar(); if(b[0]==='%'){b.splice(0,b.length,'');} bgSlotsOf(b,bgMeter(BG.sel.si))[Math.min(BG.sel.k,bgSlotsOf(b,bgMeter(BG.sel.si)).length-1)].forEach(i=>b[i]=src); bgNext();});}
 $('#bgMain').onclick=ev=>{if(Date.now()-(BG.noClick||0)<400)return; const nm=ev.target.closest('.bgname'); if(nm){bgRenameInline(nm); return;}
   const t=ev.target.closest('.bgc,.bgsec'); if(!t)return; const si=+t.dataset.si;
+  if(BG.rng){BG.rng=null; if(!t.classList.contains('bgsec')){BG.sel={si,bi:+t.dataset.bi,k:0}; bgDraw(); return;}}
   if(t.classList.contains('bgsec')){BG.sel={si,bi:0,k:0};} else {const bi=+t.dataset.bi; if(BG.sel.si===si&&BG.sel.bi===bi&&bgBar().length>1)BG.sel.k=(BG.sel.k+1)%bgSlotsOf(bgBar(),bgMeter(si)).length; else BG.sel={si,bi,k:0};}
   bgDraw();};
 $('#bgSplit').onclick=ev=>{const b=ev.target.closest('button'); if(!b)return; const n3b=b.dataset.n==='3b', n=n3b?3:+b.dataset.n; bgSet(()=>{const bar=bgBar(); if(bar[0]==='%'){let p=null; const sc=BG.g.secs[BG.sel.si]; for(let i=BG.sel.bi-1;i>=0;i--)if(sc.bars[i][0]!=='%'){p=sc.bars[i];break;} bar.splice(0,1,...(p?[p[p.length-1]]:['']));}
@@ -5514,16 +5539,74 @@ $('#bgEd').addEventListener('pointerdown',ev=>{
   if(chip)chord=toSource(BG.r,chip.textContent)||chip.textContent;
   else if(cell){const si=+cell.dataset.si, bi=+cell.dataset.bi, bar=BG.g.secs[si].bars[bi], rc=cell.getBoundingClientRect(), k=bgPartAt(bar.length,(ev.clientX-rc.left)/rc.width,(ev.clientY-rc.top)/rc.height,bgMeter(si)); if(bar[k]==='=')k=2; if(bar[k]&&bar[k]!=='%'){chord=bar[k]; from={si,bi,k};}}
   if(!chord)return;
-  BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord,from,on:false,timer:setTimeout(bgDragOn,300)};
+  BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord,from,on:false,timer:setTimeout(bgDragOn,from?420:300)};
 });
 document.addEventListener('pointermove',ev=>{if(!BGD)return; const dx=ev.clientX-BGD.x, dy=ev.clientY-BGD.y;
-  if(!BGD.on){if(Math.hypot(dx,dy)>10){if(Math.abs(dx)>Math.abs(dy)||ev.pointerType==='mouse')bgDragOn(); else {clearTimeout(BGD.timer); BGD=null; return;}}}
+  if(!BGD.on){if(Math.hypot(dx,dy)>10){if(!BGD.from&&(Math.abs(dx)>Math.abs(dy)||ev.pointerType==='mouse'))bgDragOn(); else {clearTimeout(BGD.timer); BGD=null; return;}}}
   bgDragMove(ev.clientX,ev.clientY);});
 document.addEventListener('pointerup',()=>bgDragEnd(false)); document.addEventListener('pointercancel',()=>{if(BGD&&!BGD.on)bgDragEnd(true);});
 document.addEventListener('touchmove',ev=>{if(!BGD)return; const t=ev.touches[0]; if(!t)return;
-  if(!BGD.on){const dx=t.clientX-BGD.x, dy=t.clientY-BGD.y; if(Math.hypot(dx,dy)>10&&Math.abs(dx)>Math.abs(dy))bgDragOn();}
+  if(!BGD.on){const dx=t.clientX-BGD.x, dy=t.clientY-BGD.y; if(Math.hypot(dx,dy)>10&&Math.abs(dx)>Math.abs(dy)&&!BGD.from)bgDragOn();}
   if(BGD&&BGD.on){ev.preventDefault(); bgDragMove(t.clientX,t.clientY);}},{passive:false});
 document.addEventListener('touchend',ev=>{if(BGD&&BGD.on){const t=ev.changedTouches[0]; if(t)bgDragMove(t.clientX,t.clientY); bgDragEnd(false);}});
+
+/* ----- grille : sélection de plusieurs mesures au doigt, copier / couper / dupliquer / coller ----- */
+const bgRngAB=()=>{const r=BG.rng; return r?{si:r.si,a:Math.min(r.a,r.b),b:Math.max(r.a,r.b)}:null;};
+function bgClipGet(){try{return JSON.parse(localStorage.getItem('accords-bgclip')||'null');}catch(e){return null;}}
+function bgClipSet(c){try{c?localStorage.setItem('accords-bgclip',JSON.stringify(c)):localStorage.removeItem('accords-bgclip');}catch(e){}}
+const bgBarTxt=b=>b[0]==='%'?'%':b.filter(x=>x!=='=').map(x=>bgName(x,BG.r.cn)||'·').join(' ');
+function bgRngUI(){
+  const r=bgRngAB(), pad=$('#bgPad'); pad.classList.toggle('rngmode',!!r); $('#bgRngPad').hidden=!r;
+  if(r){const n=r.b-r.a+1, sc=BG.g.secs[r.si]; $('#bgRngN').textContent=n+(n>1?' mesures sélectionnées':' mesure sélectionnée'); $('#bgRngW').textContent=(sc.n||'—')+' · mesures '+(r.a+1)+(n>1?' à '+(r.b+1):'');}
+  const c=bgClipGet(); $('#bgClip').hidden=!c||!!r;
+  if(c){$('#bgClipTxt').textContent=c.bars.map(bgBarTxt).join(' | '); $('#bgClipFrom').textContent=c.bars.length+(c.bars.length>1?' mesures':' mesure')+(c.from&&c.from!==BG.s.q?' · copiées de « '+c.from+' »':'');}
+}
+function bgCopyRng(){const r=bgRngAB(); if(!r)return null; const sc=BG.g.secs[r.si];
+  const c={bars:JSON.parse(JSON.stringify(sc.bars.slice(r.a,r.b+1))),mt:JSON.parse(JSON.stringify((sc.mt||[]).slice(r.a,r.b+1))),from:BG.s.q,m:bgMeter(r.si)}; bgClipSet(c); return c;}
+function bgInsertBars(si,at,bars,mt){const sc=BG.g.secs[si]; bgSplice(sc,at,0,...JSON.parse(JSON.stringify(bars)));
+  if(mt&&mt.some(Boolean)){sc.mt=sc.mt||[]; while(sc.mt.length<sc.bars.length)sc.mt.push(null); mt.forEach((x,j)=>{sc.mt[at+j]=x?JSON.parse(JSON.stringify(x)):null;});}}
+$('#bgRDup').onclick=()=>{const r=bgRngAB(); if(!r)return; const sc=BG.g.secs[r.si], n=r.b-r.a+1;
+  bgSet(()=>{bgInsertBars(r.si,r.b+1,sc.bars.slice(r.a,r.b+1),(sc.mt||[]).slice(r.a,r.b+1)); BG.rng={si:r.si,a:r.b+1,b:r.b+n}; BG.sel={si:r.si,bi:r.b+1,k:0};}); toast(n+' mesure(s) dupliquée(s)');};
+$('#bgRCopy').onclick=()=>{const c=bgCopyRng(); if(!c)return; BG.rng=null; bgDraw(); toast(c.bars.length+' mesure(s) copiée(s) : touche une mesure puis « Coller après »');};
+$('#bgRCut').onclick=()=>{const r=bgRngAB(), c=bgCopyRng(); if(!c)return; bgSet(()=>{const sc=BG.g.secs[r.si]; bgSplice(sc,r.a,r.b-r.a+1); if(!sc.bars.length)sc.bars.push(['']); BG.rng=null; BG.sel={si:r.si,bi:Math.max(0,r.a-1),k:0};}); toast(c.bars.length+' mesure(s) coupée(s) : touche une mesure puis « Coller après »');};
+$('#bgRErase').onclick=()=>{const r=bgRngAB(); if(!r)return; bgSet(()=>{const sc=BG.g.secs[r.si]; for(let i=r.a;i<=r.b;i++){sc.bars[i]=['']; if(sc.mt)sc.mt[i]=null;} if(sc.mt&&!sc.mt.some(Boolean))delete sc.mt; BG.rng=null; BG.sel={si:r.si,bi:r.a,k:0};});};
+$('#bgRNone').onclick=()=>{BG.rng=null; bgDraw();};
+// sépare la section si à la mesure at : la suite devient une nouvelle section juste après (présente partout où si est jouée)
+function bgSplitSec(si,at,name){const g=BG.g, sc=g.secs[si]; const ns={n:name,bars:sc.bars.slice(at)}; if(sc.m)ns.m=sc.m;
+  if(sc.mt){const mt=sc.mt.slice(at); if(mt.some(Boolean))ns.mt=mt; sc.mt=sc.mt.slice(0,at); if(!sc.mt.some(Boolean))delete sc.mt;}
+  sc.bars=sc.bars.slice(0,at); g.secs.splice(si+1,0,ns); const f=[]; g.form.forEach(i=>{if(i===si)f.push(si,si+1); else f.push(i>si?i+1:i);}); g.form=f;}
+$('#bgRSec').onclick=async()=>{const r=bgRngAB(); if(!r)return; const sc=BG.g.secs[r.si];
+  if(r.a===0&&r.b===sc.bars.length-1){toast('C\'est déjà toute la section : touche son nom pour la renommer'); return;}
+  const n=await ask('Nom de la section','Pré-refrain, Pont…',null,''); if(n==null||!n.trim())return;
+  bgSet(()=>{let si=r.si; const old=sc.n||''; if(r.b<sc.bars.length-1)bgSplitSec(si,r.b+1,old+(old?' (suite)':''));
+    if(r.a>0){bgSplitSec(si,r.a,n.trim()); si++;} else BG.g.secs[si].n=n.trim();
+    BG.rng=null; BG.f=null; BG.sel={si,bi:0,k:0};}); toast('Section « '+n.trim()+' » créée');};
+function bgPasteAt(replace){const c=bgClipGet(); if(!c)return; const si=BG.sel.si, bi=BG.sel.bi, n=c.bars.length;
+  if(c.m&&c.m!==bgMeter(si))toast('Attention : copiées en '+c.m+'/4, collées dans une section en '+bgMeter(si)+'/4');
+  bgSet(()=>{const sc=BG.g.secs[si], at=replace?bi:bi+1;
+    if(replace){const del=Math.min(n,sc.bars.length-at); bgSplice(sc,at,del);}
+    bgInsertBars(si,at,c.bars,c.mt); BG.rng={si,a:at,b:at+n-1}; BG.sel={si,bi:at,k:0};});}
+$('#bgPaste').onclick=()=>bgPasteAt(false); $('#bgPasteRep').onclick=()=>bgPasteAt(true);
+$('#bgClipX').onclick=()=>{bgClipSet(null); bgRngUI();};
+// geste : toucher une mesure puis glisser (de côté au départ) = sélection ; les poignées ● ajustent les bouts
+let BGR=null;
+// pendant le geste, on ne redessine pas la grille (le doigt perdrait sa case) : on colore seulement
+function bgRngPaint(){const r=bgRngAB(); $$('#bgMain .bgc').forEach(el=>{const si=+el.dataset.si, bi=+el.dataset.bi, inr=!!r&&si===r.si&&bi>=r.a&&bi<=r.b; el.classList.toggle('rng',inr); if(inr)el.classList.remove('on');}); bgRngUI();}
+const bgCellAt=(x,y)=>{const el=document.elementFromPoint(x,y), c=el&&el.closest('#bgMain .bgc'); return c?{si:+c.dataset.si,bi:+c.dataset.bi}:null;};
+$('#bgMain').addEventListener('pointerdown',ev=>{if(ev.button>0)return; const h=ev.target.closest('.bgh'), c=ev.target.closest('.bgc'); if(!c)return;
+  const si=+c.dataset.si, bi=+c.dataset.bi;
+  if(h&&BG.rng){const r=bgRngAB(); BGR={si,anchor:h.dataset.h==='a'?r.b:r.a,x:ev.clientX,y:ev.clientY,on:true}; if(BGD){clearTimeout(BGD.timer); BGD=null;} ev.preventDefault(); return;}
+  if(ev.shiftKey&&BG.sel.si===si){BG.rng={si,a:BG.sel.bi,b:bi}; BG.noClick=Date.now(); bgDraw(); return;}
+  BGR={si,anchor:bi,x:ev.clientX,y:ev.clientY,on:false,mouse:ev.pointerType==='mouse'};},true);
+function bgRngMove(x,y){if(!BGR)return false; if(!BGR.on){const dx=x-BGR.x, dy=y-BGR.y; if(Math.hypot(dx,dy)<10)return false;
+    if(!BGR.mouse&&Math.abs(dy)>Math.abs(dx)){BGR=null; return false;} if(BGD&&BGD.on){BGR=null; return false;}
+    if(BGD){clearTimeout(BGD.timer); BGD=null;} BGR.on=true;}
+  const c=bgCellAt(x,y); if(c&&c.si===BGR.si){const r=BG.rng; if(!r||r.si!==BGR.si||r.a!==BGR.anchor||r.b!==c.bi){BG.rng={si:BGR.si,a:BGR.anchor,b:c.bi}; bgRngPaint();}}
+  return true;}
+document.addEventListener('pointermove',ev=>{if(BGR&&BGR.mouse)bgRngMove(ev.clientX,ev.clientY);});
+document.addEventListener('touchmove',ev=>{if(!BGR)return; const t=ev.touches[0]; if(t&&bgRngMove(t.clientX,t.clientY)&&ev.cancelable)ev.preventDefault();},{passive:false});
+const bgRngEnd=()=>{if(!BGR)return; const on=BGR.on; BGR=null; if(on){BG.noClick=Date.now(); if(BG.rng){const r=bgRngAB(); BG.sel={si:r.si,bi:r.a,k:0};} bgDraw();}};
+document.addEventListener('pointerup',bgRngEnd); document.addEventListener('touchend',bgRngEnd); document.addEventListener('pointercancel',()=>{if(BGR&&!BGR.on)BGR=null;});
 $('#bgOther').onclick=()=>chordDialog({mode:'pick',r:BG.r,cb:n=>bgPut(n)});
 $('#bgPct').onclick=()=>bgSet(()=>{const b=bgBar(); b.splice(0,b.length,'%'); BG.sel.k=0; bgNext();});
 $('#bgIns').onclick=()=>bgSet(()=>{bgSplice(BG.g.secs[BG.sel.si],BG.sel.bi,0,['']); BG.sel.k=0;});
