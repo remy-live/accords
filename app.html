@@ -365,6 +365,15 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 #vtPrev .ly,#vtPrev span:not([class]){color:#eee}
 #vtPrev .c{color:var(--hl,#fb923c)}#vtPrev .s{color:#2dd4bf}#vtPrev .t{color:#777}#vtPrev .k{color:#fbbf24}
 #vtPrev[hidden]{display:none}
+@media (max-width:820px){.vtwrap.prevon #vtGut,.vtwrap.prevon #vtextArea{display:none}.vtwrap.prevon #vtPrev{border-left:0;font-size:17px}}
+#vtGut div{cursor:pointer;border-radius:4px}#vtGut div:active{background:#26262b}#vtGut div span:not(:empty)::after{content:' ▾';opacity:.5}
+#vtPrev,#vtPrev *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#vtPrev .ch{outline:1px dashed var(--hl,#fb923c);outline-offset:1px;border-radius:3px;touch-action:none;display:inline-block;position:relative;cursor:pointer}
+#vtPrev .ch.chdrag{background:var(--hl,#fb923c);color:var(--onhl,#111);outline:0;box-shadow:0 10px 24px rgba(0,0,0,.55);z-index:5}
+#vtPrev .ch.chdel{background:#dc2626;color:#fff}
+#vtPrev .ly{cursor:pointer}
+.wpop.vtkind{align-items:center}.wpop.vtkind button{font:600 14px system-ui,sans-serif}.vtkl{font:600 13px system-ui,sans-serif;color:#a1a1aa;padding:0 4px}
+
 #vtWarn{display:flex;flex-direction:column;gap:6px}#vtWarn:empty{display:none}
 #vtWarn div{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;background:#2a1414;border:1px solid #5c2424;color:#fca5a5;font-size:14px}
 #vtWarn div span{flex:1}
@@ -1580,11 +1589,11 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
       <div class="vtt"><span>ÉDITION</span><b id="vtextTitle"></b></div>
       <div class="vtnote"><input type="text" id="vtextNotes" placeholder="Note du morceau : intro seul, qui chante…"></div>
       <label class="lab vttempo">♩ <input type="number" id="vtextTempo" class="num" placeholder="bpm"></label>
-      <button id="vtPrevBtn">Aperçu</button>
+      <button id="vtPrevBtn">👆 Aperçu</button>
       <button class="pri" id="vtextSave">Enregistrer</button>
     </div>
     <div class="row vtitem" id="vtextItemWrap"><div class="vtnote"><input type="text" id="vtextItem" placeholder="Note pour ce concert"></div></div>
-    <div class="vtwrap"><div id="vtGut" aria-hidden="true"></div><textarea id="vtextArea" spellcheck="false" wrap="off" inputmode="none" placeholder="Colle ou écris le morceau ici : une ligne d'accords au-dessus de chaque ligne de paroles."></textarea><pre id="vtPrev" aria-label="Aperçu" hidden></pre></div>
+    <div class="vtwrap"><div id="vtGut" title="Touche un libellé pour changer le type de la ligne"></div><textarea id="vtextArea" spellcheck="false" wrap="off" inputmode="none" placeholder="Colle ou écris le morceau ici : une ligne d'accords au-dessus de chaque ligne de paroles."></textarea><pre id="vtPrev" aria-label="Aperçu" hidden></pre></div>
     <div id="vtWarn"></div>
     <div class="vtfoot">
       <span class="lab">Accords</span><div id="vtChips"></div><button id="vtOther" class="vtother">Autre…</button>
@@ -1651,7 +1660,7 @@ function analyzeText(text){
   const raw=String(text||'').split('\n'), p=parseSheet(text||''), kind=raw.map(()=> 'b'), warn=[];
   p.lines.forEach(L=>{if(kind[L.i]!=='c')kind[L.i]=L.t;});
   raw.forEach((ln,i)=>{
-    if(kind[i]!=='l'&&kind[i]!=='m')return;
+    if(kind[i]!=='l'&&kind[i]!=='m')return; if(ln.includes(FORCE_L)||ln.includes(FORCE_C))return;
     const toks=ln.trim().split(/\s+/).filter(t=>t&&t!==':'&&!NEUTRAL.test(t)&&!LABEL.test(t)); if(!toks.length)return;
     const ok=toks.filter(t=>tokChord(t)).length, bad=toks.filter(t=>!tokChord(t));
     if(ok>=1&&ok>=bad.length&&bad.length<=3)bad.forEach(t=>warn.push({i,tok:t,fix:suggestChord(t)}));   // ligne presque d'accords
@@ -1681,6 +1690,7 @@ function inlineSplit(s){ // ChordPro [Am]paroles
   }
   return found?[cl,ll+s.slice(last)]:null;
 }
+const FORCE_C='\u2063', FORCE_L='\u2060';
 function parseSheet(raw){
   const t=raw.replace(/\r/g,'').replace(/\t/g,'    ').replace(/\[\/?tab\]/gi,'').replace(/\[ch\](.*?)\[\/ch\]/gi,'$1');
   const lines=[]; let capo=0;
@@ -1697,6 +1707,7 @@ function parseSheet(raw){
     if(/^\s*(capo\b|(tuning|accordage|key|tonalit\w*|difficult\w*|author|auteur|tempo|bpm|strumming)\s*:)/i.test(s)&&s.length<70){
       const m=/capo[^0-9\n]{0,15}(\d+)/i.exec(s); if(m) capo=+m[1]; lines.push({t:'m',s,i}); return;}
     if(!s.trim()){lines.push({t:'b',s:'',i});return;}
+    if(s.includes(FORCE_C)||s.includes(FORCE_L)){const c=s.split(FORCE_C).join('').split(FORCE_L).join('').replace(/\s+$/,''); lines.push({t:s.includes(FORCE_C)?'c':'l',s:c,i}); return;}  // type de ligne choisi à la main
     if(/^\s*!\s*\S/.test(s)){lines.push({t:'k',s:s.replace(/^\s*!\s*/,''),i});return;}  // repère de jeu
     if(DRUM_RE.test(s)){lines.push({t:'x',s,i});return;}
     if(isChordLine(s)){lines.push({t:'c',s,i});return;}
@@ -2838,9 +2849,9 @@ function applyAdd(){
   addChordAt(ctx.song,ctx.raw,ctx.col,ctx.lineKind,name); modal('#chordBox',false);
 }
 // pose un accord (nom dans la tonalité du texte) au-dessus de la colonne col de la ligne raw
-function addChordAt(song,raw,col,lineKind,name){
-  beginEdit(song);
-  const p=parseSheet(song.text), lines=song.text.split('\n');
+function addChordAt(song,raw,col,lineKind,name){beginEdit(song); song.text=addChordText(song.text,raw,col,lineKind,name); afterEdit(song);}
+function addChordText(text,raw,col,lineKind,name){
+  const p=parseSheet(text), lines=text.split('\n');
   let ci;
   if(lineKind==='c') ci=raw;
   else if(raw>0&&p.lines.some(x=>x.i===raw-1&&x.t==='c'&&!x.inline)) ci=raw-1;
@@ -2849,20 +2860,22 @@ function addChordAt(song,raw,col,lineKind,name){
   const free=(a,b)=>{for(let x=a;x<b;x++) if(line[x]&&line[x]!==' ')return false; return true;};
   if((c===0||line[c-1]===' ')&&free(c,c+name.length+1)) line=line.slice(0,c)+name+line.slice(c+name.length);
   else {while(c<line.length&&line[c]!==' ')c++; line=line.slice(0,c)+' '+name+line.slice(c);}
-  lines[ci]=line.replace(/\s+$/,''); song.text=lines.join('\n');
-  afterEdit(song);
+  lines[ci]=line.replace(/\s+$/,''); return lines.join('\n');
 }
 // déplace le k-ième mot de la ligne d'accords raw à la colonne col (null si la place est prise)
-function moveChordTo(song,raw,k,col){
-  const lines=song.text.split('\n'); let line=lines[raw]; if(line==null)return false;
+function moveChordTo(song,raw,k,col){const t=moveChordText(song.text,raw,k,col); if(t==null)return false; beginEdit(song); song.text=t; afterEdit(song); return true;}
+function moveChordText(text,raw,k,col){
+  const lines=text.split('\n'); let line=lines[raw]; if(line==null)return null;
   let i=-1, m, pos=-1, tok=''; const re=/\S+/g;
   while((m=re.exec(line))){i++; if(i===k){pos=m.index; tok=m[0]; break;}}
-  if(pos<0||col===pos)return false;
+  if(pos<0||col===pos)return null;
   line=(line.slice(0,pos)+' '.repeat(tok.length)+line.slice(pos+tok.length)).padEnd(col+tok.length+1);
-  for(let x=Math.max(0,col-1);x<col+tok.length+1;x++) if(line[x]!==' '){toast('Trop près d\'un autre accord'); return false;}
+  for(let x=Math.max(0,col-1);x<col+tok.length+1;x++) if(line[x]!==' '){toast('Trop près d\'un autre accord'); return null;}
   line=line.slice(0,col)+tok+line.slice(col+tok.length);
-  beginEdit(song); lines[raw]=line.replace(/\s+$/,''); song.text=lines.join('\n'); afterEdit(song); return true;
+  lines[raw]=line.replace(/\s+$/,''); return lines.join('\n');
 }
+// change (ou supprime avec '') le k-ième mot de la ligne raw
+function setTokenText(text,raw,k,name){const lines=text.split('\n'); if(lines[raw]==null)return text; lines[raw]=mapTokens(lines[raw],(tok,i)=>{if(i!==k)return tok; const tc=tokChord(tok); return name===''?'':tc?tc.pre+name+tc.post:name;}).replace(/\s+$/,''); return lines.join('\n');}
 
 /* ----- scène, mode Accords : toucher un mot -> barre d'accords ; appui long -> variantes en rond ----- */
 const WP={el:null,rad:null};
@@ -2885,16 +2898,16 @@ function chVariants(name){
 function wpClose(){if(WP.el)WP.el.remove(); if(WP.hl)WP.hl.remove(); if(WP.rad)WP.rad.remove(); WP.el=WP.hl=WP.rad=null;}
 function wpApply(n){
   n=String(n||'').trim(); if(!n)return; const c=WP.ctx; if(!c)return;
-  const src=toSource(c.e._r,n); if(!src){toast('Accord non reconnu : '+n); return;}
+  const src=toSource(c.r,n); if(!src){toast('Accord non reconnu : '+n); return;}
   S.recentCh=[n,...(S.recentCh||[]).filter(x=>x!==n)].slice(0,6);
-  wpClose(); addChordAt(c.e.s,c.raw,c.col,c.kind,src);
+  wpClose(); c.add(c.raw,c.col,c.kind,src);
 }
-function wordPick(cur,span,ev){
-  if(hasInline(cur.s)){askConvert(cur.s);return;}
+function wordPick(cur,span,ev,add){
+  if(!add&&hasInline(cur.s)){askConvert(cur.s);return;}
   const raw=+span.dataset.raw; if(!(raw>=0))return;
   const txt=span.textContent, isC=span.classList.contains('c'); let col=colAt(span,ev.clientX,ev.clientY), end=col;
   if(!isC){col=Math.min(col,txt.length); if(txt[col]&&txt[col]!==' '){while(col>0&&txt[col-1]!==' ')col--;} end=col; while(end<txt.length&&txt[end]!==' ')end++;}
-  wpClose(); WP.ctx={e:cur,raw,col,kind:isC?'c':'l'};
+  wpClose(); WP.ctx={r:cur._r,raw,col,kind:isC?'c':'l',add:add||((raw,col,kind,src)=>addChordAt(cur.s,raw,col,kind,src))};
   const box=span.getBoundingClientRect(), cw=charW(span)||12, wr=charRect(span,col,Math.max(end,col+1));
   const rc=wr||{left:box.left+col*cw,top:box.top,width:Math.max(cw,(end-col)*cw),height:box.height,bottom:box.bottom}, x=rc.left;
   const hl=document.createElement('div'); hl.className='wphl'; hl.style.cssText=`left:${x-2}px;top:${rc.top-1}px;width:${Math.max(cw,rc.width)+4}px;height:${rc.height+2}px`; document.body.appendChild(hl); WP.hl=hl;
@@ -2910,7 +2923,7 @@ function wordPick(cur,span,ev){
   el.addEventListener('click',e=>{const b=e.target.closest('button'); if(!b)return;
     if(WP.lp){WP.lp=false; return;}
     if(b.dataset.a==='x'){wpClose(); return;}
-    if(b.dataset.a==='other'){const c=WP.ctx; wpClose(); chordDialog({song:c.e.s,r:c.e._r,mode:'add',raw:c.raw,col:c.col,lineKind:c.kind}); return;}
+    if(b.dataset.a==='other'){const c=WP.ctx; wpClose(); WP.ctx=c; chordDialog({mode:'pick',r:c.r,cb:n=>wpApply(n)}); return;}
     if(b.dataset.n)wpApply(b.dataset.n);});
   el.addEventListener('pointerdown',e=>{const b=e.target.closest('.wpc'); if(!b)return; WP.lp=false; clearTimeout(WP.t);
     const p0={x:e.clientX,y:e.clientY}; WP.t=setTimeout(()=>{WP.lp=true; wpRadial(b,b.dataset.n,p0);},420);});
@@ -2932,34 +2945,35 @@ function wpRadial(chip,name,p0){
   addEventListener('pointermove',mv); addEventListener('pointerup',up); addEventListener('pointercancel',up);
   d.addEventListener('click',e=>{const b=e.target.closest('button'); if(b){wpApply(b.dataset.n); return;} d.remove(); WP.rad=null;});
 }
-document.addEventListener('pointerdown',e=>{if(!WP.el)return; if(e.target.closest('#wpop,.wprad,#vstage .ly,#vstage .c'))return; wpClose();},true);
+document.addEventListener('pointerdown',e=>{if(!WP.el)return; if(e.target.closest('#wpop,.wprad,#vstage .ly,#vstage .c,#vtPrev .ly,#vtPrev .c'))return; wpClose();},true);
 addEventListener('resize',()=>wpClose());
 
-/* ----- scène, mode Accords : appui long sur un accord puis glisser pour l'aligner sur une lettre ----- */
-(()=>{let D=null; const st=$('#vstage');
-  st.addEventListener('contextmenu',e=>{if(V.edit&&e.target.closest('.ch'))e.preventDefault();});
+/* ----- appui long sur un accord puis glisser pour l'aligner sur une lettre (scène en édition, aperçu de l'éditeur) ----- */
+function chordDrag(st,getOps){let D=null;
+  st.addEventListener('contextmenu',e=>{if(getOps()&&e.target.closest('.ch'))e.preventDefault();});
   st.addEventListener('pointerdown',e=>{
-    if(!V.edit||V.emode==='text'||FOLLOW)return; const ch=e.target.closest('.ch'); if(!ch)return;
+    const ops=getOps(); if(!ops)return; const ch=e.target.closest('.ch'); if(!ch)return;
     const line=ch.parentElement, raw=+line.dataset.raw; if(!(raw>=0))return;
-    D={ch,line,raw,k:+ch.dataset.k,x0:e.clientX,y0:e.clientY,on:false};
+    D={ch,line,raw,k:+ch.dataset.k,x0:e.clientX,y0:e.clientY,on:false,ops};
     D.t=setTimeout(()=>{if(!D)return; D.on=true; wpClose(); try{getSelection().removeAllRanges();}catch(e){}
       const cr=ch.getBoundingClientRect(), ly=st.querySelector(`.ly[data-raw="${raw+1}"]`), ref=ly||line, rr=ref.getClientRects()[0]||ref.getBoundingClientRect();
       D.left0=cr.left; D.ref=rr; D.cw=charW(ref)||cr.width/Math.max(1,ch.textContent.length); D.col=null;
-      ch.classList.add('chdrag'); const hl=document.createElement('div'); hl.className='wphl wpcol'; document.body.appendChild(hl); D.hl=hl; V.noClick=Date.now()+60000;
+      ch.classList.add('chdrag'); const hl=document.createElement('div'); hl.className='wphl wpcol'; document.body.appendChild(hl); D.hl=hl; ops.noClick(Date.now()+60000);
       try{navigator.vibrate&&navigator.vibrate(15);}catch(e){} D.move(D.x0,D.y0);},420);
     D.move=(x,y)=>{const dx=x-D.x0, dy=y-D.y0, col=Math.max(0,Math.round((D.left0+dx-D.ref.left)/D.cw)); D.col=col; D.del=dy<-70;
       const sx=D.ref.left+col*D.cw; D.ch.style.transform=`translate(${sx-D.left0}px,${D.del?dy:0}px)`; D.ch.classList.toggle('chdel',D.del);
-      D.hl.hidden=D.del; D.hl.style.cssText=`left:${sx-1}px;top:${D.ref.top-1}px;width:${D.cw+2}px;height:${D.ref.height+2}px`+(D.del?';display:none':'');};
+      D.hl.style.cssText=`left:${sx-1}px;top:${D.ref.top-1}px;width:${D.cw+2}px;height:${D.ref.height+2}px`+(D.del?';display:none':'');};
   });
   addEventListener('pointermove',e=>{if(!D)return; if(!D.on){if(Math.hypot(e.clientX-D.x0,e.clientY-D.y0)>8){clearTimeout(D.t); D=null;} return;} e.preventDefault(); D.move(e.clientX,e.clientY);},{passive:false});
   const end=e=>{if(!D)return; clearTimeout(D.t); const d=D; D=null; if(!d.on)return;
-    if(d.hl)d.hl.remove(); d.ch.classList.remove('chdrag','chdel'); d.ch.style.transform=''; V.noClick=Date.now();
-    if(e.type==='pointercancel')return; const cur=V.list[V.i]; if(!cur)return;
-    // position de l'accord dans le texte source : colonne visée sur la ligne de paroles du dessous
-    if(d.del){beginEdit(cur.s); replaceTokens(cur.s,(li,ti)=>li===d.raw&&ti===d.k?'':null); afterEdit(cur.s); toast('Accord supprimé'); return;}
-    if(d.col!=null)moveChordTo(cur.s,d.raw,d.k,d.col);};
+    if(d.hl)d.hl.remove(); d.ch.classList.remove('chdrag','chdel'); d.ch.style.transform=''; d.ops.noClick(Date.now());
+    if(e.type==='pointercancel')return;
+    if(d.del){d.ops.del(d.raw,d.k); toast('Accord supprimé'); return;}
+    if(d.col!=null)d.ops.move(d.raw,d.k,d.col);};
   addEventListener('pointerup',end); addEventListener('pointercancel',end);
-})();
+}
+chordDrag($('#vstage'),()=>{if(!V.edit||V.emode==='text'||FOLLOW)return null; const cur=V.list[V.i]; if(!cur)return null;
+  return {noClick:t=>V.noClick=t, move:(raw,k,col)=>moveChordTo(cur.s,raw,k,col), del:(raw,k)=>{beginEdit(cur.s); replaceTokens(cur.s,(li,ti)=>li===raw&&ti===k?'':null); afterEdit(cur.s);}};});
 
 function bakeKey(song,r){
   r=r||song._r; if(!r||!r.key)return;
@@ -5038,7 +5052,7 @@ function openEditor(song,entry){
     txt=out.join('\n\n'); ED.tabsMerged=true;}
   $('#vtextTitle').textContent=song.q; $('#vtextArea').value=txt; $('#vtextNotes').value=song.notes||''; $('#vtextTempo').value=song.tempo||'';
   $('#vtextItemWrap').hidden=!ED.item; $('#vtextItem').value=ED.item?ED.item.notes||'':'';
-  $('#vtPrev').hidden=true; $('#vtPrevBtn').setAttribute('aria-pressed','false');
+  $('#vtPrev').hidden=true; $('.vtwrap').classList.remove('prevon'); $('#vtPrevBtn').setAttribute('aria-pressed','false');
   $('#vtext').hidden=false; vtKbd(false); vtAnalyze(); vtCaret();
 }
 $('#vedText').onclick=()=>{const e=V.list[V.i]; if(e)openEditor(e.s,e);};
@@ -5054,7 +5068,7 @@ $('#vtextSave').onclick=()=>{
 function vtKbd(on){const ta=$('#vtextArea'); ta.setAttribute('inputmode',on?'text':'none'); $('#vtKbd').setAttribute('aria-pressed',!!on); $('#vtKbd').textContent=on?'⌨ Fermer le clavier':'⌨ Écrire';
   if(on){ta.blur(); setTimeout(()=>ta.focus(),30);} else ta.blur();}
 $('#vtKbd').addEventListener('pointerdown',e=>e.preventDefault()); $('#vtKbd').onclick=()=>vtKbd($('#vtextArea').getAttribute('inputmode')==='none');
-$('#vtPrevBtn').onclick=()=>{const p=$('#vtPrev'); p.hidden=!p.hidden; $('#vtPrevBtn').setAttribute('aria-pressed',!p.hidden); vtAnalyze();};
+$('#vtPrevBtn').onclick=()=>{const p=$('#vtPrev'); p.hidden=!p.hidden; $('.vtwrap').classList.toggle('prevon',!p.hidden); if(!p.hidden&&!S.vtPrevTip){S.vtPrevTip=1; save(); toast('Touche un mot pour y poser un accord · appui long sur un accord pour le glisser');} $('#vtPrevBtn').setAttribute('aria-pressed',!p.hidden); vtAnalyze();};
 // mettre un accord au-dessus de la syllabe où est le curseur (la ligne d'accords est créée si besoin)
 function vtInsertChord(name){
   const ta=$('#vtextArea'), v=ta.value, pos=ta.selectionStart, before=v.slice(0,pos), L=before.split('\n').length-1, col=pos-before.lastIndexOf('\n')-1;
@@ -5114,6 +5128,37 @@ function vtAnalyze(){
   $('#vtChips').innerHTML=a.chords.map(c=>`<button>${esc(c)}</button>`).join('');
   clearTimeout(V.vtT); if(!$('#vtPrev').hidden)V.vtT=setTimeout(()=>{const r=compute({q:'',text:ta.value,view:'grille',tabs:[]}); $('#vtPrev').innerHTML=r.grid.map(L=>lineHTML(L)).join('\n');},150);
 }
+
+/* ----- éditeur : aperçu où l'on pose et glisse les accords au doigt ; type de ligne choisi à la main ----- */
+function vtSetText(t){const ta=$('#vtextArea'), top=ta.scrollTop; ta.value=t; ta.scrollTop=top; vtAnalyze();}
+const vtCur=()=>{const t=$('#vtextArea').value; return {s:{text:t},_r:compute({q:'',text:t,view:'grille',tabs:[]})};};
+$('#vtPrev').addEventListener('click',ev=>{
+  if(Date.now()-(V.vtNoClick||0)<450)return; const ta=$('#vtextArea');
+  const ch=ev.target.closest('.ch'); if(ch){const raw=+ch.parentElement.dataset.raw, k=+ch.dataset.k; if(!(raw>=0))return; const cur=vtCur();
+    chordDialog({mode:'pick',r:cur._r,cb:n=>{const src=toSource(cur._r,n); if(src)vtSetText(setTokenText(ta.value,raw,k,src));}}); return;}
+  const ly=ev.target.closest('.ly,.c'); if(ly&&+ly.dataset.raw>=0)wordPick(vtCur(),ly,ev,(raw,col,kind,src)=>vtSetText(addChordText(ta.value,raw,col,kind,src)));
+});
+chordDrag($('#vtPrev'),()=>$('#vtPrev').hidden?null:{noClick:t=>V.vtNoClick=t,
+  move:(raw,k,col)=>{const t=moveChordText($('#vtextArea').value,raw,k,col); if(t!=null)vtSetText(t);},
+  del:(raw,k)=>vtSetText(setTokenText($('#vtextArea').value,raw,k,''))});
+function vtSetKind(i,k){
+  const ta=$('#vtextArea'), L=ta.value.split('\n'); if(L[i]==null)return;
+  let core=L[i].split(FORCE_C).join('').split(FORCE_L).join('').replace(/\s+$/,'');
+  const sec=/^\s*\[([^\]]*)\]\s*:?\s*$/.exec(core); if(sec&&k!=='s')core=sec[1].trim(); core=k==='k'?core:core.replace(/^\s*!\s*/,'');
+  const auto=x=>{const q=parseSheet(x).lines[0]; return q?q.t:'b';};
+  let out=core;
+  if(k==='s')out='['+core.replace(/^\s*\[|\]\s*:?\s*$/g,'').trim().replace(/:$/,'')+']';
+  else if(k==='k')out='! '+core.replace(/^\s*!\s*/,'').trim();
+  else if(k==='c'||k==='l')out=auto(core)===k?core:core+' '+(k==='c'?FORCE_C:FORCE_L);
+  L[i]=out; vtSetText(L.join('\n'));
+}
+$('#vtGut').addEventListener('click',ev=>{
+  const d=ev.target.closest('#vtGut>div'); if(!d)return; const i=[...$('#vtGut').children].indexOf(d), line=$('#vtextArea').value.split('\n')[i]; if(line==null||!line.trim())return;
+  wpClose(); const el=document.createElement('div'); el.id='wpop'; el.className='wpop vtkind';
+  el.innerHTML=`<span class="vtkl">Ligne ${i+1} :</span>`+[['c','Accords'],['l','Paroles'],['s','Section'],['k','Repère'],['a','Auto']].map(([k,n])=>`<button data-k="${k}">${n}</button>`).join('')+'<button class="wpx" data-k="x" aria-label="Fermer">✕</button>';
+  document.body.appendChild(el); WP.el=el; const r=d.getBoundingClientRect(); el.style.left=Math.max(8,Math.min(innerWidth-el.offsetWidth-8,r.right+6))+'px'; el.style.top=Math.max(8,Math.min(innerHeight-el.offsetHeight-8,r.top-8))+'px';
+  el.onclick=e=>{const b=e.target.closest('button'); if(!b)return; wpClose(); if(b.dataset.k!=='x')vtSetKind(i,b.dataset.k);};
+});
 $('#vtextArea').addEventListener('input',vtAnalyze);
 $('#vtextArea').addEventListener('scroll',()=>{$('#vtGut').scrollTop=$('#vtextArea').scrollTop;});
 $('#vtChips').addEventListener('pointerdown',e=>e.preventDefault()); $('#vtOther').addEventListener('pointerdown',e=>e.preventDefault());
