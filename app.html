@@ -3559,7 +3559,7 @@ $('#fMore').onclick=e=>{const s=songById(FICHE); if(!s)return; const r=e.current
 let LOPEN=-1;
 $('#lMore').onclick=e=>{const l=curList; if(!l)return; const r=e.currentTarget.getBoundingClientRect();
   ctxMenu(r.right-280,r.bottom+6,[{ico:'⧉',t:'Dupliquer la playlist',fn:()=>$('#lDup').click()},{ico:'✎',t:'Renommer, date',fn:()=>{$('#lHeadEdit').hidden=false; $('#lName').focus();}},'-',
-    {ico:'⬇',t:'PDF',fn:()=>$('#lPdf').click()},{ico:'⬇',t:'Tableur',fn:()=>$('#lXlsx').click()},{ico:'⬆',t:'Importer le tableur',fn:()=>$('#lImp').click()},'-',{ico:'🗑',t:'Supprimer la playlist',red:1,fn:()=>$('#lDel').click()}]);};
+    {ico:'⬇',t:'PDF',fn:()=>$('#lPdf').click()},{ico:'⬇',t:'Image (PNG)',fn:()=>listPng(curList)},{ico:'⬇',t:'Tableur',fn:()=>$('#lXlsx').click()},{ico:'⬆',t:'Importer le tableur',fn:()=>$('#lImp').click()},'-',{ico:'🗑',t:'Supprimer la playlist',red:1,fn:()=>$('#lDel').click()}]);};
 longPress($('#lItems'),'.item',(el,x,y)=>{const l=curList, i=+el.dataset.i, it=l&&l.items[i]; if(!it)return; const s=songById(it.sid);
   ctxMenu(x,y,[{ico:'▶',t:'Jouer à partir d\'ici',fn:()=>openViewer(listEntries(l),listEntries(l).findIndex(e=>e.item===it),l)},{ico:'✎',t:'Éditer le morceau',fn:()=>s&&editSong(s)},{ico:'⚙',t:'Réglages pour ce concert',fn:()=>{LOPEN=i; renderListDetail();}},'-',
     {ico:'✕',t:'Retirer de la playlist',red:1,fn:()=>{l.items.splice(i,1); touch(l); save(); renderListDetail();}}]);});
@@ -3682,6 +3682,34 @@ $('#lView').onclick=e=>{const b=e.target.closest('button'); if(!b)return; S.lVie
 // ---- tableau de la playlist : PDF, tableur (.xlsx) et réimport ----
 function listRows(l){return listEntries(l).map((e,i)=>{const sp=split(e.s.q), r=e._r; return {n:i+1,titre:sp.titre,artiste:sp.artiste,ton:r.key?keyName(r.target,r.key.minor):'',capo:+e.s.capoInfo||0,dur:fmtDur(eDur(e)),notes:e.item&&e.item.notes||'',ref:e.s.id};});}
 const fileSafe=t=>(t||'playlist').replace(/[\\/:*?"<>|]+/g,'-').trim();
+// image de la playlist (PNG) : à partager par message ou à imprimer pour le pied de micro
+async function listPng(l){
+  if(!l)return; const rows=listRows(l), K=2, W=1240, M=56, RH=66, top=196, H=top+rows.length*RH+M+40;
+  const cv=document.createElement('canvas'); cv.width=W*K; cv.height=H*K; const c=cv.getContext('2d'); c.scale(K,K);
+  const F='system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+  c.fillStyle='#fff'; c.fillRect(0,0,W,H);
+  c.fillStyle='#c2410c'; c.fillRect(0,0,W,10);
+  c.fillStyle='#111'; c.font=`800 46px ${F}`; c.textBaseline='alphabetic'; c.fillText(l.name||'Playlist',M,M+40);
+  const tot=listEntries(l).reduce((a,e)=>a+eDur(e),0);
+  c.fillStyle='#666'; c.font=`500 22px ${F}`; c.fillText([l.date?new Date(l.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}):'',rows.length+' morceaux',tot?'durée ~ '+fmtDur(tot):''].filter(Boolean).join('  ·  '),M,M+78);
+  const hasNotes=rows.some(r=>r.notes), cols=[['N°',56],['Titre',hasNotes?430:560],['Tonalité',130],['Capo',90],['Durée',100]]; if(hasNotes)cols.push(['Notes',W-2*M-56-430-130-90-100]);
+  let x=M; c.fillStyle='#999'; c.font=`700 16px ${F}`; cols.forEach(([n,w])=>{c.fillText(n.toUpperCase(),x+8,top-14); x+=w;});
+  c.strokeStyle='#ddd'; c.lineWidth=2; c.beginPath(); c.moveTo(M,top-4); c.lineTo(W-M,top-4); c.stroke();
+  const fit=(t,w)=>{t=String(t||''); if(c.measureText(t).width<=w)return t; while(t&&c.measureText(t+'…').width>w)t=t.slice(0,-1); return t+'…';};
+  rows.forEach((r,i)=>{const y=top+i*RH;
+    if(i%2){c.fillStyle='#f5f5f4'; c.fillRect(M,y,W-2*M,RH);}
+    let x=M; const mid=y+RH/2;
+    c.fillStyle='#c2410c'; c.font=`800 26px ${F}`; c.fillText(String(r.n),x+8,mid+9); x+=cols[0][1];
+    c.fillStyle='#111'; c.font=`700 27px ${F}`; const tw=cols[1][1]-16; c.fillText(fit(r.titre,tw),x+8,r.artiste?mid+2:mid+9);
+    if(r.artiste){c.fillStyle='#777'; c.font=`500 17px ${F}`; c.fillText(fit(r.artiste,tw),x+8,mid+24);} x+=cols[1][1];
+    c.fillStyle='#9a3412'; c.font=`800 26px ${F}`; c.fillText(fit(r.ton||'',cols[2][1]-16),x+8,mid+9); x+=cols[2][1];
+    c.fillStyle='#333'; c.font=`600 24px ${F}`; c.fillText(r.capo?String(r.capo):'—',x+8,mid+9); x+=cols[3][1];
+    c.fillText(r.dur||'',x+8,mid+9); x+=cols[4][1];
+    if(hasNotes){c.fillStyle='#555'; c.font=`500 19px ${F}`; c.fillText(fit(r.notes,cols[5][1]-16),x+8,mid+7);}
+  });
+  c.fillStyle='#bbb'; c.font=`500 15px ${F}`; c.fillText('Accords',M,H-24);
+  const blob=await new Promise(ok=>cv.toBlob(ok,'image/png')); saveBlob(fileSafe(l.name)+'.png',blob);
+}
 $('#lPdf').onclick=async()=>{
   const l=curList; let lib; try{lib=await loadJsPDF();}catch(e){toast('Module PDF indisponible.');return;}
   const doc=new lib.jsPDF({unit:'pt',format:'a4'}), PW=595.28, PH=841.89, M=36, rows=listRows(l);
