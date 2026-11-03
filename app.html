@@ -614,6 +614,17 @@ body.fiche-on main{max-width:none;margin:0 490px 0 0}
 body.inscene #spEmbed{bottom:12px}
 .newbox{width:min(760px,96vw)!important;max-width:none!important}
 #newPaste textarea{width:100%;box-sizing:border-box;font:14px/1.4 ui-monospace,Menlo,monospace}
+#triBox{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column}#triBox[hidden]{display:none}
+.trihead,.trifoot{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--line)}.trifoot{border-top:1px solid var(--line);border-bottom:0;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+.trihead b{font-size:18px}.trifoot button{height:52px;padding:0 22px;font-size:16px}
+.tribody{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:18px;max-width:900px;width:100%;margin:0 auto;box-sizing:border-box}
+.tricard{border:1px solid var(--line);border-radius:18px;padding:18px 20px;background:var(--s1,var(--bg));touch-action:pan-y;transition:transform .15s}
+.tricard h3{margin:0;font-size:26px}.tricard .tra{color:var(--mute);font-size:16px;margin-top:2px}.tricard .trk{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.tricard .trk span{padding:4px 10px;border-radius:8px;background:var(--s3,#eee);font-size:13px;font-weight:600}
+.tricard pre{margin:12px 0 0;max-height:140px;overflow:hidden;font-size:13px;color:var(--mute);white-space:pre-wrap}
+.trisec{display:flex;flex-direction:column;gap:8px}.trichips{display:flex;flex-wrap:wrap;gap:8px}
+.trichips button{min-height:48px;padding:0 16px;border-radius:24px;font-size:15px;font-weight:600}.trichips button[aria-pressed=true]{background:var(--hl,var(--acc));color:var(--onhl,#fff);border-color:transparent}
+.trichips button i{font-style:normal;opacity:.55;font-size:12px;margin-right:6px}.trichips .trinew{border-style:dashed}
+@media (max-width:560px){#triHint{display:none}.tricard h3{font-size:21px}.trihead select{max-width:150px}}
 .shitxt{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(45,212,191,.1);border:1px solid #115e59;font-size:14px}.shitxt span{flex:1}
 .bulkbox{max-width:760px;width:calc(100vw - 24px)}#bulkList{display:flex;flex-direction:column;gap:6px;max-height:52vh;overflow-y:auto}
 .bkrow{display:grid;grid-template-columns:28px 26px minmax(0,1fr) auto 34px;gap:8px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
@@ -941,7 +952,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
     <div class="noprint">
       <div class="libhead"><h2>Bibliothèque</h2><span class="lab" id="libCount"></span><span class="grow"></span>
         <span class="seg2" id="libSw"><button data-v="liste">☰ Liste</button><button data-v="tableau">▦ Tableau</button></span>
-        <button id="selMode" class="selbtn">✓ Sélectionner</button><button class="pri" id="scene">▶ Scène</button></div>
+        <button id="triBtn" class="selbtn" title="Ranger vite beaucoup de morceaux">⚡ Tri rapide</button><button id="selMode" class="selbtn">✓ Sélectionner</button><button class="pri" id="scene">▶ Scène</button></div>
       <div id="libChips" class="chips"></div>
       <textarea id="liste" rows="2" placeholder="Une chanson par ligne : Artiste - Titre"></textarea>
       <div class="row">
@@ -1280,6 +1291,18 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
   </div>
   <details id="newMulti"><summary>Ajouter plusieurs titres d'un coup (une chanson par ligne)</summary><div id="newMultiBox"></div></details>
 </div></div>
+<!-- ===== Tri rapide ===== -->
+<div id="triBox" hidden>
+  <header class="trihead"><button id="triClose" aria-label="Fermer">✕</button><b>Tri rapide</b>
+    <select id="triWhich"><option value="none">Sans étiquette ni dossier</option><option value="notag">Sans étiquette</option><option value="shown">Bibliothèque affichée</option><option value="all">Tous les morceaux</option></select>
+    <span class="grow"></span><span class="lab" id="triPos"></span></header>
+  <div class="tribody">
+    <div class="tricard" id="triCard"></div>
+    <div class="trisec"><span class="tblab">Étiquettes (collections) — plusieurs possibles</span><div class="trichips" id="triTags"></div></div>
+    <div class="trisec"><span class="tblab">Dossier — un seul</span><div class="trichips" id="triFolders"></div></div>
+  </div>
+  <footer class="trifoot"><button id="triPrev">◀ Précédent</button><span class="grow lab" id="triHint">Touche les étiquettes puis « Suivant » · glisse la carte · clavier : 1 à 9, flèches</span><button class="pri" id="triNext">Suivant ▶</button></footer>
+</div>
 <!-- ===== Import en lot ===== -->
 <input type="file" id="bulkFile" multiple hidden accept=".pdf,application/pdf,.gp,.gp3,.gp4,.gp5,.gpx,.gp7,.xml,.musicxml,.mxl,.txt,.cho,.chopro,.chordpro,.crd,text/plain,image/*">
 <div id="bulkBox" class="modal" hidden><div class="box bulkbox">
@@ -4531,7 +4554,7 @@ $('#shiPdf').onchange=async e=>{const fs=[...(e.target.files||[])]; e.target.val
       if(!pages.length)continue; S.songs.unshift({id:uid(),q:fileTitle(f.name),text:'',folder:'',tags:[],target:null,capo:null,view:'grille',notes:'',tempo:'',dur:'',tabs:[],up:Date.now(),added:Date.now(),kind:'sheet',pages}); n++;}
     save(); renderAll(); modal('#shImp',false); toast(n+' partition'+(n>1?'s':'')+' ajoutée'+(n>1?'s':'')); return;}
   const f=fs[0]; if(!IMP.song&&!$('#shiTitle').value.trim())$('#shiTitle').value=fileTitle(f.name);
-  if(!IMP.song){pdfText(f).then(t=>{if(!t.ok)return; IMP.txt=t; $('#shiTxtN').textContent=t.nc+' lignes d\'accords'; $('#shiTxt').hidden=false; if(t.title&&$('#shiTitle').value===fileTitle(f.name))$('#shiTitle').value=(t.artist?t.artist+' - ':'')+t.title;}).catch(()=>{});}
+  if(!IMP.song){pdfText(f).then(t=>{if(!t.ok)return; IMP.txt=t; $('#shiTxtN').textContent=t.what; $('#shiTxt').hidden=false; if(t.title&&$('#shiTitle').value===fileTitle(f.name))$('#shiTitle').value=(t.artist?t.artist+' - ':'')+t.title;}).catch(()=>{});}
   try{await pdfToPages(f,d=>shiAdd(d),(p,t)=>{$('#shiInfo').textContent='PDF : page '+p+' / '+t+'…';});}catch(er){toast('PDF illisible'); console.log(er);} shiDraw();
 };
 $('#shiPhoto').onclick=()=>{window._photoFor='sheet'; window.Android.takePhoto();};
@@ -4689,7 +4712,7 @@ function bulkOpen(fs){BULK.items=[]; $('#bulkPl').checked=false; $('#bulkPlName'
 async function bulkAddFiles(fs){
   for(const f of fs){const it={id:uid(),f,kind:bkKind(f),title:fileTitle(f.name),mode:'',info:'analyse…'}; BULK.items.push(it); bulkDraw();
     try{
-      if(it.kind==='pdf'){const t=await pdfText(f); it.txt=t.ok?t:null; it.mode=t.ok?'text':'sheet'; if(t.ok&&t.title)it.title=(t.artist?t.artist+' - ':'')+t.title; it.info=t.pages+' page(s)'+(t.ok?' · texte reconnu : '+t.nc+' lignes d\'accords':' · image');}
+      if(it.kind==='pdf'){const t=await pdfText(f); it.txt=t.ok?t:null; it.mode=t.ok?'text':'sheet'; if(t.ok&&t.title)it.title=(t.artist?t.artist+' - ':'')+t.title; it.info=t.pages+' page(s)'+(t.ok?' · texte reconnu : '+t.what:' · image');}
       else if(it.kind==='gp'||it.kind==='xml'){const sc=await gpLoad(f); it.score=sc; it.syl=GP.syl; const t=(sc.title||'').trim(), a=(sc.artist||sc.music||'').trim(); if(t)it.title=a?a+' - '+t:t; it.mode='gp'; it.info=sc.masterBars.length+' mesures · '+sc.tracks.length+' piste(s)';}
       else if(it.kind==='txt'){const t=await f.text(); it.text=t; it.mode='text'; const ti=/\{\s*(?:t|title)\s*:\s*([^}]+)\}/i.exec(t), ar=/\{\s*(?:st|subtitle|artist)\s*:\s*([^}]+)\}/i.exec(t); if(ti)it.title=(ar?ar[1].trim()+' - ':'')+ti[1].trim(); it.info=t.split('\n').length+' lignes';}
       else if(it.kind==='img'){it.mode='sheet'; it.info='photo';}
@@ -4726,6 +4749,35 @@ $('#bulkGo').onclick=async()=>{
   save(); renderAll(); if(typeof renderLists==='function')renderLists(); modal('#bulkBox',false);
   toast(made.length+' morceau'+(made.length>1?'x':'')+' importé'+(made.length>1?'s':'')+($('#bulkPl').checked&&made.length?' · playlist créée':''));
 };
+
+/* ---------- tri rapide : un morceau à la fois, on touche ses étiquettes (collections) et son dossier ---------- */
+const TRI={ids:[],i:0};
+function triList(w){const L=w==='shown'?visibleSongs():S.songs.slice(); return L.filter(s=>w==='none'?!tagsOf(s).length&&!s.folder:w==='notag'?!tagsOf(s).length:true).map(s=>s.id);}
+function triOpen(){let w=S.triWhich||'none'; let ids=triList(w); if(!ids.length&&w!=='all'){w='all'; ids=triList(w);} TRI.ids=ids; TRI.i=0; $('#triWhich').value=w; $('#triBox').hidden=false; triDraw();}
+const triCur=()=>songById(TRI.ids[TRI.i]);
+function triDraw(){
+  const s=triCur(), n=TRI.ids.length; $('#triPos').textContent=n?(TRI.i+1)+' / '+n:'';
+  if(!s){$('#triCard').innerHTML='<h3>Rien à trier ici 🎉</h3><div class="tra">Choisis une autre liste en haut.</div>'; $('#triTags').innerHTML=$('#triFolders').innerHTML=''; return;}
+  const sp=split(s.q), r=s._r||(s._r=compute(s)), tags=allTags(), mine=tagsOf(s), fol=[...new Set(S.songs.map(x=>x.folder).filter(Boolean))].sort(coll.compare);
+  const prev=(s.text||'').split('\n').filter(l=>l.trim()).slice(0,6).join('\n');
+  $('#triCard').innerHTML=`<h3>${esc(sp.titre)}</h3><div class="tra">${esc(sp.artiste||'')}</div><div class="trk">${r&&r.key?`<span>${esc(keyName(r.target,r.key.minor))}</span>`:''}${isSheet(s)?'<span>Partition</span>':''}${(s.tabs||[]).length?`<span>${s.tabs.length} tab</span>`:''}${s.folder?`<span>📁 ${esc(s.folder)}</span>`:''}</div>${prev?`<pre>${esc(prev)}</pre>`:''}`;
+  $('#triTags').innerHTML=tags.map((t,j)=>`<button data-t="${esc(t)}" aria-pressed="${mine.includes(t)}">${j<9?`<i>${j+1}</i>`:''}${esc(t)}</button>`).join('')+'<button class="trinew" data-new="t">+ Nouvelle étiquette</button>';
+  $('#triFolders').innerHTML=fol.map(f=>`<button data-f="${esc(f)}" aria-pressed="${s.folder===f}">${esc(f)}</button>`).join('')+'<button class="trinew" data-new="f">+ Nouveau dossier</button>';
+}
+function triToggleTag(t){const s=triCur(); if(!s)return; const m=tagsOf(s); s.tags=m.includes(t)?m.filter(x=>x!==t):[...m,t]; if(!s.tags.length)delete s.tags; touch(s); save(); triDraw();}
+function triGo(d){if(!TRI.ids.length)return; TRI.i=Math.max(0,Math.min(TRI.ids.length-1,TRI.i+d)); triDraw(); const c=$('#triCard'); c.style.transform=`translateX(${d>0?24:-24}px)`; setTimeout(()=>c.style.transform='',120);}
+$('#triBtn').onclick=triOpen;
+$('#triClose').onclick=()=>{$('#triBox').hidden=true; renderAll();};
+$('#triWhich').onchange=e=>{S.triWhich=e.target.value; save(); TRI.ids=triList(e.target.value); TRI.i=0; triDraw();};
+$('#triPrev').onclick=()=>triGo(-1); $('#triNext').onclick=()=>{if(TRI.i>=TRI.ids.length-1){toast('Fin de la liste ✔'); return;} triGo(1);};
+$('#triTags').onclick=async e=>{const b=e.target.closest('button'); if(!b)return; if(b.dataset.new){const v=await ask('Nouvelle étiquette','Ex. Rock, Mariage, Répertoire duo…',null,''); if(v&&v.trim())triToggleTag(v.trim()); return;} triToggleTag(b.dataset.t);};
+$('#triFolders').onclick=async e=>{const b=e.target.closest('button'); if(!b)return; const s=triCur(); if(!s)return; let f=b.dataset.f;
+  if(b.dataset.new){const v=await ask('Nouveau dossier','Nom du dossier',null,''); if(!v||!v.trim())return; f=v.trim();}
+  s.folder=s.folder===f?'':f; touch(s); save(); triDraw();};
+document.addEventListener('keydown',e=>{if($('#triBox').hidden||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
+  if(e.key==='ArrowRight'||e.key===' '){e.preventDefault(); $('#triNext').click();} else if(e.key==='ArrowLeft'){e.preventDefault(); triGo(-1);} else if(e.key==='Escape'){$('#triClose').click();}
+  else if(/^[1-9]$/.test(e.key)){const t=allTags()[+e.key-1]; if(t)triToggleTag(t);}});
+(()=>{let x0=null; const c=$('#triCard'); c.addEventListener('pointerdown',e=>{x0=e.clientX;}); c.addEventListener('pointerup',e=>{if(x0==null)return; const dx=e.clientX-x0; x0=null; if(Math.abs(dx)>60)dx<0?$('#triNext').click():triGo(-1);});})();
 $('#gpFile').onchange=async e=>{
   const f=e.target.files[0]; if(!f)return; toast('Lecture de '+f.name+'…');
   let at; try{at=await loadAlphaTab();}catch(err){toast('Lecteur Guitar Pro indisponible (pas de connexion ?)'); return;}
@@ -4956,12 +5008,15 @@ async function pdfText(f){
   // titre « X Chords by » + artiste (en-tête Ultimate Guitar)
   let title='', artist='';
   for(let i=0;i<Math.min(lines.length,8);i++){const m=/^\s*(.+?)\s+(?:chords|tabs?|bass tabs?|ukulele chords|accords)\s+by\s*(.*)$/i.exec(lines[i]); if(m){title=m[1].trim(); artist=m[2].trim()||(lines.slice(i+1).find(l=>l.trim())||'').trim(); break;}}
+  if(title){const ti=lines.findIndex(l=>/\s+(?:chords|tabs?|bass tabs?|ukulele chords|accords)\s+by\b/i.test(l)); if(ti>=0){lines.splice(ti,1); if(artist&&lines[ti]&&lines[ti].trim()===artist)lines.splice(ti,1);}}
+  lines=lines.filter(l=>!/^\s*tuning\s*:\s*e a d g b e\s*$/i.test(l));
   const meta=lines.filter(l=>/^\s*(capo|tuning|accordage)\b/i.test(l)).slice(0,2);
   const first=lines.findIndex(l=>/^\s*\[[^\]]+\]\s*$/.test(l));
   if(first>0)lines=[...meta.filter(l=>/capo/i.test(l)),...lines.slice(first)];
   const text=lines.join('\n').replace(/\n{3,}/g,'\n\n').trim();
-  const p=parseSheet(text), nc=p.lines.filter(x=>x.t==='c').length, nl=p.lines.filter(x=>x.t==='l').length;
-  return {text,title,artist,ok:text.length>120&&nc>=3&&nl>=2,nc,nl,pages:doc.numPages};
+  const p=parseSheet(text), nc=p.lines.filter(x=>x.t==='c').length, nl=p.lines.filter(x=>x.t==='l').length, nx=p.lines.filter(x=>x.t==='x').length;
+  const what=[nc>=3?nc+' lignes d\'accords':'',nx>=6?Math.round(nx/6)+' tablature(s)':''].filter(Boolean).join(' et ');
+  return {text,title,artist,ok:text.length>120&&(nc>=3&&nl>=2||nx>=6),nc,nl,nx,what,pages:doc.numPages};
 }
 async function pdfToPages(f,onPage,info){
   await loadScript('pdf.min.js'); const L=window.pdfjsLib; L.GlobalWorkerOptions.workerSrc='pdf.worker.min.js';
