@@ -493,6 +493,7 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 .bgghost{position:fixed;z-index:80;transform:translate(-50%,-120%);pointer-events:none;padding:8px 14px;border-radius:12px;background:var(--hl,#fb923c);color:var(--onhl,#111);font:800 22px ui-monospace,Menlo,monospace;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .bgghost.del{background:#b91c1c;color:#fff}
 .bgnamein{font:700 15px system-ui;padding:4px 8px;border-radius:6px;border:2px solid #93c5fd;background:var(--s0,#0e0e10);color:#ececf0;width:200px}#bgMain .bgsec{cursor:pointer}
+#bgMain .bgc.bgghostc{border:2px dashed #2dd4bf;background:rgba(45,212,191,.08);opacity:.75;pointer-events:none}#bgMain .bgc.bgghostc text{fill:#5eead4}
 #bgMain .bgc.rng{background:#3a2412;box-shadow:inset 0 0 0 2px var(--hl,#fb923c);z-index:2}
 #bgMain .bgc .bgh{position:absolute;top:50%;width:18px;height:18px;margin-top:-9px;border-radius:50%;background:var(--hl,#fb923c);border:3px solid #0e0e10;z-index:4;touch-action:none;cursor:ew-resize}
 #bgMain .bgc .bghA{left:-10px}#bgMain .bgc .bghB{right:-10px}
@@ -623,7 +624,7 @@ body.inscene #spEmbed{bottom:12px}
 .tricard pre{margin:12px 0 0;max-height:140px;overflow:hidden;font-size:13px;color:var(--mute);white-space:pre-wrap}
 .trisec{display:flex;flex-direction:column;gap:8px}.trichips{display:flex;flex-wrap:wrap;gap:8px}
 .trichips button{min-height:48px;padding:0 16px;border-radius:24px;font-size:15px;font-weight:600}.trichips button[aria-pressed=true]{background:var(--hl,var(--acc));color:var(--onhl,#fff);border-color:transparent}
-.trichips button i{font-style:normal;opacity:.55;font-size:12px;margin-right:6px}.trichips .trinew{border-style:dashed}
+.trichips button i{font-style:normal;opacity:.55;font-size:12px;margin-right:6px}.trichips button i.trin{margin:0 0 0 4px}.trichips .trinew{border-style:dashed}
 @media (max-width:560px){#triHint{display:none}.tricard h3{font-size:21px}.trihead select{max-width:150px}}
 .shitxt{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(45,212,191,.1);border:1px solid #115e59;font-size:14px}.shitxt span{flex:1}
 .bulkbox{max-width:760px;width:calc(100vw - 24px)}#bulkList{display:flex;flex-direction:column;gap:6px;max-height:52vh;overflow-y:auto}
@@ -1300,6 +1301,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
     <div class="tricard" id="triCard"></div>
     <div class="trisec"><span class="tblab">Étiquettes (collections) — plusieurs possibles</span><div class="trichips" id="triTags"></div></div>
     <div class="trisec"><span class="tblab">Dossier — un seul</span><div class="trichips" id="triFolders"></div></div>
+    <div class="trisec"><span class="tblab">Playlists — ajouter à la fin</span><div class="trichips" id="triLists"></div></div>
   </div>
   <footer class="trifoot"><button id="triPrev">◀ Précédent</button><span class="grow lab" id="triHint">Touche les étiquettes puis « Suivant » · glisse la carte · clavier : 1 à 9, flèches</span><button class="pri" id="triNext">Suivant ▶</button></footer>
 </div>
@@ -3350,12 +3352,14 @@ const DR_MODELS={
 let DR=null;
 function drSteps(){const m=DR_METERS[DR.meter]; return m.b*m.p;}
 function drFit(){const n=drSteps()*DR.bars; DR_INST.forEach(([k])=>{let r=DR.g[k]||''; r=r.length>=n?r.slice(0,n):(r+'-'.repeat(n)).slice(0,n); DR.g[k]=r;});}
-function drCount(){const m=DR_METERS[DR.meter], sub=m.p===4?['','e','+','a']:m.p===3?['','+','a']:['','+']; let s=''; for(let b=0;b<DR.bars;b++){for(let i=0;i<m.b;i++)sub.forEach((x,j)=>s+=j?x:String(i+1)); s+='|';} return s.slice(0,-1);}
-function drRows(){
-  const n=drSteps(), used=DR_INST.filter(([k])=>/[^-]/.test(DR.g[k]||'')); const list=used.length?used:DR_INST.filter(([k])=>k==='HH'||k==='SD'||k==='BD');
-  const cut=r=>{let s=''; for(let b=0;b<DR.bars;b++)s+=r.slice(b*n,(b+1)*n)+'|'; return s;};
-  return ['··|'+drCount()+'|',...list.map(([k])=>k.padEnd(2)+'|'+cut(DR.g[k]))];
+function drCountOf(meter,bars){const m=DR_METERS[meter], sub=m.p===4?['','e','+','a']:m.p===3?['','+','a']:['','+']; let s=''; for(let b=0;b<bars;b++){for(let i=0;i<m.b;i++)sub.forEach((x,j)=>s+=j?x:String(i+1)); s+='|';} return s.slice(0,-1);}
+function drCount(){return drCountOf(DR.meter,DR.bars);}
+function drRowsOf(g,meter,bars){
+  const m=DR_METERS[meter], n=m.b*m.p, used=DR_INST.filter(([k])=>/[^-]/.test(g[k]||'')); const list=used.length?used:DR_INST.filter(([k])=>k==='HH'||k==='SD'||k==='BD');
+  const cut=r=>{let s=''; r=(r||'').padEnd(n*bars,'-'); for(let b=0;b<bars;b++)s+=r.slice(b*n,(b+1)*n)+'|'; return s;};
+  return ['··|'+drCountOf(meter,bars)+'|',...list.map(([k])=>k.padEnd(2)+'|'+cut(g[k]))];
 }
+function drRows(){return drRowsOf(DR.g,DR.meter,DR.bars);}
 function drParse(rows){ // texte -> grille (pour un rythme sans données)
   const g={}; let bars=1, n=0;
   rows.forEach(r=>{const m=/^\s*([A-Za-z0-9]{1,3})\s*\|(.*)$/.exec(r); if(!m)return; const k=m[1].toUpperCase(); const parts=m[2].split('|').filter(x=>x.length); bars=Math.max(1,Math.min(2,parts.length)); const body=parts.slice(0,2).join(''); n=Math.max(n,parts[0]?parts[0].length:0); if(DR_INST.some(([x])=>x===k))g[k]=body;});
@@ -4618,6 +4622,28 @@ function loadAlphaTab(){
 }
 const GP={};
 const gpStringed=st=>!st.isPercussion&&st.tuning&&st.tuning.length>=3;
+// batterie Guitar Pro -> lignes de batterie (General MIDI : 36 grosse caisse, 38 caisse claire, 42 charley…)
+const GM_DR={35:'BD',36:'BD',37:'SD',38:'SD',40:'SD',39:'SD',42:'HH',44:'HH',46:'HH',49:'C',55:'C',57:'C',52:'C',51:'R',53:'R',59:'R',41:'FT',43:'FT',45:'FT',47:'T1',48:'T1',50:'T1'};
+function gpDrumMidi(tr,n){const a=tr.t.percussionArticulations&&tr.t.percussionArticulations[n.percussionArticulation]; return a&&a.outputMidiNumber!=null?a.outputMidiNumber:n.percussionArticulation!=null&&n.percussionArticulation>=0?n.percussionArticulation:(n.realValue||0);}
+function gpDrums(score,tr,blockOf){
+  const st=tr.t.staves[0], out=[]; const secs=gpSections(score);
+  secs.forEach((sc,si)=>{let prev=null;
+    for(let a=sc.a;a<=sc.b;a+=2){
+      const bars=[]; for(let bi=a;bi<=Math.min(sc.b,a+1);bi++)bars.push(bi);
+      if(!bars.some(bi=>gpBeats(st.bars[bi]).some(be=>be.notes.length)))continue;
+      const mb=score.masterBars[bars[0]], num=mb.timeSignatureNumerator, den=mb.timeSignatureDenominator;
+      // finesse : doubles croches si une frappe tombe hors des croches
+      let fine=false; bars.forEach(bi=>gpBeats(st.bars[bi]).forEach(be=>{if(be.notes.length&&Math.round(be.playbackStart)%(3840/8))fine=true;}));
+      const meter=num===3&&den===4?'3/8':num===6&&den===8?'6/8':num===12&&den===8?'4/12':fine?'4/16':'4/8', m=DR_METERS[meter], n=m.b*m.p, len=3840*num/den, g={};
+      DR_INST.forEach(([k])=>g[k]='-'.repeat(n*bars.length));
+      bars.forEach((bi,j)=>gpBeats(st.bars[bi]).forEach(be=>{const i=j*n+Math.min(n-1,Math.round(be.playbackStart/len*n)); be.notes.forEach(no=>{const k=GM_DR[gpDrumMidi(tr,no)]; if(!k)return; const open=gpDrumMidi(tr,no)===46, acc=open||(no.accentuated||0)>0, c=DR_CYM.has(k)?(acc?'X':'x'):(acc?'O':'o'); g[k]=g[k].slice(0,i)+c+g[k].slice(i+1);});}));
+      const rows=drRowsOf(g,meter,bars.length), key=rows.join('\n');
+      if(prev&&prev.key===key){prev.k++; prev.tb.name=prev.base+' ×'+prev.k; continue;}
+      const base=tr.name+(sc.n?' · '+sc.n:''), tb={kind:'drum',name:base,rows,drum:{g,bars:bars.length,meter},tempo:score.tempo?Math.round(score.tempo):90,after:blockOf(si)};
+      out.push(tb); prev={key,k:1,tb,base};}
+  });
+  return out;
+}
 const gpBeats=bar=>(bar&&bar.voices&&bar.voices[0]?bar.voices[0].beats:[]);
 function gpSections(score){ // [{n, a, b}] indices de masterBars
   const out=[]; score.masterBars.forEach((mb,i)=>{const sc=mb.section; const n=sc?String(sc.text||sc.marker||'').trim():null;
@@ -4757,11 +4783,12 @@ function triOpen(){let w=S.triWhich||'none'; let ids=triList(w); if(!ids.length&
 const triCur=()=>songById(TRI.ids[TRI.i]);
 function triDraw(){
   const s=triCur(), n=TRI.ids.length; $('#triPos').textContent=n?(TRI.i+1)+' / '+n:'';
-  if(!s){$('#triCard').innerHTML='<h3>Rien à trier ici 🎉</h3><div class="tra">Choisis une autre liste en haut.</div>'; $('#triTags').innerHTML=$('#triFolders').innerHTML=''; return;}
+  if(!s){$('#triCard').innerHTML='<h3>Rien à trier ici 🎉</h3><div class="tra">Choisis une autre liste en haut.</div>'; $('#triTags').innerHTML=$('#triFolders').innerHTML=$('#triLists').innerHTML=''; return;}
   const sp=split(s.q), r=s._r||(s._r=compute(s)), tags=allTags(), mine=tagsOf(s), fol=[...new Set(S.songs.map(x=>x.folder).filter(Boolean))].sort(coll.compare);
   const prev=(s.text||'').split('\n').filter(l=>l.trim()).slice(0,6).join('\n');
   $('#triCard').innerHTML=`<h3>${esc(sp.titre)}</h3><div class="tra">${esc(sp.artiste||'')}</div><div class="trk">${r&&r.key?`<span>${esc(keyName(r.target,r.key.minor))}</span>`:''}${isSheet(s)?'<span>Partition</span>':''}${(s.tabs||[]).length?`<span>${s.tabs.length} tab</span>`:''}${s.folder?`<span>📁 ${esc(s.folder)}</span>`:''}</div>${prev?`<pre>${esc(prev)}</pre>`:''}`;
   $('#triTags').innerHTML=tags.map((t,j)=>`<button data-t="${esc(t)}" aria-pressed="${mine.includes(t)}">${j<9?`<i>${j+1}</i>`:''}${esc(t)}</button>`).join('')+'<button class="trinew" data-new="t">+ Nouvelle étiquette</button>';
+  $('#triLists').innerHTML=S.lists.map(l=>`<button data-l="${esc(l.id)}" aria-pressed="${l.items.some(it=>it.sid===s.id)}">${esc(l.name)}<i class="trin"> ${l.items.length}</i></button>`).join('')+'<button class="trinew" data-new="l">+ Nouvelle playlist</button>';
   $('#triFolders').innerHTML=fol.map(f=>`<button data-f="${esc(f)}" aria-pressed="${s.folder===f}">${esc(f)}</button>`).join('')+'<button class="trinew" data-new="f">+ Nouveau dossier</button>';
 }
 function triToggleTag(t){const s=triCur(); if(!s)return; const m=tagsOf(s); s.tags=m.includes(t)?m.filter(x=>x!==t):[...m,t]; if(!s.tags.length)delete s.tags; touch(s); save(); triDraw();}
@@ -4771,6 +4798,9 @@ $('#triClose').onclick=()=>{$('#triBox').hidden=true; renderAll();};
 $('#triWhich').onchange=e=>{S.triWhich=e.target.value; save(); TRI.ids=triList(e.target.value); TRI.i=0; triDraw();};
 $('#triPrev').onclick=()=>triGo(-1); $('#triNext').onclick=()=>{if(TRI.i>=TRI.ids.length-1){toast('Fin de la liste ✔'); return;} triGo(1);};
 $('#triTags').onclick=async e=>{const b=e.target.closest('button'); if(!b)return; if(b.dataset.new){const v=await ask('Nouvelle étiquette','Ex. Rock, Mariage, Répertoire duo…',null,''); if(v&&v.trim())triToggleTag(v.trim()); return;} triToggleTag(b.dataset.t);};
+$('#triLists').onclick=async e=>{const b=e.target.closest('button'); if(!b)return; const s=triCur(); if(!s)return; let l=S.lists.find(x=>x.id===b.dataset.l);
+  if(b.dataset.new){const v=await ask('Nouvelle playlist','Nom du concert ou de la playlist',null,''); if(!v||!v.trim())return; l={id:uid(),name:v.trim(),date:'',notes:'',items:[],up:Date.now()}; S.lists.push(l);}
+  if(!l)return; const i=l.items.findIndex(it=>it.sid===s.id); if(i>=0)l.items.splice(i,1); else l.items.push({sid:s.id,notes:''}); touch(l); save(); triDraw();};
 $('#triFolders').onclick=async e=>{const b=e.target.closest('button'); if(!b)return; const s=triCur(); if(!s)return; let f=b.dataset.f;
   if(b.dataset.new){const v=await ask('Nouveau dossier','Nom du dossier',null,''); if(!v||!v.trim())return; f=v.trim();}
   s.folder=s.folder===f?'':f; touch(s); save(); triDraw();};
@@ -4794,14 +4824,14 @@ $('#gpFile').onchange=async e=>{
   $('#gpLead').innerHTML=leads.length?`<select id="gpLeadSel">${leads.map(x=>`<option value="${x.ti}">${esc(x.name)} — ${x.ch.size} accords${x.ly.size?', '+x.ly.size+' syllabes':''}</option>`).join('')}<option value="-1">Ne pas importer</option></select>`:'<span class="lab">Pas d\'accords ni de paroles dans ce fichier.</span>';
   const pick=gpPicks(tr);
   $('#gpTracks').innerHTML=tr.map(x=>x.str&&x.notes?`<label class="gptr"><input type="checkbox" data-ti="${x.ti}"${pick.includes(x)?' checked':''}><b>${esc(x.name)}</b><small>${x.str} cordes · ${x.notes} notes</small></label>`
-    :x.perc?`<div class="gptr"><input type="checkbox" disabled><b>${esc(x.name)}</b><small>batterie : pas encore importée</small></div>`:'').join('')||'<span class="lab">Aucune piste de tablature.</span>';
+    :x.perc&&x.notes?`<label class="gptr"><input type="checkbox" data-ti="${x.ti}"><b>${esc(x.name)}</b><small>batterie · ${x.notes} frappes</small></label>`:'').join('')||'<span class="lab">Aucune piste de tablature.</span>';
   modal('#newBox',false); modal('#gpBox',true);
 };
 function gpBuild(score,lead,tabTr){
   const blocks=lead?gpText(score,lead):gpSections(score).filter(x=>x.n).map(x=>'['+x.n+']');
   const secs=gpSections(score); let bi=0; const map=secs.map(sc=>{const has=lead?true:!!sc.n; return has?++bi:bi;});
   const blockOf=si=>blocks.length?Math.min(blocks.length,map[si]):Infinity;
-  const tabs=[]; tabTr.forEach(t=>tabs.push(...gpTabs(score,t,blockOf)));
+  const tabs=[]; tabTr.forEach(t=>tabs.push(...(t.perc?gpDrums(score,t,blockOf):gpTabs(score,t,blockOf))));
   const g=lead?gpGrid(score,lead):null, cap=lead&&lead.t.staves[0]&&lead.t.staves[0].capo||0;
   return {text:blocks.join('\n\n'),tabs,tempo:score.tempo?String(Math.round(score.tempo)):'',...(g?{bgrid:g}:{}),...(cap?{capoInfo:cap}:{})};
 }
@@ -5865,6 +5895,8 @@ function bgMini(n,m){const w=50,h=26,L=(a,b,c,d)=>`<line x1="${a}" y1="${b}" x2=
 function bgDraw(){
   bgClamp(); const g=BG.g, c=BG.sel, cn=BG.r.cn, main=$('#bgMain');
   const top=main.scrollTop; main.innerHTML=bgHTML(g,cn,main.clientWidth-36,9999,{cellH:Math.max(64,Math.min(96,Math.round(innerHeight/9))),sel:c,rng:BG.rng,noForm:true}); bgRngUI(); main.scrollTop=top;
+  // aperçu de ce qui serait collé après la mesure choisie
+  const clip=!BG.rng&&bgClipGet(); if(clip){const cell=main.querySelector('.bgc.on'); if(cell){const cw=cell.offsetWidth, ch=cell.offsetHeight, frag=document.createDocumentFragment(); clip.bars.forEach(b=>{const d=document.createElement('div'); d.className='bgc bgghostc'; d.style.height=ch+'px'; d.innerHTML=bgCellSVG(b,cw,ch,cn,Math.round(Math.min(ch*.46,cw*.2)),bgMeter(c.si),null); frag.appendChild(d);}); cell.after(frag);}}
   $$('#bgPer button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===(+g.per||4)));
   $$('#bgMeter button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===(+g.meter||4)));
   const sc=g.secs[c.si], bar=bgBar(), m=bgMeter(c.si), nb=g.secs.slice(0,c.si).reduce((a,x)=>a+x.bars.length,0)+c.bi+1;
