@@ -614,6 +614,14 @@ body.fiche-on main{max-width:none;margin:0 490px 0 0}
 body.inscene #spEmbed{bottom:12px}
 .newbox{width:min(760px,96vw)!important;max-width:none!important}
 #newPaste textarea{width:100%;box-sizing:border-box;font:14px/1.4 ui-monospace,Menlo,monospace}
+.shitxt{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:rgba(45,212,191,.1);border:1px solid #115e59;font-size:14px}.shitxt span{flex:1}
+.bulkbox{max-width:760px;width:calc(100vw - 24px)}#bulkList{display:flex;flex-direction:column;gap:6px;max-height:52vh;overflow-y:auto}
+.bkrow{display:grid;grid-template-columns:28px 26px minmax(0,1fr) auto 34px;gap:8px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:12px;background:var(--bg)}
+.bkrow .drag{cursor:grab;text-align:center;font-size:18px;color:var(--mute);touch-action:none}.bkrow .bkn{font:700 13px system-ui;color:var(--mute);text-align:right}
+.bkrow .bkt{display:flex;flex-direction:column;gap:3px;min-width:0}.bkrow .bkt input{width:100%;box-sizing:border-box}.bkrow small{color:var(--mute);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bkrow select{max-width:180px}.bkrow .bkx{padding:0;width:34px;height:34px}.bkrow.err{opacity:.6}
+.bulkpl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0}.bulkpl input[type=text]{flex:1;min-width:160px}
+@media (max-width:560px){.bkrow{grid-template-columns:24px minmax(0,1fr) 34px}.bkrow .bkn{display:none}.bkrow select,.bkrow>.lab{grid-column:2;max-width:none}.bkrow .bkx{grid-row:1;grid-column:3}}
 .gpbox{max-width:620px}.gph{margin:12px 0 6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
 .gptr{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px}.gptr input{width:22px;height:22px}.gptr b{flex:1}.gptr small{color:var(--mute)}
 #gpLead select{width:100%}
@@ -1263,6 +1271,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
     <button data-new="sheet"><b>📄 Photo / PDF</b><span>Une partition existante à importer</span></button>
     <button data-new="ug" class="nug"><b>🌐 Ultimate Guitar</b><span>Chercher le titre et importer la grille</span></button>
     <button data-new="paste"><b>📋 Coller</b><span>Une grille copiée ailleurs (UG, ChordPro…)</span></button>
+    <button data-new="bulk"><b>📥 Plusieurs fichiers</b><span>PDF, Guitar Pro, textes… en une fois, dans l'ordre voulu</span></button>
     <button data-new="gp"><b>🎼 Guitar Pro / MusicXML</b><span>Tablatures, accords et paroles d'un fichier .gp, .gpx, .musicxml…</span></button>
   </div>
   <div id="newPaste" hidden>
@@ -1270,6 +1279,16 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
     <div class="row"><span class="lab grow" id="newPasteInfo"></span><button class="pri" id="newPasteOk">Créer le morceau</button></div>
   </div>
   <details id="newMulti"><summary>Ajouter plusieurs titres d'un coup (une chanson par ligne)</summary><div id="newMultiBox"></div></details>
+</div></div>
+<!-- ===== Import en lot ===== -->
+<input type="file" id="bulkFile" multiple hidden accept=".pdf,application/pdf,.gp,.gp3,.gp4,.gp5,.gpx,.gp7,.xml,.musicxml,.mxl,.txt,.cho,.chopro,.chordpro,.crd,text/plain,image/*">
+<div id="bulkBox" class="modal" hidden><div class="box bulkbox">
+  <h2><span>Importer des fichiers</span> <button class="close">✕</button></h2>
+  <p class="lab">PDF, Guitar Pro, MusicXML, texte / ChordPro, photos. Glisse ⠿ pour changer l'ordre.</p>
+  <div id="bulkList"></div>
+  <div class="row"><button id="bulkAdd">+ Ajouter des fichiers</button><span class="grow"></span><span class="lab" id="bulkN"></span></div>
+  <label class="bulkpl"><input type="checkbox" id="bulkPl"> Créer une playlist dans cet ordre <input type="text" id="bulkPlName" placeholder="Nom de la playlist"></label>
+  <div class="row"><span class="grow"></span><button class="pri" id="bulkGo">Importer</button></div>
 </div></div>
 <!-- ===== Import Guitar Pro / MusicXML ===== -->
 <input type="file" id="gpFile" accept=".gp,.gp3,.gp4,.gp5,.gpx,.gp7,.xml,.musicxml,.mxl,application/vnd.recordare.musicxml+xml,application/vnd.recordare.musicxml" hidden>
@@ -1288,6 +1307,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
   <div class="row shibtns"><button id="shiPhoto" class="pri">📸 Prendre une photo</button><label class="btnlike" for="shiImgs">🖼 Choisir des images</label><label class="btnlike" for="shiPdf">📄 Importer des PDF</label>
     <input type="file" id="shiImgs" accept="image/*" multiple hidden><input type="file" id="shiPdf" accept="application/pdf,.pdf" multiple hidden></div>
   <span class="lab" id="shiInfo"></span>
+  <div id="shiTxt" class="shitxt" hidden><span>📝 Ce PDF contient du texte : <b id="shiTxtN"></b>. En version texte, les accords se transposent et s'éditent.</span><button class="pri" id="shiTxtGo">Importer en texte</button></div>
   <div id="shiPages"></div>
   <div class="row"><span class="lab grow">◀ ▶ déplacent une page, ⟳ la fait pivoter. Les pages sont compressées pour rester légères.</span><button class="pri" id="shiCreate">Créer le morceau</button></div>
 </div></div>
@@ -4431,7 +4451,8 @@ $('#karaSend').onclick=()=>Kara.send(V.list[V.i],false);
 $('#karaAll').onclick=()=>Kara.sendList(V.list);
 $$('#karaCtl [data-op]').forEach(b=>b.onclick=async()=>{const st=await Kara.call({op:b.dataset.op}); if(st)Kara.ui(st);});
 // ---------- diffusion « suivre » : la tablette sert la page, les autres la suivent ----------
-function loadScript(src){return new Promise((ok,ko)=>{if([...document.scripts].some(x=>x.src&&x.src.endsWith('/'+src)||x.getAttribute('src')===src))return ok(); const sc=document.createElement('script'); sc.src=src; sc.onload=ok; sc.onerror=ko; document.head.appendChild(sc);});}
+const SCRIPTS={};
+function loadScript(src){if(SCRIPTS[src])return SCRIPTS[src]; return SCRIPTS[src]=new Promise((ok,ko)=>{if([...document.scripts].some(x=>x.src&&x.src.endsWith('/'+src)||x.getAttribute('src')===src))return ok(); const sc=document.createElement('script'); sc.src=src; sc.onload=ok; sc.onerror=e=>{delete SCRIPTS[src]; ko(e);}; document.head.appendChild(sc);});}
 const Live={on:false,rev:0,key:'',url:'',t:null,
   open(){if(!APP){toast('La diffusion se lance depuis l\'appli Android.');return;} if(!this.on)this.start(); this.ui(); modal('#liveBox',true);},
   start(){let info={}; try{info=JSON.parse(window.Android.liveStart()||'{}');}catch(e){}
@@ -4490,7 +4511,7 @@ async function withImages(songs){
 /* ---------- import : photos, images, PDF ---------- */
 const IMP={pages:[],song:null};
 function openSheetImport(song){
-  IMP.song=song||null; IMP.pages=[]; $('#shiTitle').value=song?song.q:''; $('#shiTitle').disabled=!!song;
+  IMP.song=song||null; IMP.pages=[]; IMP.txt=null; $('#shiTxt').hidden=true; $('#shiTitle').value=song?song.q:''; $('#shiTitle').disabled=!!song;
   $('#shiCreate').textContent=song?'Enregistrer les pages':'Créer le morceau'; $('#shiPhoto').hidden=!(APP&&window.Android.takePhoto);
   if(song)(song.pages||[]).forEach(p=>IMP.pages.push({pid:p.pid,w:p.w,h:p.h,ann:p.ann||[],old:true}));
   shiDraw(); modal('#shImp',true);
@@ -4504,14 +4525,17 @@ function shiDraw(){
 async function shiAdd(src){try{const pg=await makePage(src,0); IMP.pages.push({pid:uid(),...pg,ann:[]}); shiDraw();}catch(e){toast('Image illisible');}}
 $('#shiImgs').onchange=async e=>{const fs=[...e.target.files]; e.target.value=''; for(const f of fs){const u=URL.createObjectURL(f); await shiAdd(u); URL.revokeObjectURL(u);}};
 $('#shiPdf').onchange=async e=>{const fs=[...(e.target.files||[])]; e.target.value=''; if(!fs.length)return;
-  if(fs.length>1&&!IMP.song){ // plusieurs PDF (ex. exportés de MobileSheets) : un morceau par fichier
+  if(fs.length>1&&!IMP.song){modal('#shImp',false); bulkOpen(fs); return;}
+  if(false){
     let n=0; for(const [k,f] of fs.entries()){const pages=[]; try{await pdfToPages(f,async d=>{pages.push(await storePage(d));},(p,t)=>{$('#shiInfo').textContent=`PDF ${k+1} / ${fs.length} · page ${p} / ${t}…`;});}catch(er){toast('PDF illisible : '+f.name); continue;}
       if(!pages.length)continue; S.songs.unshift({id:uid(),q:fileTitle(f.name),text:'',folder:'',tags:[],target:null,capo:null,view:'grille',notes:'',tempo:'',dur:'',tabs:[],up:Date.now(),added:Date.now(),kind:'sheet',pages}); n++;}
     save(); renderAll(); modal('#shImp',false); toast(n+' partition'+(n>1?'s':'')+' ajoutée'+(n>1?'s':'')); return;}
   const f=fs[0]; if(!IMP.song&&!$('#shiTitle').value.trim())$('#shiTitle').value=fileTitle(f.name);
+  if(!IMP.song){pdfText(f).then(t=>{if(!t.ok)return; IMP.txt=t; $('#shiTxtN').textContent=t.nc+' lignes d\'accords'; $('#shiTxt').hidden=false; if(t.title&&$('#shiTitle').value===fileTitle(f.name))$('#shiTitle').value=(t.artist?t.artist+' - ':'')+t.title;}).catch(()=>{});}
   try{await pdfToPages(f,d=>shiAdd(d),(p,t)=>{$('#shiInfo').textContent='PDF : page '+p+' / '+t+'…';});}catch(er){toast('PDF illisible'); console.log(er);} shiDraw();
 };
 $('#shiPhoto').onclick=()=>{window._photoFor='sheet'; window.Android.takePhoto();};
+$('#shiTxtGo').onclick=()=>{const t=IMP.txt; if(!t)return; $('#newTitle').value=$('#shiTitle').value.trim()||t.title||'Nouveau morceau'; const s=newSong({text:t.text}); modal('#shImp',false); renderAll(); openViewer([entryOf(s)],0); toast('Importé en texte : vérifie les accords dans ✎ Éditer');};
 $('#shiPages').onclick=async e=>{const b=e.target.closest('[data-a]'); if(!b)return; const i=+b.dataset.i, P=IMP.pages, p=P[i];
   if(b.dataset.a==='d'){P.splice(i,1);}
   else if(b.dataset.a==='l'&&i>0){[P[i-1],P[i]]=[P[i],P[i-1]];}
@@ -4552,6 +4576,7 @@ $$('#newBox [data-new]').forEach(b=>b.onclick=async()=>{const k=b.dataset.new;
     setTimeout(()=>$('#newPasteTxt').focus(),50); return;}
   modal('#newBox',false);
   if(k==='gp'){const f=$('#gpFile'); f.value=''; f.click(); return;}
+  if(k==='bulk'){modal('#newBox',false); bulkOpen([]); return;}
   if(k==='sheet'){openSheetImport(null); $('#shiTitle').value=$('#newTitle').value.trim(); return;}
   if(k==='text'){const s=newSong(); openEditor(s,null); return;}
   if(k==='grid'){const s=newSong({view:'accords',bgrid:{per:4,meter:4,secs:[{n:'Couplet',bars:[[''],[''],[''],['']]}],form:[0]}}); openBG(entryOf(s),0,0); return;}
@@ -4656,6 +4681,51 @@ function gpTabs(score,tr,blockOf){
   });
   return out;
 }
+
+/* ---------- import en lot : plusieurs fichiers, on choisit le mode de chacun et l'ordre ---------- */
+const BULK={items:[]};
+const bkKind=f=>/\.pdf$/i.test(f.name)||f.type==='application/pdf'?'pdf':/\.(gp|gp3|gp4|gp5|gpx|gp7)$/i.test(f.name)?'gp':/\.(xml|musicxml|mxl)$/i.test(f.name)?'xml':/^image\//.test(f.type)||/\.(jpe?g|png|webp|heic)$/i.test(f.name)?'img':/\.(txt|cho|chopro|chordpro|crd)$/i.test(f.name)||/^text\//.test(f.type)?'txt':'?';
+function bulkOpen(fs){BULK.items=[]; $('#bulkPl').checked=false; $('#bulkPlName').value='Import du '+new Date().toLocaleDateString('fr-FR'); modal('#bulkBox',true); bulkAddFiles(fs); bulkDraw();}
+async function bulkAddFiles(fs){
+  for(const f of fs){const it={id:uid(),f,kind:bkKind(f),title:fileTitle(f.name),mode:'',info:'analyse…'}; BULK.items.push(it); bulkDraw();
+    try{
+      if(it.kind==='pdf'){const t=await pdfText(f); it.txt=t.ok?t:null; it.mode=t.ok?'text':'sheet'; if(t.ok&&t.title)it.title=(t.artist?t.artist+' - ':'')+t.title; it.info=t.pages+' page(s)'+(t.ok?' · texte reconnu : '+t.nc+' lignes d\'accords':' · image');}
+      else if(it.kind==='gp'||it.kind==='xml'){const sc=await gpLoad(f); it.score=sc; it.syl=GP.syl; const t=(sc.title||'').trim(), a=(sc.artist||sc.music||'').trim(); if(t)it.title=a?a+' - '+t:t; it.mode='gp'; it.info=sc.masterBars.length+' mesures · '+sc.tracks.length+' piste(s)';}
+      else if(it.kind==='txt'){const t=await f.text(); it.text=t; it.mode='text'; const ti=/\{\s*(?:t|title)\s*:\s*([^}]+)\}/i.exec(t), ar=/\{\s*(?:st|subtitle|artist)\s*:\s*([^}]+)\}/i.exec(t); if(ti)it.title=(ar?ar[1].trim()+' - ':'')+ti[1].trim(); it.info=t.split('\n').length+' lignes';}
+      else if(it.kind==='img'){it.mode='sheet'; it.info='photo';}
+      else {it.mode=''; it.info='format inconnu : ignoré'; it.err=1;}
+    }catch(e){it.err=1; it.info='illisible : '+(e&&e.message||e);}
+    bulkDraw();}
+}
+function bulkDraw(){
+  const L=BULK.items, opt=it=>it.kind==='pdf'?`<select data-m="${it.id}">${it.txt?`<option value="text"${it.mode==='text'?' selected':''}>Texte (accords)</option>`:''}<option value="sheet"${it.mode==='sheet'?' selected':''}>Partition (image)</option></select>`
+    :`<span class="lab">${{gp:'Guitar Pro',xml:'MusicXML',txt:'Texte',img:'Partition'}[it.kind]||''}</span>`;
+  $('#bulkList').innerHTML=L.map((it,i)=>`<div class="bkrow${it.err?' err':''}" data-i="${i}"><span class="drag" aria-label="Déplacer">⠿</span><span class="bkn">${i+1}</span><div class="bkt"><input type="text" data-t="${it.id}" value="${esc(it.title)}"${it.err?' disabled':''}><small>${esc(it.f.name)} · ${esc(it.info)}</small></div>${opt(it)}<button class="bkx" data-x="${it.id}" aria-label="Retirer">✕</button></div>`).join('')||'<p class="lab">Ajoute des fichiers.</p>';
+  const ok=L.filter(x=>!x.err&&x.mode).length; $('#bulkN').textContent=L.length?ok+' morceau'+(ok>1?'x':'')+' à importer':''; $('#bulkGo').disabled=!ok||L.some(x=>x.info==='analyse…');
+  $('#bulkGo').textContent=ok?'Importer '+ok+' morceau'+(ok>1?'x':''):'Importer';
+}
+dragify($('#bulkList'),'.drag','.bkrow',{onDrop:(el,over,after)=>{const L=BULK.items, a=L[+el.dataset.i], b=L[+over.dataset.i]; if(!a||!b||a===b)return; L.splice(L.indexOf(a),1); let j=L.indexOf(b); if(after)j++; L.splice(j,0,a); bulkDraw();}});
+$('#bulkList').addEventListener('input',e=>{const id=e.target.dataset.t; if(id){const it=BULK.items.find(x=>x.id===id); if(it)it.title=e.target.value;}});
+$('#bulkList').addEventListener('change',e=>{const id=e.target.dataset.m; if(id){const it=BULK.items.find(x=>x.id===id); if(it)it.mode=e.target.value;}});
+$('#bulkList').addEventListener('click',e=>{const b=e.target.closest('[data-x]'); if(!b)return; BULK.items=BULK.items.filter(x=>x.id!==b.dataset.x); bulkDraw();});
+$('#bulkAdd').onclick=()=>{const f=$('#bulkFile'); f.value=''; f.click();};
+$('#bulkFile').onchange=e=>{const fs=[...(e.target.files||[])]; e.target.value=''; if(fs.length)bulkAddFiles(fs);};
+$('#bulkGo').onclick=async()=>{
+  const L=BULK.items.filter(x=>!x.err&&x.mode), made=[]; $('#bulkGo').disabled=true;
+  for(const [k,it] of L.entries()){$('#bulkN').textContent=`Import ${k+1} / ${L.length}…`;
+    try{let s=null; const base={id:uid(),q:(it.title||fileTitle(it.f.name)).trim(),text:'',folder:'',tags:[],target:null,capo:null,view:'grille',notes:'',tempo:'',dur:'',tabs:[],up:Date.now(),added:Date.now()+k};
+      if(it.mode==='text'&&it.kind==='pdf')s={...base,text:it.txt.text};
+      else if(it.mode==='text')s={...base,text:normText(it.text)};
+      else if(it.mode==='gp'){GP.syl=it.syl; const tr=gpAnalyse(it.score); s={...base,...gpBuild(it.score,gpLeads(tr)[0]||null,gpPicks(tr))};}
+      else if(it.mode==='sheet'){const pages=[]; if(it.kind==='pdf')await pdfToPages(it.f,async d=>{pages.push(await storePage(d));}); else {const u=URL.createObjectURL(it.f); pages.push(await storePage(u)); URL.revokeObjectURL(u);} if(pages.length)s={...base,kind:'sheet',pages};}
+      if(s)made.push(s);
+    }catch(e){toast('Échec : '+it.f.name);}
+  }
+  S.songs.unshift(...made);
+  if($('#bulkPl').checked&&made.length){const l={id:uid(),name:$('#bulkPlName').value.trim()||'Import',date:'',notes:'',items:made.map(s=>({sid:s.id,notes:''})),up:Date.now()}; S.lists.push(l);}
+  save(); renderAll(); if(typeof renderLists==='function')renderLists(); modal('#bulkBox',false);
+  toast(made.length+' morceau'+(made.length>1?'x':'')+' importé'+(made.length>1?'s':'')+($('#bulkPl').checked&&made.length?' · playlist créée':''));
+};
 $('#gpFile').onchange=async e=>{
   const f=e.target.files[0]; if(!f)return; toast('Lecture de '+f.name+'…');
   let at; try{at=await loadAlphaTab();}catch(err){toast('Lecteur Guitar Pro indisponible (pas de connexion ?)'); return;}
@@ -4668,25 +4738,31 @@ $('#gpFile').onchange=async e=>{
   $('#gpTitle').value=$('#newTitle').value.trim()||(a?a+' - '+t:t);
   $('#gpFmt').textContent=/\.(xml|musicxml|mxl)$/i.test(f.name)?'MusicXML':'Guitar Pro';
   $('#gpInfo').textContent=`${score.masterBars.length} mesures · ${score.tracks.length} piste(s)`+(score.tempo?` · ♩ ${score.tempo}`:'');
-  const leads=tr.filter(x=>x.ly.size||x.ch.size).sort((x,y)=>(y.ly.size*10+y.ch.size)-(x.ly.size*10+x.ch.size));
+  const leads=gpLeads(tr);
   $('#gpLead').innerHTML=leads.length?`<select id="gpLeadSel">${leads.map(x=>`<option value="${x.ti}">${esc(x.name)} — ${x.ch.size} accords${x.ly.size?', '+x.ly.size+' syllabes':''}</option>`).join('')}<option value="-1">Ne pas importer</option></select>`:'<span class="lab">Pas d\'accords ni de paroles dans ce fichier.</span>';
-  const str=tr.filter(x=>x.str&&x.notes); let pick=str.filter(x=>/guit|gtr|bass|basse|acou|elec/i.test(x.name)&&!/voi|vox|chant|choir|chœur|chor/i.test(x.name)); if(!pick.length)pick=str.slice(0,1); if(pick.length>3)pick=pick.slice(0,3);
+  const pick=gpPicks(tr);
   $('#gpTracks').innerHTML=tr.map(x=>x.str&&x.notes?`<label class="gptr"><input type="checkbox" data-ti="${x.ti}"${pick.includes(x)?' checked':''}><b>${esc(x.name)}</b><small>${x.str} cordes · ${x.notes} notes</small></label>`
     :x.perc?`<div class="gptr"><input type="checkbox" disabled><b>${esc(x.name)}</b><small>batterie : pas encore importée</small></div>`:'').join('')||'<span class="lab">Aucune piste de tablature.</span>';
   modal('#newBox',false); modal('#gpBox',true);
 };
-$('#gpCreate').onclick=()=>{
-  const score=GP.score; if(!score)return; const sel=$('#gpLeadSel'), lead=sel&&+sel.value>=0?GP.tr[+sel.value]:null;
+function gpBuild(score,lead,tabTr){
   const blocks=lead?gpText(score,lead):gpSections(score).filter(x=>x.n).map(x=>'['+x.n+']');
-  // un bloc par section : les tablatures se rangent juste après leur section
   const secs=gpSections(score); let bi=0; const map=secs.map(sc=>{const has=lead?true:!!sc.n; return has?++bi:bi;});
   const blockOf=si=>blocks.length?Math.min(blocks.length,map[si]):Infinity;
-  const tabs=[]; $$('#gpTracks input[data-ti]:checked').forEach(c=>tabs.push(...gpTabs(score,GP.tr[+c.dataset.ti],blockOf)));
+  const tabs=[]; tabTr.forEach(t=>tabs.push(...gpTabs(score,t,blockOf)));
   const g=lead?gpGrid(score,lead):null, cap=lead&&lead.t.staves[0]&&lead.t.staves[0].capo||0;
+  return {text:blocks.join('\n\n'),tabs,tempo:score.tempo?String(Math.round(score.tempo)):'',...(g?{bgrid:g}:{}),...(cap?{capoInfo:cap}:{})};
+}
+const gpLeads=tr=>tr.filter(x=>x.ly.size||x.ch.size).sort((x,y)=>(y.ly.size*10+y.ch.size)-(x.ly.size*10+x.ch.size));
+function gpPicks(tr){const str=tr.filter(x=>x.str&&x.notes); let pick=str.filter(x=>/guit|gtr|bass|basse|acou|elec/i.test(x.name)&&!/voi|vox|chant|choir|chœur|chor/i.test(x.name)); if(!pick.length)pick=str.slice(0,1); return pick.slice(0,3);}
+async function gpLoad(f){const at=await loadAlphaTab(); const buf=new Uint8Array(await f.arrayBuffer()); const se=new at.Settings(); if(/\.gp[345]$/i.test(f.name))se.importer.encoding='windows-1252';
+  const score=at.importer.ScoreLoader.loadScoreFromBytes(buf,se); GP.syl=/\.(xml|musicxml)$/i.test(f.name)?xmlSyllabics(new TextDecoder().decode(buf)):null; return score;}
+$('#gpCreate').onclick=()=>{
+  const score=GP.score; if(!score)return; const sel=$('#gpLeadSel'), lead=sel&&+sel.value>=0?GP.tr[+sel.value]:null;
+  const tabTr=$$('#gpTracks input[data-ti]:checked').map(c=>GP.tr[+c.dataset.ti]), o=gpBuild(score,lead,tabTr);
   $('#newTitle').value=$('#gpTitle').value.trim()||'Nouveau morceau';
-  const s=newSong({text:blocks.join('\n\n'),tabs,tempo:score.tempo?String(Math.round(score.tempo)):'',...(g?{bgrid:g}:{}),...(cap?{capoInfo:cap}:{})});
-  modal('#gpBox',false); renderAll(); openViewer([entryOf(s)],0);
-  toast('Importé : '+(blocks.length?'accords/paroles, ':'')+tabs.length+' tablature(s)'+(g?', grille basse':''));
+  const s=newSong(o); modal('#gpBox',false); renderAll(); openViewer([entryOf(s)],0);
+  toast('Importé : '+(o.text?'accords/paroles, ':'')+o.tabs.length+' tablature(s)'+(o.bgrid?', grille basse':''));
 };
 $('#newPasteOk').onclick=()=>{
   const t=$('#newPasteTxt').value; if(!t.trim()){toast('Colle d\'abord la grille'); return;}
@@ -4854,6 +4930,39 @@ $('#anWd').onclick=e=>{const b=e.target.closest('[data-w]'); if(!b)return; AN.wd
 $('#anStamps').onclick=e=>{const b=e.target.closest('[data-st]'); if(!b)return; AN.stamp=b.dataset.st; anStamp(AN.stamp);};
 $('#anChords').onclick=e=>{const b=e.target.closest('button'); if(!b)return; if(b.dataset.other){chordDialog({mode:'pick',r:null,cb:n=>{AN.chord=n; anChordsDraw(); anStamp('chord');}}); return;} AN.chord=b.textContent; anChordsDraw(); anStamp('chord');};
 /* ---------- pages d'une partition : vignettes, ajout, rotation, recadrage, repères ---------- */
+
+/* ---------- PDF « texte » (ex. Ultimate Guitar) : on relit les lignes pour retrouver accords + paroles ---------- */
+async function pdfText(f){
+  await loadScript('pdf.min.js'); const L=window.pdfjsLib; L.GlobalWorkerOptions.workerSrc='pdf.worker.min.js';
+  const doc=await L.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise, out=[];
+  for(let n=1;n<=doc.numPages;n++){
+    const pg=await doc.getPage(n), tc=await pg.getTextContent(), st=tc.styles||{};
+    const it=tc.items.filter(x=>x.str!=null&&x.transform).map(x=>({s:x.str,x:x.transform[4],y:x.transform[5],w:x.width||0,h:Math.hypot(x.transform[2],x.transform[3])||10,mono:/mono|courier|consol/i.test((st[x.fontName]||{}).fontFamily||'')||/mono|courier|consol/i.test(x.fontName||'')}));
+    // largeur d'un caractère : la plus fréquente parmi les textes à chasse fixe (sinon parmi tous)
+    const base=(it.some(x=>x.mono)?it.filter(x=>x.mono):it).filter(x=>x.s.length>=4&&x.w), ws=base.map(x=>x.w/x.s.length).sort((a,b)=>a-b);
+    const med=ws.length?ws[ws.length>>1]:5, near=base.filter(x=>Math.abs(x.w/x.s.length-med)<med*.08);
+    const cw=near.length?near.reduce((a,x)=>a+x.w,0)/near.reduce((a,x)=>a+x.s.length,0):med;
+    const ref0=it.filter(x=>x.s.trim()), ref=ref0.some(x=>x.mono)?ref0.filter(x=>x.mono):ref0, xs={};
+    ref.forEach(x=>{const k=x.x.toFixed(0); xs[k]=(xs[k]||0)+1;}); const x0m=+(Object.entries(xs).sort((a,b)=>b[1]-a[1])[0]||[0])[0], x0=Math.min(x0m,...ref.filter(x=>x.x>=x0m-cw*.6).map(x=>x.x));
+    const rows=[]; it.filter(x=>x.s.trim().length).sort((a,b)=>b.y-a.y||a.x-b.x).forEach(x=>{let r=rows.find(r=>Math.abs(r.y-x.y)<Math.max(2,x.h*.35)); if(!r){r={y:x.y,h:x.h,items:[]}; rows.push(r);} r.items.push(x);});
+    rows.sort((a,b)=>b.y-a.y);
+    let lastY=null, lastH=10; const pageOut=[];
+    rows.forEach(r=>{r.items.sort((a,b)=>a.x-b.x); let line='';
+      r.items.forEach(x=>{const col=Math.max(0,Math.round((x.x-x0)/cw)); if(line.length<col)line=line.padEnd(col); else if(line.length>col&&line&&!/\s$/.test(line)&&!/^\s/.test(x.s))line+=' '; line+=x.s;});
+      if(lastY!=null&&lastY-r.y>lastH*2.1)pageOut.push(''); pageOut.push(line.replace(/\s+$/,'')); lastY=r.y; lastH=r.h;});
+    const ind=Math.min(...pageOut.filter(l=>l.trim()).map(l=>l.match(/^ */)[0].length),99); out.push(...pageOut.map(l=>l.slice(Math.min(ind,l.match(/^ */)[0].length))),'');
+  }
+  let lines=out.filter(l=>!/^\s*page\s*\d+\s*\/\s*\d+\s*$/i.test(l)&&!/ultimate-guitar\.com|tabs\.ultimate|^\s*\d+\s*\/\s*\d+\s*$/i.test(l));
+  // titre « X Chords by » + artiste (en-tête Ultimate Guitar)
+  let title='', artist='';
+  for(let i=0;i<Math.min(lines.length,8);i++){const m=/^\s*(.+?)\s+(?:chords|tabs?|bass tabs?|ukulele chords|accords)\s+by\s*(.*)$/i.exec(lines[i]); if(m){title=m[1].trim(); artist=m[2].trim()||(lines.slice(i+1).find(l=>l.trim())||'').trim(); break;}}
+  const meta=lines.filter(l=>/^\s*(capo|tuning|accordage)\b/i.test(l)).slice(0,2);
+  const first=lines.findIndex(l=>/^\s*\[[^\]]+\]\s*$/.test(l));
+  if(first>0)lines=[...meta.filter(l=>/capo/i.test(l)),...lines.slice(first)];
+  const text=lines.join('\n').replace(/\n{3,}/g,'\n\n').trim();
+  const p=parseSheet(text), nc=p.lines.filter(x=>x.t==='c').length, nl=p.lines.filter(x=>x.t==='l').length;
+  return {text,title,artist,ok:text.length>120&&nc>=3&&nl>=2,nc,nl,pages:doc.numPages};
+}
 async function pdfToPages(f,onPage,info){
   await loadScript('pdf.min.js'); const L=window.pdfjsLib; L.GlobalWorkerOptions.workerSrc='pdf.worker.min.js';
   const doc=await L.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;
