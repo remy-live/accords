@@ -614,6 +614,9 @@ body.fiche-on main{max-width:none;margin:0 490px 0 0}
 body.inscene #spEmbed{bottom:12px}
 .newbox{width:min(760px,96vw)!important;max-width:none!important}
 #newPaste textarea{width:100%;box-sizing:border-box;font:14px/1.4 ui-monospace,Menlo,monospace}
+.gpbox{max-width:620px}.gph{margin:12px 0 6px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+.gptr{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px}.gptr input{width:22px;height:22px}.gptr b{flex:1}.gptr small{color:var(--mute)}
+#gpLead select{width:100%}
 .newgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}.newgrid[hidden]{display:none}
 .newgrid button{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:16px;min-height:96px;border-radius:14px}
 .newgrid button b{font-size:18px}.newgrid button span{font-size:13px;opacity:.7;font-weight:400}
@@ -1260,12 +1263,23 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
     <button data-new="sheet"><b>📄 Photo / PDF</b><span>Une partition existante à importer</span></button>
     <button data-new="ug" class="nug"><b>🌐 Ultimate Guitar</b><span>Chercher le titre et importer la grille</span></button>
     <button data-new="paste"><b>📋 Coller</b><span>Une grille copiée ailleurs (UG, ChordPro…)</span></button>
+    <button data-new="gp"><b>🎼 Guitar Pro / MusicXML</b><span>Tablatures, accords et paroles d'un fichier .gp, .gpx, .musicxml…</span></button>
   </div>
   <div id="newPaste" hidden>
     <textarea id="newPasteTxt" rows="9" spellcheck="false" placeholder="Colle ici la grille (accords au-dessus des paroles, [Couplet], Capo 2…)"></textarea>
     <div class="row"><span class="lab grow" id="newPasteInfo"></span><button class="pri" id="newPasteOk">Créer le morceau</button></div>
   </div>
   <details id="newMulti"><summary>Ajouter plusieurs titres d'un coup (une chanson par ligne)</summary><div id="newMultiBox"></div></details>
+</div></div>
+<!-- ===== Import Guitar Pro / MusicXML ===== -->
+<input type="file" id="gpFile" accept=".gp,.gp3,.gp4,.gp5,.gpx,.gp7,.xml,.musicxml,.mxl,application/vnd.recordare.musicxml+xml,application/vnd.recordare.musicxml" hidden>
+<div id="gpBox" class="modal" hidden><div class="box gpbox">
+  <h2><span>Importer <span id="gpFmt"></span></span> <button class="close">✕</button></h2>
+  <div class="opt"><span>Titre</span><input type="text" id="gpTitle" class="grow" autocomplete="off"></div>
+  <span class="lab" id="gpInfo"></span>
+  <h4 class="gph">Accords et paroles</h4><div id="gpLead"></div>
+  <h4 class="gph">Tablatures</h4><div id="gpTracks"></div>
+  <div class="row"><span class="lab grow">Tout reste modifiable ensuite : texte, grille basse et tablatures.</span><button class="pri" id="gpCreate">Créer le morceau</button></div>
 </div></div>
 <!-- ===== Partition : import ===== -->
 <div id="shImp" class="modal" hidden><div class="box shibox">
@@ -4537,11 +4551,143 @@ $$('#newBox [data-new]').forEach(b=>b.onclick=async()=>{const k=b.dataset.new;
     $('#newPasteInfo').textContent=k==='ug'?'Sur Ultimate Guitar : sélectionne la grille, Copier, puis colle-la ici.':'';
     setTimeout(()=>$('#newPasteTxt').focus(),50); return;}
   modal('#newBox',false);
+  if(k==='gp'){const f=$('#gpFile'); f.value=''; f.click(); return;}
   if(k==='sheet'){openSheetImport(null); $('#shiTitle').value=$('#newTitle').value.trim(); return;}
   if(k==='text'){const s=newSong(); openEditor(s,null); return;}
   if(k==='grid'){const s=newSong({view:'accords',bgrid:{per:4,meter:4,secs:[{n:'Couplet',bars:[[''],[''],[''],['']]}],form:[0]}}); openBG(entryOf(s),0,0); return;}
   if(k==='blank'){const s=newSong({kind:'sheet',pages:[await blankPage()]}); openAnnot(entryOf(s),0);}
 });
+
+/* ======================================================================
+   Import Guitar Pro (.gp3 à .gp7, .gpx) et MusicXML, lus par alphaTab (chargé seulement à ce moment)
+   -> texte accords + paroles, grille du bassiste et tablatures ASCII éditables
+   ====================================================================== */
+let atP=null;
+function loadAlphaTab(){
+  if(window.alphaTab&&window.alphaTab.importer)return Promise.resolve(window.alphaTab);
+  const load=src=>new Promise((ok,ko)=>{const sc=document.createElement('script'); sc.src=src; sc.onload=()=>window.alphaTab&&window.alphaTab.importer?ok(window.alphaTab):ko(); sc.onerror=ko; document.head.appendChild(sc);});
+  return atP||(atP=load('alphaTab.min.js').catch(()=>load('https://cdn.jsdelivr.net/npm/@coderline/alphatab@1.8.4/dist/alphaTab.min.js')).catch(()=>{atP=null; throw new Error('alphaTab');}));
+}
+const GP={};
+const gpStringed=st=>!st.isPercussion&&st.tuning&&st.tuning.length>=3;
+const gpBeats=bar=>(bar&&bar.voices&&bar.voices[0]?bar.voices[0].beats:[]);
+function gpSections(score){ // [{n, a, b}] indices de masterBars
+  const out=[]; score.masterBars.forEach((mb,i)=>{const sc=mb.section; const n=sc?String(sc.text||sc.marker||'').trim():null;
+    if(i===0||sc)out.push({n:n==null?'':n,a:i,b:i}); else out[out.length-1].b=i;});
+  return out;
+}
+// syllabes MusicXML : alphaTab perd les traits d'union, on les relit dans le fichier
+function xmlSyllabics(xml){try{const d=new DOMParser().parseFromString(xml,'application/xml'); return [...d.querySelectorAll('part')].map(p=>[...p.querySelectorAll('note')].map(n=>{const l=n.querySelector('lyric'); if(!l)return null; const sy=(l.querySelector('syllabic')||{}).textContent||'single'; return /begin|middle/.test(sy);}).filter(x=>x!=null));}catch(e){return [];}}
+function gpLyricsOf(track,ti){ // syllabe par beat (avec « - » quand le mot continue)
+  const st=track.staves[0], hy=(GP.syl&&GP.syl[ti])||null; let h=0; const m=new Map();
+  st.bars.forEach(bar=>gpBeats(bar).forEach(be=>{const t=be.lyrics&&be.lyrics[0]; if(t&&t.trim()){let x=t.trim(); if(hy&&!/-$/.test(x)&&hy[h])x+='-'; h++; m.set(be,x);}}));
+  if(!m.size){ // paroles écrites en « texte de temps » (fréquent dans les vieux .gp5)
+    const tx=new Map(); st.bars.forEach(bar=>gpBeats(bar).forEach(be=>{const t=be.text&&be.text.replace(/_+/g,' ').replace(/\s*-\s*/g,'-').trim(); if(t)tx.set(be,t);}));
+    if(tx.size>=8)return tx;}
+  return m;
+}
+function gpChordsOf(track){const m=new Map(); track.staves.forEach(st=>st.bars.forEach(bar=>gpBeats(bar).forEach(be=>{const c=be.chord&&be.chord.name; if(c&&String(c).trim())m.set(be,String(c).trim());}))); return m;}
+function gpAnalyse(score){
+  const tr=score.tracks.map((t,ti)=>{const st=t.staves[0]||{}; const ly=gpLyricsOf(t,ti), ch=gpChordsOf(t);
+    let notes=0; (st.bars||[]).forEach(b=>gpBeats(b).forEach(be=>{notes+=be.notes.length;}));
+    return {t,ti,name:(t.name||'Piste '+(ti+1)).trim(),ly,ch,notes,str:gpStringed(st)?st.tuning.length:0,perc:!!st.isPercussion};});
+  return tr;
+}
+// ---- texte accords + paroles ----
+function gpText(score,lead){
+  const secs=gpSections(score), st=lead.t.staves[0], blocks=[];
+  const perLine=lead.ly.size/Math.max(1,score.masterBars.length)>5?2:4;
+  secs.forEach(sc=>{const lines=[];
+    for(let a=sc.a;a<=sc.b;a+=perLine){
+      let ly='', ch='', end=-1, hyph=false, anyL=false; let lineLy=false; for(let bi=a;bi<=Math.min(sc.b,a+perLine-1);bi++)if(gpBeats(st.bars[bi]).some(be=>lead.ly.has(be)))lineLy=true;
+      for(let bi=a;bi<=Math.min(sc.b,a+perLine-1);bi++){
+        const bar=st.bars[bi], mb=score.masterBars[bi], len=3840*mb.timeSignatureNumerator/mb.timeSignatureDenominator;
+        const bars0=bi-a;
+        gpBeats(bar).forEach(be=>{const c=lead.ch.get(be), y=lead.ly.get(be);
+          if(c){let col=Math.max(ly.length,end+1); if(!lineLy)col=Math.max(col,Math.round(bars0*10+be.playbackStart/len*10));
+            if(ly.length<col&&lineLy)ly=ly.padEnd(col,hyph?'-':' '); ch=ch.padEnd(col)+c; end=ch.length;}
+          if(y){anyL=true; hyph=/-$/.test(y); ly+=y.replace(/-+$/,'')+(hyph?'':' ');}
+        });
+      }
+      ch=ch.replace(/\s+$/,''); ly=ly.replace(/\s+$/,'')+(hyph&&ly.trim()?'-':'');
+      if(ch)lines.push(ch); if(anyL&&ly.trim())lines.push(ly);
+    }
+    const head=sc.n?['['+sc.n+']']:[]; if(head.length||lines.length)blocks.push([...head,...lines].join('\n'));
+  });
+  return blocks;
+}
+// ---- grille du bassiste ----
+function gpGrid(score,lead){
+  if(!lead.ch.size)return null; const st=lead.t.staves[0]; let cur=''; const meters={};
+  const secs=gpSections(score).map(sc=>{const bars=[];
+    for(let bi=sc.a;bi<=sc.b;bi++){const mb=score.masterBars[bi], m=mb.timeSignatureNumerator===3?3:4, len=3840*mb.timeSignatureNumerator/mb.timeSignatureDenominator; meters[m]=(meters[m]||0)+1;
+      const at=Array(m).fill(null); gpBeats(st.bars[bi]).forEach(be=>{const c=lead.ch.get(be); if(c){const k=Math.min(m-1,Math.floor(be.playbackStart/len*m)); if(at[k]==null)at[k]=c;}});
+      const b=at.map(c=>(c!=null?(cur=c):cur)||''); bars.push(bgFromBeats(b,m));}
+    return {n:sc.n||'',bars};});
+  const meter=(meters[3]||0)>(meters[4]||0)?3:4;
+  secs.forEach(sc=>{if(!sc.n)sc.n=secs.length>1?'Partie':'Morceau';});
+  return {per:4,meter,secs,form:secs.map((_,i)=>i)};
+}
+// ---- tablatures ----
+function gpBarAscii(bar,n){
+  const rows=Array.from({length:n},()=>'');
+  gpBeats(bar).forEach(be=>{
+    const w0={1:8,2:6,4:4,8:3,16:2,32:2,64:2}[be.duration]||3, cells=Array(n).fill('');
+    be.notes.forEach(no=>{const r=n-no.string; if(r<0||r>=n||no.isTieDestination)return; let t=no.isDead?'x':String(no.fret);
+      if(no.isHammerPullOrigin&&no.hammerPullDestination)t+=no.hammerPullDestination.fret>=no.fret?'h':'p';
+      else if(no.slideOutType&&no.slideTarget)t+=no.slideTarget.fret<no.fret?'\\':'/';
+      else if(no.hasBend)t+='b'; else if(no.vibrato)t+='~';
+      cells[r]=no.isGhost?'('+t+')':t;});
+    const w=Math.max(w0,...cells.map(c=>c.length+1)); cells.forEach((c,r)=>rows[r]+=c.padEnd(w,'-'));
+  });
+  if(!rows[0])rows.forEach((_,r)=>rows[r]='-'.repeat(8));
+  return rows;
+}
+function gpTabs(score,tr,blockOf){
+  const st=tr.t.staves[0], tun=st.tuning, n=tun.length, cu=tun.map(m=>({n:noteName(m,false,false),m})), key=matchPreset(cu);
+  const lab=key!=='custom'?TUNINGS[key].s:cu.map(x=>x.n), lw=Math.max(...lab.map(l=>l.length)), out=[];
+  gpSections(score).forEach((sc,si)=>{let prev=null;
+    for(let a=sc.a;a<=sc.b;a+=4){const bs=[]; for(let bi=a;bi<=Math.min(sc.b,a+3);bi++)bs.push(st.bars[bi]);
+      if(!bs.some(b=>gpBeats(b).some(be=>be.notes.length)))continue;
+      const parts=bs.map(b=>gpBarAscii(b,n)), rows=lab.map((l,r)=>l.padEnd(lw)+' |'+parts.map(p=>p[r]).join('|')+'|'), key2=rows.join('\n');
+      if(prev&&prev.key===key2){prev.k++; prev.tb.name=prev.base+' ×'+prev.k; continue;}
+      const base=tr.name+(sc.n?' · '+sc.n:''), tb={name:base,tuning:key,rows,after:blockOf(si)}; if(key==='custom')tb.custom=cu;
+      out.push(tb); prev={key:key2,k:1,tb,base};}
+  });
+  return out;
+}
+$('#gpFile').onchange=async e=>{
+  const f=e.target.files[0]; if(!f)return; toast('Lecture de '+f.name+'…');
+  let at; try{at=await loadAlphaTab();}catch(err){toast('Lecteur Guitar Pro indisponible (pas de connexion ?)'); return;}
+  const buf=new Uint8Array(await f.arrayBuffer()); let score;
+  try{const se=new at.Settings(); if(/\.gp[345]$/i.test(f.name))se.importer.encoding='windows-1252'; score=at.importer.ScoreLoader.loadScoreFromBytes(buf,se);}catch(err){toast('Fichier non reconnu : '+(err&&err.message||err)); return;}
+  GP.score=score; GP.file=f.name; GP.syl=null;
+  if(/\.(xml|musicxml)$/i.test(f.name)){try{GP.syl=xmlSyllabics(new TextDecoder().decode(buf));}catch(err){}}
+  const tr=gpAnalyse(score); GP.tr=tr;
+  const t=(score.title||'').trim()||f.name.replace(/\.[^.]+$/,''), a=(score.artist||score.music||'').trim();
+  $('#gpTitle').value=$('#newTitle').value.trim()||(a?a+' - '+t:t);
+  $('#gpFmt').textContent=/\.(xml|musicxml|mxl)$/i.test(f.name)?'MusicXML':'Guitar Pro';
+  $('#gpInfo').textContent=`${score.masterBars.length} mesures · ${score.tracks.length} piste(s)`+(score.tempo?` · ♩ ${score.tempo}`:'');
+  const leads=tr.filter(x=>x.ly.size||x.ch.size).sort((x,y)=>(y.ly.size*10+y.ch.size)-(x.ly.size*10+x.ch.size));
+  $('#gpLead').innerHTML=leads.length?`<select id="gpLeadSel">${leads.map(x=>`<option value="${x.ti}">${esc(x.name)} — ${x.ch.size} accords${x.ly.size?', '+x.ly.size+' syllabes':''}</option>`).join('')}<option value="-1">Ne pas importer</option></select>`:'<span class="lab">Pas d\'accords ni de paroles dans ce fichier.</span>';
+  const str=tr.filter(x=>x.str&&x.notes); let pick=str.filter(x=>/guit|gtr|bass|basse|acou|elec/i.test(x.name)&&!/voi|vox|chant|choir|chœur|chor/i.test(x.name)); if(!pick.length)pick=str.slice(0,1); if(pick.length>3)pick=pick.slice(0,3);
+  $('#gpTracks').innerHTML=tr.map(x=>x.str&&x.notes?`<label class="gptr"><input type="checkbox" data-ti="${x.ti}"${pick.includes(x)?' checked':''}><b>${esc(x.name)}</b><small>${x.str} cordes · ${x.notes} notes</small></label>`
+    :x.perc?`<div class="gptr"><input type="checkbox" disabled><b>${esc(x.name)}</b><small>batterie : pas encore importée</small></div>`:'').join('')||'<span class="lab">Aucune piste de tablature.</span>';
+  modal('#newBox',false); modal('#gpBox',true);
+};
+$('#gpCreate').onclick=()=>{
+  const score=GP.score; if(!score)return; const sel=$('#gpLeadSel'), lead=sel&&+sel.value>=0?GP.tr[+sel.value]:null;
+  const blocks=lead?gpText(score,lead):gpSections(score).filter(x=>x.n).map(x=>'['+x.n+']');
+  // un bloc par section : les tablatures se rangent juste après leur section
+  const secs=gpSections(score); let bi=0; const map=secs.map(sc=>{const has=lead?true:!!sc.n; return has?++bi:bi;});
+  const blockOf=si=>blocks.length?Math.min(blocks.length,map[si]):Infinity;
+  const tabs=[]; $$('#gpTracks input[data-ti]:checked').forEach(c=>tabs.push(...gpTabs(score,GP.tr[+c.dataset.ti],blockOf)));
+  const g=lead?gpGrid(score,lead):null, cap=lead&&lead.t.staves[0]&&lead.t.staves[0].capo||0;
+  $('#newTitle').value=$('#gpTitle').value.trim()||'Nouveau morceau';
+  const s=newSong({text:blocks.join('\n\n'),tabs,tempo:score.tempo?String(Math.round(score.tempo)):'',...(g?{bgrid:g}:{}),...(cap?{capoInfo:cap}:{})});
+  modal('#gpBox',false); renderAll(); openViewer([entryOf(s)],0);
+  toast('Importé : '+(blocks.length?'accords/paroles, ':'')+tabs.length+' tablature(s)'+(g?', grille basse':''));
+};
 $('#newPasteOk').onclick=()=>{
   const t=$('#newPasteTxt').value; if(!t.trim()){toast('Colle d\'abord la grille'); return;}
   let txt=t; if(!$('#newTitle').value.trim()){const m=/^\s*(.+?)\s+(?:chords|tab|accords)\s+(?:by|par)\s+(.+?)\s*$/im.exec(t); if(m){$('#newTitle').value=m[2].trim()+' - '+m[1].trim(); txt=t.replace(m[0],'').replace(/^\s*\n/,'');}}
