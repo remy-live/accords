@@ -245,6 +245,7 @@ pre .k{color:var(--warn);font-weight:700}
 #vstage.scroll{overflow-y:auto;display:block}
 #vstage pre{margin:0;padding:0;background:none;line-height:1.25;overflow:hidden;color:#eee;flex:none}
 #vstage.scroll pre{overflow:visible;white-space:pre-wrap}
+#vstage.scroll.nowrapx{overflow-x:auto}#vstage.scroll.nowrapx pre .x{white-space:pre}
 #vstage .vpg{display:flex;gap:12px}#vstage .vpg pre{white-space:pre}#vstage .vpgsep{height:1px;background:#2a2a2e;margin:10px 0}
 #vstage pre .c{color:var(--hl,#fb923c)}#vstage pre .s{color:#2dd4bf}#vstage pre .t{color:#777}#vstage pre .x{color:#ddd}
 #vstage pre+pre{border-left:1px solid #2a2a2e;padding-left:12px}
@@ -1538,6 +1539,8 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
     <div class="row"><button id="vzReset2">Taille auto</button></div>
     <span class="lab">Colonnes</span>
     <div class="row vzcols" id="vzCols"><button data-c="0">Auto</button><button data-c="1">1</button><button data-c="2">2</button><button data-c="3">3</button><button data-c="4">4</button></div>
+    <span class="lab">Tablatures trop larges</span>
+    <div class="row vzcols" id="vzTab"><button data-w="1">↩ Couper aux mesures</button><button data-w="0">↔ Défiler de côté</button></div>
     <span class="lab">Retenu pour ce morceau. Tu peux aussi pincer l'écran.</span>
   </div>
   <button id="vhandle" aria-label="Ouvrir le panneau"><i></i><i></i></button>
@@ -1983,6 +1986,21 @@ function wrapPairs(lines,T){
     }
     if(c.trim())out.push({...(C.t==='c'?C:{t:'c',raw:-2}),s:c,k0,off}); if(pair||C.t==='l')out.push({...(pair?N:C),s:l,off});
     if(pair)i++;
+  }
+  return out;
+}
+// tablatures (et lignes de batterie) plus larges que l'écran : on les coupe en morceaux, de préférence sur une barre de mesure
+function wrapTabs(lines,T){
+  const out=[]; for(let i=0;i<lines.length;){
+    if(lines[i].t!=='x'){out.push(lines[i]); i++; continue;}
+    const grp=[]; while(i<lines.length&&lines[i].t==='x')grp.push(lines[i++]);
+    const rows=grp.map(L=>L.s), W=Math.max(...rows.map(r=>r.length)); if(W<=T){out.push(...grp); continue;}
+    const lbl=rows.map(r=>(/^\s*[A-Za-z0-9·]{0,3}\s*[|:]/.exec(r)||[''])[0]), lw=Math.max(...lbl.map(x=>x.length)), per=Math.max(8,T-lw);
+    let a=lw, first=true;
+    while(a<W){let b=Math.min(W,a+per);
+      if(b<W){let k=b; while(k>a+4&&!rows.every(r=>k>=r.length||r[k-1]==='|'))k--; if(k>a+4)b=k;}
+      grp.forEach((L,ri)=>{const seg=rows[ri].slice(a,b); if(!seg.trim()&&!first)return; out.push({...L,s:(first?lbl[ri].padEnd(lw):lbl[ri].padEnd(lw))+seg});});
+      if(b<W)out.push({t:'b',s:''}); a=b; first=false;}
   }
   return out;
 }
@@ -4033,13 +4051,14 @@ function vRender(){
       let pages=paginate(baseLines,W,H,zs); if(nc){const all=pages.flat(); pages=[]; for(let i=0;i<all.length;i+=nc)pages.push(all.slice(i,i+nc));}
       st.classList.add('scroll'); st.innerHTML=pages.map(pg=>`<div class="vpg" style="min-height:${H}px">${pg.map(c=>`<pre style="font-size:${zs}px">${c.map(L=>lineHTML(L)).join('\n')}</pre>`).join('')}</div>`).join('<div class="vpgsep"></div>'); $('#vscroll').hidden=false;
     } else {
-    const wl=V.edit?lines:wrapPairs(baseLines,Math.max(16,Math.floor(W/(zs*RATIO))));
+    const T=Math.max(16,Math.floor(W/(zs*RATIO))), wl=V.edit?lines:(S.tabWrap!==false?wrapTabs(wrapPairs(baseLines,T),T-2):wrapPairs(baseLines,T));
     st.classList.add('scroll'); st.innerHTML=`<pre style="font-size:${zs}px">${wl.map(L=>lineHTML(L)).join('\n')}</pre>`; $('#vscroll').hidden=false;
     }
   } else {
     const zs=Math.floor(size*z*10)/10;
     st.classList.remove('scroll'); st.innerHTML=f.cols.map(c=>`<pre style="font-size:${zs}px">${c.map(L=>lineHTML(L)).join('\n')}</pre>`).join(''); $('#vscroll').hidden=true;
   }
+  st.classList.toggle('nowrapx',S.tabWrap===false);
   st.scrollTop=keepTop; if(!same&&V.page===-1&&st.classList.contains('scroll'))st.scrollTop=st.scrollHeight;
   if((!fixed||S.vfixMode!=='pages')&&!isSheet(e.s))V.page=0;
   $('#vbig').hidden=S.bigBtns===false||!!V.edit; $('#bscroll').hidden=$('#vscroll').hidden; bigWake();
@@ -5651,9 +5670,10 @@ $('#vworkBtn').onclick=()=>{const e=V.list[V.i]; if(!e||FOLLOW)return; const on=
 async function vEditNote(){const e=V.list[V.i]; if(!e||FOLLOW)return; const v=await ask('Note du morceau','Intro seul, enchaîner, qui chante…',null,e.s.notes||''); if(v==null)return; e.s.notes=v.trim(); touch(e.s); save(); if(e.s._el)update(e.s); vRender();}
 $('#vnoteBtn').onclick=vEditNote;
 // taille du texte retenue pour chaque morceau (boutons, pincement)
-function vZoomUI(e){e=e||V.list[V.i]; $$('#vzCols button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.c===(e?(+e.s.cols||0):0))); const z=e?(+e.s.zoom||1):1, t=z===1?'Auto':Math.round(z*100)+' %'; $('#vzVal').textContent=t; $('#vzVal2').textContent=t; $('#vsize').setAttribute('aria-pressed',z!==1);}
-function vSetZoom(z){const e=V.list[V.i]; if(!e)return; z=Math.max(.5,Math.min(3,Math.round(z*20)/20)); if(Math.abs(z-1)<.01)delete e.s.zoom; else e.s.zoom=z; if(!FOLLOW||e.mine){touch(e.s); save();} V.lastKey=null; vRender();}
-const zStep=d=>{const e=V.list[V.i]; if(e)vSetZoom((+e.s.zoom||1)+d);};
+function vZoomUI(e){e=e||V.list[V.i]; $$('#vzTab button').forEach(b=>b.setAttribute('aria-pressed',(+b.dataset.w===1)===(S.tabWrap!==false))); $$('#vzCols button').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.c===(e?(+e.s.cols||0):0))); const z=e?(+e.s.zoom||1):1, t=z===1?'Auto':Math.round(z*100)+' %'; $('#vzVal').textContent=t; $('#vzVal2').textContent=t; $('#vsize').setAttribute('aria-pressed',z!==1);}
+function vSetZoom(z){const e=V.list[V.i]; if(!e)return; z=Math.max(.25,Math.min(5,Math.round(z*20)/20)); if(Math.abs(z-1)<.01)delete e.s.zoom; else e.s.zoom=z; if(!FOLLOW||e.mine){touch(e.s); save();} V.lastKey=null; vRender();}
+const zStep=d=>{const e=V.list[V.i]; if(!e)return; const z=+e.s.zoom||1; vSetZoom(z+(z>=2?d*2.5:z<.6?d*.5:d));};
+$('#vzTab').onclick=ev=>{const b=ev.target.closest('button'); if(!b)return; S.tabWrap=b.dataset.w==='1'; save(); V.lastKey=null; vRender(); vZoomUI();};
 $('#vzDn').onclick=$('#vzDn2').onclick=()=>zStep(-.1); $('#vzUp').onclick=$('#vzUp2').onclick=()=>zStep(.1); $('#vzReset').onclick=$('#vzReset2').onclick=()=>vSetZoom(1);
 $('#vzCols').onclick=ev=>{const b=ev.target.closest('button'), e=V.list[V.i]; if(!b||!e)return; const c=+b.dataset.c; if(c)e.s.cols=c; else delete e.s.cols; if(!FOLLOW||e.mine){touch(e.s); save();} V.lastKey=null; vRender();};
 $('#vsize').onclick=ev=>{ev.stopPropagation(); const b=$('#vzoomBox'); b.hidden=!b.hidden; $('#vmenu').hidden=true; $('#vcapoBox').hidden=true; vZoomUI();};
