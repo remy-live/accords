@@ -3039,6 +3039,8 @@ addEventListener('resize',()=>wpClose());
 
 /* ----- appui long sur un accord puis glisser pour l'aligner sur une lettre (scène en édition, aperçu de l'éditeur) ----- */
 function chordDrag(st,getOps){let D=null;
+  st.addEventListener('touchstart',e=>{if(getOps()&&e.target.closest('.ch')&&e.touches.length===1)e.preventDefault();},{passive:false});
+  st.addEventListener('touchmove',e=>{if(D&&D.on)e.preventDefault();},{passive:false});
   st.addEventListener('contextmenu',e=>{if(getOps()&&e.target.closest('.ch'))e.preventDefault();});
   st.addEventListener('pointerdown',e=>{
     const ops=getOps(); if(!ops)return; const ch=e.target.closest('.ch'); if(!ch)return;
@@ -3055,7 +3057,8 @@ function chordDrag(st,getOps){let D=null;
   });
   // un glissement de côté qui part d'un accord le déplace tout de suite ; vers le haut ou le bas, on laisse défiler
   addEventListener('pointermove',e=>{if(!D)return; if(!D.on){const dx=e.clientX-D.x0, dy=e.clientY-D.y0; if(Math.hypot(dx,dy)>8){clearTimeout(D.t); if(Math.abs(dx)>Math.abs(dy)*1.2)D.start(); else {D=null; return;}} else return;} e.preventDefault(); D.move(e.clientX,e.clientY);},{passive:false});
-  const end=e=>{if(!D)return; clearTimeout(D.t); const d=D; D=null; if(!d.on)return;
+  const end=e=>{if(!D)return; clearTimeout(D.t); const d=D; D=null;
+    if(!d.on){if(e.type==='pointerup'&&Math.hypot(e.clientX-d.x0,e.clientY-d.y0)<10){d.ops.noClick(0); d.ch.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:e.clientX,clientY:e.clientY})); d.ops.noClick(Date.now());} return;}
     if(d.hl)d.hl.remove(); d.ch.classList.remove('chdrag','chdel'); d.ch.style.transform=''; d.ops.noClick(Date.now());
     if(e.type==='pointercancel')return;
     if(d.del){d.ops.del(d.raw,d.k); toast('Accord supprimé'); return;}
@@ -5772,6 +5775,7 @@ $('#vstage').addEventListener('click',ev=>{
     if(Date.now()-(V.noClick||0)<450)return;
     const c=t.closest('.ch'); if(c){chordSwap(cur,c); return;}
     const ly=t.closest('.ly,.c'); if(ly&&+ly.dataset.raw>=0){wordPick(cur,ly,ev); return;}
+    return; // en retouche, le texte ne tourne pas les pages : flèches ‹ › en bas
   }
   const e=ev;
   const ch=t.closest('.ch'); if(ch&&cur){showVDiag(cur,ch); return;}
@@ -5807,7 +5811,7 @@ $('#vlite').onclick=()=>{const e=V.list[V.i]; if(!e)return;
     if((e.s.view||'grille')!=='grille'&&(e.s.view||'grille')!=='accords'){toast('Passe en vue Grille (accords + paroles) pour retoucher les accords'); return;}
     if((e.s.view||'grille')==='accords'){openBG(e,0,0); return;}}
   V.lite=!V.lite; wpClose(); $('#vlite').setAttribute('aria-pressed',V.lite); $('#vstage').classList.toggle('lite',V.lite);
-  if(V.lite)toast('Retouche : touche un mot pour poser un accord, un accord pour le changer · appui long pour le glisser');};
+  if(V.lite)toast('Retouche : touche un mot pour poser un accord, un accord pour le changer, glisse un accord pour le déplacer · pages : flèches ‹ ›');};
 function showVDiag(cur,ch){
   const name=ch.textContent, svg=diagramSVG(name), d=$('#vdiag');
   V.dctx={e:cur,raw:+ch.parentElement.dataset.raw,k:+ch.dataset.k,shown:name};
@@ -5838,7 +5842,7 @@ $('#vcDn').onclick=()=>vSetCapo((+V.list[V.i].s.capoInfo||0)-1); $('#vcUp').oncl
 $('#vcNone').onclick=()=>vSetCapo(0);
 let tx=null,ty=null;
 $('#vstage').addEventListener('touchstart',e=>{if((V.lite||V.edit)&&e.target.closest('.ch')){tx=null;return;} tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
-$('#vstage').addEventListener('touchend',e=>{if(tx==null)return; if(V.pinch||e.touches.length){tx=null;return;} const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty; tx=null; if(Date.now()-(V.noClick||0)<450)return; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)) vGo(dx<0?1:-1);});
+$('#vstage').addEventListener('touchend',e=>{if(tx==null)return; if(V.pinch||e.touches.length){tx=null;return;} const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty; tx=null; if(V.lite||Date.now()-(V.noClick||0)<450)return; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)) vGo(dx<0?1:-1);});
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&$('#vinline')){closeInline();return;}
   if(e.key==='Escape'){const m=$$('.modal').find(x=>!x.hidden); if(m){if(m.id==='tabBox')tabStop(); if(m.id==='drumBox')drStop(); m.hidden=true;return;} if(!$('#vtext').hidden){$('#vtext').hidden=true;return;}}
