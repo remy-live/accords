@@ -3044,16 +3044,17 @@ function chordDrag(st,getOps){let D=null;
     const ops=getOps(); if(!ops)return; const ch=e.target.closest('.ch'); if(!ch)return;
     const line=ch.parentElement, raw=+line.dataset.raw; if(!(raw>=0))return;
     D={ch,line,raw,k:+ch.dataset.k,x0:e.clientX,y0:e.clientY,on:false,ops};
-    D.t=setTimeout(()=>{if(!D)return; D.on=true; wpClose(); try{getSelection().removeAllRanges();}catch(e){}
+    D.start=()=>{if(!D||D.on)return; D.on=true; wpClose(); try{getSelection().removeAllRanges();}catch(e){}
       const cr=ch.getBoundingClientRect(), nx=line.nextElementSibling, ly=nx&&nx.classList.contains('ly')&&+nx.dataset.raw===raw+1?nx:st.querySelector(`.ly[data-raw="${raw+1}"]`), ref=ly||line, rr=ref.getClientRects()[0]||ref.getBoundingClientRect(); D.off=+ref.dataset.off||0;
       D.left0=cr.left; D.ref=rr; D.cw=charW(ref)||cr.width/Math.max(1,ch.textContent.length); D.col=null;
       ch.classList.add('chdrag'); const hl=document.createElement('div'); hl.className='wphl wpcol'; document.body.appendChild(hl); D.hl=hl; ops.noClick(Date.now()+60000);
-      try{navigator.vibrate&&navigator.vibrate(15);}catch(e){} D.move(D.x0,D.y0);},420);
+      try{navigator.vibrate&&navigator.vibrate(15);}catch(e){} D.move(D.x0,D.y0);}; D.t=setTimeout(D.start,420);
     D.move=(x,y)=>{const dx=x-D.x0, dy=y-D.y0, col=Math.max(0,Math.round((D.left0+dx-D.ref.left)/D.cw)); D.col=col; D.del=dy<-70;
       const sx=D.ref.left+col*D.cw; D.ch.style.transform=`translate(${sx-D.left0}px,${D.del?dy:0}px)`; D.ch.classList.toggle('chdel',D.del);
       D.hl.style.cssText=`left:${sx-1}px;top:${D.ref.top-1}px;width:${D.cw+2}px;height:${D.ref.height+2}px`+(D.del?';display:none':'');};
   });
-  addEventListener('pointermove',e=>{if(!D)return; if(!D.on){if(Math.hypot(e.clientX-D.x0,e.clientY-D.y0)>8){clearTimeout(D.t); D=null;} return;} e.preventDefault(); D.move(e.clientX,e.clientY);},{passive:false});
+  // un glissement de côté qui part d'un accord le déplace tout de suite ; vers le haut ou le bas, on laisse défiler
+  addEventListener('pointermove',e=>{if(!D)return; if(!D.on){const dx=e.clientX-D.x0, dy=e.clientY-D.y0; if(Math.hypot(dx,dy)>8){clearTimeout(D.t); if(Math.abs(dx)>Math.abs(dy)*1.2)D.start(); else {D=null; return;}} else return;} e.preventDefault(); D.move(e.clientX,e.clientY);},{passive:false});
   const end=e=>{if(!D)return; clearTimeout(D.t); const d=D; D=null; if(!d.on)return;
     if(d.hl)d.hl.remove(); d.ch.classList.remove('chdrag','chdel'); d.ch.style.transform=''; d.ops.noClick(Date.now());
     if(e.type==='pointercancel')return;
@@ -5836,8 +5837,8 @@ $('#vcapo').onclick=ev=>{ev.stopPropagation(); if(FOLLOW)return; const b=$('#vca
 $('#vcDn').onclick=()=>vSetCapo((+V.list[V.i].s.capoInfo||0)-1); $('#vcUp').onclick=()=>vSetCapo((+V.list[V.i].s.capoInfo||0)+1);
 $('#vcNone').onclick=()=>vSetCapo(0);
 let tx=null,ty=null;
-$('#vstage').addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
-$('#vstage').addEventListener('touchend',e=>{if(tx==null)return; if(V.pinch||e.touches.length){tx=null;return;} const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty; tx=null; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)) vGo(dx<0?1:-1);});
+$('#vstage').addEventListener('touchstart',e=>{if((V.lite||V.edit)&&e.target.closest('.ch')){tx=null;return;} tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+$('#vstage').addEventListener('touchend',e=>{if(tx==null)return; if(V.pinch||e.touches.length){tx=null;return;} const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty; tx=null; if(Date.now()-(V.noClick||0)<450)return; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)) vGo(dx<0?1:-1);});
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&$('#vinline')){closeInline();return;}
   if(e.key==='Escape'){const m=$$('.modal').find(x=>!x.hidden); if(m){if(m.id==='tabBox')tabStop(); if(m.id==='drumBox')drStop(); m.hidden=true;return;} if(!$('#vtext').hidden){$('#vtext').hidden=true;return;}}
