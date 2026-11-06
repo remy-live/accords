@@ -349,6 +349,8 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 .vthead{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .vthead #vtextCancel{width:44px;height:44px;font-size:22px;padding:0}
 .vtt{display:flex;flex-direction:column;min-width:0}.vtt span{font-size:11px;font-weight:800;color:var(--hl,#fb923c);letter-spacing:.6px}.vtt b{font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:320px}
+.vtti{display:flex;gap:6px}.vtti input{height:34px;padding:0 8px;font-size:15px;min-width:0}#vtTitre{width:200px;font-weight:700}#vtArtiste{width:150px}
+@media (max-width:560px){.vtt{flex:1 1 calc(100% - 60px)}.vtt>span{display:none}.vtti input{flex:1;width:auto!important}.vthead #vtextSave{margin-left:auto}}
 .vtnote{flex:1;min-width:220px;display:flex;align-items:center;gap:6px}.vtnote input{flex:1}
 .vttempo input{width:70px}
 .vtitem .vtnote{flex:1}
@@ -1659,7 +1661,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
   <div id="vtext" hidden>
     <div class="vthead">
       <button id="vtextCancel" aria-label="Annuler et fermer">‹</button>
-      <div class="vtt"><span>ÉDITION</span><b id="vtextTitle"></b></div>
+      <div class="vtt"><span>ÉDITION</span><div class="vtti"><input type="text" id="vtTitre" placeholder="Titre" autocomplete="off" aria-label="Titre"><input type="text" id="vtArtiste" placeholder="Artiste" autocomplete="off" aria-label="Artiste"></div></div>
       <div class="vtnote"><input type="text" id="vtextNotes" placeholder="Note du morceau : intro seul, qui chante…"></div>
       <label class="lab vttempo">♩ <input type="number" id="vtextTempo" class="num" placeholder="bpm"></label>
       <span class="seg vtmode" id="vtMode"><button data-m="text">✎ Texte</button><button data-m="both" class="vtboth">⇆ Les deux</button><button data-m="prev">👆 Aperçu</button></span>
@@ -4628,7 +4630,7 @@ $$('#newBox [data-new]').forEach(b=>b.onclick=async()=>{const k=b.dataset.new;
   if(k==='gp'){const f=$('#gpFile'); f.value=''; f.click(); return;}
   if(k==='bulk'){modal('#newBox',false); bulkOpen([]); return;}
   if(k==='sheet'){openSheetImport(null); $('#shiTitle').value=$('#newTitle').value.trim(); return;}
-  if(k==='text'){const s=newSong(); openEditor(s,null); return;}
+  if(k==='text'){const s=newSong(); openEditor(s,null); if(!$('#vtTitre').value)setTimeout(()=>$('#vtTitre').focus(),60); return;}
   if(k==='grid'){const s=newSong({view:'accords',bgrid:{per:4,meter:4,secs:[{n:'Couplet',bars:[[''],[''],[''],['']]}],form:[0]}}); openBG(entryOf(s),0,0); return;}
   if(k==='blank'){const s=newSong({kind:'sheet',pages:[await blankPage()]}); openAnnot(entryOf(s),0);}
 });
@@ -5453,7 +5455,7 @@ function openEditor(song,entry){
     const put=n=>tabs.filter(t=>t.after===n&&!t.done).forEach(t=>{t.done=1; out.push((t.tb.name?'['+t.tb.name+']\n':'')+t.tb.rows.join('\n'));});
     put(0); blocks.forEach((b,i)=>{out.push(b); put(i+1);}); tabs.filter(t=>!t.done).forEach(t=>{t.done=1; out.push((t.tb.name?'['+t.tb.name+']\n':'')+t.tb.rows.join('\n'));});
     txt=out.join('\n\n'); ED.tabsMerged=true;}
-  $('#vtextTitle').textContent=song.q; $('#vtextArea').value=txt; $('#vtextNotes').value=song.notes||''; $('#vtextTempo').value=song.tempo||'';
+  {const sp=split(song.q||''); $('#vtTitre').value=/^Nouveau morceau( \d+)?$/.test(sp.titre)&&!sp.artiste?'':sp.titre; $('#vtArtiste').value=sp.artiste;} $('#vtextArea').value=txt; $('#vtextNotes').value=song.notes||''; $('#vtextTempo').value=song.tempo||'';
   $('#vtextItemWrap').hidden=!ED.item; $('#vtextItem').value=ED.item?ED.item.notes||'':'';
   vtSetMode(S.vtMode||'text',true); $('#vtext').classList.toggle('full',!!S.vtFull); $('#vtFull').setAttribute('aria-pressed',!!S.vtFull); V.vtWarnOpen=false;
   $('#vtext').hidden=false; vtKbd(false); vtAnalyze(); vtCaret();
@@ -5462,7 +5464,7 @@ $('#vedText').onclick=()=>{const e=V.list[V.i]; if(e)openEditor(e.s,e);};
 $('#vtextCancel').onclick=()=>{$('#vtext').hidden=true;};
 $('#vtextSave').onclick=()=>{
   if(!ED)return; const s=ED.s;
-  beginEdit(s); s.text=$('#vtextArea').value; if(ED.tabsMerged)s.tabs=[]; s.notes=$('#vtextNotes').value; s.tempo=$('#vtextTempo').value?+$('#vtextTempo').value:'';
+  beginEdit(s); {const t=$('#vtTitre').value.trim(), a=$('#vtArtiste').value.trim(); if(t||a){const q=a&&t?a+' - '+t:(t||a); if(q!==s.q){s.q=q; delete s._r;}}} s.text=$('#vtextArea').value; if(ED.tabsMerged)s.tabs=[]; s.notes=$('#vtextNotes').value; s.tempo=$('#vtextTempo').value?+$('#vtextTempo').value:'';
   if(ED.item&&ED.list){ED.item.notes=$('#vtextItem').value; touch(ED.list);}
   $('#vtext').hidden=true; afterEdit(s);
   if(s._el){const n=s._el.querySelector('.notes'), t=s._el.querySelector('.tempo'); if(n)n.value=s.notes||''; if(t)t.value=s.tempo||'';}
