@@ -744,7 +744,13 @@ body.inscene #spEmbed{bottom:12px}
 .pchip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pchip b{font-size:15px}
 #viewer .vbar .pchip.in{background:var(--hl,#fb923c);color:var(--onhl,#111)}.pchip:active{transform:scale(.94)}
 #viewer.sun .pchip{border-color:#b00000;color:#b00000}#viewer.sun .pchip.in{background:#b00000;color:#fff}
-#vaddOpts{display:grid;gap:6px}#vaSort{width:100%}
+#vaddOpts{display:grid;gap:6px}#vcurOpts select{width:100%}
+#vlive,#vfollowBtn{display:none!important}#vgroup{position:relative}#vgroupN{position:absolute;top:4px;right:6px;background:#22c55e;color:#04210f;font:700 11px/16px system-ui;font-style:normal;min-width:16px;height:16px;border-radius:8px;padding:0 4px}
+.grpbox [hidden],.sendbox [hidden]{display:none!important}.sendbox{max-width:520px}.sdqr{background:#fff;border-radius:12px;padding:10px;margin:10px auto;width:min(360px,100%)}.sdqr svg{width:100%;height:auto;display:block}#sdWho{flex-wrap:wrap;gap:8px}
+.grpbox{max-width:560px}.grprole{margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid #333;display:grid;gap:6px}.grprole .gopt{display:flex;gap:10px;align-items:center;text-align:left;cursor:pointer}.grprole .gopt input{flex:none;width:20px;height:20px}
+#vstage .ly.kon{background:rgba(56,189,248,.16);box-shadow:0 0 0 2px #38bdf8;border-radius:6px;-webkit-box-decoration-break:clone;box-decoration-break:clone}.grpstate{padding:10px 12px;border-radius:10px;background:rgba(127,127,127,.14);color:inherit;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}.grpstate b{flex:1 1 auto}
+.grpbig{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grpbig button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 10px;border-radius:14px;font-size:16px}.grpbig i{font-style:normal;font-size:30px}.grpbig small{opacity:.7;font-size:12px}
+#grpList{display:grid;gap:8px;margin:8px 0}#grpList button{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;font-size:16px}#vaSort{width:100%}
 #vaView{display:grid!important;grid-template-columns:repeat(4,1fr);gap:4px;width:100%}#vaView button{font-size:14px;padding:8px 4px;white-space:nowrap;margin:0}
 #spbar{display:flex;align-items:center;gap:8px;padding:6px 10px;border-top:1px solid #2a2a2e;background:#121214;padding-bottom:max(6px,env(safe-area-inset-bottom))}
 #spbar[hidden]{display:none}
@@ -1255,6 +1261,24 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
 </div></div>
 
 <!-- ===== Partager : quoi, à qui ===== -->
+<div id="sendBox" class="modal" hidden><div class="box sendbox">
+  <h2><span id="sdName">Envoyer</span> <button class="close">✕</button></h2>
+  <span class="seg" id="sdWhat"><button data-w="song">Ce morceau</button><button data-w="list">Toute la playlist</button></span>
+  <div id="sdQr" class="sdqr"></div><p class="lab" id="sdInfo"></p>
+  <h3>Musiciens connectés</h3><div id="sdWho" class="row"></div>
+  <div class="row"><button id="sdOther">WhatsApp, mail, fichier, PDF…</button></div>
+</div></div>
+<div id="grpBox" class="modal" hidden><div class="box grpbox">
+  <h2>Jouer en groupe <button class="close">✕</button></h2>
+  <div id="grpState" class="grpstate"></div>
+  <div class="grpbig"><button id="grpLead"><i>📡</i><b>Je mène</b><small>Les autres suivent mon écran</small></button><button id="grpFollow"><i>👥</i><b>Je suis</b><small>Je suis l'écran d'un autre musicien</small></button></div>
+  <div class="grprole"><div class="row"><b>🎤 Paroles au projecteur</b><span class="grow"></span><span id="grpKaraSt" class="lab"></span></div>
+    <label class="gopt"><input type="checkbox" id="grpPilot"> C'est moi qui fais avancer les paroles (appui court de ma pédale)</label>
+    <label class="gopt"><input type="checkbox" id="grpHL"> Entourer sur ma partition ce qui est projeté</label>
+    <div class="row"><button id="grpKaraLink">📷 Relier le karaoké</button></div></div>
+  <div id="grpFind" hidden><h3>Musiciens qui mènent sur ce Wi-Fi</h3><div id="grpList"></div>
+    <div class="row"><button id="grpAgain">↻ Chercher encore</button><button id="grpScan">📷 Scanner son QR</button><button id="grpAddr">Taper l'adresse</button></div></div>
+</div></div>
 <div id="shareSel" class="modal" hidden><div class="box shbox">
   <h2>Partager <span class="shsteps"><span data-st="0">1 · Quoi</span><span data-st="1">2 · À qui</span></span><button class="close">✕</button></h2>
   <div id="shStep0" class="shcols">
@@ -1525,6 +1549,8 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
         <button id="vkara" class="cl"><i>📺</i>Projecteur</button>
         <button id="vlive" class="cl"><i>📡</i>Diffuser</button><button id="vmsgItem" class="cl" hidden><i>📣</i>Message</button>
         <button id="vfollowBtn" class="cl"><i>👥</i>Suivre</button>
+        <button id="vgroup" class="cl"><i>👥</i>Groupe<em id="vgroupN" hidden></em></button>
+        <button id="vsend" class="cl"><i>📤</i>Envoyer</button>
         <button id="vcleanBtn" class="cl"><i>⛶</i>Épuré</button>
         <button id="vdispBtn" class="cl"><i>⚙</i>Réglages</button>
         <button id="vquit" class="cl"><i>✕</i>Quitter</button>
@@ -1614,6 +1640,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
     <div class="row" style="margin:0"><select id="vlpick" class="grow"></select><button id="vlnew" class="sm">+ Nouvelle</button></div>
     <div class="vsrow"><input id="vfilter" type="search" placeholder="Chercher un morceau…"><button id="vweb" title="Chercher sur le web">🌐</button></div>
     <div id="vwebMenu" hidden></div>
+    <div id="vcurOpts"><select id="vcSort" aria-label="Ordre"><option value="ordre">Ordre de la playlist</option><option value="titre">Tri : morceau</option><option value="artiste">Tri : artiste</option></select></div>
     <div id="vaddOpts"><select id="vaSort"><option value="titre">Tri : titre</option><option value="artiste">Tri : artiste</option><option value="ton">Tri : tonalité</option><option value="recent">Tri : récents</option><option value="dossier">Tri : dossier</option><option value="type">Tri : étiquette</option><option value="manuel">Tri : manuel</option></select><span class="seg" id="vaView"><button data-v="liste">☰ Liste</button><button data-v="tableau">▦ Tableau</button><button data-v="dossier">📁 Dossiers</button><button data-v="artiste">👤 Artistes</button></span></div>
     <div id="vlistHint"></div>
     <div id="vlfilt"></div>
@@ -2395,7 +2422,7 @@ window.receiveShared=function(o){
   const t=String(o&&o.text||'').trim(); if(!t){toast('Fichier vide.');return;}
   if(t[0]==='{'||t[0]==='['){importData(t,{ask:false}); return;}
   if(/#pack=/.test(t)){importLink(t); return;}
-  if(/^ACC[1-9z]/.test(t)){qrPayload(t); return;}
+  if(/^ACC[1-9zY]/.test(t)){qrPayload(t); return;}
   const title=((o.subject||'').trim()||t.split('\n').find(l=>l.trim())||'Morceau reçu').trim().slice(0,80);
   S.songs.push({id:uid(),q:title,text:normText(t),target:null,capo:null,view:'grille',open:true,notes:'',tempo:'',dur:'',tabs:[],up:Date.now(),added:Date.now()});
   save(); showTab('lib'); renderAll(); toast('Nouveau morceau : '+title);
@@ -2412,19 +2439,59 @@ async function packCode(pack){ // JSON compressé en base64url
   return 'p'+btoa(unescape(encodeURIComponent(json))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 }
 const QR_ONE=1100, QR_PART=850;
+const B45='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+function b45enc(u){let o=''; for(let i=0;i<u.length;i+=2){if(i+1<u.length){let x=u[i]*256+u[i+1]; const e=Math.floor(x/2025); x%=2025; o+=B45[x%45]+B45[Math.floor(x/45)]+B45[e];} else {const x=u[i]; o+=B45[x%45]+B45[Math.floor(x/45)];}} return o;}
+function b45dec(s){const out=[]; for(let i=0;i<s.length;i+=3){const c=[...s.slice(i,i+3)].map(ch=>B45.indexOf(ch)); if(c.some(v=>v<0)||c.length<2)throw new Error('b45'); const x=c[0]+c[1]*45+(c.length>2?c[2]*2025:0); if(c.length>2)out.push(x>>8,x&255); else out.push(x);} return new Uint8Array(out);}
+async function zip8(str){const cs=new CompressionStream('deflate-raw'); const w=cs.writable.getWriter(); w.write(new TextEncoder().encode(str)); w.close(); return new Uint8Array(await new Response(cs.readable).arrayBuffer());}
+async function unzip8(u){const ds=new DecompressionStream('deflate-raw'); const w=ds.writable.getWriter(); w.write(u); w.close(); return new Response(ds.readable).text();}
+// le strict nécessaire : pas d'identifiants, aucun champ vide
+function qrMini(pack){
+  const idx={}, s=pack.songs.map((x,i)=>{idx[x.id]=i; const y={...x,...(songById(x.id)&&!x._remote?songById(x.id):{}),target:x.target,capo:x.capo};
+    const o={q:y.q,t:normText(y.text||'').replace(/[ \t]+$/gm,'')}; if(y.target!=null)o.k=y.target; if(y.capo!=null)o.c=y.capo; if(y.capoInfo)o.ci=y.capoInfo; if(y.tempo)o.bpm=y.tempo;
+    if(y.notes)o.n=y.notes; if((y.tabs||[]).length)o.tb=y.tabs; if(validGrid(y.bgrid))o.bg=y.bgrid; if(y.view&&y.view!=='grille')o.v=y.view; if(y.up)o.u=Math.round(y.up/1000); return o;});
+  const m={s}; if(pack.from)m.f=pack.from; const l=(pack.lists||[])[0];
+  if(l)m.l={n:l.name,i:(l.items||[]).filter(it=>idx[it.sid]!=null).map(it=>{const o={x:idx[it.sid]}; if(it.target!=null)o.k=it.target; if(it.capo!=null)o.c=it.capo; return o;})};
+  return m;
+}
+function qrMaxi(m){
+  const ids=m.s.map(()=>uid());
+  return {app:'accords-paroles',version:2,from:m.f||'',
+    songs:m.s.map((o,i)=>({id:ids[i],q:o.q,text:o.t||'',target:o.k??null,capo:o.c??null,capoInfo:o.ci,tempo:o.bpm||'',notes:o.n||'',tabs:o.tb||[],bgrid:o.bg,view:o.v||'grille',up:o.u?o.u*1000:Date.now()})),
+    lists:m.l?[{id:uid(),name:m.l.n,items:(m.l.i||[]).filter(it=>ids[it.x]).map(it=>({sid:ids[it.x],target:it.k??null,capo:it.c??null,notes:'',dur:''})),up:Date.now()}]:[]};
+}
+const QR2_ONE=1900, QR2_PART=1250;
+async function qrFrames(pack){
+  if(!window.CompressionStream)return null;
+  const code=b45enc(await zip8(JSON.stringify(qrMini(pack))));
+  if(code.length<=QR2_ONE)return {frames:['ACC2:'+code+':'],info:'Ton ami scanne avec 📷 dans l\'appli Accords (aucun réseau nécessaire).'};
+  const id=Math.random().toString(36).slice(2,6).toUpperCase(), n=Math.ceil(code.length/QR2_PART);
+  if(n>16)return {frames:[],info:'Trop gros pour un QR (images ?) : envoie-le en Wi-Fi ou par fichier.'};
+  return {frames:[...Array(n)].map((_,i)=>`ACCY:${id}:${i+1}:${n}:`+code.slice(i*QR2_PART,(i+1)*QR2_PART)+':'),info:`QR animé (${n} images) : il garde son téléphone pointé jusqu'à la fin. 📷 dans l'appli Accords.`};
+}
+function qrSvgA(text){const q=qrcode(0,'L'); q.addData(text,'Alphanumeric'); q.make(); return q.createSvgTag({cellSize:4,margin:2,scalable:true});}
+let qrAnim2=null;
+async function qrInto(el,infoEl,pack){
+  clearInterval(qrAnim2); qrAnim2=null;
+  try{await loadQRGen();}catch(e){el.textContent=''; infoEl.textContent='Générateur de QR indisponible.'; return;}
+  const r=await qrFrames(pack); if(!r){el.textContent=''; infoEl.textContent='QR compact impossible sur cet appareil.'; return;}
+  infoEl.textContent=r.info; if(!r.frames.length){el.innerHTML=''; return;}
+  const svgs=r.frames.map(qrSvgA); let i=0; el.innerHTML=svgs[0];
+  if(svgs.length>1)qrAnim2=setInterval(()=>{if(!el.isConnected||el.closest('.modal[hidden]')){clearInterval(qrAnim2); qrAnim2=null; return;} i=(i+1)%svgs.length; el.innerHTML=svgs[i];},450);
+}
 let qrAnim=null, qrBrightBefore=null;
 function qrSvg(text){const q=qrcode(0,'L'); q.addData(text,'Byte'); q.make(); return q.createSvgTag({cellSize:4,margin:2,scalable:true});}
 async function showPackQR(pack,label){
   try{await loadQRGen();}catch(e){toast('Générateur de QR indisponible (internet nécessaire la première fois).');return;}
   pack={...pack,songs:pack.songs.map(({up,folder,type,view,...o})=>o)};
   const code=await packCode(pack), base=(S.shareBase||'').trim();
-  let frames, info;
-  if(base&&base.length+code.length+7<=QR_ONE){frames=[base.split('#')[0]+'#pack='+code]; info='Scanne avec l\'appareil photo ou avec 📷 dans l\'appli Accords.';}
+  let frames, info; const c2=await qrFrames(pack).catch(()=>null);
+  if(c2){frames=c2.frames; info=c2.info;}
+  else if(base&&base.length+code.length+7<=QR_ONE){frames=[base.split('#')[0]+'#pack='+code]; info='Scanne avec l\'appareil photo ou avec 📷 dans l\'appli Accords.';}
   else if(code.length+5<=QR_ONE){frames=['ACC1/'+code]; info='Scanne avec 📷 dans l\'appli Accords (aucun réseau nécessaire).';}
   else {const id=Math.random().toString(36).slice(2,6), n=Math.ceil(code.length/QR_PART); frames=[...Array(n)].map((_,i)=>`ACCz/${id}/${i+1}/${n}/`+code.slice(i*QR_PART,(i+1)*QR_PART));
     info=`QR animé (${n} images) : garde le téléphone pointé jusqu'à la fin. Scanne avec 📷 dans l'appli Accords.`;}
   $('#qrTitle').textContent=label; $('#qrInfo').textContent=info;
-  const svgs=frames.map(qrSvg); let i=0; $('#qrImg').innerHTML=svgs[0];
+  const svgs=frames.map(f=>/^ACC[2Y]:/.test(f)?qrSvgA(f):qrSvg(f)); let i=0; $('#qrImg').innerHTML=svgs[0];
   clearInterval(qrAnim); if(svgs.length>1)qrAnim=setInterval(()=>{i=(i+1)%svgs.length; $('#qrImg').innerHTML=svgs[i];},400);
   if(APP){qrBrightBefore=S.bright; try{window.Android.setBrightness(1);}catch(e){}}
   modal('#shareBox',false); modal('#qrBox',true);
@@ -2441,20 +2508,26 @@ async function decodeCode(code){
 }
 // renvoie true quand l'import est terminé (ou qu'il n'y a rien à attendre)
 async function qrPayload(t){
-  t=String(t).trim();
+  t=String(t).replace(/^[\r\n]+|[\r\n]+$/g,''); if(!/^ACC[2Y]:/.test(t))t=t.trim();
   if(/#pack=/.test(t)){await importLink(t); return true;}
   const km=/^(https?:\/\/[^/?#]+)\/?\?(?:.*&)?k=(\w+)/.exec(t);
-  if(km&&!/suivre/.test(t)){S.kara={base:km[1],k:km[2]}; save(); stopScan(); toast('🎤 Karaoké relié');
+  if(km&&!/suivre/.test(t)){S.kara={base:km[1],k:km[2]}; save(); stopScan(); if(APP){toast('🎤 Test du karaoké…'); const ok=await Kara.call({op:'search',q:''}); toast(ok?'✅ Karaoké connecté : prêt à projeter':'❌ Karaoké introuvable : tablette et projecteur sur le même Wi-Fi ?',4000);} else toast('🎤 Karaoké relié');
     if(Kara.afterLink){const f=Kara.afterLink; Kara.afterLink=null; modal('#karaBox',false); f();} else Kara.open(); return true;}
   if(/^https?:\/\/[^/]+\/\?suivre/.test(t)){
     stopScan(); const url=t, origin=url.split('/?')[0];
-    if(confirm('Diffusion d\'un musicien trouvée.\n\nOK = copier sa playlist (et son répertoire s\'il le partage)\nAnnuler = la suivre en direct')){
+    if(false){
       try{const r=await ftch(origin+'/lib?t='+Date.now(),20000); if(r.ok){const txt=await r.text(); const d=JSON.parse(txt); if(confirm(`Il partage tout son répertoire : ${d.songs.length} morceau(x), ${(d.lists||[]).length} playlist(s).\n\nOK = tout copier\nAnnuler = seulement la playlist en cours`)){importData(txt,{ask:false}); return true;}}}catch(e){}
       try{const set=await (await fetch(origin+'/set',{cache:'no-store'})).json(); importData(JSON.stringify(set),{ask:false});}catch(e){toast('Impossible de joindre la tablette : même Wi-Fi ?');}
     } else {if(APP)startFollowApp(origin); else location.href=url;}
     return true;
   }
-  let m=/^ACC1\/(.+)$/.exec(t);
+  let m=/^ACC2:([\s\S]*):$/.exec(t);
+  if(m){let data; try{data=qrMaxi(JSON.parse(await unzip8(b45dec(m[1]))));}catch(e){toast('QR illisible.'); return true;} stopScan(); openRecv(data,data.from||''); return true;}
+  m=/^ACCY:(\w+):(\d+):(\d+):([\s\S]*):$/.exec(t);
+  if(m){const [,id,i,n,part]=m, P=qrParts['Y'+id]=qrParts['Y'+id]||{n:+n,got:{}}; P.got[+i]=part; const k=Object.keys(P.got).length;
+    $('#scanInfo').textContent=`QR animé : ${k} / ${P.n} reçus…`; if(k<P.n)return false;
+    const code=[...Array(P.n)].map((_,j)=>P.got[j+1]).join(''); delete qrParts['Y'+id]; return qrPayload('ACC2:'+code+':');}
+  m=/^ACC1\/(.+)$/.exec(t);
   if(m){let data; try{data=await decodeCode(m[1]);}catch(e){toast('QR illisible.'); return true;} openRecv(data,data.from||''); return true;}
   m=/^ACCz\/(\w+)\/(\d+)\/(\d+)\/(.*)$/.exec(t);
   if(m){const [,id,i,n,part]=m, P=qrParts[id]=qrParts[id]||{n:+n,got:{}}; P.got[+i]=part; const k=Object.keys(P.got).length;
@@ -3969,7 +4042,7 @@ function openViewer(entries,start,list){
   if(!entries.length){toast('Aucun morceau rempli.');return;}
   V.list=entries; V.listRef=list||null; V.i=Math.max(0,start|0); V.edit=false; V.lastKey=null; V.page=0; V.lite=false; V.tvFollow=false; $('#vtv').setAttribute('aria-pressed','false'); $('#vstage').classList.remove('lite'); $('#vlite').setAttribute('aria-pressed','false'); $('#vtext').hidden=true; $('#vdisp').hidden=true;
   if(APP){try{window.Android.setScene(true,pedalUsesVolume());}catch(e){}}
-  const v=$('#viewer'); v.hidden=false; $('#vlist').hidden=start!=null&&start>=0; document.body.style.overflow='hidden';
+  V.curSort='ordre'; const v=$('#viewer'); v.hidden=false; $('#vlist').hidden=start!=null&&start>=0; document.body.style.overflow='hidden';
   try{const de=document.documentElement; (de.requestFullscreen||de.webkitRequestFullscreen||(()=>{})).call(de);}catch(e){}
   try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(l=>V.lock=l).catch(()=>{});}catch(e){}
   V.spKey=undefined; SP.ui(); placeMenu(); vPlace(); vRender(); vPlace(); document.body.classList.add('inscene');
@@ -4028,7 +4101,8 @@ function vRender(){
   const st=$('#vstage'), key=V.i+':'+e.s.id, same=V.lastKey===key, keepTop=same?st.scrollTop:0; V.lastKey=key;
   if(V.spKey!==e.s.id){const first=V.spKey===undefined; V.spKey=e.s.id; if(!first&&S.spot&&S.spShow&&!FOLLOW&&(S.spAuto||(S.spAuto!==false&&SP.st&&SP.st.is_playing))){if(e.s.spotify)SP.playUri(e.s.spotify.uri); else if(SP.st&&SP.st.is_playing){SP.control('PUT','/me/player/pause'); toast('Pas de titre Spotify lié à ce morceau : 🔗 pour le choisir');}} if(!$('#spbar').hidden)SP.draw();}
   $('#vtitle').textContent=e.s.q;
-  if(V.lastSong!==e.s.id&&V.tvFollow&&!FOLLOW&&Kara.linked()){const en=e; setTimeout(()=>tvSend(en,$('#vtv')),0);}
+  if(V.lastSong!==e.s.id&&(V.tvFollow&&!FOLLOW||S.karaPilot)&&Kara.linked()){const en=e; setTimeout(()=>tvSend(en,$('#vtv')),0);}
+  setTimeout(()=>{if(KHL.st)KHL.paint(); if(!KHL.t&&!KHL.busy)KHL.kick();},0);
   if(V.lastSong!==e.s.id&&V.vid&&!FOLLOW)setTimeout(()=>vidPlay(e.s),0);
   else if(V.lastSong!==e.s.id&&!$('#spEmbed').hidden)muEmbed(e.s,MUE.k&&MU[MUE.k].id(e.s)?MUE.k:muPref(e.s));
   if(V.lastSong!==e.s.id){V.lastSong=e.s.id; if(!e.preview&&!FOLLOW){S.recent=[e.s.id,...(S.recent||[]).filter(x=>x!==e.s.id)].slice(0,12); if(V.listRef&&V.listRef.id)S.lastList=V.listRef.id; save();}}
@@ -4542,9 +4616,10 @@ const Live={on:false,rev:0,key:'',url:'',t:null,
   open(){if(!APP){toast('La diffusion se lance depuis l\'appli Android.');return;} if(!this.on)this.start(); this.ui(); modal('#liveBox',true);},
   start(){let info={}; try{info=JSON.parse(window.Android.liveStart()||'{}');}catch(e){}
     if(!info.url){toast('Diffusion impossible : la tablette est-elle sur un Wi-Fi ou en partage de connexion ?');return;}
+    this.known=new Map(); toast('📡 Tu mènes : les autres font 👥 Groupe → « Je suis »',4000);
     this.on=true; this.url=info.url; this.key=''; this.libSend(); this.push(); this.ui(); clearInterval(this.t); this.t=setInterval(()=>{this.ui(); this.push();},2000);},
   libSend(){if(!this.on)return; try{window.Android.liveLib&&window.Android.liveLib(S.liveLib?JSON.stringify({app:'accords-paroles',version:2,repertoire:true,songs:S.songs.map(({_r,_el,open,hist,...o})=>o),lists:S.lists}):'');}catch(e){}},
-  stop(){try{window.Android.liveStop();}catch(e){} this.on=false; clearInterval(this.t); this.ui();},
+  stop(){try{window.Android.liveStop();}catch(e){} this.on=false; clearInterval(this.t); this.ui(); grpUI(); toast('Tu ne mènes plus');},
   push(){
     if(!this.on)return;
     if($('#viewer').hidden){try{window.Android.liveState(JSON.stringify({rev:this.rev,i:V.i,ts:Date.now(),me:meLabel(),msg:liveMsg()}));}catch(e){} return;}
@@ -4555,6 +4630,9 @@ const Live={on:false,rev:0,key:'',url:'',t:null,
     try{window.Android.liveState(JSON.stringify({rev:this.rev,i:V.i,ts:Date.now(),me:meLabel(),msg:liveMsg()}));}catch(e){}
   },
   async ui(){
+    if(this.on){const now=new Map(liveClients().all.map(c=>[c.id,(c.n||'Un musicien').split(' · ')[0]])), k=this.known||new Map();
+      now.forEach((n,id)=>{if(!k.has(id))toast('🎸 '+n+' te suit',3500);}); k.forEach((n,id)=>{if(!now.has(id))toast(n+' ne te suit plus',3000);}); this.known=now;}
+    grpUI();
     $('#liveTitle').textContent='Mon QR'+(S.me&&S.me.n?' · '+S.me.n:''); $('#liveBadge').hidden=!this.on;
     $('#liveLib').checked=!!S.liveLib; $('#vlive').setAttribute('aria-pressed',this.on); $('#liveOff').hidden=this.on; $('#liveOn').hidden=!this.on; if(!this.on)return;
     $('#liveUrl').textContent=this.url.replace(/^https?:\/\//,'').replace(/\/\?suivre$/,''); $('#liveUrl').dataset.full=this.url; const cl=liveClients();
@@ -5319,6 +5397,7 @@ function recvAnalyse(d){
 }
 function openRecv(d,from){
   const a=recvAnalyse(d); RC={d,a,from:from||d.from||''};
+  if((d.lists||[]).length){a.songs.forEach(x=>{if(x.kind==='dup')x.ch='mine';}); a.lists.forEach(x=>{if(x.kind==='dup')x.ch='merge';}); recvApply(); return;}
   if(!a.songs.some(x=>x.kind==='dup')&&!a.lists.some(x=>x.kind==='dup')){recvApply(); return;}
   recvDraw(); modal('#recvBox',true);
 }
@@ -5344,7 +5423,7 @@ $$('#recvBox [data-all]').forEach(b=>b.onclick=()=>{const v=b.dataset.all; RC.a.
 $('#rcCancel').onclick=()=>{modal('#recvBox',false); RC=null; toast('Rien n\'a été importé');};
 $('#rcOk').onclick=()=>{modal('#recvBox',false); recvApply();};
 function recvApply(){
-  const {a}=RC, who=RC.from||'reçu', map={}; let nNew=0, nUp=0, nBoth=0;
+  const {a}=RC, who=RC.from||'reçu', map={}; let nNew=0, nUp=0, nBoth=0, nAddL=0; const nHad=a.songs.filter(x=>x.kind!=='new'&&x.ch!=='theirs'&&x.ch!=='both').length;
   a.songs.forEach(x=>{const r=x.rec, from=r.id;
     if(x.kind==='new'){if(songById(r.id))r.id=uid(); S.songs.push(r); nNew++;}
     else if(x.kind==='same'||x.ch==='mine'){r.id=x.ex.id;}
@@ -5353,10 +5432,11 @@ function recvApply(){
     map[from]=r.id;});
   let nl=0; a.lists.forEach(x=>{const l=x.l, items=(l.items||[]).filter(it=>it&&it.sid).map(it=>({...it,sid:map[it.sid]||it.sid})).filter(it=>songById(it.sid));
     if(x.kind==='same'||x.ch==='mine')return;
+    if(x.kind==='dup'&&x.ch==='merge'){const have=new Set(x.ex.items.map(i=>i.sid)), add=items.filter(it=>!have.has(it.sid)); if(add.length){x.ex.items.push(...add); x.ex.up=Date.now(); nl++; nAddL+=add.length;} return;}
     if(x.kind==='dup'&&x.ch==='replace'){x.ex.items=items; x.ex.up=Date.now(); nl++; return;}
     const rec={id:(x.kind==='new'&&!listById(l.id))?String(l.id||uid()):uid(),name:x.kind==='dup'?l.name+' ('+who+')':l.name,date:l.date||'',notes:l.notes||'',items,up:Date.now()}; S.lists.push(rec); nl++;});
   save(); renderAll(); RC=null; sheetIngest(S.songs);
-  toast([nNew?nNew+' morceau(x) ajouté(s)':'',nUp?nUp+' remplacé(s)':'',nBoth?nBoth+' en double':'',nl?nl+' playlist(s)':''].filter(Boolean).join(' · ')||'Rien de nouveau : tout était déjà là');
+  toast([nNew?nNew+' morceau(x) ajouté(s)':'',nUp?nUp+' remplacé(s)':'',nBoth?nBoth+' en double':'',nHad?nHad+' déjà là (inchangé'+(nHad>1?'s':'')+')':'',nAddL?nAddL+' ajouté(s) à ta playlist':'',nl&&!nAddL?nl+' playlist(s)':''].filter(Boolean).join(' · ')||'Rien de nouveau : tout était déjà là',4500);
 }
 document.body.appendChild($('#recvAlert'));
 
@@ -5424,8 +5504,103 @@ const Follow={rev:-1,i:-1,view:null,ok:null,busy:false,at:0,miss:0,base:'',app:f
       this.miss=0; this.status(true); this.banner();
     }catch(e){if(++this.miss>=3)this.status(false);}
   },
-  status(ok){if(ok===this.ok)return; this.ok=ok; this.banner();}
+  status(ok){if(ok===this.ok)return; const was=this.ok; this.ok=ok; this.banner(); const who=(this.master||'le musicien').split(' · ')[0];
+    if(ok)toast('✅ Connecté à '+who+' : tu suis son écran',3500); else if(was)toast('⚠ Connexion perdue avec '+who+' : nouvel essai…',3500); else toast('❌ Impossible de joindre '+who+' : même Wi-Fi ? A-t-il appuyé sur « Je mène » ?',5000); grpUI();}
 };
+/* ---------- 📤 Envoyer : QR tout de suite + musiciens connectés en un geste ---------- */
+const SD={what:'song'};
+function sdPack(){
+  const e=V.list[V.i], l=isList()?V.listRef:null, ents=SD.what==='list'&&l?V.list.filter(x=>!x.preview):[e];
+  const songs=ents.map(x=>{const {_r,_el,open,hist,audio,...o}=x.s; return {...o,target:x.item&&x.item.target!=null?x.item.target:o.target,capo:x.item&&x.item.capo!=null?x.item.capo:o.capo};});
+  return {ents,list:SD.what==='list'?l:null,pack:{app:'accords-paroles',version:2,from:meName(),date:new Date().toISOString(),songs,
+    lists:SD.what==='list'&&l?[{id:l.id,name:l.name,date:l.date||'',notes:l.notes||'',items:ents.map(x=>({sid:x.s.id,target:x.item?x.item.target??null:null,capo:x.item?x.item.capo??null:null,notes:'',dur:''})),up:l.up}]:[]}};
+}
+function openSend(){const e=V.list[V.i]; if(!e){toast('Aucun morceau à envoyer');return;} SD.what='song'; $('#vmenu').hidden=true; modal('#sendBox',true); sdDraw();}
+async function sdDraw(){
+  const e=V.list[V.i], l=isList()?V.listRef:null; if(!e)return; if(!l)SD.what='song';
+  $('#sdWhat').hidden=!l; $$('#sdWhat button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.w===SD.what));
+  $('#sdName').textContent=SD.what==='list'?'Envoyer « '+l.name+' »':'Envoyer « '+e.s.q+' »';
+  const rs=shRecips();
+  $('#sdWho').innerHTML=rs.length?rs.map(r=>`<button data-k="${esc(r.key)}">📤 ${esc((r.n||'Musicien').split(' · ')[0])}</button>`).join('')+(rs.length>1?'<button data-k="*" class="pri">À tous</button>':'')
+    :'<span class="lab">Personne de connecté en Wi-Fi : fais-lui scanner le QR avec 📷 dans son appli Accords.</span>';
+  $('#sdQr').innerHTML='<p class="lab" style="color:#333;text-align:center">Préparation du QR…</p>';
+  const {pack}=sdPack(); await qrInto($('#sdQr'),$('#sdInfo'),pack);
+}
+$('#sdWhat').onclick=ev=>{const b=ev.target.closest('[data-w]'); if(!b)return; SD.what=b.dataset.w; sdDraw();};
+$('#sdWho').onclick=async ev=>{const b=ev.target.closest('[data-k]'); if(!b)return; const k=b.dataset.k, rs=shRecips().filter(r=>k==='*'||r.key===k); const {pack}=sdPack(); pack.songs=await withImages(pack.songs);
+  const ok=await sendPackTo(rs,JSON.stringify(pack)); if(ok)modal('#sendBox',false);};
+$('#sdOther').onclick=()=>{const {ents,list}=sdPack(); modal('#sendBox',false); openShare(ents,list,list?'« '+list.name+' »':ents[0].s.q);};
+async function sendPackTo(rs,pack){const ok=[], ko=[];
+  for(const r of rs){
+    if(r.kind==='client'){try{if(window.Android.liveOffer(r.id,pack)!==false)ok.push(r.n); else ko.push(r.n);}catch(e){ko.push(r.n);}}
+    else {try{const res=await fetch(Follow.base+'/send',{method:'POST',headers:{'Content-Type':'text/plain'},body:pack}); (res.ok?ok:ko).push(r.n);}catch(e){ko.push(r.n);}}
+  }
+  toast((ok.length?'✅ Envoyé à '+ok.map(n=>(n||'').split(' · ')[0]).join(', ')+' : il reçoit une alerte.':'')+(ko.length?' ❌ Échec pour '+ko.map(n=>(n||'').split(' · ')[0]).join(', ')+'.':''),4000); return ok.length>0;}
+$('#vsend').onclick=openSend;
+/* ---------- 👥 Groupe : je mène / je suis ---------- */
+function grpUI(){
+  if($('#grpKaraSt')){const ok=Kara.linked(); $('#grpKaraSt').textContent=ok?'karaoké relié':'karaoké pas relié'; $('#grpKaraLink').textContent=ok?'📷 Relier un autre karaoké':'📷 Relier le karaoké';
+    $('#grpPilot').checked=!!S.karaPilot; $('#grpHL').checked=S.karaHL!==false;}
+  const n=Live.on?liveClients().all.length:0, b=$('#vgroupN'); if(b){b.hidden=!(Live.on||FOLLOW); b.textContent=FOLLOW?(Follow.ok?'✓':'…'):String(n);}
+  if(!$('#grpBox')||$('#grpBox').hidden)return; const st=$('#grpState');
+  if(FOLLOW){const who=(Follow.master||'le musicien').split(' · ')[0]; st.innerHTML=(Follow.ok?`<b>🟢 Tu suis ${esc(who)}</b>`:Follow.ok===false?`<b>🟠 Connexion à ${esc(who)}…</b>`:`<b>⏳ Connexion…</b>`)+'<button id="grpStopF">✕ Arrêter de suivre</button>';
+    $('#grpStopF').onclick=()=>{modal('#grpBox',false); stopFollowApp();};}
+  else if(Live.on){const cl=liveClients().all; st.innerHTML=`<b>🟢 Tu mènes · ${cl.length?cl.length+' connecté'+(cl.length>1?'s':'')+' : '+cl.map(c=>esc((c.n||'?').split(' · ')[0])).join(', '):'personne pour l\'instant'}</b><button id="grpQr">Mon QR</button><button id="grpStopL">Arrêter</button>`;
+    $('#grpQr').onclick=()=>{modal('#grpBox',false); Live.open();}; $('#grpStopL').onclick=()=>Live.stop();}
+  else st.innerHTML='<b>Tu joues seul.</b>';
+  $('#grpLead').hidden=Live.on||FOLLOW; $('#grpFollow').hidden=FOLLOW||Live.on; $('.grpbig').hidden=Live.on||FOLLOW;
+}
+function openGroup(){$('#vmenu').hidden=true; $('#grpFind').hidden=true; modal('#grpBox',true); grpUI(); if(!APP){$('.grpbig').hidden=true; $('#grpFind').hidden=false; $('#grpList').innerHTML='<p class="lab">Dans le navigateur, scanne le QR du musicien avec l\'appareil photo.</p>'; $('#grpAgain').hidden=true;}}
+function grpSearch(){
+  $('#grpFind').hidden=false; $('#grpList').innerHTML='<p class="lab">🔎 Recherche sur le Wi-Fi…</p>';
+  let ok=false; try{ok=window.Android.discover&&window.Android.discover();}catch(e){}
+  if(!ok)$('#grpList').innerHTML='<p class="lab">Recherche impossible : la tablette est-elle sur un Wi-Fi ? Scanne son QR à la place.</p>';
+}
+window.discovered=json=>{let l=[]; try{l=JSON.parse(json);}catch(e){} if($('#grpBox').hidden)return;
+  $('#grpList').innerHTML=l.length?l.map(x=>`<button data-url="${esc(x.url)}"><span>🎸 <b>${esc((x.me||'Un musicien').split(' · ')[0])}</b></span><span class="pri" style="padding:6px 12px;border-radius:8px">Rejoindre</span></button>`).join('')
+    :'<p class="lab">Personne trouvé. Vérifie que l\'autre a fait 👥 Groupe → « Je mène » et que vous êtes sur le même Wi-Fi (ou le même partage de connexion).</p>';
+  if(l.length===1&&!grpSearch.manual){} };
+$('#grpList').onclick=ev=>{const b=ev.target.closest('[data-url]'); if(!b)return; S.lastFollow=b.dataset.url; save(); modal('#grpBox',false); startFollowApp(b.dataset.url);};
+$('#grpLead').onclick=()=>{modal('#grpBox',false); Live.open();};
+$('#grpFollow').onclick=()=>{$('.grpbig').hidden=true; grpSearch();};
+$('#grpAgain').onclick=grpSearch;
+$('#grpScan').onclick=()=>{modal('#grpBox',false); startScan();};
+$('#grpAddr').onclick=()=>{modal('#grpBox',false); $('#vfollowBtn').onclick();};
+$('#vgroup').onclick=openGroup;
+$('#grpKaraLink').onclick=()=>{modal('#grpBox',false); Kara.afterLink=()=>openGroup(); startScan();};
+$('#grpPilot').onchange=e=>{S.karaPilot=e.target.checked; save();
+  if(S.karaPilot&&!Kara.linked()){toast('Scanne d\'abord le QR du karaoké (sur le projecteur)'); modal('#grpBox',false); Kara.afterLink=()=>{openGroup(); toast('✅ Tu pilotes les paroles : ta pédale fait avancer le projecteur',4000);}; startScan(); return;}
+  toast(S.karaPilot?'✅ Tu pilotes les paroles : ta pédale fait avancer le projecteur, et le morceau suit':'Tu ne pilotes plus les paroles',4000); if(S.karaPilot){const e=V.list[V.i]; if(e&&!$('#viewer').hidden)tvSend(e,$('#vtv'));} KHL.kick();};
+$('#grpHL').onchange=e=>{S.karaHL=e.target.checked; save(); KHL.kick(); if(!S.karaHL)KHL.clear();};
+/* ---------- ce qui est projeté, entouré sur la partition (karaoké ≥ réponse « playing.now ») ---------- */
+const KHL={st:null,busy:false,t:null,miss:0,last:-1,
+  on(){return APP&&S.karaHL!==false&&Kara.linked()&&!$('#viewer').hidden;},
+  kick(){clearTimeout(this.t); if(this.on())this.t=setTimeout(()=>this.poll(),50);},
+  async poll(){
+    clearTimeout(this.t); if(!this.on()){this.clear(); return;} if(this.busy)return; this.busy=true;
+    let st=null; try{const r=await httpReq('POST',S.kara.base+'/api?k='+encodeURIComponent(S.kara.k),{'Content-Type':'application/json'},JSON.stringify({op:'get'})); if(r.status===200)st=JSON.parse(r.body);}catch(e){}
+    this.busy=false; if(st){this.miss=0; this.st=st.playing||null; this.paint();} else if(++this.miss>=2){this.st=null; this.clear();}
+    this.t=setTimeout(()=>this.poll(),st?1200:6000);
+  },
+  clear(){$$('#vstage .ly.kon').forEach(x=>x.classList.remove('kon'));},
+  paint(){
+    this.clear(); const p=this.st, e=V.list[V.i]; if(!p||!e||!p.now)return;
+    const nm=x=>String(x||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+    const sp=split(e.s.q); if(p.title&&nm(p.title)!==nm(sp.titre)&&nm(p.title)!==nm(e.s.q))return;
+    const want=p.now.split('\n').map(nm).filter(Boolean); if(!want.length)return;
+    // lignes de paroles affichées, regroupées par ligne d'origine (une longue ligne peut être coupée)
+    const gs=[]; $$('#vstage .ly').forEach(el=>{const k=el.dataset.raw??('i'+gs.length), g=gs[gs.length-1]; if(g&&g.k===k&&k[0]!=='i'){g.els.push(el); g.t+=' '+el.textContent;} else gs.push({k,els:[el],t:el.textContent});});
+    gs.forEach(g=>g.n=nm(g.t));
+    const hits=[]; for(let i=0;i+want.length<=gs.length;i++){if(want.every((w,j)=>gs[i+j].n===w))hits.push(i);}
+    if(!hits.length){for(let i=0;i<gs.length;i++)if(gs[i].n===want[0]){hits.push(i);} if(!hits.length)return;}
+    // refrain répété : on prend l'occurrence la plus proche de l'avancée du karaoké
+    const est=p.n?(p.idx-1)/Math.max(1,p.n)*gs.length:0, i0=hits.reduce((b,h)=>Math.abs(h-est)<Math.abs(b-est)?h:b,hits[0]);
+    for(let j=0;j<want.length&&i0+j<gs.length;j++){if(gs[i0+j].n!==want[j]&&j)break; gs[i0+j].els.forEach(x=>x.classList.add('kon'));}
+  }
+};
+// pas d'Internet sur ce Wi-Fi (celui du projecteur, par exemple) : on le dit tout de suite
+async function netCheck(){if(!APP)return true; try{const c=new AbortController(), t=setTimeout(()=>c.abort(),4000); await fetch('https://www.google.com/generate_204?t='+Date.now(),{mode:'no-cors',cache:'no-store',signal:c.signal}); clearTimeout(t); return true;}
+  catch(e){toast('📵 Pas d\'Internet sur ce Wi-Fi. Mets tout le monde (projecteur compris) sur le partage de connexion de ton téléphone.',7000); return false;}}
 // suivre un musicien depuis l'appli Accords (sans quitter l'appli, sans toucher à ta bibliothèque)
 let followSaved=null;
 async function followLib(){
@@ -5442,7 +5617,7 @@ function startFollowApp(origin){
   if(APP){try{window.Android.setScene(true,pedalUsesVolume());}catch(e){}}
   try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(l=>V.lock=l).catch(()=>{});}catch(e){}
   Follow.tick(); clearInterval(Follow.timer); Follow.timer=setInterval(()=>Follow.tick(),1000);
-  toast('Tu suis le musicien maître');
+  toast('⏳ Connexion…'); grpUI();
 }
 function stopFollowApp(quiet){
   clearInterval(Follow.timer); Follow.timer=null; FOLLOW=false; Follow.app=false; document.body.classList.remove('follow'); $('#vfollow').hidden=true;
@@ -5640,9 +5815,10 @@ function vListRender(){
   $('#vlpick').innerHTML='<option value="">Toute la bibliothèque</option>'+S.lists.map(x=>`<option value="${x.id}">${esc(x.name)}${x.date?' · '+esc(x.date):''} (${x.items.length})</option>`).join('');
   $('#vlpick').value=l?l.id:'';
   if(V.vlTab==='cur'){
-    $('#vlistHint').textContent=l?'Glisse ⠿ pour changer l\'ordre, ✕ pour retirer.':'Tu joues la bibliothèque. Choisis ou crée une playlist pour en faire une.';
+    const sorted=V.curSort&&V.curSort!=='ordre'; $('#vcSort').value=V.curSort||'ordre';
+    $('#vlistHint').textContent=sorted?'Triée pour la scène : ta playlist garde son ordre.':l?'Glisse ⠿ pour changer l\'ordre, ✕ pour retirer.':'Tu joues la bibliothèque. Choisis ou crée une playlist pour en faire une.';
     $('#vitems').innerHTML=V.list.map((e,i)=>(!f||(e.s.q+' '+(e.s.folder||'')+' '+tagsOf(e.s).join(' ')).toLowerCase().includes(f))&&vFiltOK(e.s)
-      ?`<div class="vrow" data-i="${i}">${l?'<span class="drag">⠿</span>':''}<button class="go ${i===V.i?'on':''}" data-i="${i}"><span>${i+1}. ${esc(e.s.q)}${hasTag(e.s,WORK)?'<i class="tg">À TRAVAILLER</i>':''}${(e.s.notes||'').trim()?`<i class="nt">${esc(e.s.notes.split('\n')[0])}</i>`:''}</span><small>${esc(eKey(e))}</small></button><button class="act" data-tv="${i}" title="Lancer au vidéoprojecteur">📺</button>${l?`<button class="act x" data-x="${i}" title="Retirer">✕</button>`:''}</div>`:'').join('')
+      ?`<div class="vrow" data-i="${i}">${l&&!sorted?'<span class="drag">⠿</span>':''}<button class="go ${i===V.i?'on':''}" data-i="${i}"><span>${i+1}. ${esc(e.s.q)}${hasTag(e.s,WORK)?'<i class="tg">À TRAVAILLER</i>':''}${(e.s.notes||'').trim()?`<i class="nt">${esc(e.s.notes.split('\n')[0])}</i>`:''}</span><small>${esc(eKey(e))}</small></button><button class="act" data-tv="${i}" title="Lancer au vidéoprojecteur">📺</button>${l?`<button class="act x" data-x="${i}" title="Retirer">✕</button>`:''}</div>`:'').join('')
       ||'<p class="lab" style="color:#999">Playlist vide : passe sur « + Ajouter ».</p>';
   } else {
     const inL=new Set(l?l.items.map(it=>it.sid):[]), view=S.addView||'liste', so=S.addSort||'titre', curId=V.list[V.i]&&V.list[V.i].s.id;
@@ -5664,11 +5840,13 @@ function vListRender(){
     } else body=songs.map(row).join('');
     $('#vitems').innerHTML=web+navHead+(body||'<p class="lab" style="color:#999">Pas dans ta bibliothèque : touche 🌐 pour le chercher sur le web.</p>');
   }
-  $('#vaddOpts').style.display=V.vlTab==='lib'?'':'none'; $('#vaSort').value=S.addSort||'titre';
+  $('#vaddOpts').style.display=V.vlTab==='lib'?'':'none'; $('#vcurOpts').style.display=V.vlTab==='cur'&&!FOLLOW&&V.list.length>1?'':'none'; $('#vaSort').value=S.addSort||'titre';
   $$('#vaView button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===(S.addView||'liste')));
 }
+function curSortApply(){const k=V.curSort; if(!k||k==='ordre')return; const key=e=>{const p=split(e.s.q); return (k==='artiste'?(p.artiste||'~')+' '+p.titre:p.titre).toLowerCase();}; V.list.sort((a,b)=>key(a).localeCompare(key(b),'fr'));}
+$('#vcSort').onchange=e=>{if(FOLLOW){e.target.value='ordre';return;} V.curSort=e.target.value; vReload();};
 function vReload(keep){ // reconstruit la scène après un changement de playlist, en restant sur le même morceau
-  const cur=keep||V.list[V.i]; V.list=isList()?listEntries(V.listRef):libEntries();
+  const cur=keep||V.list[V.i]; V.list=isList()?listEntries(V.listRef):libEntries(); curSortApply();
   let i=cur?V.list.findIndex(e=>cur.item?e.item===cur.item:e.s===cur.s):-1; if(i<0&&cur)i=V.list.findIndex(e=>e.s===cur.s);
   V.i=Math.max(0,Math.min(i<0?0:i,V.list.length-1)); V.lastKey=null; vRender(); vListRender();
   if(curList&&!$('#lists').hidden)renderListDetail(); renderLists();
@@ -5766,7 +5944,7 @@ $('#vitems').onclick=e=>{
   if(b.dataset.i!=null){V.i=+b.dataset.i; vRender(); vListKeep();}
 };
 $$('#vltabs button').forEach(b=>b.onclick=()=>{V.vlTab=b.dataset.v; $('#vfilter').value=''; V.addNavAt=null; vListRender();});
-$('#vweb').onclick=()=>{const m=$('#vwebMenu'); m.innerHTML=LINKS.map((x,i)=>`<button data-web="${i}">${esc(x[0])}</button>`).join(''); m.hidden=!m.hidden;};
+$('#vweb').onclick=()=>{netCheck(); const m=$('#vwebMenu'); m.innerHTML=LINKS.map((x,i)=>`<button data-web="${i}">${esc(x[0])}</button>`).join(''); m.hidden=!m.hidden;};
 $('#vwebMenu').onclick=e=>{const b=e.target.closest('button'); if(!b)return; $('#vwebMenu').hidden=true; webSearch(+b.dataset.web);};
 $('#vaSort').onchange=e=>{S.addSort=e.target.value; save(); vListRender();};
 $('#vaView').onclick=e=>{const b=e.target.closest('button'); if(!b)return; S.addView=b.dataset.v; V.addNavAt=null; save(); vListRender();};
@@ -5926,7 +6104,7 @@ function pedalDir(id,key){const nx=(S.pedalNext||[]), pv=(S.pedalPrev||[]);
   if(nx.includes(id)||(!pv.includes(id)&&(PEDAL_NEXT.includes(id)||PEDAL_NEXT.includes(key))))return 1;
   if(pv.includes(id)||PEDAL_PREV.includes(id)||PEDAL_PREV.includes(key))return -1; return 0;}
 // projecteur qui suit : l'appui court fait aussi passer l'écran du karaoké
-function karaStep(dir){if(V.tvFollow&&Kara.linked()&&!FOLLOW)Kara.call({op:dir>0?'next':'prev'}).then(st=>{if(st&&st.playing)Kara.ui(st);});}
+function karaStep(dir){if(!((V.tvFollow&&!FOLLOW||S.karaPilot)&&Kara.linked()))return; if(APP)httpReq('POST',S.kara.base+'/api?k='+encodeURIComponent(S.kara.k),{'Content-Type':'application/json'},JSON.stringify({op:dir>0?'next':'prev'})).then(r=>{try{const st=JSON.parse(r.body); if(st.playing){KHL.st=st.playing; KHL.paint();}}catch(e){}}); else Kara.call({op:dir>0?'next':'prev'});}
 function pedalLong(dir,h){
   h.fired=true; clearTimeout(h.t); const j=h.origI+dir;
   if(j>=0&&j<V.list.length){V.i=j; V.page=0; V.half=false; vRender(); try{$('#vstage').scrollTo({top:0,behavior:'instant'});}catch(e){} toast(dir>0?'⏭ Morceau suivant':'⏮ Morceau précédent');}
@@ -6519,6 +6697,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&Sync.read
    ====================================================================== */
 const FR_={song:null};
 function openFrame(song,url){
+  netCheck();
   FR_.song=song;
   if(APP){window.Android.openBrowser(url,song.q); return;}
   window.open(url,'_blank','noopener');
