@@ -310,6 +310,7 @@ body.follow #vtv,body.follow #vsearch,body.follow #vkara,body.follow #vedit,body
 .vdgrid section{background:var(--s1,#121215);border:1px solid #26262b;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
 .vdgrid h4{margin:0;font-size:12px;letter-spacing:.6px;text-transform:uppercase;color:#a1a1aa}
 .vdrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.vdrow>span:first-child{flex:1;min-width:120px}
+.vdpm{flex-wrap:wrap}.vdpm button{flex:1 1 auto;font-size:13px}
 .vdhint{margin:0;font-size:13px;color:#a1a1aa}
 #vdisp button,#vdisp select{background:var(--s3,#1f1f23);color:#eee;border:1px solid #333;height:42px;padding:0 14px;border-radius:10px}
 #vdisp .seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;background:var(--s0,#0e0e10);border-radius:12px}#vdisp .seg button{border:0}
@@ -1597,7 +1598,8 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
         <h4>Pédale Bluetooth</h4>
         <div class="vdrow"><button id="vdLearn">Apprendre la pédale</button><button id="vdPedalReset">Par défaut</button></div>
         <span class="lab" id="vdPedal"></span>
-        <p class="vdhint">Pédale et bords de l'écran : écran suivant, puis morceau suivant.</p>
+        <div class="vdrow seg vdpm" id="vdPedalMode"><button data-m="long">Court : écran · long : morceau</button><button data-m="screen">Écran puis morceau</button><button data-m="song">Toujours le morceau</button></div>
+        <p class="vdhint" id="vdPedalHint"></p>
       </section>
       <section>
         <h4>Écran</h4>
@@ -5885,7 +5887,8 @@ document.addEventListener('keydown',e=>{
   if(e.key==='e'){$('#vedit').click();return;}
   if(e.key==='+'){$('#vup').click();return;} if(e.key==='-'){$('#vdn').click();return;}
   if(e.key==='m'){$('#vmetro').click();return;} if(e.key==='s'){$('#vscroll').click();return;}
-  if(sceneKey(e.code||e.key,e.key)){e.preventDefault();return;}
+  if(e.repeat){if(pedalDir(e.code||e.key,e.key))e.preventDefault(); return;} // pédale tenue : la répétition automatique ne fait pas défiler
+  if(sceneKey(e.code||e.key,e.key,'down')){e.preventDefault();return;}
   if(e.key==='Escape') closeViewer();
 });
 let resizeT=null;
@@ -5894,15 +5897,24 @@ window.addEventListener('resize',()=>{clearTimeout(resizeT); resizeT=setTimeout(
   vRender();},150);});
 const PEDAL_NEXT=['ArrowRight','ArrowDown','PageDown','Space',' ','MediaTrackNext'], PEDAL_PREV=['ArrowLeft','ArrowUp','PageUp','MediaTrackPrevious'];
 // renvoie true si la touche a servi
-function sceneKey(id,key){
-  const nx=(S.pedalNext||[]), pv=(S.pedalPrev||[]);
-  if(nx.includes(id)||(!pv.includes(id)&&(PEDAL_NEXT.includes(id)||PEDAL_NEXT.includes(key)))){vNext(); return true;}
-  if(pv.includes(id)||PEDAL_PREV.includes(id)||PEDAL_PREV.includes(key)){vPrev(); return true;}
-  return false;
+// mode de la pédale : « long » (appui court = écran suivant, appui long = morceau suivant), « screen » (écran puis morceau), « song » (toujours le morceau)
+const PK={};
+function pedalDir(id,key){const nx=(S.pedalNext||[]), pv=(S.pedalPrev||[]);
+  if(nx.includes(id)||(!pv.includes(id)&&(PEDAL_NEXT.includes(id)||PEDAL_NEXT.includes(key))))return 1;
+  if(pv.includes(id)||PEDAL_PREV.includes(id)||PEDAL_PREV.includes(key))return -1; return 0;}
+function pedalAct(dir,phase,id){
+  const mode=S.pedalMode||'long', step=()=>dir>0?vNext():vPrev();
+  if(mode==='song'){if(phase!=='up')vGo(dir); return;}
+  if(mode==='screen'||!phase){if(phase!=='up')step(); return;}
+  if(phase==='down'){if(PK[id])return; const p=PK[id]={done:false}; p.t=setTimeout(()=>{p.done=true; vGo(dir); toast(dir>0?'⏭ Morceau suivant':'⏮ Morceau précédent');},600); return;}
+  const p=PK[id]; delete PK[id]; if(!p)return; clearTimeout(p.t); if(!p.done)step();
 }
+// renvoie true si la touche a servi
+function sceneKey(id,key,phase){const d=pedalDir(id,key); if(!d)return false; pedalAct(d,phase,id); return true;}
 const pedalUsesVolume=()=>[...(S.pedalNext||[]),...(S.pedalPrev||[])].some(k=>/^Volume/.test(k));
 // touches physiques transmises par l'appli (volume, multimédia)
-window.pedalKey=function(name){if($('#viewer').hidden)return; if(Learn.step){Learn.capture(name);return;} if($$('.modal').some(x=>!x.hidden))return; sceneKey(name,name);};
+window.pedalKey=function(name,phase){if($('#viewer').hidden)return; if(Learn.step){if(phase!=='up')Learn.capture(name);return;} if($$('.modal').some(x=>!x.hidden))return; sceneKey(name,name,phase);};
+document.addEventListener('keyup',e=>{if($('#viewer').hidden||Learn.step||$$('.modal').some(x=>!x.hidden)||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return; if(sceneKey(e.code||e.key,e.key,'up'))e.preventDefault();});
 const Learn={step:0,next:null,
   start(){this.step=1; this.next=null; this.ui();},
   capture(id){
@@ -6180,6 +6192,9 @@ $$('#vdMode button').forEach(b=>b.onclick=()=>{S.vfixMode=b.dataset.v; S.setUp=D
 const fixSize=d=>{S.vfixSize=Math.max(12,Math.min(90,(+S.vfixSize||28)+d)); S.setUp=Date.now(); V.page=0; save(); vRender();};
 $('#vdSmall').onclick=()=>fixSize(-2); $('#vdBig').onclick=()=>fixSize(2);
 $('#vdLearn').onclick=()=>{if(Learn.step){Learn.step=0; Learn.ui();} else Learn.start();};
+function pedalModeUI(){const m=S.pedalMode||'long'; $$('#vdPedalMode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m)); $('#vdPedalHint').textContent={long:'Appui court : écran suivant (puis morceau suivant en bas). Appui long (½ s) : morceau suivant tout de suite.',screen:'Chaque appui : écran suivant, puis morceau suivant une fois en bas.',song:'Chaque appui : morceau suivant ou précédent, directement.'}[m]+' Les bords de l\'écran : écran suivant, puis morceau.';}
+$('#vdPedalMode').onclick=e=>{const b=e.target.closest('button'); if(!b)return; S.pedalMode=b.dataset.m; save(); pedalModeUI();};
+pedalModeUI();
 $('#vdPedalReset').onclick=()=>{S.pedalNext=[]; S.pedalPrev=[]; Learn.step=0; save(); if(APP){try{window.Android.setScene(true,false);}catch(e){}} Learn.ui(); toast('Pédale : touches par défaut');};
 // tempo à la main (enregistré dans le morceau)
 function setTempo(v){
@@ -6356,7 +6371,7 @@ const Sync={
       for(const l of S.lists){if(!names.has(`list-${l.id}.json`)){await put(`list-${l.id}.json`,JSON.stringify(l));}}
       // réglages : le plus récent gagne
       let rset=null; if(names.has('settings.json')){try{rset=JSON.parse(await this.read('settings.json'));}catch(e){}}
-      const keys=['menuMode','design','fr','sec','sort','theme','vmax','vmin','scrollSpeed','metroSound','defDur','shareBase','refs','bigBtns','vlayout','vfixSize','vfixMode','pedalNext','pedalPrev'];
+      const keys=['menuMode','design','fr','sec','sort','theme','vmax','vmin','scrollSpeed','metroSound','defDur','shareBase','refs','bigBtns','vlayout','vfixSize','vfixMode','pedalNext','pedalPrev','pedalMode'];
       if(rset&&(rset.up||0)>(S.setUp||0)){keys.forEach(k=>{if(rset[k]!==undefined)S[k]=rset[k];}); S.setUp=rset.up; changed=true;}
       else if(!rset||(S.setUp||0)>(rset.up||0)){const o={up:S.setUp||Date.now()}; keys.forEach(k=>o[k]=S[k]); await this.write('settings.json',JSON.stringify(o));}
       await this.write('deleted.json',JSON.stringify(mdel)); S.del=mdel;
