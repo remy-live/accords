@@ -257,7 +257,7 @@ pre .k{color:var(--warn);font-weight:700}
 #vstage.edit,#vstage.edit *,#vstage.lite,#vstage.lite *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #vstage.lite .ch{outline:1px dashed var(--hl,#fb923c);outline-offset:1px;border-radius:3px;touch-action:none;display:inline-block;position:relative}
 #vstage.lite .ch.chdrag{background:var(--hl,#fb923c);color:var(--onhl,#111);outline:0;box-shadow:0 10px 24px rgba(0,0,0,.55);z-index:5}#vstage.lite .ch.chdel{background:#dc2626;color:#fff}
-#vvid[aria-pressed=true],#vlite[aria-pressed=true]{background:var(--hl,#fb923c)!important;color:var(--onhl,#111)!important}
+#vtv[aria-pressed=true],#vlite[aria-pressed=true]{background:var(--hl,#fb923c)!important;color:var(--onhl,#111)!important}
 .wpop .wpdel{background:#3a1717;min-width:44px;padding:0}
 #vstage.edit .ch.chdrag{background:var(--hl,#fb923c);color:var(--onhl,#111);outline:0;box-shadow:0 10px 24px rgba(0,0,0,.55);z-index:5;transition:none}
 #vstage.edit .ch.chdel{background:#dc2626;color:#fff;opacity:.85}
@@ -809,7 +809,7 @@ audio{display:none}
   #lView{display:none!important}.lhead{flex-wrap:wrap;gap:8px}.lhead b#lTitle{font-size:22px}.lgo{padding:10px 18px;font-size:16px}
   .lrow2{grid-template-columns:20px 26px minmax(0,1fr) auto auto!important;gap:6px;min-height:52px}.lrow2 .ld{display:none}.lrow2 .ti small.lab{display:block}
   /* scène : l'essentiel seulement */
-  .vctl .vtempo,#vtv,#vpl{display:none!important}
+  .vctl .vtempo,#vpl{display:none!important}
   .vctl{gap:4px!important}.vctl button{min-width:40px;padding:0 6px}
   .vtop{flex-wrap:wrap;row-gap:4px}.vhead b{font-size:15px}
   #vnextUp{max-width:62vw;font-size:13px;bottom:calc(var(--vbot,0px) + 84px)}
@@ -828,7 +828,7 @@ audio{display:none}
 .top>[hidden],.vctl>[hidden],#vtop [hidden]{display:none!important}
 .shtiles button i{display:flex;align-items:center;justify-content:center;height:22px}
 #vclose,#vprev,#vnext,#vsize,#vmenuBtn,#vlistBtn,#vscroll,#vaudio{display:inline-flex;align-items:center;justify-content:center}
-.vctl #vtv{display:none!important}
+
 #viewer:not(.portrait) .vctl{gap:8px}#viewer:not(.portrait) .vctl #vprev{border-radius:12px 4px 4px 12px}#viewer:not(.portrait) .vctl #vnext{border-radius:4px 12px 12px 4px;margin-left:-6px;margin-right:4px}
 #vcapo.none{display:none!important}
 #vtempoChip{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 10px;border-radius:9px;border:1px solid #2f2f35;background:var(--s3,#1f1f23);color:#a1a1aa;font:600 14px system-ui;flex:none}
@@ -1502,7 +1502,6 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
       <button id="vaudio" aria-label="Bande son" hidden>▶</button>
       <button id="vscroll" aria-label="Défilement" hidden>⇣</button>
       <button id="vtv" aria-label="Lancer au vidéoprojecteur" title="Lancer au vidéoprojecteur (appui long : télécommande)">📺</button>
-      <button id="vvid" aria-label="Vidéo du morceau" title="Vidéo : suit le morceau affiché">▶</button>
       <button id="vlite" aria-label="Retoucher les accords" title="Retoucher les accords ici même">✎</button>
       <button id="vsize" aria-label="Taille du texte pour ce morceau">Aa</button>
       <button id="vmenuBtn" aria-label="Plus d'options">⋯</button>
@@ -3957,7 +3956,7 @@ let RATIO=.6;
 try{const cx=document.createElement('canvas').getContext('2d'); cx.font='100px ui-monospace,Menlo,Consolas,monospace'; RATIO=cx.measureText('MMMMMMMMMM').width/1000||.6;}catch(e){}
 function openViewer(entries,start,list){
   if(!entries.length){toast('Aucun morceau rempli.');return;}
-  V.list=entries; V.listRef=list||null; V.i=Math.max(0,start|0); V.edit=false; V.lastKey=null; V.page=0; V.lite=false; $('#vstage').classList.remove('lite'); $('#vlite').setAttribute('aria-pressed','false'); $('#vtext').hidden=true; $('#vdisp').hidden=true;
+  V.list=entries; V.listRef=list||null; V.i=Math.max(0,start|0); V.edit=false; V.lastKey=null; V.page=0; V.lite=false; V.tvFollow=false; $('#vtv').setAttribute('aria-pressed','false'); $('#vstage').classList.remove('lite'); $('#vlite').setAttribute('aria-pressed','false'); $('#vtext').hidden=true; $('#vdisp').hidden=true;
   if(APP){try{window.Android.setScene(true,pedalUsesVolume());}catch(e){}}
   const v=$('#viewer'); v.hidden=false; $('#vlist').hidden=start!=null&&start>=0; document.body.style.overflow='hidden';
   try{const de=document.documentElement; (de.requestFullscreen||de.webkitRequestFullscreen||(()=>{})).call(de);}catch(e){}
@@ -4016,6 +4015,7 @@ function vRender(){
   const st=$('#vstage'), key=V.i+':'+e.s.id, same=V.lastKey===key, keepTop=same?st.scrollTop:0; V.lastKey=key;
   if(V.spKey!==e.s.id){const first=V.spKey===undefined; V.spKey=e.s.id; if(!first&&S.spot&&S.spShow&&!FOLLOW&&(S.spAuto||(S.spAuto!==false&&SP.st&&SP.st.is_playing))){if(e.s.spotify)SP.playUri(e.s.spotify.uri); else if(SP.st&&SP.st.is_playing){SP.control('PUT','/me/player/pause'); toast('Pas de titre Spotify lié à ce morceau : 🔗 pour le choisir');}} if(!$('#spbar').hidden)SP.draw();}
   $('#vtitle').textContent=e.s.q;
+  if(V.lastSong!==e.s.id&&V.tvFollow&&!FOLLOW&&Kara.linked()){const en=e; setTimeout(()=>tvSend(en,$('#vtv')),0);}
   if(V.lastSong!==e.s.id&&V.vid&&!FOLLOW)setTimeout(()=>vidPlay(e.s),0);
   else if(V.lastSong!==e.s.id&&!$('#spEmbed').hidden)muEmbed(e.s,MUE.k&&MU[MUE.k].id(e.s)?MUE.k:muPref(e.s));
   if(V.lastSong!==e.s.id){V.lastSong=e.s.id; if(!e.preview&&!FOLLOW){S.recent=[e.s.id,...(S.recent||[]).filter(x=>x!==e.s.id)].slice(0,12); if(V.listRef&&V.listRef.id)S.lastList=V.listRef.id; save();}}
@@ -4508,7 +4508,10 @@ async function tvSend(entry,btn){
   const b=$('#vtv'); let t=null, long=false;
   b.addEventListener('pointerdown',()=>{long=false; t=setTimeout(()=>{long=true; Kara.open();},600);});
   ['pointerup','pointerleave','pointercancel'].forEach(k=>b.addEventListener(k,()=>clearTimeout(t)));
-  b.addEventListener('click',()=>{if(long)return; tvSend(V.list[V.i],b);});
+  b.addEventListener('click',()=>{if(long)return;
+    if(!Kara.linked()){V.tvFollow=true; b.setAttribute('aria-pressed','true'); tvSend(V.list[V.i],b); return;}
+    V.tvFollow=!V.tvFollow; b.setAttribute('aria-pressed',V.tvFollow);
+    if(V.tvFollow){tvSend(V.list[V.i],b); toast('📺 Projecteur : il suit le morceau affiché');} else toast('📺 Projecteur : ne suit plus (appui long : télécommande)');});
 }
 $('#karaScan').onclick=()=>startScan();
 $('#karaForget').onclick=()=>{S.kara=null; save(); Kara.ui(null);};
@@ -5695,8 +5698,8 @@ function vidPlay(s){
   const k=muPref(s); muEmbed(s,k||null);
   if(!k)toast('Pas de vidéo liée à ce morceau : « Lier » pour la choisir');
 }
-$('#vvid').onclick=()=>{const e=V.list[V.i]; V.vid=!V.vid; $('#vvid').setAttribute('aria-pressed',V.vid);
-  if(V.vid){if(e)vidPlay(e.s); toast('Vidéo : elle suivra le morceau affiché');}
+if($('#vvid'))$('#vvid').onclick=()=>{const e=V.list[V.i]; V.vid=!V.vid; $('#vvid').setAttribute('aria-pressed',V.vid);
+  if(V.vid){if(e)vidPlay(e.s); toast('YouTube : la vidéo suivra le morceau affiché');}
   else {if(!$('#spEmbed').hidden)$('#speClose').click(); if(APP&&window.Android.ytClose)try{window.Android.ytClose();}catch(x){}}};
 $('#vworkBtn').onclick=()=>{const e=V.list[V.i]; if(!e||FOLLOW)return; const on=!hasTag(e.s,WORK); setTag(e.s,WORK,on); touch(e.s); save(); if(e.s._el)update(e.s); vRender(); toast(on?'Étiquette « à travailler » ajoutée':'Étiquette « à travailler » retirée');};
 async function vEditNote(){const e=V.list[V.i]; if(!e||FOLLOW)return; const v=await ask('Note du morceau','Intro seul, enchaîner, qui chante…',null,e.s.notes||''); if(v==null)return; e.s.notes=v.trim(); touch(e.s); save(); if(e.s._el)update(e.s); vRender();}
@@ -6608,7 +6611,7 @@ window.addEventListener('message',e=>{if(!/youtube(-nocookie)?\.com$/.test((e.or
 $('#speYt').onclick=e=>{const b=e.target.closest('button'); if(!b)return;
   if(b.dataset.sk){ytCmd('seekTo',[Math.max(0,MUE.t+ +b.dataset.sk),true]); MUE.t=Math.max(0,MUE.t+ +b.dataset.sk);}
   if(b.id==='speRate'){const R=[1,.75,.5], r=R[(R.indexOf(MUE.rate)+1)%R.length]; MUE.rate=r; ytCmd('setPlaybackRate',[r]); b.textContent=String(r).replace('.',',')+'×';}};
-$('#speClose').onclick=()=>{V.vid=false; $('#vvid').setAttribute('aria-pressed','false'); $('#spEmbed').hidden=true; $('#speFrame').src='about:blank'; $('#speFrame').dataset.id=''; MUE.sid=null; MUE.k=null;};
+$('#speClose').onclick=()=>{V.vid=false; if($('#vvid'))$('#vvid').setAttribute('aria-pressed','false'); $('#spEmbed').hidden=true; $('#speFrame').src='about:blank'; $('#speFrame').dataset.id=''; MUE.sid=null; MUE.k=null;};
 // compatibilité avec l'ancien nom
 function spEmbed(s){return muEmbed(s,'spotify');}
 
@@ -6706,7 +6709,8 @@ $('#pdfGo').onclick=async()=>{const one=PDFC.scope==='one', es=(one?[V.list[V.i]
 $('#design').onclick=e=>{const b=e.target.closest('[data-d]'); if(!b)return; S.design=b.dataset.d; S.setUp=Date.now(); save(); applyLook(); renderAll(); try{renderHome();}catch(er){}};
 /* ---------- icônes au trait (identiques sur tous les appareils) ---------- */
 const ICP={
-video:'<rect x="2" y="5" width="14" height="14" rx="3"/><path d="m16 10 6-3v10l-6-3"/>',
+tv:'<rect x="2" y="4" width="20" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',
+video:'<rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3z" fill="currentColor"/>',
 x:'<path d="M18 6 6 18M6 6l12 12"/>',left:'<path d="m15 18-6-6 6-6"/>',right:'<path d="m9 18 6-6-6-6"/>',
 more:'<circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/><circle cx="5" cy="12" r="1.3" fill="currentColor"/>',
 list:'<path d="M21 15V6M18.5 18a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5ZM12 12H3M16 6H3M12 18H3"/>',type:'<path d="M4 7V4h16v3M9 20h6M12 4v16"/>',
@@ -6734,7 +6738,7 @@ const icon=(n,s)=>`<svg class="ico" width="${s||20}" height="${s||20}" viewBox="
 function iconize(){
   const tile={vedit:'pencil',vsearch:'search',vtuner:'gauge',vspot:'phones',vpdf:'file',vyt:'play',vkara:'tv',vlive:'radio',vmsgItem:'mega',vfollowBtn:'users',vcleanBtn:'max',vdispBtn:'sliders',vquit:'out'};
   Object.entries(tile).forEach(([id,n])=>{const i=document.querySelector('#'+id+' > i'); if(i)i.innerHTML=icon(n,21);});
-  const only={vclose:'x',vprev:'left',vnext:'right',vsize:'type',vlite:'pencil',vvid:'video',vmenuBtn:'more',vlistBtn:'list',vscroll:'down',bprev:'left',bnext:'right',bscroll:'down',settingsBtn:'gear',scanBtn:'camera',linkBtn:'link',fClose:'x',fMore:'more'};
+  const only={vclose:'x',vprev:'left',vnext:'right',vsize:'type',vlite:'pencil',vtv:'tv',vmenuBtn:'more',vlistBtn:'list',vscroll:'down',bprev:'left',bnext:'right',bscroll:'down',settingsBtn:'gear',scanBtn:'camera',linkBtn:'link',fClose:'x',fMore:'more'};
   Object.entries(only).forEach(([id,n])=>{const b=document.getElementById(id); if(b)b.innerHTML=icon(n,id[0]==='b'?26:20);});
   const lab={fScene:['play','Scène'],fEdit:['pencil','Éditer'],newBtn:['plus','Nouveau']};
   Object.entries(lab).forEach(([id,[n,t]])=>{const b=document.getElementById(id); if(b)b.innerHTML=icon(n,18)+'<span>'+t+'</span>';});
