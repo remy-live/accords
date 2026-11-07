@@ -1066,6 +1066,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
         <p class="lab">En concert, les réglages de la scène (⋯ › Réglages) servent aussi : colonnes, pédale, gros boutons.</p></section>
       <section data-cat="grille" hidden><h3>Grille &amp; paroles</h3>
   <div class="opt"><span>Garder Refrain / Couplet</span><input type="checkbox" id="sec"></div>
+  <div class="opt"><span>« ♪ Instrumental ♪ » quand il n'y a que des accords (paroles et karaoké)</span><input type="checkbox" id="instr"></div>
   <div class="opt"><span>Réafficher les reprises (une ligne « [Refrain] » seule)</span><input type="checkbox" id="refs"></div>
   <p class="lab">Repères de jeu : une ligne qui commence par « ! » (ex. « ! ⏸ Pause ») s'affiche en couleur, hors paroles.</p>
       </section>
@@ -1932,10 +1933,14 @@ function compute(song,ov){
   const g=[],ly=[];
   const putTab=t=>{placed.add(t.ti); const dr=t.tb.kind==='drum', tl=dr?'':tuneLabel(t.tb); g.push({t:'b',s:''},{t:'s',s:'['+(dr?'BATTERIE':'TAB')+(t.tb.name?' : '+t.tb.name:'')+(tl?' — '+tl:'')+']',tab:t.ti}); t.tb.rows.forEach(rw=>g.push({t:'x',s:rw,tab:t.ti})); g.push({t:'b',s:''});};
   const putTabs=n=>tabs.filter(t=>t.after===n&&!placed.has(t.ti)).forEach(putTab);
-  let bc=0, inBlock=false;
+  let bc=0, inBlock=false, bk={c:0,l:0};
+  // passage sans paroles (que des accords) : « ♪ Instrumental ♪ » dans les paroles (et donc au karaoké)
+  const flush=()=>{if(S.instr!==false&&bk.c&&!bk.l)ly.push({t:'l',s:'♪ Instrumental ♪',inst:true}); bk={c:0,l:0};};
   putTabs(0);
   lines.forEach(L=>{
-    if(L.t==='b'){g.push({t:'b',s:''}); ly.push({t:'b',s:''}); if(inBlock){inBlock=false; bc++; putTabs(bc);} return;}
+    if(L.t==='b'){flush(); g.push({t:'b',s:''}); ly.push({t:'b',s:''}); if(inBlock){inBlock=false; bc++; putTabs(bc);} return;}
+    if(L.t==='s')flush();
+    if(L.t==='c')bk.c++; else if(L.t==='l'&&L.s.trim())bk.l++;
     inBlock=true;
     if(L.t==='c') g.push({t:'c',s:mapChords(L.s,cn),raw:L.inline?-1:L.i});
     else if(L.t==='s'){const lb=(L.ref?'↻ ':'')+L.s; g.push({t:'s',s:'['+lb+']',raw:L.i}); ly.push({t:'s',s:S.sec?'['+lb+']':''});}
@@ -1944,6 +1949,7 @@ function compute(song,ov){
     else if(L.t==='k') g.push({t:'k',s:L.s,raw:L.i});
     else {g.push({t:'l',s:L.s,raw:L.i}); ly.push({t:'l',s:L.s.trim().replace(/\s{2,}/g,' ')});}
   });
+  flush();
   tabs.filter(t=>!placed.has(t.ti)).forEach(putTab);
   const k=squeeze(g.map(L=>L.s)), k2=squeeze(ly.map(L=>L.s));
   r.grid=k.map(i=>g[i]); r.lyr=k2.map(i=>ly[i]);
@@ -2751,7 +2757,7 @@ function applyLook(){
   $('#bright').value=b; $('#vbright').value=b; $('#brightVal').textContent=b+' %';
   $('#theme').value=S.theme||'auto'; $('#vmax').value=String(S.vmax||64); $('#vmin').value=String(S.vmin||0);
   $('#scrollSpeed').value=S.scrollSpeed||25; $('#scrollVal').textContent=(S.scrollSpeed||25)+' px/s'; $('#metroSound').checked=!!S.metroSound; $('#defDur').value=S.defDur||3;
-  $('#sec').checked=!!S.sec; $('#refs').checked=S.refs!==false; $('#bigBtns').checked=S.bigBtns!==false; $('#shareBase').value=S.shareBase||'';
+  $('#sec').checked=!!S.sec; $('#instr').checked=S.instr!==false; $('#refs').checked=S.refs!==false; $('#bigBtns').checked=S.bigBtns!==false; $('#shareBase').value=S.shareBase||'';
   $$('#nota button').forEach(b=>b.setAttribute('aria-pressed',(+b.dataset.v===1)===S.fr));
   Sync.refreshUI();
 }
@@ -4054,7 +4060,10 @@ function vRender(){
   if(!$('#vlist').hidden) vListRender();
   if(!(e.s.text||'').trim()&&!V.edit&&!isSheet(e.s)&&!((e.s.view||'grille')==='accords'&&validGrid(e.s.bgrid))){st.classList.remove('scroll'); st.innerHTML='<p style="color:#999;padding:24px;font-size:18px">Pas encore de grille pour ce morceau : utilise « Importer » dans le navigateur en bas, ou ⋯ → ✎ Éditer → Tout le texte pour la coller.</p>'; $('#vscroll').hidden=true; Live.push(); return;}
   let lines=V.edit?e._r.grid:eLines(e); const baseLines=lines;
-  const GAP=26, W=st.clientWidth-26, H=st.clientHeight-18;
+  // place réservée en bas pour « Ensuite… » (sinon il cache la dernière ligne) ; les titres de section prennent un peu plus qu'une ligne
+  const nxt=!V.edit&&S.nextUp!==false&&!!V.list[V.i+1]&&!$('#viewer').classList.contains('clean');
+  const nSec=(lines||[]).filter(L=>L.t==='s').length;
+  const GAP=26, W=st.clientWidth-26, H=st.clientHeight-18-(nxt?40:0)-Math.min(60,nSec*4);
   if(isSheet(e.s)&&!V.edit){renderSheet(e,st,W,H); st.scrollTop=keepTop; $('#vbig').hidden=S.bigBtns===false; $('#bscroll').hidden=$('#vscroll').hidden; bigWake(); Live.push(); return;}
   if(!V.edit&&(e.s.view||'grille')==='accords'&&e._r.bg&&e._r.bg.secs.length){ // grille du bassiste en cases
     st.innerHTML=bgHTML(e._r.bg,e._r.cn,W,H,{zoom:+e.s.zoom||1}); const over=st.scrollHeight>st.clientHeight+2;
@@ -5916,6 +5925,8 @@ const PK={};
 function pedalDir(id,key){const nx=(S.pedalNext||[]), pv=(S.pedalPrev||[]);
   if(nx.includes(id)||(!pv.includes(id)&&(PEDAL_NEXT.includes(id)||PEDAL_NEXT.includes(key))))return 1;
   if(pv.includes(id)||PEDAL_PREV.includes(id)||PEDAL_PREV.includes(key))return -1; return 0;}
+// projecteur qui suit : l'appui court fait aussi passer l'écran du karaoké
+function karaStep(dir){if(V.tvFollow&&Kara.linked()&&!FOLLOW)Kara.call({op:dir>0?'next':'prev'}).then(st=>{if(st&&st.playing)Kara.ui(st);});}
 function pedalLong(dir,h){
   h.fired=true; clearTimeout(h.t); const j=h.origI+dir;
   if(j>=0&&j<V.list.length){V.i=j; V.page=0; V.half=false; vRender(); try{$('#vstage').scrollTo({top:0,behavior:'instant'});}catch(e){} toast(dir>0?'⏭ Morceau suivant':'⏮ Morceau précédent');}
@@ -5925,13 +5936,13 @@ function pedalAct(dir,phase,id){
   const mode=S.pedalMode||'long', now=performance.now();
   if(phase==='up'){const h=PK[id]; if(h){h.down=false; clearTimeout(h.t);} return;}
   if(mode==='song'){if(phase!=='repeat')vGo(dir); return;}
-  if(mode==='screen'){if(phase!=='repeat')(dir>0?vNext():vPrev()); return;}
+  if(mode==='screen'){if(phase!=='repeat'){dir>0?vNext():vPrev(); karaStep(dir);} return;}
   let h=PK[id];
   if(!h||now-h.last>(h.fired?250:700))h=PK[id]={last:now,fast:0,fired:false,origI:V.i,down:false};
   const gap=now-h.last; h.last=now;
   if(h.fired)return;
   if(phase==='repeat'||(gap>0&&gap<200)){if(++h.fast>=2)pedalLong(dir,h); return;}
-  h.fast=0; h.down=true; dir>0?vNext(true):vPrev(true);
+  h.fast=0; h.down=true; dir>0?vNext(true):vPrev(true); karaStep(dir);
   clearTimeout(h.t); h.t=setTimeout(()=>{if(h.down&&!h.fired)pedalLong(dir,h);},600);
 }
 // renvoie true si la touche a servi
@@ -6591,6 +6602,7 @@ $('#bigBtns').onchange=e=>{S.bigBtns=e.target.checked; S.setUp=Date.now(); save(
 $('#metroSound').onchange=e=>{S.metroSound=e.target.checked; S.setUp=Date.now(); save();};
 $('#defDur').onchange=e=>{S.defDur=Math.max(1,+e.target.value||3); S.setUp=Date.now(); save(); renderLists();};
 $$('#nota button').forEach(b=>b.onclick=()=>{S.fr=b.dataset.v==='1'; S.setUp=Date.now(); save(); S.songs.forEach(s=>delete s._r); renderAll();});
+$('#instr').onchange=e=>{S.instr=e.target.checked; save(); S.songs.forEach(s=>{delete s._r; if(s._el)update(s);});};
 $('#sec').onchange=e=>{S.sec=e.target.checked; S.setUp=Date.now(); save(); S.songs.forEach(s=>{delete s._r; if(s._el)update(s);});};
 $('#shareBase').onchange=e=>{S.shareBase=e.target.value.trim(); S.setUp=Date.now(); save();};
 $('#linkImport').onclick=()=>{const l=$('#linkIn').value.trim(); if(l){importLink(l); $('#linkIn').value='';}};
