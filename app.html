@@ -1597,7 +1597,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
         <h4>Pédale Bluetooth</h4>
         <div class="vdrow"><button id="vdLearn">Apprendre la pédale</button><button id="vdPedalReset">Par défaut</button></div>
         <span class="lab" id="vdPedal"></span>
-        <div class="vdrow seg vdpm" id="vdPedalMode"><button data-m="song">Morceau suivant</button><button data-m="long">Court : écran · long : morceau</button><button data-m="screen">Écran puis morceau</button></div>
+        <div class="vdrow seg vdpm" id="vdPedalMode"><button data-m="long">Court : dans le morceau · long : morceau</button><button data-m="song">Chaque appui : morceau</button><button data-m="screen">Écran puis morceau</button></div>
         <p class="vdhint" id="vdPedalHint"></p>
       </section>
       <section>
@@ -3982,18 +3982,20 @@ document.addEventListener('gesturestart',e=>e.preventDefault());
 document.addEventListener('dblclick',e=>{if(!e.target.closest('input,textarea'))e.preventDefault();},{passive:false});
 function vGo(n,toEnd){if(FOLLOW)return; const j=V.i+n; if(j<0||j>=V.list.length)return; V.i=j; V.page=toEnd?-1:0; vRender();}
 // pédale et bords de l'écran : suivent le mode d'affichage
-function vNext(){
+function vNext(within){
   if(FOLLOW)return; const st=$('#vstage');
   {const c=V.list[V.i]; if(c&&isSheet(c.s)&&!V.edit&&!st.classList.contains('scroll')&&(V.page||0)+(V.per||1)<(V.pages||1)){if(V.halfOk&&!V.half){V.half=true;} else {V.page=(V.page||0)+(V.per||1); V.half=false;} vRender(); return;}}
   if(!V.edit&&S.vlayout==='fixed'&&S.vfixMode==='pages'&&V.page<(V.pages||1)-1){V.page++; vRender(); return;}
   if(st.classList.contains('scroll')&&st.scrollTop+st.clientHeight<st.scrollHeight-4){stopScroll(); st.scrollBy({top:st.clientHeight*.85,behavior:'smooth'}); return;}
+  if(within){toast('Fin du morceau · appui long : morceau suivant'); return;}
   vGo(1);
 }
-function vPrev(){
+function vPrev(within){
   if(FOLLOW)return; const st=$('#vstage');
   {const c=V.list[V.i]; if(c&&isSheet(c.s)&&!V.edit&&!st.classList.contains('scroll')&&(V.half||(V.page||0)>0)){if(V.half){V.half=false;} else {V.page=Math.max(0,V.page-(V.per||1)); if(V.halfOk)V.half=true;} vRender(); return;}}
   if(!V.edit&&S.vlayout==='fixed'&&S.vfixMode==='pages'&&V.page>0){V.page--; vRender(); return;}
   if(st.classList.contains('scroll')&&st.scrollTop>4){stopScroll(); st.scrollBy({top:-st.clientHeight*.85,behavior:'smooth'}); return;}
+  if(within){toast('Début du morceau · appui long : morceau précédent'); return;}
   vGo(-1,true);
 }
 // mode épuré
@@ -5890,8 +5892,7 @@ document.addEventListener('keydown',e=>{
   if(e.key==='e'){$('#vedit').click();return;}
   if(e.key==='+'){$('#vup').click();return;} if(e.key==='-'){$('#vdn').click();return;}
   if(e.key==='m'){$('#vmetro').click();return;} if(e.key==='s'){$('#vscroll').click();return;}
-  if(e.repeat){if(pedalDir(e.code||e.key,e.key))e.preventDefault(); return;} // pédale tenue : la répétition automatique ne fait pas défiler
-  if(sceneKey(e.code||e.key,e.key,'down')){e.preventDefault();return;}
+  if(sceneKey(e.code||e.key,e.key,e.repeat?'repeat':'down')){e.preventDefault();return;}
   if(e.key==='Escape') closeViewer();
 });
 let resizeT=null;
@@ -5900,17 +5901,33 @@ window.addEventListener('resize',()=>{clearTimeout(resizeT); resizeT=setTimeout(
   vRender();},150);});
 const PEDAL_NEXT=['ArrowRight','ArrowDown','PageDown','Space',' ','MediaTrackNext'], PEDAL_PREV=['ArrowLeft','ArrowUp','PageUp','MediaTrackPrevious'];
 // renvoie true si la touche a servi
-// mode de la pédale : « long » (appui court = écran suivant, appui long = morceau suivant), « screen » (écran puis morceau), « song » (toujours le morceau)
+// mode de la pédale :
+//  « long »   : appui court = avancer dans le morceau (sans changer de morceau), appui long = morceau suivant / précédent
+//  « screen » : écran suivant, puis morceau suivant une fois en bas
+//  « song »   : chaque appui change de morceau
+// Appui long reconnu de deux façons : touche tenue (pas de relâchement après 0,6 s), ou rafale d'appuis rapprochés
+// (pédales type Donner avec REPEAT sur ON, qui renvoient l'appui en boucle tant qu'on appuie).
 const PK={};
 function pedalDir(id,key){const nx=(S.pedalNext||[]), pv=(S.pedalPrev||[]);
   if(nx.includes(id)||(!pv.includes(id)&&(PEDAL_NEXT.includes(id)||PEDAL_NEXT.includes(key))))return 1;
   if(pv.includes(id)||PEDAL_PREV.includes(id)||PEDAL_PREV.includes(key))return -1; return 0;}
+function pedalLong(dir,h){
+  h.fired=true; clearTimeout(h.t); const j=h.origI+dir;
+  if(j>=0&&j<V.list.length){V.i=j; V.page=0; V.half=false; vRender(); try{$('#vstage').scrollTo({top:0,behavior:'instant'});}catch(e){} toast(dir>0?'⏭ Morceau suivant':'⏮ Morceau précédent');}
+  else {if(V.i!==h.origI){V.i=h.origI; vRender();} toast(dir>0?'Dernier morceau':'Premier morceau');}
+}
 function pedalAct(dir,phase,id){
-  const mode=S.pedalMode||'song', step=()=>dir>0?vNext():vPrev();
-  if(mode==='song'){if(phase!=='up')vGo(dir); return;}
-  if(mode==='screen'||!phase){if(phase!=='up')step(); return;}
-  if(phase==='down'){if(PK[id])return; const p=PK[id]={done:false}; p.t=setTimeout(()=>{p.done=true; vGo(dir); toast(dir>0?'⏭ Morceau suivant':'⏮ Morceau précédent');},600); return;}
-  const p=PK[id]; delete PK[id]; if(!p)return; clearTimeout(p.t); if(!p.done)step();
+  const mode=S.pedalMode||'long', now=performance.now();
+  if(phase==='up'){const h=PK[id]; if(h){h.down=false; clearTimeout(h.t);} return;}
+  if(mode==='song'){if(phase!=='repeat')vGo(dir); return;}
+  if(mode==='screen'){if(phase!=='repeat')(dir>0?vNext():vPrev()); return;}
+  let h=PK[id];
+  if(!h||now-h.last>(h.fired?250:700))h=PK[id]={last:now,fast:0,fired:false,origI:V.i,down:false};
+  const gap=now-h.last; h.last=now;
+  if(h.fired)return;
+  if(phase==='repeat'||(gap>0&&gap<200)){if(++h.fast>=2)pedalLong(dir,h); return;}
+  h.fast=0; h.down=true; dir>0?vNext(true):vPrev(true);
+  clearTimeout(h.t); h.t=setTimeout(()=>{if(h.down&&!h.fired)pedalLong(dir,h);},600);
 }
 // renvoie true si la touche a servi
 function sceneKey(id,key,phase){const d=pedalDir(id,key); if(!d)return false; pedalAct(d,phase,id); return true;}
@@ -6195,7 +6212,7 @@ $$('#vdMode button').forEach(b=>b.onclick=()=>{S.vfixMode=b.dataset.v; S.setUp=D
 const fixSize=d=>{S.vfixSize=Math.max(12,Math.min(90,(+S.vfixSize||28)+d)); S.setUp=Date.now(); V.page=0; save(); vRender();};
 $('#vdSmall').onclick=()=>fixSize(-2); $('#vdBig').onclick=()=>fixSize(2);
 $('#vdLearn').onclick=()=>{if(Learn.step){Learn.step=0; Learn.ui();} else Learn.start();};
-function pedalModeUI(){const m=S.pedalMode||'song'; $$('#vdPedalMode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m)); $('#vdPedalHint').textContent={long:'Appui court : écran suivant (puis morceau suivant en bas). Appui long (½ s) : morceau suivant tout de suite.',screen:'Chaque appui : écran suivant, puis morceau suivant une fois en bas.',song:'Chaque appui : morceau suivant (ou précédent), tout de suite.'}[m]+' Les bords de l\'écran : écran suivant, puis morceau.';}
+function pedalModeUI(){const m=S.pedalMode||'long'; $$('#vdPedalMode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m)); $('#vdPedalHint').textContent={long:'Appui court : avance ou recule dans le morceau, sans en changer. Appui long (½ s) : morceau suivant ou précédent. Pédale Donner : mets REPEAT sur ON.',screen:'Chaque appui : écran suivant, puis morceau suivant une fois en bas.',song:'Chaque appui : morceau suivant (ou précédent), tout de suite.'}[m]+' Les bords de l\'écran : écran suivant, puis morceau.';}
 $('#vdPedalMode').onclick=e=>{const b=e.target.closest('button'); if(!b)return; S.pedalMode=b.dataset.m; save(); pedalModeUI();};
 pedalModeUI();
 $('#vdPedalReset').onclick=()=>{S.pedalNext=[]; S.pedalPrev=[]; Learn.step=0; save(); if(APP){try{window.Android.setScene(true,false);}catch(e){}} Learn.ui(); toast('Pédale : touches par défaut');};
