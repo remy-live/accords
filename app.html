@@ -2074,7 +2074,12 @@ try{
 }catch(e){}
 S.lists=S.lists||[]; S.del=S.del||{songs:{},lists:{}};
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-const normText=t=>String(t||'').replace(/\r/g,'').replace(/\t/g,'    ').replace(/\[\/?tab\]/gi,'').replace(/\[ch\](.*?)\[\/ch\]/gi,'$1');
+// texte UTF-8 lu comme Latin-1 (« Ã  », « Ã© »…) : on le remet d'aplomb
+function fixMoji(t){t=String(t||''); if(!/[ÃÂâ][\u0080-\u00BF\u00A0\u0152\u0153\u2018-\u201E\u20AC]|Ã /.test(t))return t;
+  try{return decodeURIComponent(escape(t));}catch(e){}
+  return t.replace(/[ÃÂ][\u0080-\u00BF]/g,m=>{try{return decodeURIComponent(escape(m));}catch(e){return m;}}).replace(/Ã /g,'à');}
+const normText=t=>fixMoji(String(t||'')).replace(/\r/g,'').replace(/\t/g,'    ').replace(/\[\/?tab\]/gi,'').replace(/\[ch\](.*?)\[\/ch\]/gi,'$1');
+S.songs.forEach(s=>{if(s.text&&typeof s.text==='string'){const f=fixMoji(s.text); if(f!==s.text)s.text=f;} if(s.q){const f=fixMoji(s.q); if(f!==s.q)s.q=f;}});
 S.songs.forEach(s=>{if(s.type){const t=String(s.type).trim(); s.tags=[...new Set([...(Array.isArray(s.tags)?s.tags:[]),...(t?[t]:[])])]; if(!s.tags.length)delete s.tags; delete s.type;} if(typeof s.id!=='string')s.id=String(s.id||uid()); s.tabs=s.tabs||[]; if(/\[\/?(tab|ch)\]/i.test(s.text||''))s.text=normText(s.text);});
 S.groupFold=S.groupFold||{};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
