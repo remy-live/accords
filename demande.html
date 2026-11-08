@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#14112a">
+<title>Demander une chanson</title>
+<style>
+:root{--bg:#14112a;--surface:#1e1a3a;--surface2:#29244b;--line:#35305c;--text:#f4f1ff;--muted:#a39dc9;--accent:#ff5c8a;--ink:#22101a;--spot:#ffc94d}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--text);font:17px/1.4 system-ui,-apple-system,Roboto,"Segoe UI",sans-serif}
+.wrap{max-width:560px;margin:0 auto;padding:20px 16px calc(96px + env(safe-area-inset-bottom))}
+h1{font-size:23px;margin:4px 0 2px}.sub{color:var(--muted);font-size:15px;margin:0 0 14px}
+#q{width:100%;height:54px;border-radius:16px;border:0;background:var(--surface2);color:var(--text);padding:0 16px;font-size:17px;margin-bottom:12px}
+#q::placeholder{color:var(--muted)}
+.song{display:flex;align-items:center;gap:12px;padding:12px 12px 12px 14px;border-radius:16px;background:var(--surface);margin-bottom:9px}
+.song .tt{flex:1;min-width:0}.song b{display:block;font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.song small{color:var(--muted);font-size:14px}
+.song button{flex:none;height:46px;padding:0 16px;border-radius:14px;border:0;background:var(--accent);color:var(--ink);font:800 15px system-ui}
+.song button.done{background:var(--surface2);color:var(--muted)}
+.me{position:fixed;left:0;right:0;bottom:0;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:rgba(20,17,42,.96);border-top:1px solid var(--line)}
+.me div{max-width:560px;margin:0 auto;display:flex;align-items:center;gap:10px;color:var(--muted);font-size:15px}
+.me input{flex:1;height:44px;border-radius:12px;border:0;background:var(--surface2);color:var(--text);padding:0 12px;font-size:16px}
+.msg{padding:30px 10px;text-align:center;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🎤 Demander une chanson</h1>
+  <p class="sub" id="sub">Chargement du répertoire…</p>
+  <input type="search" id="q" placeholder="🔍 Titre ou artiste…" autocomplete="off" hidden>
+  <div id="list"></div>
+</div>
+<div class="me"><div>Votre prénom <input id="name" maxlength="30" placeholder="facultatif" autocomplete="given-name"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+// Page publique : le répertoire (titres seulement) et les demandes passent par le relais ntfy.sh
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const topic = (location.hash.slice(1) || '').replace(/[^\w-]/g, '');
+const NTFY = 'https://ntfy.sh/';
+let songs = [], asked = {};
+try { asked = JSON.parse(localStorage.getItem('dem-' + topic) || '{}'); } catch (e) {}
+try { $('#name').value = localStorage.getItem('dem-name') || ''; } catch (e) {}
+$('#name').oninput = () => { try { localStorage.setItem('dem-name', $('#name').value.trim()); } catch (e) {} };
+let tT; function toast(m){ const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(tT); tT = setTimeout(() => t.classList.remove('show'), 2600); }
+const norm = s => String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+async function load(){
+  if (!topic){ $('#sub').textContent = 'Lien incomplet : rescannez le QR code affiché à l\'écran.'; return; }
+  try {
+    const r = await fetch(NTFY + topic + 'r/json?poll=1&since=12h'), txt = await r.text(), sets = {};
+    txt.split('\n').filter(Boolean).forEach(l => { let m; try { m = JSON.parse(l); } catch (e) { return; }
+      if (m.event !== 'message') return; const x = /^(\w+):(\d+):(\d+):([\s\S]*)$/.exec(m.message || ''); if (!x) return;
+      const S = sets[x[1]] = sets[x[1]] || { n:+x[3], p:{}, t:m.time }; S.p[+x[2]] = x[4]; });
+    const ok = Object.keys(sets).filter(k => Object.keys(sets[k].p).length === sets[k].n).sort((a, b) => sets[b].t - sets[a].t)[0];
+    if (!ok){ $('#sub').textContent = 'Le répertoire n\'est pas encore disponible. Réessayez dans un instant.'; setTimeout(load, 8000); return; }
+    const S = sets[ok], d = JSON.parse(Array.from({ length:S.n }, (_, i) => S.p[i + 1]).join(''));
+    songs = d.s || []; $('#sub').textContent = (d.n ? d.n + ' · ' : '') + songs.length + ' chansons'; $('#q').hidden = false; draw();
+  } catch (e) { $('#sub').textContent = 'Pas de connexion Internet : activez vos données mobiles puis rechargez la page.'; }
+}
+function draw(){
+  const q = norm($('#q').value).trim();
+  const l = songs.filter(s => !q || norm(s[0] + ' ' + s[1]).indexOf(q) >= 0);
+  $('#list').innerHTML = l.map(s => { const k = s[0] + '|' + s[1], done = asked[k];
+    return `<div class="song"><div class="tt"><b>${esc(s[0])}</b><small>${esc(s[1] || '')}</small></div><button data-k="${esc(k)}" class="${done ? 'done' : ''}">${done ? '✓ Demandée' : '🎤 Demander'}</button></div>`; }).join('')
+    || '<p class="msg">Aucune chanson ne correspond.</p>';
+}
+$('#q').oninput = draw;
+$('#list').addEventListener('click', async e => {
+  const b = e.target.closest('[data-k]'); if (!b || b.classList.contains('done')) return;
+  if (Object.keys(asked).length >= 5){ toast('5 demandes maximum, merci !'); return; }
+  const [t, a] = b.dataset.k.split('|'); b.disabled = true;
+  try {
+    const r = await fetch(NTFY + topic, { method:'POST', body: JSON.stringify({ t, a, n: $('#name').value.trim().slice(0, 30) }) });
+    if (!r.ok) throw new Error();
+    asked[b.dataset.k] = Date.now(); try { localStorage.setItem('dem-' + topic, JSON.stringify(asked)); } catch (err) {}
+    toast('🎤 Demande envoyée aux musiciens !'); draw();
+  } catch (err) { b.disabled = false; toast('Envoi impossible : vérifiez votre connexion'); }
+});
+load();
+</script>
+</body>
+</html>
