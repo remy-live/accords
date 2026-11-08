@@ -265,6 +265,9 @@ pre .k{color:var(--warn);font-weight:700}
 #vstage.edit .ch{outline:1px dashed var(--hl,#fb923c);outline-offset:1px;border-radius:3px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;display:inline-block;position:relative}
 #vstage.edit,#vstage.edit *,#vstage.lite,#vstage.lite *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #vstage.lite .ch{outline:1px dashed var(--hl,#fb923c);outline-offset:1px;border-radius:3px;touch-action:none;display:inline-block;position:relative}
+#vstage.edit .ch{position:relative}#vstage.lite .ch::before,#vstage.edit .ch::before{content:'';position:absolute;left:-12px;right:-12px;top:-14px;bottom:-4px}
+#vstage.lite .ch.mvsrc{background:var(--hl,#fb923c);color:var(--onhl,#111)}
+#vstage.lite.mving .ly{outline:1px dashed rgba(251,146,60,.6);border-radius:3px;cursor:crosshair}
 #vstage.lite .ch.chdrag{background:var(--hl,#fb923c);color:var(--onhl,#111);outline:0;box-shadow:0 10px 24px rgba(0,0,0,.55);z-index:5}#vstage.lite .ch.chdel{background:#dc2626;color:#fff}
 #vtv[aria-pressed=true],#vlite[aria-pressed=true]{background:var(--hl,#fb923c)!important;color:var(--onhl,#111)!important}
 .wpop .wpdel{background:#3a1717;min-width:44px;padding:0}
@@ -373,6 +376,7 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 .vtsec{color:#93c5fd!important;background:#13243f!important;border-color:#1f3d6b!important}.vttab{color:#2dd4bf!important;background:#0f2a27!important;border-color:#17504a!important}
 #vtext[hidden]{display:none}
 #vtext textarea{flex:1;font-size:17px;background:#141416;color:#eee;border-color:#333;line-height:1.35em!important}
+.vtsel{white-space:nowrap}#vtSelBar{display:inline-flex;gap:4px;flex-wrap:wrap}
 .vtwrap{flex:1;min-height:0;display:flex;gap:0;border:1px solid #333;border-radius:10px;overflow:hidden;background:#141416}
 #vtGut{width:84px;flex:none;overflow:hidden;padding:8px 0 8px 8px;font:700 10px Inter,system-ui,sans-serif;letter-spacing:.3px;background:#111114;border-right:1px solid #26262b}
 #vtGut div{height:1.35em;line-height:1.35em;display:flex;align-items:center;text-transform:uppercase;white-space:nowrap;overflow:hidden}
@@ -1736,6 +1740,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
       <span class="lab">Accords</span><div id="vtChips"></div><button id="vtOther" class="vtother">Autre…</button>
       <span class="grow"></span>
       <button id="vtSec" class="vtsec">+ Section</button><button id="vtTabEd" class="vttab" hidden>✎ Tablature au pavé</button><button id="vtTabUp" class="vttab" hidden aria-label="Monter la tablature">▲</button><button id="vtTabDn" class="vttab" hidden aria-label="Descendre la tablature">▼</button><button id="vtTab" class="vttab">+ Tablature</button><button id="vtDrum" class="vttab">+ Batterie</button>
+      <span id="vtSelBar"><button id="vtDel" class="vtsel" hidden>🗑 Effacer</button><button id="vtCut" class="vtsel" hidden>✂ Couper</button><button id="vtCopy" class="vtsel" hidden>Copier</button><button id="vtBk" class="vtsel" aria-label="Effacer le caractère avant le curseur">⌫</button><button id="vtPaste" class="vtsel">📋 Coller</button></span>
       <button id="vtKbd">⌨ Écrire</button><button id="vtUndo" aria-label="Annuler la dernière modification">↶</button><button id="vtRedo" aria-label="Rétablir">↷</button>
     </div>
   </div>
@@ -5873,6 +5878,19 @@ function vtTabAt(){ // lignes de la tablature où se trouve le curseur
   const ta=$('#vtextArea'), v=ta.value, L=v.slice(0,ta.selectionStart).split('\n').length-1, k=analyzeText(v).kind;
   if(k[L]!=='x'&&!(k[L]==='s'&&k[L+1]==='x'))return null; let a=L,b=L; if(k[L]==='s'){a=b=L+1;} while(a>0&&k[a-1]==='x')a--; while(b<k.length-1&&k[b+1]==='x')b++; return {a,b,k,h:a>0&&k[a-1]==='s'?a-1:a};
 }
+function vtSelUI(){const ta=$('#vtextArea'), has=ta.selectionEnd>ta.selectionStart; ['#vtDel','#vtCut','#vtCopy'].forEach(x=>$(x).hidden=!has); $('#vtBk').hidden=has;}
+// ces boutons ne font pas apparaître le clavier et passent par l'historique natif (↶ marche)
+function vtEdit(cmd,txt){const ta=$('#vtextArea'); ta.focus(); let ok=false; try{ok=document.execCommand(cmd,false,txt);}catch(e){}
+  if(!ok){const a=ta.selectionStart, b=ta.selectionEnd; if(cmd==='delete'){if(a===b&&a>0)ta.setRangeText('',a-1,a,'end'); else ta.setRangeText('',a,b,'end');} else if(cmd==='insertText')ta.setRangeText(txt,a,b,'end'); ta.dispatchEvent(new Event('input',{bubbles:true}));}
+  vtAnalyze(); setTimeout(()=>{vtCaret(); vtSelUI();},0);}
+['#vtDel','#vtCut','#vtCopy','#vtBk','#vtPaste'].forEach(x=>$(x).addEventListener('pointerdown',e=>e.preventDefault()));
+$('#vtDel').onclick=()=>vtEdit('delete');
+$('#vtBk').onclick=()=>vtEdit('delete');
+$('#vtCopy').onclick=async()=>{const ta=$('#vtextArea'), t=ta.value.slice(ta.selectionStart,ta.selectionEnd); try{await navigator.clipboard.writeText(t);}catch(e){try{document.execCommand('copy');}catch(e2){}} toast('Copié');};
+$('#vtCut').onclick=async()=>{const ta=$('#vtextArea'), t=ta.value.slice(ta.selectionStart,ta.selectionEnd); try{await navigator.clipboard.writeText(t);}catch(e){try{document.execCommand('copy');}catch(e2){}} vtEdit('delete'); toast('Coupé');};
+$('#vtPaste').onclick=async()=>{let t=''; try{t=await navigator.clipboard.readText();}catch(e){} if(!t){toast('Presse-papiers vide ou inaccessible : appui long dans le texte → Coller'); return;} vtEdit('insertText',t);};
+['select','click','keyup','focus','selectionchange'].forEach(ev=>$('#vtextArea').addEventListener(ev,()=>setTimeout(vtSelUI,0)));
+document.addEventListener('selectionchange',()=>{if(document.activeElement===$('#vtextArea'))vtSelUI();});
 function vtCaret(){const t=vtTabAt(); ['#vtTabEd','#vtTabUp','#vtTabDn'].forEach(x=>$(x).hidden=!t); if(t)$('#vtTabEd').textContent=isDrumBlock($('#vtextArea').value.split('\n').slice(t.a,t.b+1))?'✎ Batterie au pavé':'✎ Tablature au pavé';}
 ['click','keyup','select','focus'].forEach(ev=>$('#vtextArea').addEventListener(ev,()=>setTimeout(vtCaret,0)));
 function vtTabPad(a,b,at){
@@ -6159,6 +6177,11 @@ $('#vstage').addEventListener('click',ev=>{
   }
   if(V.lite&&cur&&!FOLLOW){
     if(Date.now()-(V.noClick||0)<450)return;
+    if(V.moveCh){const m=V.moveCh; V.moveCh=null; $('#vstage').classList.remove('mving'); $$('#vstage .mvsrc').forEach(x=>x.classList.remove('mvsrc'));
+      const ref=$(`#vstage .ly[data-raw="${m.raw+1}"]`)||t.closest('.ly'), ln=t.closest('.ly,.c');
+      if(ln&&ref){const rr=ref.getClientRects()[0]||ref.getBoundingClientRect(), cw=charW(ref)||10, col=Math.max(0,Math.round((ev.clientX-rr.left)/cw-.5))+(+ref.dataset.off||0);
+        if(moveChordTo(cur.s,m.raw,m.k,col))toast('Accord déplacé');} else toast('Déplacement annulé');
+      return;}
     const c=t.closest('.ch'); if(c){chordSwap(cur,c); return;}
     const ly=t.closest('.ly,.c'); if(ly&&+ly.dataset.raw>=0){wordPick(cur,ly,ev); return;}
     return; // en retouche, le texte ne tourne pas les pages : flèches ‹ › en bas
@@ -6171,6 +6194,9 @@ $('#vstage').addEventListener('click',ev=>{
   if(x<w*.25)vPrev(); else if(x>w*.75)vNext(); else if(V.clean)setClean(false);
 });
 
+// position actuelle d'un accord, en lettres, par rapport à la ligne de paroles dessous
+function chGeom(ch,raw){const ref=$(`#vstage .ly[data-raw="${raw+1}"]`)||ch.parentElement; const rr=ref.getClientRects()[0]||ref.getBoundingClientRect(), cw=charW(ref)||ch.getBoundingClientRect().width/Math.max(1,ch.textContent.length);
+  return {col:Math.max(0,Math.round((ch.getBoundingClientRect().left-rr.left)/cw))+(+ref.dataset.off||0),cw};}
 // scène, retouche rapide : toucher un accord affiché ouvre la barre d'accords juste au-dessus pour le remplacer (✕ le supprime)
 function chordSwap(cur,ch){
   const raw=+ch.parentElement.dataset.raw, k=+ch.dataset.k; if(!(raw>=0)){toast('Cet accord ne se modifie pas ici');return;}
@@ -6180,13 +6206,16 @@ function chordSwap(cur,ch){
   const hl=document.createElement('div'); hl.className='wphl'; hl.style.cssText=`left:${rc.left-2}px;top:${rc.top-1}px;width:${rc.width+4}px;height:${rc.height+2}px`; document.body.appendChild(hl); WP.hl=hl;
   const list=[...new Set([...chVariants(ch.textContent).slice(0,4),...(r.chips||[]),...diatonic(r)])].filter(x=>x!==ch.textContent).slice(0,10);
   const el=document.createElement('div'); el.id='wpop'; el.className='wpop';
-  el.innerHTML=list.map(n=>`<button class="wpc" data-n="${esc(n)}">${esc(n)}</button>`).join('')+`<input type="text" id="wpIn" placeholder="${esc(ch.textContent)}…" autocomplete="off" aria-label="Taper un accord"><button class="wpo" data-a="other">Autre…</button><button class="wpx wpdel" data-a="del" aria-label="Supprimer l'accord">🗑</button><button class="wpx" data-a="x" aria-label="Fermer">✕</button>`;
+  el.innerHTML=list.map(n=>`<button class="wpc" data-n="${esc(n)}">${esc(n)}</button>`).join('')+`<input type="text" id="wpIn" placeholder="${esc(ch.textContent)}…" autocomplete="off" aria-label="Taper un accord"><button class="wpo" data-a="other">Autre…</button><span class="wpmv"><button class="wpo" data-a="l" aria-label="Décaler d'une lettre à gauche">◀</button><button class="wpo" data-a="mv">✋ Déplacer</button><button class="wpo" data-a="r" aria-label="Décaler d'une lettre à droite">▶</button></span><button class="wpx wpdel" data-a="del" aria-label="Supprimer l'accord">🗑</button><button class="wpx" data-a="x" aria-label="Fermer">✕</button>`;
   document.body.appendChild(el); WP.el=el; const w=el.offsetWidth, h=el.offsetHeight; let top=rc.top-h-10; if(top<8)top=rc.bottom+10;
   el.style.left=Math.max(8,Math.min(innerWidth-w-8,rc.left-24))+'px'; el.style.top=top+'px';
   $('#wpIn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault(); wpApply(e.target.value);} else if(e.key==='Escape')wpClose();};
   el.addEventListener('click',e=>{const b=e.target.closest('button'); if(!b)return; if(WP.lp){WP.lp=false; return;}
     if(b.dataset.a==='x'){wpClose(); return;}
     if(b.dataset.a==='del'){wpClose(); beginEdit(cur.s); replaceTokens(cur.s,(li,ti)=>li===raw&&ti===k?'':null); afterEdit(cur.s); toast('Accord supprimé'); return;}
+    if(b.dataset.a==='l'||b.dataset.a==='r'){const g=chGeom(ch,raw); if(!g)return; const col=Math.max(0,g.col+(b.dataset.a==='r'?1:-1));
+      if(moveChordTo(cur.s,raw,k,col)){WP.keep=true; setTimeout(()=>{WP.keep=false; const nc=$(`#vstage .c[data-raw="${raw}"] .ch[data-k="${k}"]`)||$(`#vstage [data-raw="${raw}"] .ch[data-k="${k}"]`); wpClose(); if(nc)chordSwap(cur,nc);},60);} return;}
+    if(b.dataset.a==='mv'){wpClose(); V.moveCh={raw,k}; ch.classList.add('mvsrc'); $('#vstage').classList.add('mving'); toast('Touche la lettre où placer l\'accord (ailleurs : annuler)'); return;}
     if(b.dataset.a==='other'){const c=WP.ctx; wpClose(); WP.ctx=c; chordDialog({mode:'pick',r:c.r,cb:n=>wpApply(n)}); return;}
     if(b.dataset.n)wpApply(b.dataset.n);});
   el.addEventListener('pointerdown',e=>{const b=e.target.closest('.wpc'); if(!b)return; WP.lp=false; clearTimeout(WP.t); const p0={x:e.clientX,y:e.clientY}; WP.t=setTimeout(()=>{WP.lp=true; wpRadial(b,b.dataset.n,p0);},420);});
@@ -6196,8 +6225,8 @@ $('#vlite').onclick=()=>{const e=V.list[V.i]; if(!e)return;
   if(!V.lite){if(isSheet(e.s)){toast('Pour une partition, utilise ✎ Annoter'); return;} if(FOLLOW&&!e.mine){toast('Tu suis le meneur : retouche impossible ici'); return;}
     if((e.s.view||'grille')!=='grille'&&(e.s.view||'grille')!=='accords'){toast('Passe en vue Grille (accords + paroles) pour retoucher les accords'); return;}
     if((e.s.view||'grille')==='accords'){openBG(e,0,0); return;}}
-  V.lite=!V.lite; wpClose(); $('#vlite').setAttribute('aria-pressed',V.lite); $('#vstage').classList.toggle('lite',V.lite);
-  if(V.lite)toast('Retouche : touche un mot pour poser un accord, un accord pour le changer, glisse un accord pour le déplacer · pages : flèches ‹ ›');};
+  V.lite=!V.lite; V.moveCh=null; wpClose(); $('#vlite').setAttribute('aria-pressed',V.lite); $('#vstage').classList.toggle('lite',V.lite); $('#vstage').classList.remove('mving');
+  if(V.lite)toast('Retouche : touche un mot pour poser un accord · touche un accord pour le changer ou le déplacer (◀ ▶ ou ✋) · pages : flèches ‹ ›',5000);};
 function showVDiag(cur,ch){
   const name=ch.textContent, svg=diagramSVG(name), d=$('#vdiag');
   V.dctx={e:cur,raw:+ch.parentElement.dataset.raw,k:+ch.dataset.k,shown:name};
