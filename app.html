@@ -233,6 +233,17 @@ pre .k{color:var(--warn);font-weight:700}
 .vmbright{display:flex;align-items:center;gap:8px;color:#bbb;padding:8px 12px;font-size:18px}.vmbright input{flex:1}
 #vtv{position:relative}
 .reqb{position:relative}.reqb em{position:absolute;top:2px;right:2px;min-width:16px;height:16px;border-radius:8px;background:#ff5c8a;color:#22101a;font:700 11px/16px system-ui;font-style:normal;padding:0 4px}
+.htools{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}.htools button{display:flex;align-items:center;gap:10px;text-align:left;padding:14px 16px;border-radius:14px;font-size:15px}.htools small{margin-left:auto;opacity:.7;font-size:13px}
+@media (max-width:560px){.htools{grid-template-columns:1fr}}
+.memobox,.histbox,.cleanbox{max-width:640px}.memorec{display:flex;align-items:center;gap:16px;padding:12px 0 16px}.memorec small{display:block}
+#memoRec{width:76px;height:76px;border-radius:50%;border:3px solid #ef4444;background:transparent;display:flex;align-items:center;justify-content:center;flex:none}#memoRec i{width:30px;height:30px;border-radius:50%;background:#ef4444;transition:all .2s}
+#memoRec.on i{border-radius:6px;width:26px;height:26px}#memoRec.on{animation:mpulse 1.2s infinite}@keyframes mpulse{50%{box-shadow:0 0 0 10px rgba(239,68,68,.15)}}
+.mrow{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:10px;background:rgba(127,127,127,.12);margin-bottom:6px}.mrow b{flex:1}.mrow input{flex:1;min-width:0}
+.hgrp{margin:10px 0;padding:10px 12px;border-radius:12px;background:rgba(127,127,127,.1)}.hgrp summary{cursor:pointer;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.hgrp summary b{flex:1}.hgrp ol{margin:8px 0 0;padding-left:22px}.hgrp li small{opacity:.6}
+.hrank{display:flex;align-items:center;gap:10px;padding:8px 4px;border-bottom:1px solid rgba(127,127,127,.18)}.hrank b{flex:1}.hrank em{font-style:normal;font-weight:800;color:var(--hl,#fb923c)}
+.csec{margin:14px 0}.csec h3{display:flex;align-items:center;gap:8px}.csec h3 small{opacity:.6;font-weight:500}.crow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 10px;border-radius:10px;background:rgba(127,127,127,.12);margin-bottom:6px}
+.crow .ct{flex:1 1 200px;min-width:0}.crow .ct small{display:block;opacity:.65}.cdup{border-left:3px solid var(--hl,#fb923c);padding-left:8px;margin-bottom:10px}.crow input{flex:1 1 140px;min-width:0}
+.ficheinfo{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .kpprev{width:100%;max-width:440px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;position:relative;background:radial-gradient(circle at 50% 30%,#2a1f55,#14112a 70%);color:#f4f1ff;box-shadow:inset 0 0 0 1px #3a3a40;padding:10px 14px;box-sizing:border-box;font:600 12px/1.45 system-ui}
 .kpprev .h{font-weight:800;font-size:13px;margin-bottom:4px}.kpprev .done{opacity:.4;text-decoration:line-through}.kpprev .now{font-weight:800;color:#fff;background:rgba(255,92,138,.25);border-radius:4px;padding:0 4px;margin:0 -4px}.kpprev .next{color:#ffc94d}
 .kpprev .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px}.kpprev .c b{font-size:22px}.kpprev .c small{opacity:.7;white-space:pre-line}
@@ -971,6 +982,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
     <div class="hsec"><h2>Playlists</h2><button class="sm hall" data-go="lists">tout voir ›</button></div>
     <div id="hLists"></div>
     <div class="hcols"><div><div class="hsec"><h2>Joués récemment</h2></div><div id="hRecent"></div></div><div><div class="hsec"><h2>À travailler</h2><span class="lab" id="hWorkN"></span></div><div id="hWork"></div></div></div>
+    <div class="htools"><button id="hHist">📜 <b>Historique des concerts</b><small id="hHistN"></small></button><button id="hClean">🧹 <b>Nettoyer la bibliothèque</b><small id="hCleanN"></small></button></div>
   </section>
   <!-- ===== Bibliothèque ===== -->
   <section id="lib">
@@ -1014,7 +1026,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
     <div id="listDetail" hidden>
       <button id="backLists" class="lback">‹ Playlists</button>
       <div class="lhead"><div class="grow"><b id="lTitle"></b><span class="lab" id="lInfo"></span></div><button class="pri lgo" id="lScene">▶ Scène</button></div>
-      <div id="lHeadEdit" class="row" hidden><input type="text" id="lName" class="grow" placeholder="Nom du concert"><input type="date" id="lDate"></div>
+      <div id="lHeadEdit" class="row" hidden><input type="text" id="lName" class="grow" placeholder="Nom du concert"><input type="date" id="lDate"><input type="text" id="lPlace" placeholder="📍 Lieu" style="max-width:200px"></div>
       <details id="lNotesBox"><summary>Notes du concert</summary><textarea id="lNotes" rows="2" placeholder="Notes pour ce concert (lieu, matériel, qui chante quoi…)"></textarea></details>
       <div class="row">
         <button id="lAdd">+ Morceaux</button>
@@ -1275,6 +1287,20 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
 
 <!-- ===== Partager : quoi, à qui ===== -->
 <div id="reqCard" hidden></div>
+<div id="memoBox" class="modal" hidden><div class="box memobox">
+  <h2><span id="memoTitle">🎙 Mémos</span> <button class="close">✕</button></h2>
+  <div class="memorec"><button id="memoRec" aria-label="Enregistrer"><i></i></button><div><b id="memoState">Touche pour enregistrer</b><small id="memoTime" class="lab">un riff, une intro, une remarque de répétition… (2 min max)</small></div></div>
+  <div id="memoList"></div>
+</div></div>
+<div id="concBox" class="modal" hidden><div class="box histbox">
+  <h2>📜 Historique <button class="close">✕</button></h2>
+  <span class="seg" id="histTabs"><button data-h="c" aria-pressed="true">Concerts</button><button data-h="s">Morceaux</button><button data-h="r">Demandes</button></span>
+  <div id="histBody"></div>
+</div></div>
+<div id="cleanBox" class="modal" hidden><div class="box cleanbox">
+  <h2>🧹 Nettoyer la bibliothèque <button class="close">✕</button></h2>
+  <div id="cleanBody"></div>
+</div></div>
 <div id="sendBox" class="modal" hidden><div class="box sendbox">
   <h2><span id="sdName">Envoyer</span> <button class="close">✕</button></h2>
   <span class="seg" id="sdWhat"><button data-w="song">Ce morceau</button><button data-w="list">Toute la playlist</button></span>
@@ -1585,6 +1611,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
         <button id="vfollowBtn" class="cl"><i>👥</i>Suivre</button>
         <button id="vgroup" class="cl"><i>👥</i>Groupe<em id="vgroupN" hidden></em></button>
         <button id="vsend" class="cl"><i>📤</i>Envoyer</button>
+        <button id="vmemo" class="cl"><i>🎙</i>Mémo</button>
         <button id="vcleanBtn" class="cl"><i>⛶</i>Épuré</button>
         <button id="vdispBtn" class="cl"><i>⚙</i>Réglages</button>
         <button id="vquit" class="cl"><i>✕</i>Quitter</button>
@@ -3728,6 +3755,8 @@ function ficheDraw(s){
     <div class="fqr"><span>Capo</span>${caps}</div>
     <div class="fqr"><span>Étiquettes</span>${tagsOf(s).map(t=>`<span class="ftag${t===WORK?' work':''}">${esc(t)}<button data-untag="${esc(t)}" aria-label="Retirer">✕</button></span>`).join('')}<button data-tag="1" class="sm">+</button></div>
     <div class="fqr"><span>Écouter</span>${muLinks(s).map(k=>`<button class="fmu" data-mu="${k}" style="--c:${MU[k].c};--f:${MU[k].f}">▶ ${MU[k].n}</button>`).join('')}<button class="sm" data-muadd="1">${muLinks(s).length?'Liens…':'+ Lien'}</button></div>
+    <div class="fqr"><span>Mémos</span><button class="sm" data-memo="1">🎙 ${(s.memos||[]).length?(s.memos.length+' mémo'+(s.memos.length>1?'s':'')+' · écouter / ajouter'):'Enregistrer une idée'}</button></div>
+    ${(()=>{const h=histOf(s.id); if(!h.length)return ''; const last=h[h.length-1]; return `<div class="fqr"><span>Joué</span><span class="ficheinfo">${h.length} fois · dernière fois le ${fmtDay(last.d)}${last.ln?' ('+esc(last.ln)+(last.pl?', '+esc(last.pl):'')+')':''}</span></div>`;})()}
     <div class="fqr"><span>Playlists</span>${lists.map(l=>`<button class="ftag" data-open="${l.id}">${esc(l.name)}</button>`).join('')}<button data-addl="1" class="sm">+ Ajouter</button></div>
   </div><details id="fAll"><summary>Tous les réglages</summary><div id="fAllBox"></div></details>`;
   $('#fAll').ontoggle=()=>{if($('#fAll').open&&!$('#fAllBox').firstChild){s.open=true; const c=buildCard(s); $('#fAllBox').appendChild(c); update(s);}};
@@ -3739,6 +3768,7 @@ $('#fCard').onclick=async e=>{const s=songById(FICHE); if(!s)return; const b=e.t
   if(b.dataset.untag){setTag(s,b.dataset.untag,false); touch(s); save(); ficheDraw(s); renderLibLight(); return;}
   if(b.dataset.tag){$('#dlTypes').innerHTML=allTags().map(t=>`<option value="${esc(t)}">`).join(''); const v=await ask('Ajouter une étiquette','à travailler, reprise…','dlTypes'); if(v&&v.trim()){setTag(s,v.trim(),true); touch(s); save(); ficheDraw(s); renderLibLight();} return;}
   if(b.dataset.addl){await addSongsToList([s.id]); ficheDraw(s); return;}
+  if(b.dataset.memo){openMemos(s); return;}
   if(b.dataset.mu){muPlay(s,b.dataset.mu); return;}
   if(b.dataset.muadd){muBox(s); return;}
   if(b.dataset.spl){spListen(s.id); return;}
@@ -3825,6 +3855,7 @@ function renderHome(){
   const ls=S.lists.slice().sort((a,b)=>{const da=listDate(a), db=listDate(b); return (db?db.getTime():0)-(da?da.getTime():0)||(b.up||0)-(a.up||0);}).slice(0,7);
   $('#hLists').innerHTML=ls.map((l,i)=>{const d=listDate(l); return `<button class="htile" data-l="${l.id}" style="background:${tileC(i)}"><b>${esc(l.name)}</b><span>${l.items.length} morceau${l.items.length>1?'x':''}${d?' · '+d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}):''}</span></button>`;}).join('')+'<button class="htile add" data-l="+">+ Playlist</button>';
   const rec=(S.recent||[]).map(songById).filter(Boolean).slice(0,5);
+  if(typeof homeTools==='function')try{homeTools();}catch(e){}
   $('#hRecent').innerHTML=rec.map(x=>homeRow(x)).join('')||'<p class="lab">Les morceaux joués en scène apparaîtront ici.</p>';
   const work=S.songs.filter(x=>hasTag(x,WORK));
   $('#hWorkN').textContent=work.length||''; $('#hWork').innerHTML=work.slice(0,6).map(x=>homeRow(x,(validGrid(x.bgrid)?'<span class="htag">grille basse</span>':'')+(x.kind==='sheet'?'<span class="htag">partition</span>':''))).join('')||'<p class="lab">Ajoute l\'étiquette « à travailler » à un morceau pour le retrouver ici.</p>';
@@ -3852,7 +3883,7 @@ function renderLists(){
 function openList(l){curList=l; showTab('lists'); renderLists();}
 function renderListDetail(){
   const l=curList; if(!l||$('#listDetail').hidden)return;
-  $('#lName').value=l.name; $('#lDate').value=l.date||''; $('#lNotes').value=l.notes||'';
+  $('#lName').value=l.name; $('#lDate').value=l.date||''; $('#lPlace').value=l.place||''; $('#lNotes').value=l.notes||'';
   const es=listEntries(l), tot=es.reduce((a,e)=>a+eDur(e),0), ld=listDate(l);
   $('#lTitle').textContent=l.name; $('#lInfo').textContent=[ld?ld.toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'}):'',es.length+' morceau'+(es.length>1?'x':''),tot?'≈ '+fmtDur(tot):''].filter(Boolean).join(' · ');
   $('#lNotesBox').open=!!(l.notes||'').trim()&&$('#lNotesBox').open;
@@ -3889,6 +3920,7 @@ $('#backLists').onclick=()=>{curList=null; LOPEN=-1; renderLists();};
 $('#lName').onchange=e=>{curList.name=e.target.value.trim()||curList.name; touch(curList); save(); renderLists();};
 $('#lTitle').onclick=()=>{$('#lHeadEdit').hidden=!$('#lHeadEdit').hidden;};
 $('#lDate').onchange=e=>{curList.date=e.target.value; touch(curList); save(); renderListDetail();};
+$('#lPlace').onchange=e=>{const v=e.target.value.trim(); if(v)curList.place=v; else delete curList.place; touch(curList); save();};
 $('#lNotes').onchange=e=>{curList.notes=e.target.value; touch(curList); save();};
 dragify($('#lItems'),'.drag','.item',{onDrop:(el,over,after)=>{moveItem(curList.items,+el.dataset.i,+over.dataset.i,after); touch(curList); save(); renderListDetail();}});
 $('#lView').onclick=e=>{const b=e.target.closest('button'); if(!b)return; S.lView=b.dataset.v; save(); renderListDetail();};
@@ -4139,7 +4171,7 @@ function vRender(){
   if(V.spKey!==e.s.id){const first=V.spKey===undefined; V.spKey=e.s.id; if(!first&&S.spot&&S.spShow&&!FOLLOW&&(S.spAuto||(S.spAuto!==false&&SP.st&&SP.st.is_playing))){if(e.s.spotify)SP.playUri(e.s.spotify.uri); else if(SP.st&&SP.st.is_playing){SP.control('PUT','/me/player/pause'); toast('Pas de titre Spotify lié à ce morceau : 🔗 pour le choisir');}} if(!$('#spbar').hidden)SP.draw();}
   $('#vtitle').textContent=e.s.q;
   if(V.lastSong!==e.s.id&&(V.tvFollow&&!FOLLOW||S.karaPilot)&&Kara.linked()){const en=e; setTimeout(()=>tvSend(en,$('#vtv')),0);}
-  if(V.lastSong!==e.s.id){if(Kara.linked()&&!FOLLOW&&(KP.set||(V.tvFollow||S.karaPilot)&&isList()))setTimeout(kpSetlist,400); setTimeout(()=>Req.between(),600);}
+  if(V.lastSong!==e.s.id){histArm(e); if(Kara.linked()&&!FOLLOW&&(KP.set||(V.tvFollow||S.karaPilot)&&isList()))setTimeout(kpSetlist,400); setTimeout(()=>Req.between(),600);}
   setTimeout(()=>{if(KHL.st)KHL.paint(); if(!KHL.t&&!KHL.busy)KHL.kick();},0);
   if(V.lastSong!==e.s.id&&V.vid&&!FOLLOW)setTimeout(()=>vidPlay(e.s),0);
   else if(V.lastSong!==e.s.id&&!$('#spEmbed').hidden)muEmbed(e.s,MUE.k&&MU[MUE.k].id(e.s)?MUE.k:muPref(e.s));
@@ -4681,6 +4713,123 @@ $('#kpPast').onchange=e=>{KPS().past=+e.target.value; save(); kpCall({op:'setcfg
 $('#kpPauseMin').onchange=e=>{KPS().pauseMin=+e.target.value; save();};
 $('#kpReq').onchange=e=>Req.enable(e.target.checked);
 $('#kpNotif').onchange=e=>{KPS().notif=e.target.value; save();};
+/* ---------- 🎙 Mémos vocaux par morceau (IndexedDB, comme les bandes son) ---------- */
+const MEMO={s:null,rec:null,chunks:[],t0:0,tick:null};
+function openMemos(s){if(!s)return; MEMO.s=s; $('#memoTitle').textContent='🎙 '+(split(s.q).titre||s.q); memoDraw(); modal('#memoBox',true);}
+function memoDraw(){const s=MEMO.s, l=s.memos||[];
+  $('#memoList').innerHTML=l.length?l.slice().reverse().map(m=>`<div class="mrow"><button class="sm" data-mp="${m.id}">▶</button><input value="${esc(m.name||'')}" data-mn="${m.id}" placeholder="${esc(new Date(m.at).toLocaleDateString('fr-FR',{day:'numeric',month:'short'})+' · '+fmtDur(m.dur||0))}"><small class="lab">${fmtDur(m.dur||0)}</small><button class="sm" data-md="${m.id}" aria-label="Supprimer">🗑</button></div>`).join('')
+    :'<p class="lab">Aucun mémo pour ce morceau.</p>';}
+async function memoToggle(){
+  if(MEMO.rec){MEMO.rec.stop(); return;}
+  let st; try{st=await navigator.mediaDevices.getUserMedia({audio:true});}catch(e){toast('Micro refusé ou indisponible'); return;}
+  let rec; try{rec=new MediaRecorder(st);}catch(e){st.getTracks().forEach(t=>t.stop()); toast('Enregistrement impossible sur cet appareil'); return;}
+  MEMO.rec=rec; MEMO.chunks=[]; MEMO.t0=Date.now(); $('#memoRec').classList.add('on'); $('#memoState').textContent='Enregistrement… touche pour arrêter';
+  rec.ondataavailable=e=>{if(e.data&&e.data.size)MEMO.chunks.push(e.data);};
+  rec.onstop=async()=>{clearInterval(MEMO.tick); st.getTracks().forEach(t=>t.stop()); $('#memoRec').classList.remove('on'); $('#memoState').textContent='Touche pour enregistrer'; MEMO.rec=null;
+    const dur=Math.round((Date.now()-MEMO.t0)/1000); if(dur<1||!MEMO.chunks.length){$('#memoTime').textContent='Trop court'; return;}
+    const blob=new Blob(MEMO.chunks,{type:MEMO.chunks[0].type||'audio/webm'}), m={id:'memo-'+uid(),at:Date.now(),dur}, s=MEMO.s;
+    await Media.put(m.id,blob); s.memos=[...(s.memos||[]),m]; touch(s); save(); memoDraw(); if(FICHE===s.id)ficheDraw(s); toast('🎙 Mémo enregistré ('+fmtDur(dur)+')');
+    $('#memoTime').textContent='un riff, une intro, une remarque de répétition… (2 min max)';};
+  rec.start(500); MEMO.tick=setInterval(()=>{const t=Math.round((Date.now()-MEMO.t0)/1000); $('#memoTime').textContent=fmtDur(t)+' / 2:00'; if(t>=120&&MEMO.rec)MEMO.rec.stop();},250);
+}
+$('#memoRec').onclick=memoToggle;
+let memoAudio=null;
+$('#memoList').addEventListener('click',async e=>{const b=e.target.closest('button'); if(!b)return; const s=MEMO.s;
+  if(b.dataset.mp){if(memoAudio){memoAudio.pause(); const was=memoAudio.dataset.id; memoAudio=null; $$('#memoList [data-mp]').forEach(x=>x.textContent='▶'); if(was===b.dataset.mp)return;}
+    const blob=await Media.get(b.dataset.mp); if(!blob){toast('Mémo introuvable sur cet appareil'); return;}
+    memoAudio=new Audio(URL.createObjectURL(blob)); memoAudio.dataset.id=b.dataset.mp; b.textContent='⏸'; memoAudio.onended=()=>{b.textContent='▶'; memoAudio=null;}; memoAudio.play().catch(()=>toast('Lecture impossible'));}
+  if(b.dataset.md){if(!confirm('Supprimer ce mémo ?'))return; Media.del(b.dataset.md); s.memos=(s.memos||[]).filter(m=>m.id!==b.dataset.md); touch(s); save(); memoDraw(); if(FICHE===s.id)ficheDraw(s);}
+});
+$('#memoList').addEventListener('change',e=>{const i=e.target.closest('[data-mn]'); if(!i)return; const m=(MEMO.s.memos||[]).find(x=>x.id===i.dataset.mn); if(m){m.name=i.value.trim(); touch(MEMO.s); save();}});
+$('#memoBox .close').addEventListener('click',()=>{if(MEMO.rec)MEMO.rec.stop(); if(memoAudio){memoAudio.pause(); memoAudio=null;}});
+$('#vmemo').onclick=()=>{const e=V.list[V.i]; if(!e)return; $('#vmenu').hidden=true; const s=songById(e.s.id); if(!s){toast('Ce morceau n\'est pas dans ta bibliothèque'); return;} openMemos(s);};
+
+/* ---------- 📜 Historique : ce qui a été joué, où, quand, et les demandes reçues ---------- */
+const today=()=>{const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+const fmtDay=d=>{const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(d||''); return m?new Date(+m[1],+m[2]-1,+m[3]).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}):'';};
+function histOf(id){return (S.hist||[]).filter(h=>h.sid===id);}
+function histArm(e){clearTimeout(V.histT); if(e.preview)return; const l=isList()?V.listRef:null;
+  V.histT=setTimeout(()=>{if(V.list[V.i]!==e||$('#viewer').hidden)return; const d=today(), H=S.hist=S.hist||[];
+    if(H.some(h=>h.sid===e.s.id&&h.d===d&&(h.l||'')===(l?l.id:'')))return;
+    H.push({sid:e.s.id,q:e.s.q,d,t:Date.now(),l:l?l.id:'',ln:l?l.name:'',pl:l&&l.place||''}); if(H.length>4000)H.splice(0,H.length-4000); save(); homeTools();},60000);}
+function histReq(d){if(FOLLOW)return; const l=isList()?V.listRef:null, R=S.histReq=S.histReq||[]; R.push({t:String(d.t||'').slice(0,120),a:String(d.a||'').slice(0,120),n:String(d.n||'').slice(0,30),d:today(),ln:l?l.name:'',ts:Date.now()}); if(R.length>2000)R.splice(0,R.length-2000);}
+let histTab='c';
+function openHistory(){histTab='c'; $$('#histTabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.h==='c')); histDraw(); modal('#concBox',true);}
+function histDraw(){
+  const H=S.hist||[], R=S.histReq||[], el=$('#histBody');
+  if(histTab==='c'){
+    const g={}; H.forEach(h=>{const k=h.d+'|'+(h.l||''); (g[k]=g[k]||{d:h.d,ln:h.ln,pl:h.pl,items:[]}).items.push(h);});
+    const req={}; R.forEach(r=>{req[r.d]=(req[r.d]||0)+1;});
+    const ks=Object.keys(g).sort().reverse();
+    el.innerHTML=ks.length?ks.map((k,i)=>{const c=g[k]; return `<details class="hgrp"${i?'':' open'}><summary><b>${fmtDay(c.d)} · ${esc(c.ln||'Hors playlist')}</b>${c.pl?`<span>📍 ${esc(c.pl)}</span>`:''}<small class="lab">${c.items.length} morceau${c.items.length>1?'x':''}${req[c.d]?' · 🎤 '+req[c.d]+' demande'+(req[c.d]>1?'s':''):''}</small></summary>
+      <ol>${c.items.sort((a,b)=>a.t-b.t).map(h=>`<li>${esc((songById(h.sid)||{}).q||h.q)} <small>${new Date(h.t).toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}</small></li>`).join('')}</ol></details>`;}).join('')
+      :'<p class="lab">Rien encore : un morceau compte comme joué après une minute à l\'écran en scène.</p>';
+  } else if(histTab==='s'){
+    const c={}; H.forEach(h=>{const x=c[h.sid]=c[h.sid]||{n:0,last:'',q:h.q,pl:new Set()}; x.n++; if(h.d>x.last)x.last=h.d; if(h.pl)x.pl.add(h.pl);});
+    const l=Object.entries(c).sort((a,b)=>b[1].n-a[1].n||(b[1].last>a[1].last?1:-1));
+    el.innerHTML=l.length?l.map(([id,x])=>`<div class="hrank"><em>${x.n}×</em><b>${esc((songById(id)||{}).q||x.q)}</b><small class="lab">dernière fois le ${fmtDay(x.last)}${x.pl.size?' · 📍 '+esc([...x.pl].slice(0,3).join(', ')):''}</small></div>`).join(''):'<p class="lab">Aucun morceau joué pour l\'instant.</p>';
+  } else {
+    const c={}; R.forEach(r=>{const k=(r.t+'|'+r.a).toLowerCase(), x=c[k]=c[k]||{t:r.t,a:r.a,n:0,last:''}; x.n++; if(r.d>x.last)x.last=r.d;});
+    const l=Object.values(c).sort((a,b)=>b.n-a.n);
+    el.innerHTML=l.length?l.map(x=>`<div class="hrank"><em>${x.n}×</em><b>${esc(x.t)}${x.a?` <small class="lab">· ${esc(x.a)}</small>`:''}</b><small class="lab">${fmtDay(x.last)}</small></div>`).join(''):'<p class="lab">Aucune demande du public reçue pour l\'instant.</p>';
+  }
+}
+$('#histTabs').onclick=e=>{const b=e.target.closest('[data-h]'); if(!b)return; histTab=b.dataset.h; $$('#histTabs button').forEach(x=>x.setAttribute('aria-pressed',x===b)); histDraw();};
+$('#hHist').onclick=openHistory;
+
+/* ---------- 🧹 Nettoyage : doublons, morceaux vides, artiste manquant, accords douteux ---------- */
+const cNorm=x=>String(x||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\(.*?\)|\[.*?\]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+function cleanScan(){
+  const ign=new Set(S.cleanIgn||[]), out={dup:[],empty:[],noart:[],chords:[]}, by={};
+  S.songs.forEach(s=>{const p=split(s.q), k=cNorm(p.titre||s.q)+'|'+cNorm(p.artiste); if(cNorm(p.titre||s.q))(by[k]=by[k]||[]).push(s);});
+  Object.values(by).forEach(g=>{if(g.length>1&&!g.every(s=>ign.has('dup:'+s.id)))out.dup.push(g);});
+  S.songs.forEach(s=>{
+    if(!hasBody(s)&&s.kind!=='sheet'&&!validGrid(s.bgrid)&&!ign.has('empty:'+s.id))out.empty.push(s);
+    if(!split(s.q).artiste&&!ign.has('noart:'+s.id))out.noart.push(s);
+    if(s.kind!=='sheet'&&(s.text||'').trim()&&!ign.has('ch:'+s.id)){const w=analyzeText(s.text).warn; if(w.length)out.chords.push({s,w});}
+  });
+  return out;
+}
+function cleanCount(o){o=o||cleanScan(); return o.dup.length+o.empty.length+o.noart.length+o.chords.length;}
+function homeTools(){const n=(S.hist||[]).length; if($('#hHistN'))$('#hHistN').textContent=n?n+' passage'+(n>1?'s':''):''; if($('#hCleanN')){const c=cleanCount(); $('#hCleanN').textContent=c?c+' à voir':'✓ tout est propre';}}
+function openClean(){cleanDraw(); modal('#cleanBox',true);}
+function cleanDraw(){
+  const o=cleanScan(), info=s=>{const nl=S.lists.filter(l=>l.items.some(it=>it.sid===s.id)).length, lines=(s.text||'').split('\n').filter(x=>x.trim()).length; return `${lines} ligne${lines>1?'s':''}${nl?' · '+nl+' playlist'+(nl>1?'s':''):''}${s.up?' · modifié le '+new Date(s.up).toLocaleDateString('fr-FR'):''}`;};
+  const sec=(t,n,h)=>n?`<div class="csec"><h3>${t} <small>${n}</small></h3>${h}</div>`:'';
+  const html=
+   sec('⧉ Doublons',o.dup.length,o.dup.map(g=>`<div class="cdup">${g.map(s=>`<div class="crow"><div class="ct"><b>${esc(s.q)}</b><small>${info(s)}</small></div><button class="sm" data-c="keep" data-id="${s.id}" data-g="${g.map(x=>x.id).join(',')}">✓ Garder celui-ci</button><button class="sm" data-c="see" data-id="${s.id}">Voir</button></div>`).join('')}<button class="sm" data-c="ign" data-k="dup" data-g="${g.map(x=>x.id).join(',')}">Ce ne sont pas des doublons</button></div>`).join(''))+
+   sec('○ Morceaux vides',o.empty.length,o.empty.map(s=>`<div class="crow"><div class="ct"><b>${esc(s.q)}</b><small>ni accords ni paroles</small></div><button class="sm" data-c="find" data-id="${s.id}">🔎 Trouver la grille</button><button class="sm" data-c="del" data-id="${s.id}">🗑 Supprimer</button><button class="sm" data-c="ign" data-k="empty" data-g="${s.id}">Ignorer</button></div>`).join(''))+
+   sec('👤 Artiste manquant',o.noart.length,o.noart.map(s=>`<div class="crow"><div class="ct"><b>${esc(s.q)}</b></div><input placeholder="Artiste" data-art="${s.id}"><button class="sm" data-c="art" data-id="${s.id}">✓</button><button class="sm" data-c="ign" data-k="noart" data-g="${s.id}">Ignorer</button></div>`).join(''))+
+   sec('♯ Accords douteux',o.chords.length,o.chords.map(({s,w})=>{const fx=w.filter(x=>x.fix); return `<div class="crow"><div class="ct"><b>${esc(s.q)}</b><small>${w.slice(0,4).map(x=>esc(x.tok)+(x.fix?' → '+esc(x.fix):' ?')).join(' · ')}${w.length>4?' …':''}</small></div>${fx.length?`<button class="sm pri" data-c="fix" data-id="${s.id}">✓ Corriger (${fx.length})</button>`:''}<button class="sm" data-c="edit" data-id="${s.id}">✎ Éditer</button><button class="sm" data-c="ign" data-k="ch" data-g="${s.id}">C'est bon</button></div>`;}).join(''));
+  $('#cleanBody').innerHTML=html||'<p class="lab" style="padding:20px 0;text-align:center">✓ Tout est propre : aucun doublon, aucun morceau vide, rien à corriger.</p>';
+}
+// garder un doublon : les playlists pointent vers lui, les autres sont supprimés (étiquettes, mémos et liens récupérés)
+function cleanKeep(keepId,ids){
+  const k=songById(keepId); if(!k)return; const others=ids.filter(id=>id!==keepId).map(songById).filter(Boolean);
+  if(!confirm(`Garder « ${k.q} » et supprimer ${others.length} doublon${others.length>1?'s':''} ?\nLes playlists utiliseront le morceau gardé.`))return;
+  others.forEach(o=>{
+    S.lists.forEach(l=>{let ch=false; l.items.forEach(it=>{if(it.sid===o.id){it.sid=k.id; ch=true;}}); if(ch){const seen=new Set(); l.items=l.items.filter(it=>seen.has(it.sid)?false:seen.add(it.sid)); touch(l);}});
+    tagsOf(o).forEach(t=>setTag(k,t,true)); if(o.memos)k.memos=[...(k.memos||[]),...o.memos]; ['spotify','yt','tempo','dur','notes'].forEach(f=>{if(o[f]&&!k[f])k[f]=o[f];});
+    (S.hist||[]).forEach(h=>{if(h.sid===o.id)h.sid=k.id;});
+    S.del.songs[o.id]=Date.now();
+  });
+  const del=new Set(others.map(o=>o.id)); S.songs=S.songs.filter(s=>!del.has(s.id)); touch(k); save(); renderAll(); toast('✓ Doublon'+(others.length>1?'s':'')+' fusionné'+(others.length>1?'s':''));
+}
+$('#cleanBody').addEventListener('click',e=>{const b=e.target.closest('[data-c]'); if(!b)return; const c=b.dataset.c, s=songById(b.dataset.id);
+  if(c==='keep')cleanKeep(b.dataset.id,b.dataset.g.split(','));
+  else if(c==='see'&&s){modal('#cleanBox',false); openFiche(s.id); return;}
+  else if(c==='find'&&s){modal('#cleanBox',false); openFiche(s.id); setTimeout(()=>{$('#fAll').open=true; $('#fAll').ontoggle&&$('#fAll').ontoggle(); $('#fAll').scrollIntoView({behavior:'smooth'});},80); return;}
+  else if(c==='del'&&s){deleteSongs([s.id]);}
+  else if(c==='art'&&s){const i=$(`#cleanBody [data-art="${s.id}"]`), a=i&&i.value.trim(); if(!a){i&&i.focus(); return;} s.q=a+' - '+(split(s.q).titre||s.q); delete s._r; touch(s); save(); renderAll();}
+  else if(c==='fix'&&s){beginEdit(s); let t=s.text; analyzeText(t).warn.filter(x=>x.fix).forEach(x=>{t=fixToken(t,x.i,x.tok,x.fix);}); s.text=t; afterEdit(s); toast('Accords corrigés (↶ dans l\'éditeur pour revenir)');}
+  else if(c==='edit'&&s){modal('#cleanBox',false); openEditor(s,null); return;}
+  else if(c==='ign'){const k=b.dataset.k; S.cleanIgn=[...new Set([...(S.cleanIgn||[]),...b.dataset.g.split(',').map(id=>k+':'+id)])]; save();}
+  cleanDraw(); homeTools();
+});
+$('#cleanBody').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.dataset.art){const b=$(`#cleanBody [data-c="art"][data-id="${e.target.dataset.art}"]`); if(b)b.click();}});
+$('#hClean').onclick=openClean;
+setTimeout(homeTools,500);
+
 /* ---------- 🎤 Demandes du public (par Internet : page GitHub + relais ntfy.sh) ---------- */
 const NTFY='https://ntfy.sh/';
 const Req={t:null,pend:[],seen:new Set(),lead:false,
@@ -4713,7 +4862,7 @@ const Req={t:null,pend:[],seen:new Set(),lead:false,
     const L=KPS().reqs, key=(String(d.t)+'|'+String(d.a||'')).toLowerCase(); let r=L.find(x=>x.key===key&&!x.done);
     if(r){r.n++; if(d.n&&!r.who.includes(String(d.n).slice(0,30)))r.who.push(String(d.n).slice(0,30));}
     else {r={id:uid(),key,t:String(d.t).slice(0,120),a:String(d.a||'').slice(0,120),who:d.n?[String(d.n).slice(0,30)]:[],n:1,at:(time||0)*1000||Date.now()}; L.push(r);}
-    if(L.length>80)L.splice(0,L.length-80); save(); this.notify(r); if(Live.on)Live.push(); reqDraw();
+    histReq(d); if(L.length>80)L.splice(0,L.length-80); save(); this.notify(r); if(Live.on)Live.push(); reqDraw();
   },
   // chez ceux qui suivent : la liste vient du musicien qui mène
   fromLeader(l){const old=new Set((this.leadList||[]).map(x=>x.key+x.n)); this.leadList=l||[]; if(this.leadInit)this.leadList.forEach(r=>{if(!old.has(r.key+r.n))this.notify(r);}); this.leadInit=true; reqDraw();},
