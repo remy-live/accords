@@ -892,11 +892,17 @@ audio{display:none}
   #viewer.portrait > .vctl button{height:50px;display:flex;align-items:center;justify-content:center;position:relative}
   #viewer.portrait > .vctl button .ico{display:block;margin:0 auto}
   #viewer.portrait > .vctl #vsize{display:none}
-  #vmenu .shtiles{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;overflow:visible}
-  #vmenu .shtiles>button{min-width:0!important;height:56px;font-size:11px!important;padding:0 2px}
+  /* le menu ne prend que la moitié basse : on voit toujours la partition au-dessus */
+  #vmenuBody{max-height:52vh;overflow-y:auto;overscroll-behavior:contain;padding-top:6px!important}
+  #vmenu .shrow:not(.shrow2){flex-wrap:nowrap}#vmenu .shview{min-width:0}
+  #vmenu .shtiles{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;overflow:visible}
+  #vmenu .shtiles>button{min-width:0!important;height:50px;font-size:10px!important;padding:0 1px;gap:2px}
+  #vmenu .shtiles button i .ico{width:18px;height:18px}
+  #vmenu .shchips{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}#vmenu .shchips::-webkit-scrollbar{display:none}
+  #vmenu .shchips>*{flex:none}#vmenu .shchips .vmbright{flex:0 0 150px;min-width:150px}
   #vmenu .shtiles>button[hidden]{display:none!important}
   #vmenuBody{gap:10px!important}
-  .shview button{height:38px;font-size:14px}.shsize button{width:38px;height:38px}.shsize b{min-width:48px;font-size:14px}.shsize #vzReset{display:none}
+  .shview button{height:34px;font-size:12px;white-space:nowrap;padding:0 2px}.shsize button{width:34px;height:34px}.shsize b{min-width:38px;font-size:13px}.shsize{gap:2px}.shsize #vzReset{display:none}
   .shrow{gap:8px}.shrow2{flex-wrap:nowrap!important}.shrow2 .vtempo{flex:1;justify-content:space-between}.shrow2 button{min-width:38px}
   .shchips{gap:6px}.shchips button{height:34px;padding:0 12px;font-size:13px}.shchips .vmbright{min-width:0;flex:1 1 100%}
   .fab span{display:none}.fab::before{content:none!important}.fab{justify-content:center}
@@ -7313,6 +7319,8 @@ function iconize(){
   const h1=document.querySelector('.top h1'); if(h1)h1.innerHTML=`<span class="logo">${icon('music',17)}</span>Accords`;
 }
 iconize();
+// téléphone : libellé court pour tenir sur une ligne
+{const sh=()=>{const b=document.querySelector('#vviews [data-view="accords"]'); if(b)b.textContent=matchMedia('(max-width:560px)').matches?'Basse':'Grille basse';}; sh(); addEventListener('resize',sh);}
 // rejoindre : l'icône reste quand le nom change
 {const _rj=rejoinUI; rejoinUI=function(){_rj(); const b=$('#rejoinBtn'); if(b&&!b.querySelector('svg'))b.innerHTML=icon('rejoin',18)+'<span>'+esc(b.textContent.replace(/^↪\s*/,''))+'</span>';}; rejoinUI();}
 
