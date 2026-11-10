@@ -887,6 +887,18 @@ audio{display:none}
 #fScene,#fEdit{display:inline-flex;align-items:center;justify-content:center;gap:8px}
 #anTools button span{display:flex;align-items:center;justify-content:center;height:24px}
 @media (max-width:560px){
+  /* scène sur téléphone : barre du bas aérée et icônes centrées, menu en grille sans défilement caché */
+  #viewer.portrait > .vctl{gap:4px;padding:6px 6px max(8px,env(safe-area-inset-bottom))}
+  #viewer.portrait > .vctl button{height:50px;display:flex;align-items:center;justify-content:center;position:relative}
+  #viewer.portrait > .vctl button .ico{display:block;margin:0 auto}
+  #viewer.portrait > .vctl #vsize{display:none}
+  #vmenu .shtiles{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;overflow:visible}
+  #vmenu .shtiles>button{min-width:0!important;height:56px;font-size:11px!important;padding:0 2px}
+  #vmenu .shtiles>button[hidden]{display:none!important}
+  #vmenuBody{gap:10px!important}
+  .shview button{height:38px;font-size:14px}.shsize button{width:38px;height:38px}.shsize b{min-width:48px;font-size:14px}.shsize #vzReset{display:none}
+  .shrow{gap:8px}.shrow2{flex-wrap:nowrap!important}.shrow2 .vtempo{flex:1;justify-content:space-between}.shrow2 button{min-width:38px}
+  .shchips{gap:6px}.shchips button{height:34px;padding:0 12px;font-size:13px}.shchips .vmbright{min-width:0;flex:1 1 100%}
   .fab span{display:none}.fab::before{content:none!important}.fab{justify-content:center}
   .shtiles>button{min-width:74px!important;font-size:10.5px!important}.shtiles button{text-overflow:ellipsis}
   #rejoinBtn span{display:none}
@@ -7284,11 +7296,12 @@ hl:'<path d="m9 11-6 6v3h9l3-3M22 12l-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1
 hand:'<path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>',
 stamp:'<path d="M5 3a2 2 0 0 0-2 2M19 3a2 2 0 0 1 2 2M21 19a2 2 0 0 1-2 2M5 21a2 2 0 0 1-2-2M9 3h1M9 21h1M14 3h1M14 21h1M3 9v1M21 9v1M3 14v1M21 14v1"/>',
 undo:'<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>',redo:'<path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7"/>',
+mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4M8 22h8"/>',
 share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>'
 };
 const icon=(n,s)=>`<svg class="ico" width="${s||20}" height="${s||20}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICP[n]||''}</svg>`;
 function iconize(){
-  const tile={vedit:'pencil',vsearch:'search',vtuner:'gauge',vspot:'phones',vpdf:'file',vyt:'play',vkara:'tv',vlive:'radio',vmsgItem:'mega',vfollowBtn:'users',vcleanBtn:'max',vdispBtn:'sliders',vquit:'out'};
+  const tile={vedit:'pencil',vsearch:'search',vtuner:'gauge',vspot:'phones',vpdf:'file',vyt:'play',vkara:'tv',vlive:'radio',vmsgItem:'mega',vfollowBtn:'users',vcleanBtn:'max',vdispBtn:'sliders',vquit:'out',vgroup:'users',vsend:'share',vmemo:'mic'};
   Object.entries(tile).forEach(([id,n])=>{const i=document.querySelector('#'+id+' > i'); if(i)i.innerHTML=icon(n,21);});
   const only={vclose:'x',vprev:'left',vnext:'right',vsize:'type',vlite:'pencil',vtv:'tv',vmenuBtn:'more',vlistBtn:'list',vscroll:'down',bprev:'left',bnext:'right',bscroll:'down',settingsBtn:'gear',scanBtn:'camera',linkBtn:'link',fClose:'x',fMore:'more'};
   Object.entries(only).forEach(([id,n])=>{const b=document.getElementById(id); if(b)b.innerHTML=icon(n,id[0]==='b'?26:20);});
