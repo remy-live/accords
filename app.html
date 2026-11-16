@@ -476,7 +476,11 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 #recvAlert{position:fixed;right:16px;top:16px;z-index:90;width:min(420px,calc(100vw - 32px));box-sizing:border-box;background:var(--s2,#18181b);color:#ececf0;border:1px solid #5b3a12;border-radius:16px;padding:14px;box-shadow:0 20px 50px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:10px}
 #recvAlert[hidden]{display:none}.ralhead{display:flex;gap:12px;align-items:center}.ralhead div{display:flex;flex-direction:column}.ralhead span{font-size:14px;color:#c4c4cc}
 .ralav{width:42px;height:42px;border-radius:50%;background:#2a1a0e;color:var(--hl,#fb923c)!important;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px!important;flex:none}
-#ralDup{font-size:13px;color:#fcd34d}#recvAlert .row button{flex:1}
+#ralDup{font-size:13px;color:#fcd34d}#recvAlert .row button{flex:1;min-height:46px}
+#recvAlert{left:50%;right:auto!important;transform:translateX(-50%);top:14px!important;width:min(520px,calc(100vw - 24px))!important;z-index:95!important;border-color:var(--hl,#fb923c)!important;animation:ralIn .25s ease-out}
+@keyframes ralIn{from{opacity:0;transform:translate(-50%,-16px)}}
+.rallist{display:flex;flex-direction:column;gap:4px;max-height:30vh;overflow:auto}.rallist div{padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.06);font-weight:600}.rallist small{display:block;font-weight:400;opacity:.65}
+#recvAlert.done{border-color:#22c55e!important}#recvAlert.done .ralav{background:#0f2a18;color:#22c55e!important}
 .rcbox{width:min(1000px,96vw)!important;max-width:none!important;max-height:92vh;display:flex;flex-direction:column}
 #rcList{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:10px;min-height:120px}
 .rcitem{border:1px solid rgba(128,128,128,.3);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
@@ -1325,6 +1329,8 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
   <div id="sdQr" class="sdqr"></div><p class="lab" id="sdInfo"></p>
   <h3>Musiciens connectés</h3><div id="sdWho" class="row"></div>
   <div class="row"><button id="sdOther">WhatsApp, mail, fichier, PDF…</button></div>
+  <h3>📥 Recevoir un morceau</h3>
+  <div class="row"><button id="sdScan">📷 Scanner le QR d'un ami</button></div><p class="lab">Quand un ami t'envoie un morceau par Wi-Fi, une fenêtre s'ouvre ici même, avec « ▶ Jouer maintenant ».</p>
 </div></div>
 <div id="grpBox" class="modal" hidden><div class="box grpbox">
   <h2>Jouer en groupe <button class="close">✕</button></h2>
@@ -1460,7 +1466,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
   <div id="anStrip" hidden></div><input type="file" id="anAddImgs" accept="image/*" multiple hidden><input type="file" id="anAddPdf" accept="application/pdf,.pdf" hidden>
 </div>
 <!-- ===== Réception ===== -->
-<div id="recvAlert" hidden><div class="ralhead"><span id="ralAv" class="ralav"></span><div><b id="ralTitle"></b><span id="ralSub"></span></div></div><span id="ralDup"></span><div class="row"><button id="ralNo">Refuser</button><button class="pri" id="ralYes">Voir</button></div></div>
+<div id="recvAlert" hidden><div class="ralhead"><span id="ralAv" class="ralav"></span><div><b id="ralTitle"></b><span id="ralSub"></span></div></div><div id="ralList" class="rallist"></div><span id="ralDup"></span><div class="row" id="ralRow"><button id="ralNo">Refuser</button><button class="pri" id="ralYes">Voir</button></div></div>
 <div id="recvBox" class="modal" hidden><div class="box rcbox">
   <h2><span id="rcTitle">Reçu</span> <small id="rcSum" class="lab"></small><button class="close">✕</button></h2>
   <div class="row rcbulk"><span class="lab">Pour tous les doublons :</span><button data-all="mine">Garder les miens</button><button data-all="theirs">Prendre les siens</button><button data-all="both">Garder les deux</button></div>
@@ -5710,15 +5716,43 @@ $('#shSend').onclick=async()=>{
 /* ---------- Réception : alerte, puis doublons ---------- */
 let RC=null, recvPending=null;
 window.offerIn=json=>{let d; try{d=typeof json==='string'?JSON.parse(json):json;}catch(e){return;} if(!d||!Array.isArray(d.songs))return;
-  recvPending=d; const a=recvAnalyse(d), nl=(d.lists||[]).length, from=d.from||'Un musicien';
+  recvPending=d; const a=recvAnalyse(d), nl=(d.lists||[]).length, from=(d.from||'Un musicien').split(' · ')[0];
   $('#ralAv').textContent=from[0].toUpperCase(); $('#ralTitle').textContent=from+' t\'envoie';
   $('#ralSub').textContent=(nl?nl+' playlist'+(nl>1?'s':'')+(nl===1?' ('+d.lists[0].name+')':'')+' · ':'')+d.songs.length+' morceau'+(d.songs.length>1?'x':'');
   const nd=a.songs.filter(x=>x.kind==='dup').length+a.lists.filter(x=>x.kind==='dup').length;
+  recvListHtml(d); $('#ralRow').innerHTML='<button id="ralNo">Refuser</button><button class="pri" id="ralYes">Recevoir</button>'; $('#recvAlert').classList.remove('done'); ralBind();
   $('#ralDup').textContent=nd?nd+' élément'+(nd>1?'s sont':' est')+' déjà dans ta bibliothèque : tu choisiras quoi garder.':''; $('#ralDup').hidden=!nd;
   $('#recvAlert').hidden=false; try{navigator.vibrate&&navigator.vibrate([30,60,30]);}catch(e){}
 };
-$('#ralNo').onclick=()=>{$('#recvAlert').hidden=true; recvPending=null;};
-$('#ralYes').onclick=()=>{$('#recvAlert').hidden=true; if(recvPending)openRecv(recvPending,recvPending.from||''); recvPending=null;};
+function ralBind(){
+  $('#ralNo').onclick=()=>{$('#recvAlert').hidden=true; recvPending=null;};
+  $('#ralYes').onclick=()=>{$('#recvAlert').hidden=true; if(recvPending)openRecv(recvPending,recvPending.from||''); recvPending=null;};
+}
+ralBind();
+function recvListHtml(d){const l=(d.songs||[]).slice(0,5).map(x=>{const p=split(x.q||''); return `<div>${esc(p.titre||x.q)}${p.artiste?`<small>${esc(p.artiste)}</small>`:''}</div>`;}).join('')+((d.songs||[]).length>5?`<div><small>… et ${(d.songs.length-5)} autre(s)</small></div>`:''); $('#ralList').innerHTML=l;}
+// ce qu'on vient de recevoir, retrouvé dans la bibliothèque
+function recvIds(d){const n=x=>String(x||'').trim().toLowerCase(); return (d.songs||[]).map(x=>songById(x.id)||S.songs.filter(s=>n(s.q)===n(x.q)).sort((a,b)=>(b.up||0)-(a.up||0))[0]).filter((s,i,a)=>s&&a.indexOf(s)===i);}
+// après réception : on montre ce qui est arrivé, avec un geste pour le jouer tout de suite
+function recvDone(d,who){
+  const songs=recvIds(d), l=(d.lists||[]).map(x=>listById(x.id)||S.lists.find(o=>o.name.trim().toLowerCase()===String(x.name||'').trim().toLowerCase())).filter(Boolean)[0];
+  if(!songs.length&&!l)return;
+  const inScene=!$('#viewer').hidden, al=$('#recvAlert');
+  $('#ralAv').textContent='✓'; $('#ralTitle').textContent=(who?'Reçu de '+who.split(' · ')[0]:'Reçu')+' · dans ta bibliothèque';
+  $('#ralSub').textContent=l?'Playlist « '+l.name+' » · '+songs.length+' morceau'+(songs.length>1?'x':''):songs.length+' morceau'+(songs.length>1?'x':'');
+  recvListHtml({songs:songs.map(x=>({q:x.q}))}); $('#ralDup').hidden=true;
+  const btn=[];
+  if(inScene&&!FOLLOW&&!l){btn.push('<button class="pri" data-ra="now">▶ Jouer maintenant</button>','<button data-ra="next">⏭ Après celui-ci</button>');}
+  else if(!FOLLOW)btn.push(`<button class="pri" data-ra="open">▶ ${l?'Ouvrir la playlist':'Ouvrir'}</button>`);
+  btn.push('<button data-ra="ok">OK</button>');
+  $('#ralRow').innerHTML=btn.join(''); al.classList.add('done'); al.hidden=false;
+  try{navigator.vibrate&&navigator.vibrate([40,40,40]);}catch(e){}
+  clearTimeout(recvDone.t); recvDone.t=setTimeout(()=>{if(al.classList.contains('done'))al.hidden=true;},25000);
+  $('#ralRow').onclick=ev=>{const b=ev.target.closest('[data-ra]'); if(!b)return; al.hidden=true; al.classList.remove('done'); const a=b.dataset.ra;
+    if(a==='ok')return;
+    if(a==='open'){if(l)openViewer(listEntries(l),0,l); else openViewer(songs.map(entryOf),0); return;}
+    const ents=songs.map(s=>{const e=entryOf(s); e.preview=true; return e;});
+    V.list.splice(V.i+1,0,...ents); if(a==='now')V.i++; vRender(); vListRender(); toast(a==='now'?'▶ « '+songs[0].q+' »':'⏭ Juste après : « '+songs[0].q+' »');};
+}
 const sameSong=(a,b)=>normText(a.text||'')===normText(b.text||'')&&(a.target??null)===(b.target??null)&&(a.capo??null)===(b.capo??null)&&JSON.stringify(a.tabs||[])===JSON.stringify(b.tabs||[])&&JSON.stringify(a.bgrid||null)===JSON.stringify(b.bgrid||null);
 function recvAnalyse(d){
   const songs=(d.songs||[]).map((x,i)=>{const rec=packRec(x,i); if(!rec)return null; const ex=songById(rec.id)||S.songs.find(o=>o.q.trim().toLowerCase()===rec.q.toLowerCase());
@@ -5755,7 +5789,7 @@ $$('#recvBox [data-all]').forEach(b=>b.onclick=()=>{const v=b.dataset.all; RC.a.
 $('#rcCancel').onclick=()=>{modal('#recvBox',false); RC=null; toast('Rien n\'a été importé');};
 $('#rcOk').onclick=()=>{modal('#recvBox',false); recvApply();};
 function recvApply(){
-  const {a}=RC, who=RC.from||'reçu', map={}; let nNew=0, nUp=0, nBoth=0, nAddL=0; const nHad=a.songs.filter(x=>x.kind!=='new'&&x.ch!=='theirs'&&x.ch!=='both').length;
+  const {a}=RC, who=RC.from||'reçu', RCd=RC.d, map={}; let nNew=0, nUp=0, nBoth=0, nAddL=0; const nHad=a.songs.filter(x=>x.kind!=='new'&&x.ch!=='theirs'&&x.ch!=='both').length;
   a.songs.forEach(x=>{const r=x.rec, from=r.id;
     if(x.kind==='new'){if(songById(r.id))r.id=uid(); S.songs.push(r); nNew++;}
     else if(x.kind==='same'||x.ch==='mine'){r.id=x.ex.id;}
@@ -5768,6 +5802,7 @@ function recvApply(){
     if(x.kind==='dup'&&x.ch==='replace'){x.ex.items=items; x.ex.up=Date.now(); nl++; return;}
     const rec={id:(x.kind==='new'&&!listById(l.id))?String(l.id||uid()):uid(),name:x.kind==='dup'?l.name+' ('+who+')':l.name,date:l.date||'',notes:l.notes||'',items,up:Date.now()}; S.lists.push(rec); nl++;});
   save(); renderAll(); RC=null; sheetIngest(S.songs);
+  setTimeout(()=>recvDone(RCd,who==='reçu'?'':who),50);
   toast([nNew?nNew+' morceau(x) ajouté(s)':'',nUp?nUp+' remplacé(s)':'',nBoth?nBoth+' en double':'',nHad?nHad+' déjà là (inchangé'+(nHad>1?'s':'')+')':'',nAddL?nAddL+' ajouté(s) à ta playlist':'',nl&&!nAddL?nl+' playlist(s)':''].filter(Boolean).join(' · ')||'Rien de nouveau : tout était déjà là',4500);
 }
 document.body.appendChild($('#recvAlert'));
@@ -5805,11 +5840,13 @@ const Follow={rev:-1,i:-1,view:null,ok:null,busy:false,at:0,miss:0,base:'',app:f
       +(this.app?` <span class="fseg"><button data-m="1" aria-pressed="${this.mine}">Ma version</button><button data-m="0" aria-pressed="${!this.mine}">La sienne</button></span>`
         +(e&&e.newer&&this.mine?' <button id="fnew" class="fnew">Il a modifié ce morceau · Voir</button>':'')
         +(e&&this.mine&&!e.mine?' <span class="fnote">(pas dans ta bibliothèque : sa version)</span>':'')
-        +' <button id="fimp" title="Copier sa playlist dans ta bibliothèque">⬇ Sa playlist</button> <button id="flib" title="Copier tout son répertoire dans ta bibliothèque">⬇ Tout son répertoire</button> <button id="fquit">✕ Quitter</button>'
+        +(e&&!e.mine?' <button id="fkeep" title="Copier ce morceau dans ta bibliothèque">⬇ Ce morceau</button>':'')+' <button id="fimp" title="Copier sa playlist dans ta bibliothèque">⬇ Sa playlist</button> <button id="flib" title="Copier tout son répertoire dans ta bibliothèque">⬇ Tout son répertoire</button> <button id="fquit">✕ Quitter</button>'
       :' <button id="ffs">Plein écran</button> <button id="fget" title="Récupérer la playlist dans un fichier">⬇ Playlist</button> <button id="flib" title="Récupérer tout son répertoire dans un fichier">⬇ Répertoire</button>');
     el.querySelector('#flib').onclick=()=>followLib();
     if(this.app){
       el.querySelector('#fquit').onclick=()=>stopFollowApp();
+      const fk=el.querySelector('#fkeep'); if(fk)fk.onclick=()=>{const cur=V.list[V.i]; if(!cur)return; const src=cur.remote||cur.s; const {_r,_el,open,hist,audio,...o}=src;
+        openRecv({app:'accords-paroles',version:2,from:this.master||'',songs:[{...o,up:o.up||Date.now()}],lists:[]},this.master||''); this.build(); vRender(); this.banner();};
       el.querySelector('#fimp').onclick=async()=>{try{const set=await (await ftch(this.base+'/set',8000)).json(); importData(JSON.stringify(set),{ask:false}); this.build(); vRender(); this.banner();}catch(er){toast('Impossible de joindre la tablette.');}};
       el.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{this.mine=b.dataset.m==='1'; try{localStorage.setItem('accords-suivre-mine',this.mine?'1':'0');}catch(er){} this.build(); vRender(); this.banner();});
       const n=el.querySelector('#fnew'); if(n)n.onclick=()=>{const cur=V.list[V.i]; if(!cur||!cur.mine)return;
@@ -5870,6 +5907,7 @@ async function sendPackTo(rs,pack){const ok=[], ko=[];
   }
   toast((ok.length?'✅ Envoyé à '+ok.map(n=>(n||'').split(' · ')[0]).join(', ')+' : il reçoit une alerte.':'')+(ko.length?' ❌ Échec pour '+ko.map(n=>(n||'').split(' · ')[0]).join(', ')+'.':''),4000); return ok.length>0;}
 $('#vsend').onclick=openSend;
+$('#sdScan').onclick=()=>{modal('#sendBox',false); startScan();};
 /* ---------- 👥 Groupe : je mène / je suis ---------- */
 function grpUI(){
   if($('#grpKaraSt')){const ok=Kara.linked(); $('#grpKaraSt').textContent=ok?'karaoké relié':'karaoké pas relié'; $('#grpKaraLink').textContent=ok?'📷 Relier un autre karaoké':'📷 Relier le karaoké';
