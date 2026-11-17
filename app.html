@@ -244,7 +244,12 @@ pre .k{color:var(--warn);font-weight:700}
 .csec{margin:14px 0}.csec h3{display:flex;align-items:center;gap:8px}.csec h3 small{opacity:.6;font-weight:500}.crow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 10px;border-radius:10px;background:rgba(127,127,127,.12);margin-bottom:6px}
 .crow .ct{flex:1 1 200px;min-width:0}.crow .ct small{display:block;opacity:.65}.cdup{border-left:3px solid var(--hl,#fb923c);padding-left:8px;margin-bottom:10px}.crow input{flex:1 1 140px;min-width:0}
 .ficheinfo{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.vfold{white-space:nowrap}.vfold[aria-pressed="true"]{background:var(--hl,#fb923c);color:var(--onhl,#111)}
+.vfold{white-space:nowrap}
+/* repérage des sections (option) : refrain bleu, pré-refrain mauve clair, pont violet */
+#vstage .ly.sk-ref{color:#7dd3fc}#vstage .s.sk-ref .sn{background:#0ea5e9;color:#04121c;padding:0 .5em;border-radius:.3em}#vstage .fold.sk-ref{background:rgba(14,165,233,.18);color:#7dd3fc}
+#vstage .ly.sk-pre{color:#c4b5fd}#vstage .s.sk-pre .sn{background:#a78bfa;color:#140a2a;padding:0 .5em;border-radius:.3em}#vstage .fold.sk-pre{background:rgba(167,139,250,.18);color:#c4b5fd}
+#vstage .ly.sk-pont{color:#f0abfc}#vstage .s.sk-pont .sn{background:#d946ef;color:#1f0623;padding:0 .5em;border-radius:.3em}#vstage .fold.sk-pont{background:rgba(217,70,239,.18);color:#f0abfc}
+#vstage .s.sk-ref .sb,#vstage .s.sk-pre .sb,#vstage .s.sk-pont .sb{display:none}.vfold[aria-pressed="true"]{background:var(--hl,#fb923c);color:var(--onhl,#111)}
 #vstage .fold{display:inline-flex;align-items:baseline;gap:.5em;max-width:100%;padding:.12em .5em;border-radius:.4em;background:rgba(45,212,191,.12);color:#5eead4;cursor:pointer;white-space:nowrap;overflow:hidden;font-family:inherit}
 #vstage .fold b{letter-spacing:.06em}#vstage .fold .fn{opacity:.9}#vstage .fold .fch{color:var(--chord,#fb923c);font-weight:700}#vstage .fold .fly{opacity:.55;font-size:.8em;overflow:hidden;text-overflow:ellipsis}
 .kpprev{width:100%;max-width:440px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;position:relative;background:radial-gradient(circle at 50% 30%,#2a1f55,#14112a 70%);color:#f4f1ff;box-shadow:inset 0 0 0 1px #3a3a40;padding:10px 14px;box-sizing:border-box;font:600 12px/1.45 system-ui}
@@ -1123,6 +1128,8 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
       <section data-cat="grille" hidden><h3>Grille &amp; paroles</h3>
   <div class="opt"><span>Garder Refrain / Couplet</span><input type="checkbox" id="sec"></div>
   <div class="opt"><span>« ♪ Instrumental ♪ » quand il n'y a que des accords (paroles et karaoké)</span><input type="checkbox" id="instr"></div>
+  <div class="opt"><span>Refrains et ponts en couleur, pour les repérer d'un coup d'œil (scène)</span><input type="checkbox" id="secCol"></div>
+  <div class="opt"><span>Afficher les accords sur les reprises repliées « ↻ REFRAIN »</span><input type="checkbox" id="foldCh"></div>
   <div class="opt"><span>Réafficher les reprises (une ligne « [Refrain] » seule)</span><input type="checkbox" id="refs"></div>
   <p class="lab">Repères de jeu : une ligne qui commence par « ! » (ex. « ! ⏸ Pause ») s'affiche en couleur, hors paroles.</p>
       </section>
@@ -2068,6 +2075,7 @@ function compute(song,ov){
   });
   flush();
   tabs.filter(t=>!placed.has(t.ti)).forEach(putTab);
+  if(S.secCol){const SK={Refrain:'ref','Pré-refrain':'pre',Pont:'pont'}; secBlocks(g,L=>L.t==='t'?'t':L.t).forEach(b=>{const k=SK[b.name||b.guess]; if(k)b.items.forEach(i=>{g[i]={...g[i],sk:k};});});}
   const gF=(S.fold||'off')!=='off'&&!song.noFold&&!(ov&&ov.nofold)?foldGrid(g,song,S.fold):g;
   const k=squeeze(gF.map(L=>L.s)), k2=squeeze(ly.map(L=>L.s));
   r.grid=k.map(i=>gF[i]); r.lyr=k2.map(i=>ly[i]);
@@ -2110,13 +2118,13 @@ function foldGrid(g,song,level){
     if(b.hasTab||b.content.length<2){return;}
     const src=first[b.full], hd=x=>x&&x.head?String(x.head.s).replace(/[\[\]↻]/g,'').replace(/\s*[×x]\s*\d+\s*$/i,'').replace(/\s*\d+\s*$/,'').trim():'';
     const lab=(src!=null&&hd(B[src]))||hd(b)||b.name||b.guess||'Reprise', ck=b.sigC+'§'+(b.name||b.guess||'');
-    if(src!=null&&!un.has(bi)){b.items.forEach(i=>drop.add(i)); repl[b.items[0]]={t:'f',lab:lab.toUpperCase(),ch:chSum(b),fid:bi,n:1,s:'↻ '+lab.toUpperCase()+'  '+chSum(b)}; B[src].folded=true; return;}
+    if(src!=null&&!un.has(bi)){b.items.forEach(i=>drop.add(i)); repl[b.items[0]]={t:'f',lab:lab.toUpperCase(),ch:S.foldCh?chSum(b):'',sk:g[b.items[0]].sk,fid:bi,n:1,s:'↻ '+lab.toUpperCase()+(S.foldCh?'  '+chSum(b):'')}; B[src].folded=true; return;}
     if(level==='chords'&&b.sigC&&b.sigL&&firstC[ck]!=null&&!un.has(bi)){const ly=b.content.filter(L=>L.t==='l'||L.t==='t').map(L=>L.s.trim().replace(/\s{2,}/g,' ')).join(' / ');
-      b.items.forEach(i=>drop.add(i)); repl[b.items[0]]={t:'f',lab:lab.toUpperCase(),ch:chSum(b),ly,fid:bi,n:1,s:'↻ '+lab.toUpperCase()+'  '+chSum(b)}; B[firstC[ck]].folded=true; return;}
+      b.items.forEach(i=>drop.add(i)); repl[b.items[0]]={t:'f',lab:lab.toUpperCase(),ch:S.foldCh?chSum(b):'',ly,sk:g[b.items[0]].sk,fid:bi,n:1,s:'↻ '+lab.toUpperCase()+(S.foldCh?'  '+chSum(b):'')}; B[firstC[ck]].folded=true; return;}
     // dernier refrain prolongé : « ↻ REFRAIN » puis seulement les lignes en plus
     const pre=B.slice(0,bi).find(e=>e.content.length>=2&&!e.hasTab&&e.content.length<b.content.length&&e.content.every((L,j)=>tp(L)+':'+fNorm(L.s)===tp(b.content[j])+':'+fNorm(b.content[j].s)));
     if(pre&&!un.has(bi)){const n=pre.content.length, keep=new Set(b.content.slice(n));
-      b.items.forEach(i=>{if(!keep.has(g[i]))drop.add(i);}); const pl=hd(pre)||pre.name||pre.guess||lab; repl[b.items[0]]={t:'f',lab:pl.toUpperCase()+', puis',ch:'',fid:bi,n:1,s:'↻ '+pl.toUpperCase()+', puis'}; pre.folded=true;}
+      b.items.forEach(i=>{if(!keep.has(g[i]))drop.add(i);}); const pl=hd(pre)||pre.name||pre.guess||lab; repl[b.items[0]]={t:'f',lab:pl.toUpperCase()+', puis',ch:'',sk:g[pre.items[0]].sk,fid:bi,n:1,s:'↻ '+pl.toUpperCase()+', puis'}; pre.folded=true;}
     if(first[b.full]==null)first[b.full]=bi; if(b.sigC&&firstC[ck]==null)firstC[ck]=bi;
   });
   g.forEach((L,i)=>{
@@ -2199,12 +2207,13 @@ function wrapTabs(lines,T){
   return out;
 }
 function lineHTML(L){
+  const sk=L.sk?' sk-'+L.sk:'';
   const raw=L.raw!=null?` data-raw="${L.raw}"`:'', of=L.off?` data-off="${L.off}"`:'';
-  if(L.t==='c'){let k=L.k0||0; const html=esc(L.s).replace(/\S+/g,tok=>{const i=k++; return tokChord(tok)?`<span class="ch" data-k="${i}">${tok}</span>`:tok;}); return `<span class="c" data-raw="${L.raw??-1}"${of}>${html}</span>`;}
-  if(L.t==='l') return `<span class="ly"${raw}${of}>${esc(L.s)}</span>`;
+  if(L.t==='c'){let k=L.k0||0; const html=esc(L.s).replace(/\S+/g,tok=>{const i=k++; return tokChord(tok)?`<span class="ch" data-k="${i}">${tok}</span>`:tok;}); return `<span class="c${sk}" data-raw="${L.raw??-1}"${of}>${html}</span>`;}
+  if(L.t==='l') return `<span class="ly${sk}"${raw}${of}>${esc(L.s)}</span>`;
   if(L.t==='x') return `<span class="x"${L.tab!=null?` data-tab="${L.tab}"`:''}${L.xr!=null?` data-xr="${L.xr}"`:''}>${esc(L.s)}</span>`;
-  if(L.t==='s'){const m=/^\[(.*)\]$/.exec(L.s.trim()); return `<span class="s"${raw}${L.tab!=null?` data-tab="${L.tab}"`:''}>${m?'<i class="sb">[</i><span class="sn">'+esc(m[1])+'</span><i class="sb">]</i>':esc(L.s)}</span>`;}
-  if(L.t==='f'){const pu=/, puis$/.test(L.lab), lb=L.lab.replace(/, puis$/,''); return `<span class="fold" data-fold="${L.fid}" title="Toucher pour déplier">↻ <b>${esc(lb)}</b>${L.n>1||pu?`<span class="fn">${L.n>1?'×'+L.n:''}${pu?', puis':''}</span>`:''}${L.ch?`<span class="fch">${esc(L.ch)}</span>`:''}${L.ly?`<span class="fly">${esc(L.ly)}</span>`:''}</span>`;}
+  if(L.t==='s'){const m=/^\[(.*)\]$/.exec(L.s.trim()); return `<span class="s${sk}"${raw}${L.tab!=null?` data-tab="${L.tab}"`:''}>${m?'<i class="sb">[</i><span class="sn">'+esc(m[1])+'</span><i class="sb">]</i>':esc(L.s)}</span>`;}
+  if(L.t==='f'){const pu=/, puis$/.test(L.lab), lb=L.lab.replace(/, puis$/,''); return `<span class="fold${sk}" data-fold="${L.fid}" title="Toucher pour déplier">↻ <b>${esc(lb)}</b>${L.n>1||pu?`<span class="fn">${L.n>1?'×'+L.n:''}${pu?', puis':''}</span>`:''}${L.ch?`<span class="fch">${esc(L.ch)}</span>`:''}${L.ly?`<span class="fly">${esc(L.ly)}</span>`:''}</span>`;}
   if(L.t==='t'||L.t==='k') return `<span class="${L.t}"${raw}>${esc(L.s)}</span>`;
   return esc(L.s);
 }
@@ -2987,7 +2996,7 @@ function applyLook(){
   $('#bright').value=b; $('#vbright').value=b; $('#brightVal').textContent=b+' %';
   $('#theme').value=S.theme||'auto'; $('#vmax').value=String(S.vmax||64); $('#vmin').value=String(S.vmin||0);
   $('#scrollSpeed').value=S.scrollSpeed||25; $('#scrollVal').textContent=(S.scrollSpeed||25)+' px/s'; $('#metroSound').checked=!!S.metroSound; $('#defDur').value=S.defDur||3;
-  $('#sec').checked=!!S.sec; $('#instr').checked=S.instr!==false; $('#refs').checked=S.refs!==false; $('#bigBtns').checked=S.bigBtns!==false; $('#shareBase').value=S.shareBase||'';
+  $('#sec').checked=!!S.sec; $('#instr').checked=S.instr!==false; $('#secCol').checked=!!S.secCol; $('#foldCh').checked=!!S.foldCh; $('#refs').checked=S.refs!==false; $('#bigBtns').checked=S.bigBtns!==false; $('#shareBase').value=S.shareBase||'';
   $$('#nota button').forEach(b=>b.setAttribute('aria-pressed',(+b.dataset.v===1)===S.fr));
   Sync.refreshUI();
 }
@@ -7257,6 +7266,9 @@ $('#bigBtns').onchange=e=>{S.bigBtns=e.target.checked; S.setUp=Date.now(); save(
 $('#metroSound').onchange=e=>{S.metroSound=e.target.checked; S.setUp=Date.now(); save();};
 $('#defDur').onchange=e=>{S.defDur=Math.max(1,+e.target.value||3); S.setUp=Date.now(); save(); renderLists();};
 $$('#nota button').forEach(b=>b.onclick=()=>{S.fr=b.dataset.v==='1'; S.setUp=Date.now(); save(); S.songs.forEach(s=>delete s._r); renderAll();});
+const reAll=()=>{S.songs.forEach(s=>{delete s._r; if(s._el)update(s);}); if(!$('#viewer').hidden){V.list.forEach(e=>delete e._r); V.lastKey=null; vRender();}};
+$('#secCol').onchange=e=>{S.secCol=e.target.checked; save(); reAll();};
+$('#foldCh').onchange=e=>{S.foldCh=e.target.checked; save(); reAll();};
 $('#instr').onchange=e=>{S.instr=e.target.checked; save(); S.songs.forEach(s=>{delete s._r; if(s._el)update(s);});};
 $('#sec').onchange=e=>{S.sec=e.target.checked; S.setUp=Date.now(); save(); S.songs.forEach(s=>{delete s._r; if(s._el)update(s);});};
 $('#shareBase').onchange=e=>{S.shareBase=e.target.value.trim(); S.setUp=Date.now(); save();};
