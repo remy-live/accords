@@ -244,6 +244,9 @@ pre .k{color:var(--warn);font-weight:700}
 .csec{margin:14px 0}.csec h3{display:flex;align-items:center;gap:8px}.csec h3 small{opacity:.6;font-weight:500}.crow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:8px 10px;border-radius:10px;background:rgba(127,127,127,.12);margin-bottom:6px}
 .crow .ct{flex:1 1 200px;min-width:0}.crow .ct small{display:block;opacity:.65}.cdup{border-left:3px solid var(--hl,#fb923c);padding-left:8px;margin-bottom:10px}.crow input{flex:1 1 140px;min-width:0}
 .ficheinfo{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.vfold{white-space:nowrap}.vfold[aria-pressed="true"]{background:var(--hl,#fb923c);color:var(--onhl,#111)}
+#vstage .fold{display:inline-flex;align-items:baseline;gap:.5em;max-width:100%;padding:.12em .5em;border-radius:.4em;background:rgba(45,212,191,.12);color:#5eead4;cursor:pointer;white-space:nowrap;overflow:hidden;font-family:inherit}
+#vstage .fold b{letter-spacing:.06em}#vstage .fold .fn{opacity:.9}#vstage .fold .fch{color:var(--chord,#fb923c);font-weight:700}#vstage .fold .fly{opacity:.55;font-size:.8em;overflow:hidden;text-overflow:ellipsis}
 .kpprev{width:100%;max-width:440px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;position:relative;background:radial-gradient(circle at 50% 30%,#2a1f55,#14112a 70%);color:#f4f1ff;box-shadow:inset 0 0 0 1px #3a3a40;padding:10px 14px;box-sizing:border-box;font:600 12px/1.45 system-ui}
 .kpprev .h{font-weight:800;font-size:13px;margin-bottom:4px}.kpprev .done{opacity:.4;text-decoration:line-through}.kpprev .now{font-weight:800;color:#fff;background:rgba(255,92,138,.25);border-radius:4px;padding:0 4px;margin:0 -4px}.kpprev .next{color:#ffc94d}
 .kpprev .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:10px}.kpprev .c b{font-size:22px}.kpprev .c small{opacity:.7;white-space:pre-line}
@@ -1623,6 +1626,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
       <div class="shrow">
         <span class="shview" id="vviews"><button data-view="grille">Grille</button><button data-view="paroles">Paroles</button><button data-view="accords">Grille basse</button></span>
         <span class="shsize"><button id="vzDn" aria-label="Texte plus petit">A−</button><b id="vzVal">Auto</b><button id="vzUp" aria-label="Texte plus grand">A+</button><button id="vzReset" class="sm">Auto</button></span>
+        <button id="vfold" class="vfold" aria-label="Replier les reprises" title="Replier les refrains (et couplets) déjà joués">↻ <span id="vfoldL">Tout</span></button>
       </div>
       <div class="shtiles">
         <button id="vedit" class="cl"><i>✎</i>Éditer</button>
@@ -1792,7 +1796,7 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
       <span class="grow"></span>
       <button id="vtSec" class="vtsec">+ Section</button><button id="vtTabEd" class="vttab" hidden>✎ Tablature au pavé</button><button id="vtTabUp" class="vttab" hidden aria-label="Monter la tablature">▲</button><button id="vtTabDn" class="vttab" hidden aria-label="Descendre la tablature">▼</button><button id="vtTab" class="vttab">+ Tablature</button><button id="vtDrum" class="vttab">+ Batterie</button>
       <span id="vtSelBar"><button id="vtDel" class="vtsel" hidden>🗑 Effacer</button><button id="vtCut" class="vtsel" hidden>✂ Couper</button><button id="vtCopy" class="vtsel" hidden>Copier</button><button id="vtBk" class="vtsel" aria-label="Effacer le caractère avant le curseur">⌫</button><button id="vtPaste" class="vtsel">📋 Coller</button></span>
-      <button id="vtKbd">⌨ Écrire</button><button id="vtUndo" aria-label="Annuler la dernière modification">↶</button><button id="vtRedo" aria-label="Rétablir">↷</button>
+      <button id="vtSecs" title="Ajouter [Couplet], [Refrain], [Pont]… là où il manque un titre">🏷 Sections</button><button id="vtKbd">⌨ Écrire</button><button id="vtUndo" aria-label="Annuler la dernière modification">↶</button><button id="vtRedo" aria-label="Rétablir">↷</button>
     </div>
   </div>
   <div id="countin" hidden></div>
@@ -2064,14 +2068,80 @@ function compute(song,ov){
   });
   flush();
   tabs.filter(t=>!placed.has(t.ti)).forEach(putTab);
-  const k=squeeze(g.map(L=>L.s)), k2=squeeze(ly.map(L=>L.s));
-  r.grid=k.map(i=>g[i]); r.lyr=k2.map(i=>ly[i]);
+  const gF=(S.fold||'off')!=='off'&&!song.noFold&&!(ov&&ov.nofold)?foldGrid(g,song,S.fold):g;
+  const k=squeeze(gF.map(L=>L.s)), k2=squeeze(ly.map(L=>L.s));
+  r.grid=k.map(i=>gF[i]); r.lyr=k2.map(i=>ly[i]);
   // grille du bassiste : la grille enregistrée (song.bgrid), sinon une grille proposée à partir des accords
   r.autoGrid=autoGrid(lines,song); r.bg=validGrid(song.bgrid)?song.bgrid:r.autoGrid; r.bgAuto=!validGrid(song.bgrid);
   r.bars=bgLines(r.bg,cn); r.barsGi=[];
   r.gridTxt=r.grid.map(L=>L.s).join('\n'); r.lyrics=r.lyr.map(L=>L.s).join('\n'); r.barsTxt=r.bars.map(L=>L.s).join('\n');
   r.gridHTML=r.grid.map(lineHTML).join('\n');
   return r;
+}
+/* ---------- Reprises repliées : un refrain (ou couplet) déjà joué devient « ↻ REFRAIN » ---------- */
+const SEC_FR=[[/pre.?chorus|pr[eé].?refrain/,'Pré-refrain'],[/chorus|refrain/,'Refrain'],[/verse|couplet/,'Couplet'],[/bridge|pont/,'Pont'],[/intro/,'Intro'],[/outro|fin\b|coda/,'Outro'],[/solo/,'Solo'],[/interlude|instrumental|break/,'Interlude']];
+function secName(h){const t=String(h||'').replace(/[\[\]↻①②③]/g,'').replace(/\s*[×x]\s*\d+\s*$/i,'').trim(); const lo=t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  for(const [re,n] of SEC_FR)if(re.test(lo))return n; return t.replace(/\s*\d+\s*$/,'')||'';}
+const fNorm=x=>String(x||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9#]+/g,' ').trim();
+// découpe en blocs (séparés par des lignes vides) et devine Couplet / Refrain / Pont pour ceux sans titre
+function secBlocks(lines,typeOf){
+  const B=[]; let cur=null;
+  lines.forEach((L,i)=>{const t=typeOf(L); if(t==='b'){cur=null; return;} if(!cur||(t==='s'&&cur.items.length)){cur={i0:i,items:[]}; B.push(cur);} cur.items.push(i);});
+  B.forEach(b=>{const ls=b.items.map(i=>lines[i]), h=typeOf(ls[0])==='s'?ls[0]:null, ct=ls.filter(L=>typeOf(L)!=='s');
+    b.head=h; b.hasTab=ls.some(L=>typeOf(L)==='x'||(L&&L.tab!=null)); b.content=ct;
+    b.sigC=ct.filter(L=>typeOf(L)==='c').map(L=>fNorm(L.s)).join('|'); b.sigL=ct.filter(L=>typeOf(L)==='l'||typeOf(L)==='t').map(L=>fNorm(L.s)).join('|');
+    b.full=ct.map(L=>typeOf(L)+':'+fNorm(L.s)).join('|'); b.name=h?secName(h.s):'';});
+  const cnt={}, cntC={}; B.forEach(b=>{cnt[b.full]=(cnt[b.full]||0)+1; if(b.sigC)cntC[b.sigC]=(cntC[b.sigC]||0)+1;});
+  let hasCouplet=B.some(b=>b.name==='Couplet'), hasRef=B.some(b=>b.name==='Refrain');
+  B.forEach(b=>{if(b.name||b.hasTab||b.content.length<1)return;
+    if(!b.sigL&&b.sigC){b.guess=B.indexOf(b)===0?'Intro':(B.indexOf(b)===B.length-1?'Outro':'Interlude'); return;}
+    if(cnt[b.full]>1){b.guess='Refrain'; hasRef=true; return;}
+    const pre=B.find(e=>e!==b&&e.content.length>=2&&e.content.length<b.content.length&&cnt[e.full]>1&&e.content.every((L,j)=>fNorm(L.s)===fNorm(b.content[j].s))); if(pre){b.guess=pre.name||'Refrain'; return;}
+    if(b.sigC&&cntC[b.sigC]>1){b.guess='Couplet'; hasCouplet=true; return;}
+    b.guess=hasCouplet?'Pont':'Couplet'; if(b.guess==='Couplet')hasCouplet=true;});
+  // même contenu = même nom (un bloc sans titre identique à un [Refrain] titré s'appelle Refrain)
+  const byFull={}; B.forEach(b=>{if(b.name&&!byFull[b.full])byFull[b.full]=b.name;}); B.forEach(b=>{if(!b.name&&byFull[b.full])b.guess=byFull[b.full];});
+  return B;
+}
+function foldGrid(g,song,level){
+  const tp=L=>L.t==='t'?'t':L.t, B=secBlocks(g,tp), un=song._unfold||new Set(), out=[], first={}, firstC={}, drop=new Set(), repl={};
+  const chSum=b=>{const seen=[]; b.content.filter(L=>L.t==='c').forEach(L=>L.s.trim().split(/\s+/).forEach(t=>{if(tokChord(t)&&seen[seen.length-1]!==t)seen.push(t);})); return seen.slice(0,8).join(' ')+(seen.length>8?' …':'');};
+  B.forEach((b,bi)=>{
+    if(b.hasTab||b.content.length<2){return;}
+    const src=first[b.full], hd=x=>x&&x.head?String(x.head.s).replace(/[\[\]↻]/g,'').replace(/\s*[×x]\s*\d+\s*$/i,'').replace(/\s*\d+\s*$/,'').trim():'';
+    const lab=(src!=null&&hd(B[src]))||hd(b)||b.name||b.guess||'Reprise', ck=b.sigC+'§'+(b.name||b.guess||'');
+    if(src!=null&&!un.has(bi)){b.items.forEach(i=>drop.add(i)); repl[b.items[0]]={t:'f',lab:lab.toUpperCase(),ch:chSum(b),fid:bi,n:1,s:'↻ '+lab.toUpperCase()+'  '+chSum(b)}; B[src].folded=true; return;}
+    if(level==='chords'&&b.sigC&&b.sigL&&firstC[ck]!=null&&!un.has(bi)){const ly=b.content.filter(L=>L.t==='l'||L.t==='t').map(L=>L.s.trim().replace(/\s{2,}/g,' ')).join(' / ');
+      b.items.forEach(i=>drop.add(i)); repl[b.items[0]]={t:'f',lab:lab.toUpperCase(),ch:chSum(b),ly,fid:bi,n:1,s:'↻ '+lab.toUpperCase()+'  '+chSum(b)}; B[firstC[ck]].folded=true; return;}
+    // dernier refrain prolongé : « ↻ REFRAIN » puis seulement les lignes en plus
+    const pre=B.slice(0,bi).find(e=>e.content.length>=2&&!e.hasTab&&e.content.length<b.content.length&&e.content.every((L,j)=>tp(L)+':'+fNorm(L.s)===tp(b.content[j])+':'+fNorm(b.content[j].s)));
+    if(pre&&!un.has(bi)){const n=pre.content.length, keep=new Set(b.content.slice(n));
+      b.items.forEach(i=>{if(!keep.has(g[i]))drop.add(i);}); const pl=hd(pre)||pre.name||pre.guess||lab; repl[b.items[0]]={t:'f',lab:pl.toUpperCase()+', puis',ch:'',fid:bi,n:1,s:'↻ '+pl.toUpperCase()+', puis'}; pre.folded=true;}
+    if(first[b.full]==null)first[b.full]=bi; if(b.sigC&&firstC[ck]==null)firstC[ck]=bi;
+  });
+  g.forEach((L,i)=>{
+    if(repl[i]){const f=repl[i], prev=out[out.length-1], prev2=out[out.length-2];
+      // deux reprises identiques de suite : « ↻ REFRAIN ×2 »
+      const last=prev&&prev.t==='b'&&prev2&&prev2.t==='f'?prev2:(prev&&prev.t==='f'?prev:null);
+      if(last&&last.lab===f.lab&&!f.ly&&!/, puis$/.test(f.lab)){last.n++; if(prev.t==='b')out.pop(); return;}
+      if(last&&/, puis$/.test(f.lab)&&last.lab===f.lab.replace(/, puis$/,'')&&!last.ly){last.n++; last.lab=f.lab; last.ch=''; if(prev.t==='b')out.pop(); return;}
+      out.push(f); if(drop.has(i))return;}
+    if(drop.has(i))return;
+    // 1re apparition d'un passage replié plus loin : son titre porte ①
+    const b=B.find(x=>x.items[0]===i);
+    if(b&&b.folded){const lab=b.name||b.guess; if(b.head)out.push({...L,s:'['+String(L.s).replace(/[\[\]]/g,'')+' ①]'}); else {out.push({t:'s',s:'['+lab+' ①]'}); out.push(L);} return;}
+    out.push(L);
+  });
+  return out;
+}
+// 🏷 Sections : ajoute [Couplet] / [Refrain] / [Pont]… devant les passages qui n'ont pas de titre
+function autoSections(text){
+  const p=parseSheet(text||''), lines=text.split('\n');
+  const B=secBlocks(p.lines,L=>L.t==='m'||L.t==='k'?'l':L.t), ins=[];
+  B.forEach(b=>{if(b.head||!b.guess||b.hasTab)return; const L0=p.lines[b.items[0]]; if(L0&&L0.i!=null)ins.push({at:L0.i,lab:b.guess});});
+  if(!ins.length)return null;
+  ins.sort((a,b)=>b.at-a.at).forEach(x=>lines.splice(x.at,0,'['+x.lab+']'));
+  return {text:lines.join('\n'),n:ins.length};
 }
 // reprises : un passage qui ne contient que « [Refrain] » réaffiche le refrain déjà écrit
 function expandRefs(lines){
@@ -2134,6 +2204,7 @@ function lineHTML(L){
   if(L.t==='l') return `<span class="ly"${raw}${of}>${esc(L.s)}</span>`;
   if(L.t==='x') return `<span class="x"${L.tab!=null?` data-tab="${L.tab}"`:''}${L.xr!=null?` data-xr="${L.xr}"`:''}>${esc(L.s)}</span>`;
   if(L.t==='s'){const m=/^\[(.*)\]$/.exec(L.s.trim()); return `<span class="s"${raw}${L.tab!=null?` data-tab="${L.tab}"`:''}>${m?'<i class="sb">[</i><span class="sn">'+esc(m[1])+'</span><i class="sb">]</i>':esc(L.s)}</span>`;}
+  if(L.t==='f'){const pu=/, puis$/.test(L.lab), lb=L.lab.replace(/, puis$/,''); return `<span class="fold" data-fold="${L.fid}" title="Toucher pour déplier">↻ <b>${esc(lb)}</b>${L.n>1||pu?`<span class="fn">${L.n>1?'×'+L.n:''}${pu?', puis':''}</span>`:''}${L.ch?`<span class="fch">${esc(L.ch)}</span>`:''}${L.ly?`<span class="fly">${esc(L.ly)}</span>`:''}</span>`;}
   if(L.t==='t'||L.t==='k') return `<span class="${L.t}"${raw}>${esc(L.s)}</span>`;
   return esc(L.s);
 }
@@ -4134,7 +4205,7 @@ function openViewer(entries,start,list){
   if(!entries.length){toast('Aucun morceau rempli.');return;}
   V.list=entries; V.listRef=list||null; V.i=Math.max(0,start|0); V.edit=false; V.lastKey=null; V.page=0; V.lite=false; V.tvFollow=false; $('#vtv').setAttribute('aria-pressed','false'); $('#vstage').classList.remove('lite'); $('#vlite').setAttribute('aria-pressed','false'); $('#vtext').hidden=true; $('#vdisp').hidden=true;
   if(APP){try{window.Android.setScene(true,pedalUsesVolume());}catch(e){}}
-  V.curSort='ordre'; const v=$('#viewer'); v.hidden=false; $('#vlist').hidden=start!=null&&start>=0; document.body.style.overflow='hidden';
+  V.curSort='ordre'; try{foldUI();}catch(e){} const v=$('#viewer'); v.hidden=false; $('#vlist').hidden=start!=null&&start>=0; document.body.style.overflow='hidden';
   try{const de=document.documentElement; (de.requestFullscreen||de.webkitRequestFullscreen||(()=>{})).call(de);}catch(e){}
   try{navigator.wakeLock&&navigator.wakeLock.request('screen').then(l=>V.lock=l).catch(()=>{});}catch(e){}
   V.spKey=undefined; SP.ui(); placeMenu(); vPlace(); vRender(); vPlace(); document.body.classList.add('inscene');
@@ -4737,6 +4808,16 @@ $('#kpPast').onchange=e=>{KPS().past=+e.target.value; save(); kpCall({op:'setcfg
 $('#kpPauseMin').onchange=e=>{KPS().pauseMin=+e.target.value; save();};
 $('#kpReq').onchange=e=>Req.enable(e.target.checked);
 $('#kpNotif').onchange=e=>{KPS().notif=e.target.value; save();};
+$('#vfold').onclick=()=>{const o=['off','same','chords'], i=o.indexOf(S.fold||'off'); S.fold=o[(i+1)%3]; save(); foldUI(); V.list.forEach(e=>{delete e._r; if(e.s)delete e.s._r;}); S.songs.forEach(x=>delete x._r); V.lastKey=null; vRender();
+  toast(S.fold==='off'?'Tout est affiché':S.fold==='same'?'↻ Refrains (et passages) identiques repliés':'↻ Repliés aussi : couplets aux mêmes accords',3000);};
+function foldUI(){const f=S.fold||'off'; $('#vfoldL').textContent=f==='off'?'Replier':f==='same'?'Refrains repliés':'+ couplets'; $('#vfold').setAttribute('aria-pressed',f!=='off');}
+foldUI();
+// toucher une reprise repliée la déplie (et inversement, toucher le ↻ ① ne fait rien)
+$('#vstage').addEventListener('click',ev=>{const f=ev.target.closest('.fold'); if(!f)return; ev.stopPropagation(); ev.preventDefault();
+  const e=V.list[V.i]; if(!e)return; const s=e.s; s._unfold=s._unfold||new Set(); const id=+f.dataset.fold; s._unfold.add(id); delete e._r; delete s._r; V.lastKey=null; vRender();},true);
+$('#vtSecs').onclick=()=>{const ta=$('#vtextArea'), r=autoSections(ta.value); if(!r){toast('Chaque passage a déjà un titre'); return;}
+  ta.focus(); ta.select(); vtEdit('insertText',r.text); toast('🏷 '+r.n+' titre'+(r.n>1?'s':'')+' ajouté'+(r.n>1?'s':'')+' : vérifie-les (↶ pour annuler)',4000);};
+
 /* ---------- 🎙 Mémos vocaux par morceau (IndexedDB, comme les bandes son) ---------- */
 const MEMO={s:null,rec:null,chunks:[],t0:0,tick:null};
 function openMemos(s){if(!s)return; MEMO.s=s; $('#memoTitle').textContent='🎙 '+(split(s.q).titre||s.q); memoDraw(); modal('#memoBox',true);}
