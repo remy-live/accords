@@ -1008,6 +1008,16 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
 #rybar .rygr{display:flex;flex-direction:column;gap:2px;overflow:hidden}#rybar .rygr div{display:flex;align-items:center;gap:2px}
 #rybar .rygr span{width:22px;font-size:10px;color:#888}#rybar .rygr i{width:9px;height:9px;border-radius:2px;background:#2a2a30;flex:none}
 #rybar .rygr i.bt{margin-left:4px}#rybar .rygr i.h{background:#a1a1aa}#rybar .rygr i.a{background:#fff}#rybar .rygr i.on{outline:2px solid var(--hl,#fb923c);outline-offset:0}
+#rybar{flex-direction:column;align-items:stretch;gap:6px;padding:8px 10px}
+#rybar .ryhd{flex-wrap:wrap}#rybar .rypl{width:40px;height:40px}
+#rybar .ryab{display:flex;gap:3px}#rybar .ryab button[aria-pressed=true]{background:var(--hl,#fb923c);color:var(--onhl,#111)}#rybar .ryab .rygh{opacity:.55;border:1px dashed #555}#rybar .ryab .rywt{animation:rywait .5s steps(2) infinite;border:2px solid var(--hl,#fb923c)}@keyframes rywait{50%{opacity:.35}}
+#rybar .ryfill{padding:0 10px;font-size:13px}#rybar .ryfill.on{background:#dc2626;color:#fff}
+#rybar .ryed{padding:0 10px;font-size:13px}#rybar .ryed[aria-pressed=true]{background:#16a34a;color:#fff}
+#rybar .rytools{display:flex;flex-wrap:wrap;align-items:center;gap:6px}#rybar .rytools button{padding:0 10px;font-size:13px;height:30px}#rybar .ryhint{color:#888;font-size:12px}
+#rybar.ed{left:8px;right:8px;max-width:none}#rybar.ed .rygr{overflow-x:auto;padding-bottom:4px}
+#rybar.ed .rygr span{width:62px;font-size:11px;flex:none}#rybar.ed .rygr i{width:24px;height:24px;border-radius:5px;cursor:pointer}#rybar.ed .rygr i.bt{margin-left:5px}#rybar .rygr i.br{margin-left:12px}
+@media (max-width:560px){#rybar.ed .rygr span{width:44px;font-size:10px}#rybar.ed .rygr i{width:16px;height:22px;border-radius:4px}#rybar.ed .rygr i.bt{margin-left:3px}#rybar .rygr i.br{margin-left:8px}#rybar .ryhint{display:none}}
+#rybar.ed .rygr i.h{background:#a1a1aa}#rybar.ed .rygr i.a{background:#fff;box-shadow:inset 0 0 0 3px var(--hl,#fb923c)}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -3644,6 +3654,25 @@ const DR_MODELS={
   'Disco':{m:'4/8',g:{HH:'-x-x-x-x',SD:'--o---o-',BD:'o-o-o-o-'}},
   'Valse':{m:'3/8',g:{HH:'x-x-x-',SD:'--o-o-',BD:'o-----'}},
   '6/8':{m:'6/8',g:{HH:'xxxxxx',SD:'---o--',BD:'o-----'}},
+  'Pop':{m:'4/8',g:{HH:'xxxxxxxx',SD:'--o---o-',BD:'o--oo---'}},
+  'Pop 16':{m:'4/16',g:{HH:'xxxxxxxxxxxxxxxx',SD:'----O-------O---',BD:'o-----o---o-----'}},
+  'Funk':{m:'4/16',g:{HH:'X-x-X-x-X-x-X-x-',SD:'----O--o-o--O--o',BD:'o-o----o--o-----'}},
+  'Hip-hop':{m:'4/16',g:{HH:'x-x-x-x-x-x-x-x-',SD:'----O-------O---',BD:'o------o-oo-----'}},
+  'Half-time':{m:'4/8',g:{HH:'xxxxxxxx',SD:'----O---',BD:'o-----o-'}},
+  'Électro':{m:'4/16',g:{HH:'--x---x---x---x-',SD:'----O-------O---',BD:'o---o---o---o---'}},
+  'Punk':{m:'4/8',g:{HH:'xxxxxxxx',SD:'-o-o-o-o',BD:'o-o-o-o-'}},
+  'Métal':{m:'4/16',g:{C:'X-------X-------',HH:'----x-------x---',SD:'----O-------O---',BD:'oooooooooooooooo'}},
+  'Motown':{m:'4/8',g:{HH:'xxxxxxxx',SD:'o-o-o-o-',BD:'o--oo--o'}},
+  'Country':{m:'4/8',g:{HH:'-x-x-x-x',SD:'--o---o-',BD:'o---o---'}},
+  'Train':{m:'4/16',g:{SD:'xxXxxxXxxxXxxxXx',BD:'o-------o-------'}},
+  'Blues 12/8':{m:'4/12',g:{HH:'xxxxxxxxxxxx',SD:'---O-----O--',BD:'o-----o-----'}},
+  'Boogie':{m:'4/12',g:{R:'x-xx-xx-xx-x',SD:'---o-----o--',BD:'o--o--o--o--'}},
+  'Jazz':{m:'4/12',g:{R:'x--x-xx--x-x',HH:'---x-----x--',BD:'o-----o-----'}},
+  'Rumba':{m:'4/8',g:{HH:'xxxxxxxx',SD:'---o--o-',BD:'o--o----'}},
+  'Samba':{m:'4/16',g:{HH:'x-xxx-xxx-xxx-xx',SD:'o-o--o-o-o-o--o-',BD:'o--Oo--Oo--Oo--O'}},
+  'Afro':{m:'4/12',g:{HH:'x-xx-xx-xx-x',SD:'---o--o----o',BD:'o--o-----o--'}},
+  'Marche':{m:'4/16',g:{SD:'O-oo-oo-O-oo-oo-',BD:'o-------o-------'}},
+  'Slow':{m:'4/8',g:{R:'x-x-x-x-',SD:'----O---',BD:'o--o----'}},
 };
 let DR=null;
 function drSteps(){const m=DR_METERS[DR.meter]; return m.b*m.p;}
@@ -6994,51 +7023,95 @@ $('#vdPedalMode').onclick=e=>{const b=e.target.closest('button'); if(!b)return; 
 pedalModeUI();
 $('#vdPedalReset').onclick=()=>{S.pedalNext=[]; S.pedalPrev=[]; Learn.step=0; save(); if(APP){try{window.Android.setScene(true,false);}catch(e){}} Learn.ui(); toast('Pédale : touches par défaut');};
 // tempo à la main (enregistré dans le morceau)
-/* ----- 🥁 rythme en scène : la partie batterie du morceau (ou un style) affichée et jouée en boucle ----- */
-const RY={on:false,id:null,hide:{}};
+/* ----- 🥁 rythme en scène : séquenceur (partie du morceau, styles, ou « Mon rythme » édité au doigt), A/B et break ----- */
+const RY={on:false,id:null,hide:{},edit:false,ed:'A'};
+const RY_LAB={C:'Crash',R:'Ride',HH:'Charley',SD:'Caisse',T1:'Tom',FT:'Tom b.',BD:'Grosse c.'};
 function ryPart(song){
   const L=(song.text||'').split('\n'); let cur=[];
   const take=rows=>{if(rows.length&&isDrumBlock(rows)){const d=drParse(rows); if(Object.keys(d.g).length)return d;} return null;};
   for(let i=0;i<=L.length;i++){if(i<L.length&&DRUM_RE.test(L[i])){cur.push(L[i]); continue;} const d=take(cur); if(d)return d; cur=[];}
   const tb=(song.tabs||[]).find(t=>t.drum||isDrumBlock(t.rows||[])); if(tb)return tb.drum?JSON.parse(JSON.stringify(tb.drum)):drParse(tb.rows);
   return null;}
-function ryPat(song){const own=ryPart(song), st=song.rhythm||'';
-  if(st&&DR_MODELS[st])return {g:{...DR_MODELS[st].g},bars:1,meter:DR_MODELS[st].m,name:st};
-  if(own)return {...own,name:'Partie du morceau'}; const m=DR_MODELS.Rock; return {g:{...m.g},bars:1,meter:m.m,name:'Rock'};}
-function ryRows(p){const n=DR_METERS[p.meter].b*DR_METERS[p.meter].p*(p.bars||1);
-  const used=DR_INST.filter(([k])=>/[^-]/.test(p.g[k]||'')); return (used.length?used:DR_INST.filter(([k])=>/HH|SD|BD/.test(k))).map(([k])=>[k,(p.g[k]||'').padEnd(n,'-').slice(0,n)]);}
+const ryN=p=>DR_METERS[p.meter].b*DR_METERS[p.meter].p*(p.bars||1);
+function ryNorm(p){const n=ryN(p), g={}; DR_INST.forEach(([k])=>g[k]=(p.g[k]||'').padEnd(n,'-').slice(0,n)); return {g,meter:p.meter,bars:p.bars||1};}
+function rySel(song){if(song.rhySel&&(song.rhySel!=='mine'||song.rhy)&&(song.rhySel!=='own'||ryPart(song)))return song.rhySel;
+  if(song.rhythm&&DR_MODELS[song.rhythm])return song.rhythm; if(song.rhy)return 'mine'; return ryPart(song)?'own':'Rock';}
+// le rythme courant : {A, B|null}
+function ryBase(song){const sel=rySel(song);
+  if(sel==='mine')return {A:ryNorm(song.rhy.A),B:song.rhy.B?ryNorm(song.rhy.B):null};
+  if(sel==='own')return {A:ryNorm(ryPart(song)),B:null};
+  const m=DR_MODELS[sel]||DR_MODELS.Rock; return {A:ryNorm({g:m.g,meter:m.m,bars:1}),B:null};}
+// pour éditer : on part toujours d'une copie à soi
+function ryMine(song){if(rySel(song)!=='mine'){const b=ryBase(song); song.rhy={A:b.A,B:b.B}; song.rhySel='mine'; delete song.rhythm;} return song.rhy;}
+function ryFill(p){const m=DR_METERS[p.meter], n=m.b*m.p, g={}; DR_INST.forEach(([k])=>g[k]=(p.g[k]||'').slice(0,n).padEnd(n,'-'));
+  const h=Math.floor(n/2), seq=['SD','SD','T1','T1','FT','FT'];
+  for(let i=h;i<n;i++){const k=seq[Math.min(seq.length-1,Math.floor((i-h)*seq.length/(n-h)))]; DR_INST.forEach(([x])=>{if(x!=='BD')g[x]=g[x].slice(0,i)+'-'+g[x].slice(i+1);}); g[k]=g[k].slice(0,i)+(i===n-1?'O':'o')+g[k].slice(i+1);}
+  return {g,meter:p.meter,bars:1};}
+function ryRows(p,all){const used=DR_INST.filter(([k])=>/[^-]/.test(p.g[k]||''));
+  return (all?DR_INST:used.length?used:DR_INST.filter(([k])=>/HH|SD|BD/.test(k))).map(([k])=>[k,p.g[k]]);}
 function ryBar(){let b=$('#rybar'); if(b)return b; b=document.createElement('div'); b.id='rybar'; b.hidden=true; $('#viewer').appendChild(b);
-  b.addEventListener('click',e=>{const t=e.target.closest('[data-a]'); if(!t)return; e.stopPropagation(); const cur=V.list[V.i]; if(!cur)return;
-    const a=t.dataset.a;
-    if(a==='play'){RY.on?ryStop():ryStart();}
-    else if(a==='x'){ryStop(); RY.hide[cur.s.id]=1; b.hidden=true;}
-    else if(a==='dn'||a==='up'){setTempo((+cur.s.tempo||90)+(a==='up'?2:-2)); ryDraw();}});
-  b.addEventListener('change',e=>{if(e.target.id!=='ryStyle')return; const cur=V.list[V.i]; if(!cur)return; const v=e.target.value; cur.s.rhythm=v==='own'?'':v; touch(cur.s); save(); ryDraw(); if(RY.on){ryStop(); ryStart();}});
+  b.addEventListener('click',e=>{const t=e.target.closest('[data-a],[data-c]'); if(!t)return; e.stopPropagation(); const cur=V.list[V.i]; if(!cur)return; const s=cur.s, a=t.dataset.a;
+    if(t.dataset.c!=null&&RY.edit&&t.dataset.k){const r=ryMine(s), p=r[RY.ed]||(r[RY.ed]=JSON.parse(JSON.stringify(r.A))), k=t.dataset.k, i=+t.dataset.c, row=(p.g[k]||'').padEnd(ryN(p),'-'), c=row[i]||'-';
+      const nx=c==='-'?(DR_CYM.has(k)?'x':'o'):/[xo]/.test(c)?(DR_CYM.has(k)?'X':'O'):'-'; p.g[k]=row.slice(0,i)+nx+row.slice(i+1); touch(s); save();
+      if(nx!=='-')drHit(k,nx===nx.toUpperCase()); ryDraw(); return;}
+    if(a==='play'){RY.on?ryStop():ryStart(); return;}
+    if(a==='x'){ryStop(); RY.edit=false; RY.hide[s.id]=1; b.hidden=true; return;}
+    if(a==='dn'||a==='up'){setTempo((+s.tempo||90)+(a==='up'?2:-2)); ryDraw(); return;}
+    if(a==='A'||a==='B'){const base=ryBase(s);
+      if(a==='B'&&!base.B){const r=ryMine(s); r.B=JSON.parse(JSON.stringify(r.A)); touch(s); save(); toast('Variation B créée : modifie-la avec ✎');}
+      if(RY.edit)RY.ed=a; RY.want=a; if(!RY.on)RY.pat=a; ryDraw(); return;}
+    if(a==='fill'){if(!RY.on){ryStart();} RY.fill=1; t.classList.add('on'); return;}
+    if(a==='edit'){RY.edit=!RY.edit; RY.ed=RY.pat||'A'; ryDraw(); return;}
+    if(a==='clear'){const r=ryMine(s), p=r[RY.ed]||r.A; DR_INST.forEach(([k])=>p.g[k]='-'.repeat(ryN(p))); touch(s); save(); ryDraw(); return;}
+    if(a==='bars'){const r=ryMine(s), p=r[RY.ed]||r.A, n0=ryN(p); p.bars=p.bars===2?1:2; const n=ryN(p); DR_INST.forEach(([k])=>{const g=(p.g[k]||'').padEnd(n0,'-'); p.g[k]=n>n0?(g+g).slice(0,n):g.slice(0,n);}); touch(s); save(); ryDraw(); return;}
+    if(a==='del'){const r=ryMine(s); if(RY.ed==='B'){r.B=null; RY.ed='A'; RY.pat='A'; RY.want='A';} touch(s); save(); ryDraw(); return;}
+  });
+  b.addEventListener('change',e=>{const cur=V.list[V.i]; if(!cur)return; const s=cur.s;
+    if(e.target.id==='ryStyle'){s.rhySel=e.target.value; delete s.rhythm; RY.pat='A'; RY.want='A'; touch(s); save(); ryDraw(); return;}
+    if(e.target.id==='ryMeter'){const r=ryMine(s), p=r[RY.ed]||r.A; p.meter=e.target.value; const n=ryN(p); DR_INST.forEach(([k])=>p.g[k]=(p.g[k]||'').padEnd(n,'-').slice(0,n)); touch(s); save(); ryDraw();}});
   ['pointerdown','touchstart'].forEach(ev=>b.addEventListener(ev,e=>e.stopPropagation(),{passive:true}));
   return b;}
-function ryDraw(){const cur=V.list[V.i], b=ryBar(); if(!cur)return; const s=cur.s, p=ryPat(s), own=!!ryPart(s), m=DR_METERS[p.meter];
-  const rows=ryRows(p), opts=(own?'<option value="own">Partie du morceau</option>':'')+Object.keys(DR_MODELS).map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join('');
-  const cell=(c,i)=>`<i class="${c==='-'?'':/[XO]/.test(c)?'a':'h'}${i%m.p===0?' bt':''}" data-c="${i}"></i>`;
-  b.innerHTML=`<button data-a="play" class="rypl" aria-label="${RY.on?'Arrêter':'Jouer'} le rythme">${RY.on?'■':'▶'}</button>
-    <div class="rymid"><div class="ryhd"><select id="ryStyle" aria-label="Rythme">${opts}</select><span class="ryt"><button data-a="dn" aria-label="Tempo moins">−</button><b>♩ ${+s.tempo||90}</b><button data-a="up" aria-label="Tempo plus">+</button></span></div>
-    <div class="rygr">${rows.map(([k,r])=>`<div><span>${k}</span>${[...r].map(cell).join('')}</div>`).join('')}</div></div>
-    <button data-a="x" class="ryx" aria-label="Fermer le rythme">✕</button>`;
-  $('#ryStyle').value=s.rhythm&&DR_MODELS[s.rhythm]?s.rhythm:own?'own':'Rock';}
+function ryDraw(){const cur=V.list[V.i], b=ryBar(); if(!cur)return; const s=cur.s, base=ryBase(s), sel=rySel(s), own=!!ryPart(s);
+  const which=RY.edit?RY.ed:(RY.pat||'A'), p=base[which]||base.A, m=DR_METERS[p.meter], rows=ryRows(p,RY.edit);
+  const opts=(s.rhy?'<option value="mine">★ Mon rythme</option>':'')+(own?'<option value="own">Partie du morceau</option>':'')+Object.keys(DR_MODELS).map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join('');
+  const cell=(k,c,i)=>`<i class="${c==='-'?'':/[XO]/.test(c)?'a':'h'}${i%m.p===0?' bt':''}${i%(m.b*m.p)===0&&i?' br':''}" data-c="${i}"${RY.edit?` data-k="${k}"`:''}></i>`;
+  b.classList.toggle('ed',RY.edit);
+  b.innerHTML=`<div class="ryhd"><button data-a="play" class="rypl" aria-label="${RY.on?'Arrêter':'Jouer'} le rythme">${RY.on?'■':'▶'}</button>
+    <select id="ryStyle" aria-label="Rythme">${opts}</select>
+    <span class="ryt"><button data-a="dn" aria-label="Tempo moins">−</button><b>♩ ${+s.tempo||90}</b><button data-a="up" aria-label="Tempo plus">+</button></span>
+    <span class="ryab"><button data-a="A" aria-pressed="${which==='A'}" class="${RY.on&&RY.want==='A'&&RY.pat!=='A'?'rywt':''}">A</button><button data-a="B" aria-pressed="${which==='B'}" class="${base.B?'':'rygh'}${RY.on&&RY.want==='B'&&RY.pat!=='B'?' rywt':''}">B</button></span>
+    <button data-a="fill" class="ryfill${RY.fill?' on':''}" title="Un break à la fin de la mesure, puis reprise">Break</button>
+    <button data-a="edit" class="ryed" aria-pressed="${RY.edit}" title="Modifier le rythme">${RY.edit?'✓ Fini':'✎'}</button>
+    <button data-a="x" class="ryx" aria-label="Fermer le rythme">✕</button></div>
+    ${RY.edit?`<div class="rytools"><select id="ryMeter" aria-label="Mesure">${Object.entries(DR_METERS).map(([k,x])=>`<option value="${k}">${x.n}</option>`).join('')}</select><button data-a="bars">${p.bars===2?'2 mesures':'1 mesure'}</button><button data-a="clear">Vider</button>${which==='B'?'<button data-a="del">Supprimer B</button>':''}<span class="ryhint">Touche une case : frappe · accent · rien</span></div>`:''}
+    <div class="rygr">${rows.map(([k,r])=>`<div><span>${RY.edit?RY_LAB[k]:k}</span>${[...r].map((c,i)=>cell(k,c,i)).join('')}</div>`).join('')}</div>`;
+  $('#ryStyle').value=sel; if(RY.edit)$('#ryMeter').value=p.meter;}
 function ryStart(){const cur=V.list[V.i]; if(!cur)return;
   try{actx=actx||new (window.AudioContext||window.webkitAudioContext)(); if(actx.resume)actx.resume();}catch(e){toast('Audio indisponible'); return;}
-  if(V.metro)metroStop(); RY.on=true; RY.id=cur.s.id; RY.step=0; RY.next=actx.currentTime+.08; RY.q=[]; ryDraw();
+  if(V.metro)metroStop(); RY.on=true; RY.id=cur.s.id; RY.pos=0; RY.pat=RY.want=RY.pat||'A'; RY.fill=0; RY.inFill=null; RY.crash=false; RY.next=actx.currentTime+.08; RY.q=[]; ryDraw();
   const sched=()=>{if(!RY.on)return; const c=V.list[V.i]; if(!c||c.s.id!==RY.id||$('#viewer').hidden){ryStop(); return;}
-    const p=ryPat(c.s), m=DR_METERS[p.meter], rows=ryRows(p), N=rows[0]?rows[0][1].length:m.b*m.p, dur=60/(+c.s.tempo||90)/m.p;
-    while(RY.next<actx.currentTime+.15){const i=RY.step%N; rows.forEach(([k,r])=>{const ch=r[i]; if(ch&&ch!=='-')drHit(k,/[XO]/.test(ch),RY.next);}); RY.q.push([RY.next,i]); RY.next+=dur; RY.step++;}};
+    const base=ryBase(c.s);
+    while(RY.next<actx.currentTime+.15){
+      let p=base[RY.pat]||base.A; const m=DR_METERS[p.meter], bar=m.b*m.p, N=ryN(p);
+      if(RY.pos%bar===0){ // début de mesure : break demandé, changement A/B en fin de boucle
+        if(RY.inFill){RY.inFill=null; RY.crash=true; RY.pos=0; if(RY.want!==RY.pat){RY.pat=RY.want;} p=base[RY.pat]||base.A;}
+        else if(RY.fill&&RY.pos+bar>=N){RY.fill=0; RY.inFill=ryFill(p);}
+        else if(RY.pos>=N||RY.pos===0&&RY.want!==RY.pat){if(RY.want!==RY.pat){RY.pat=RY.want; p=base[RY.pat]||base.A;} RY.pos=0;}}
+      const src=RY.inFill||p, n=ryN(src), i=RY.inFill?RY.pos%n:RY.pos%ryN(p), dur=60/(+c.s.tempo||90)/DR_METERS[src.meter].p;
+      DR_INST.forEach(([k])=>{const ch=src.g[k][i]; if(ch&&ch!=='-')drHit(k,/[XO]/.test(ch),RY.next);});
+      if(RY.crash&&i===0){drHit('C',true,RY.next); RY.crash=false;}
+      RY.q.push([RY.next,RY.inFill?-1:i,RY.pat]); RY.next+=dur; RY.pos++;}};
   RY.timer=setInterval(sched,25); sched();
-  const paint=()=>{if(!RY.on)return; let c=null; while(RY.q.length&&RY.q[0][0]<=actx.currentTime){c=RY.q.shift()[1];}
-    if(c!=null){$$('#rybar .rygr i.on').forEach(x=>x.classList.remove('on')); $$(`#rybar .rygr i[data-c="${c}"]`).forEach(x=>x.classList.add('on'));} RY.raf=requestAnimationFrame(paint);};
+  const paint=()=>{if(!RY.on)return; let c=null; while(RY.q.length&&RY.q[0][0]<=actx.currentTime){c=RY.q.shift();}
+    if(c){if(c[1]===0&&(RY.edit?RY.ed:RY.drawn)!==c[2]&&!RY.edit){RY.drawn=c[2]; ryDraw();}
+      $$('#rybar .rygr i.on').forEach(x=>x.classList.remove('on')); if(c[1]>=0&&(!RY.edit||RY.ed===c[2]))$$(`#rybar .rygr i[data-c="${c[1]}"]`).forEach(x=>x.classList.add('on'));
+      const f=$('#rybar .ryfill'); if(f)f.classList.toggle('on',!!(RY.fill||c[1]<0));} RY.raf=requestAnimationFrame(paint);};
   RY.raf=requestAnimationFrame(paint);}
-function ryStop(){RY.on=false; clearInterval(RY.timer); cancelAnimationFrame(RY.raf); if($('#rybar')&&!$('#rybar').hidden)ryDraw();}
-// à chaque morceau : la barre s'affiche d'elle-même si le morceau a une partie batterie
+function ryStop(){RY.on=false; RY.fill=0; RY.inFill=null; clearInterval(RY.timer); cancelAnimationFrame(RY.raf); if($('#rybar')&&!$('#rybar').hidden)ryDraw();}
+// à chaque morceau : la barre s'affiche d'elle-même si le morceau a une partie batterie (ou un rythme à soi)
 function ryUpdate(){const cur=V.list[V.i], b=ryBar(); if(!cur){b.hidden=true; return;}
-  if(RY.on&&cur.s.id!==RY.id)ryStop();
-  const show=RY.on||RY.force===cur.s.id||(!!ryPart(cur.s)&&!RY.hide[cur.s.id]);
+  if(RY.on&&cur.s.id!==RY.id)ryStop(); if(RY.id!==cur.s.id&&!RY.on){RY.edit=false; RY.pat=RY.want='A';}
+  const show=RY.on||RY.force===cur.s.id||(!!(ryPart(cur.s)||cur.s.rhy)&&!RY.hide[cur.s.id]);
   b.hidden=!show; if(show&&!RY.on)ryDraw();}
 function setTempo(v){
   const e=V.list[V.i]; if(!e)return; const s=e.s;
