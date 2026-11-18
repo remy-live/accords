@@ -6313,7 +6313,7 @@ function cpSet(pat){CP.pat=pat; let el=$('#cpPill');
   if(!pat){if(el)el.remove(); return;}
   if(!el){el=document.createElement('div'); el.id='cpPill'; document.body.appendChild(el);
     el.onclick=e=>{if(e.target.closest('button'))cpSet(null);};}
-  el.innerHTML=`<span>🖌 <b>${esc(pat.toks.map(t=>t.s).join(' '))}</b> · touche une ligne pour coller</span><button aria-label="Arrêter de coller">✕ Fini</button>`;
+  el.innerHTML=`<span>🖌 <b>${esc(pat.toks.map(t=>t.s).join(' '))}</b> · touche où coller</span><button aria-label="Arrêter de coller">✕ Fini</button>`;
   try{navigator.vibrate&&navigator.vibrate(20);}catch(e){}}
 // branche le geste sur un conteneur : getCtx() -> {get, set, noClick} ou null
 function cpWire(box,getCtx){let T=null;
