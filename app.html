@@ -1065,6 +1065,23 @@ body.fiche-on main{margin:0 auto!important;padding-bottom:min(52vh,460px)}body.f
 .fsum{margin:4px 0 12px}.fsl{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-bottom:6px}
 .fsum>div{display:flex;flex-wrap:wrap;gap:6px}.fsec{padding:5px 10px;border-radius:8px;background:color-mix(in srgb,var(--ink) 8%,transparent);font-size:13px;font-weight:600}.fsec.ch{background:color-mix(in srgb,var(--acc2) 18%,transparent);color:var(--acc2)}
 .fch{padding:5px 10px;border-radius:8px;border:1px solid var(--line);font:700 14px ui-monospace,'JetBrains Mono',monospace;color:var(--acc)}
+.lt2 .lcell{border:0;background:transparent;padding:6px 8px;min-height:0;height:auto;border-radius:9px;font:inherit;color:inherit;cursor:pointer}
+.lt2 .lcell:hover,.lt2 .lcell:focus-visible{box-shadow:0 0 0 2px var(--acc)}.lt2 .lk{font-family:ui-monospace,'JetBrains Mono',monospace;font-weight:700;color:var(--acc2);font-size:15px}
+.lt2 .lc{font-size:12px;font-weight:700;color:var(--acc)}.lt2 .lc.none{color:var(--line);font-size:15px}
+.lt2 .tgw{display:inline-flex;flex-wrap:wrap;gap:4px;align-items:center}.lt2 .tgw .tpill{cursor:pointer}.lt2 .lt{border:1px dashed var(--line);border-radius:999px;padding:2px 9px;font-weight:700;color:var(--mute)}
+.lt2 tr.lprev td{padding:12px 16px 16px 16px;background:color-mix(in srgb,var(--acc) 7%,var(--bg));box-shadow:inset 4px 0 0 var(--acc);border-bottom:1px solid var(--line)}
+.lpw{display:flex;gap:22px;align-items:stretch}.lpv{flex:1;min-width:0;max-height:190px;overflow:hidden;position:relative;border-radius:14px;border:1px solid var(--line);background:var(--bg);padding:10px 14px}
+.lpv::after{content:'';position:absolute;left:0;right:0;bottom:0;height:44px;background:linear-gradient(transparent,var(--bg))}.lpv pre{margin:0;font-size:14px;line-height:1.4;white-space:pre;overflow:hidden}
+.lpr{width:min(380px,42%);display:flex;flex-direction:column;gap:6px}.lpm{display:flex;gap:12px;color:var(--mute);font-size:13px;font-weight:600}
+.lpb{display:flex;gap:8px;margin-top:auto}.lpb button{height:50px;border-radius:13px;font-weight:700;padding:0 14px}.lpb .pri{flex:1;font-size:17px;font-weight:800}
+@media (max-width:760px){.lpw{flex-direction:column}.lpr{width:auto}.lpv{max-height:150px}.libtab.lt2 tr.lprev{display:block}.libtab.lt2 tr.lprev td{display:block;width:auto;padding:10px}.lt2 td.cp,.lt2 td.fo,.lt2 td.tg,.lt2 td.mu{display:none!important}.libtab.lt2 tr.lrow.on{background:color-mix(in srgb,var(--acc) 8%,transparent)}.libtab.lt2 tr.lrow.on>td{background:transparent!important}.lpb button{height:46px}}
+.lpop{position:fixed;z-index:70;min-width:260px;max-width:min(360px,calc(100vw - 16px));padding:12px;border-radius:16px;background:var(--card,#2a231e);border:1px solid var(--line);box-shadow:0 16px 36px rgba(0,0,0,.45)}
+.lph{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lpk{display:flex;align-items:center;gap:8px}.lpk button{width:56px;height:48px;font-size:17px;font-weight:700}.lpk b{flex:1;text-align:center;font:800 26px ui-monospace,'JetBrains Mono',monospace;color:var(--acc2)}
+.lpf{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:13px;color:var(--mute)}.lpo{border:0;background:none;color:var(--acc);font-weight:700;min-height:0;padding:4px}
+.lpc{display:flex;gap:6px}.lpc button{width:38px;height:44px;padding:0;font-weight:800;font-size:16px}.lpc button[aria-pressed=true],.lpt button[aria-pressed=true]{background:var(--acc);color:#fff;border-color:var(--acc)}
+.lpt{display:flex;flex-wrap:wrap;gap:6px}.lpt button{border-radius:999px;height:36px;padding:0 12px;font-size:13px;font-weight:600}
+.lpn{display:flex;gap:6px;margin-top:10px}.lpn input{flex:1;min-width:0;height:38px}.lpn button{height:38px}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -3022,11 +3039,11 @@ function renderLibTable(box,list){
     const icons=(validGrid(s.bgrid)?'▦':'')+(s.kind==='sheet'?'📄':''), mk=muPref(s);
     tr.innerHTML=(selMode||SEL.size?`<td class="ck"><input type="checkbox" ${SEL.has(s.id)?'checked':''} tabindex="-1"></td>`:'')
       +`<td class="tt"><b>${esc(sp.titre)}</b>${icons?`<span class="ic">${icons}</span>`:''}<small>${sp.artiste?esc(sp.artiste):`<span class="addart" data-art="${s.id}">+ artiste</span>`}</small></td>`
-      +`<td class="ky">${r.key?esc(keyName(r.target,r.key.minor)):''}</td><td class="cp">${+s.capoInfo?'capo '+s.capoInfo:''}</td><td class="fo">${s.folder?'📁 '+esc(s.folder):''}</td>`
-      +`<td class="tg">${tagsOf(s).map(t=>`<span class="tpill${t===WORK?' work':''}">${esc(t)}</span>`).join('')}</td>`
+      +`<td class="ky">${r.key?`<button class="lcell lk" data-pk="${s.id}" title="Changer la tonalité">${esc(keyName(r.target,r.key.minor))}</button>`:''}</td><td class="cp"><button class="lcell lc${+s.capoInfo?'':' none'}" data-pc="${s.id}" title="Capo">${+s.capoInfo?'capo '+s.capoInfo:'—'}</button></td><td class="fo">${s.folder?'📁 '+esc(s.folder):''}</td>`
+      +`<td class="tg"><span class="tgw">${tagsOf(s).map(t=>`<span class="tpill${t===WORK?' work':''}" data-pt="${s.id}">${esc(t)}</span>`).join('')}<button class="lcell lt" data-pt="${s.id}" aria-label="Étiquettes" title="Étiquettes">＋</button></span></td>`
       +`<td class="mu">${mk?`<button class="spmu" data-sp="${s.id}" style="color:${MU[mk].c}" title="Écouter sur ${MU[mk].n}" aria-label="Écouter sur ${MU[mk].n}">♫</button>`:''}</td>`
       +`<td class="act"><button class="lsc" data-scene="${s.id}">▶ Scène</button><button class="lic" data-eye="${s.id}" aria-label="Voir la fiche" title="Voir la fiche">👁</button><button class="lic" data-ed="${s.id}" aria-label="Éditer" title="Éditer">✎</button></td>`;
-    if(FICHE===s.id||LIBPICK===s.id)tr.classList.add('on'); if(SEL.has(s.id))tr.classList.add('picked'); tb.appendChild(tr);
+    if(FICHE===s.id||LIBPICK===s.id)tr.classList.add('on'); if(SEL.has(s.id))tr.classList.add('picked'); tb.appendChild(tr); if(LIBOPEN===s.id)tb.appendChild(libPrevRow(s,t.rows[0].cells.length));
   });
   t.onclick=e=>{
     const th=e.target.closest('th[data-sort]'); if(th){const k=th.dataset.sort; S.sort=k==='titre'?(S.sort==='titre'?'artiste':'titre'):k; save(); renderAll(); return;}
@@ -3035,12 +3052,47 @@ function renderLibTable(box,list){
     const ey=e.target.closest('[data-eye]'); if(ey){const id=ey.dataset.eye; if(FICHE===id&&!$('#fiche').hidden)closeFiche(); else{LIBPICK=id; openFiche(id); $$('#songs tr.lrow').forEach(x=>x.classList.toggle('on',x.dataset.id===id));} return;}
     const ed=e.target.closest('[data-ed]'); if(ed){const so=songById(ed.dataset.ed); if(so)editSong(so); return;}
     const sc=e.target.closest('[data-scene]'); if(sc){const so=songById(sc.dataset.scene); if(so&&hasBody(so))openViewer([entryOf(so)],0); else toast('Ce morceau est encore vide : ✎ pour l\'écrire'); return;}
+    const pc=e.target.closest('[data-pk],[data-pc],[data-pt]'); if(pc&&!selMode&&!SEL.size){e.stopPropagation(); lpOpen(pc); return;}
     const tr=e.target.closest('tr.lrow'); if(tr&&tableSelectClick(e,tr.dataset.id))return;
-    if(tr){LIBPICK=tr.dataset.id; if(!$('#fiche').hidden&&FICHE!==tr.dataset.id)openFiche(tr.dataset.id); $$('#songs tr.lrow').forEach(x=>x.classList.toggle('on',x===tr));}
+    if(tr){const id=tr.dataset.id; LIBPICK=id; LIBOPEN=LIBOPEN===id?null:id; if(!$('#fiche').hidden&&FICHE!==id)openFiche(id);
+      $$('#songs tr.lprev').forEach(x=>x.remove()); $$('#songs tr.lrow').forEach(x=>x.classList.toggle('on',x===tr));
+      if(LIBOPEN){const so=songById(id); if(so)tr.after(libPrevRow(so,tr.cells.length));}}
   };
   box.appendChild(t);
 }
-let LIBPICK=null;
+let LIBPICK=null, LIBOPEN=null;
+// aperçu sous la ligne
+function libPrevRow(s,n){const r=s._r||compute(s), tr=document.createElement('tr'); tr.className='lprev'; tr.dataset.id=s.id;
+  let lines=[], k=0; for(const L of r.grid){if(L.t==='b'&&!lines.length)continue; if(L.t==='x')continue; lines.push(L); if(L.t!=='b'&&++k>=9)break;}
+  const body=lines.length?lines.map(lineHTML).join('\n'):'<span class="lab">Morceau encore vide : ✎ pour l\'écrire.</span>';
+  const tmp=+s.tempo?`♩ ${+s.tempo}`:'';
+  tr.innerHTML=`<td colspan="${n}"><div class="lpw"><div class="lpv"><pre>${body}</pre></div><div class="lpr">${ficheSum(r)||''}<div class="lpm">${tmp?`<span>${tmp}</span>`:''}${s.note?`<span>📝 ${esc(String(s.note).slice(0,60))}</span>`:''}</div><div class="lpb"><button class="pri" data-scene="${s.id}">▶ Scène</button><button data-ed="${s.id}">✎ Éditer</button><button data-eye="${s.id}">👁 Fiche</button></div></div></div></td>`;
+  return tr;}
+// bulles : ton, capo, étiquettes, réglés sur place
+function lpClose(){const p=$('#lpop'); if(p)p.remove();}
+function lpOpen(btn){lpClose(); const kind=btn.dataset.pk?'k':btn.dataset.pc?'c':'t', id=btn.dataset.pk||btn.dataset.pc||btn.dataset.pt, s=songById(id); if(!s)return;
+  const p=document.createElement('div'); p.id='lpop'; p.className='lpop'; p._t=Date.now(); document.body.appendChild(p);
+  const sp=split(s.q), draw=()=>{const r=compute(s); s._r=r;
+    if(kind==='k'){const d=r.key&&r.target!=null&&r.target!==r.orig;
+      p.innerHTML=`<div class="lph">Tonalité · ${esc(sp.titre)}</div><div class="lpk"><button data-k="-1" aria-label="Baisser d'un demi-ton">−½</button><b>${r.key?esc(keyName(r.target,r.key.minor)):'?'}</b><button data-k="1" aria-label="Monter d'un demi-ton">+½</button></div><div class="lpf"><span>origine : ${r.key?esc(keyName(r.orig,r.key.minor)):''}</span>${d?'<button data-k="0" class="lpo">↺ origine</button>':''}</div>`;}
+    else if(kind==='c'){p.innerHTML=`<div class="lph">Capo · ${esc(sp.titre)}</div><div class="lpc">${[0,1,2,3,4,5,7].map(c=>`<button data-cap="${c}" aria-pressed="${(+s.capoInfo||0)===c}">${c}</button>`).join('')}</div>`;}
+    else{const mine=tagsOf(s), all=[...new Set([WORK,...allTags(),...mine])];
+      p.innerHTML=`<div class="lph">Étiquettes · ${esc(sp.titre)}</div><div class="lpt">${all.map(t=>{const on=mine.some(x=>x.toLowerCase()===t.toLowerCase()); return `<button data-tg="${esc(t)}" aria-pressed="${on}">${on?'✓ ':''}${esc(t)}</button>`;}).join('')}</div><div class="lpn"><input type="text" placeholder="＋ nouvelle étiquette…" aria-label="Nouvelle étiquette" maxlength="30"><button data-new="1">Ajouter</button></div>`;}
+    place();};
+  const place=()=>{const b=document.querySelector(`#songs [data-p${kind}="${id}"]`)||btn, R=b.getBoundingClientRect(), w=p.offsetWidth, h=p.offsetHeight;
+    let x=Math.min(Math.max(8,R.left+R.width/2-w/2),innerWidth-w-8), y=R.bottom+8; if(y+h>innerHeight-80)y=Math.max(8,R.top-h-8);
+    p.style.left=x+'px'; p.style.top=y+'px';};
+  const refresh=()=>{touch(s); save(); renderLibLight(); if(s._el)try{update(s);}catch(_){} draw();};
+  p.addEventListener('click',async e=>{e.stopPropagation(); const b=e.target.closest('button'); if(!b)return;
+    if(b.dataset.k!=null){const k=+b.dataset.k; if(k===0)s.target=null; else bumpKey(s,k); refresh(); return;}
+    if(b.dataset.cap!=null){const c=+b.dataset.cap; if(c)s.capoInfo=c; else delete s.capoInfo; refresh(); lpClose(); return;}
+    if(b.dataset.tg!=null){const t=b.dataset.tg, on=tagsOf(s).some(x=>x.toLowerCase()===t.toLowerCase()); setTag(s,t,!on); refresh(); return;}
+    if(b.dataset.new){const i=p.querySelector('input'), v=i.value.trim(); if(v){setTag(s,v,true); refresh();} return;}});
+  p.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName==='INPUT'){const v=e.target.value.trim(); if(v){setTag(s,v,true); refresh();}} if(e.key==='Escape')lpClose();});
+  draw();}
+document.addEventListener('pointerdown',e=>{const p=$('#lpop'); if(p&&!p.contains(e.target)&&!e.target.closest('[data-pk],[data-pc],[data-pt]'))lpClose();},true);
+addEventListener('scroll',e=>{const p=$('#lpop'); if(p&&Date.now()-p._t>400&&!p.contains(e.target)&&!p.contains(document.activeElement))lpClose();},true);
+
 const navKeyOf=(by,s)=>by==='artiste'?(split(s.q).artiste||''):(s.folder||'');
 function navGroups(by,list){const m=new Map(); list.forEach(s=>{const k=navKeyOf(by,s); m.set(k,(m.get(k)||0)+1);}); return [...m].sort((a,b)=>a[0]===''?1:b[0]===''?-1:coll.compare(a[0],b[0]));}
 function renderLibNav(box,list){
