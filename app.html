@@ -1087,7 +1087,7 @@ body.fiche-on main{margin:0 auto!important;padding-bottom:min(52vh,460px)}body.f
 #cwheel{position:fixed;inset:0;z-index:90;pointer-events:none}#cwheel svg{position:absolute;inset:0}
 #cwheel .cwbg{fill:rgba(18,15,13,.86);stroke:#3d342d;stroke-width:1}
 #cwheel .cwn{fill:#342b25;stroke:#1c1714;stroke-width:2.5}#cwheel .cwa{fill:#203038;stroke:#1c1714;stroke-width:2.5}#cwheel .cwm{fill:#3a2f45;stroke:#1c1714;stroke-width:2.5}
-#cwheel .on{fill:var(--acc)}#cwheel .cwfade{opacity:.08}#cwheel .cwc{fill:#2a231e;stroke:#574a40;stroke-width:2}#cwheel .cwc.on{fill:var(--acc)}
+#cwheel .on{fill:var(--acc)}#cwheel .cwdel{fill:#4a1d1d;stroke:#1c1714;stroke-width:2.5}#cwheel .cwdel.on{fill:#dc2626}#cwheel .cwfade{opacity:.08}#cwheel .cwc{fill:#2a231e;stroke:#574a40;stroke-width:2}#cwheel .cwc.on{fill:var(--acc)}
 #cwheel text{text-anchor:middle;font-family:ui-monospace,'JetBrains Mono',monospace;font-weight:800}
 #cwheel .cwt{font-size:19px;fill:#f2ece6}#cwheel .cwt.on{fill:#1c1714}#cwheel .cwmt{fill:#d8b4fe;font-size:15px}#cwheel .cwmt.on{fill:#1c1714}#cwheel .cwsm{font-size:13px}
 #cwheel .cwsub{font:600 9px Inter,system-ui,sans-serif;fill:#a8998b;text-anchor:middle}
@@ -3455,7 +3455,8 @@ function chordDrag(st,getOps){let D=null;
       const cr=ch.getBoundingClientRect(), nx=line.nextElementSibling, ly=nx&&nx.classList.contains('ly')&&+nx.dataset.raw===raw+1?nx:st.querySelector(`.ly[data-raw="${raw+1}"]`), ref=ly||line, rr=ref.getClientRects()[0]||ref.getBoundingClientRect(); D.off=+ref.dataset.off||0;
       D.left0=cr.left; D.ref=rr; D.cw=charW(ref)||cr.width/Math.max(1,ch.textContent.length); D.col=null;
       ch.classList.add('chdrag'); const hl=document.createElement('div'); hl.className='wphl wpcol'; document.body.appendChild(hl); D.hl=hl; ops.noClick(Date.now()+60000);
-      try{navigator.vibrate&&navigator.vibrate(15);}catch(e){} D.move(D.x0,D.y0);}; D.t=setTimeout(D.start,420);
+      try{navigator.vibrate&&navigator.vibrate(15);}catch(e){} D.move(D.x0,D.y0);};
+    D.t=setTimeout(()=>{if(!D||D.on)return; if(ops.rep&&ops.cur){const d=D; D=null; ops.noClick(Date.now()+60000); cwOpenChord(d.ch,ops.cur(),ops);} else D.start();},450);
     D.move=(x,y)=>{const dx=x-D.x0, dy=y-D.y0, col=Math.max(0,Math.round((D.left0+dx-D.ref.left)/D.cw)); D.col=col; D.del=dy<-70;
       const sx=D.ref.left+col*D.cw; D.ch.style.transform=`translate(${sx-D.left0}px,${D.del?dy:0}px)`; D.ch.classList.toggle('chdel',D.del);
       D.hl.style.cssText=`left:${sx-1}px;top:${D.ref.top-1}px;width:${D.cw+2}px;height:${D.ref.height+2}px`+(D.del?';display:none':'');};
@@ -3471,7 +3472,7 @@ function chordDrag(st,getOps){let D=null;
   addEventListener('pointerup',end); addEventListener('pointercancel',end);
 }
 chordDrag($('#vstage'),()=>{if(!(V.edit&&V.emode!=='text'||V.lite)||FOLLOW)return null; const cur=V.list[V.i]; if(!cur)return null;
-  return {noClick:t=>V.noClick=t, move:(raw,k,col)=>moveChordTo(cur.s,raw,k,col), del:(raw,k)=>{beginEdit(cur.s); replaceTokens(cur.s,(li,ti)=>li===raw&&ti===k?'':null); afterEdit(cur.s);}};});
+  return {noClick:t=>V.noClick=t, cur:()=>cur, rep:(raw,k,n)=>{beginEdit(cur.s); replaceTokens(cur.s,(li,ti)=>li===raw&&ti===k?n:null); afterEdit(cur.s);}, move:(raw,k,col)=>moveChordTo(cur.s,raw,k,col), del:(raw,k)=>{beginEdit(cur.s); replaceTokens(cur.s,(li,ti)=>li===raw&&ti===k?'':null); afterEdit(cur.s);}};});
 
 function bakeKey(song,r){
   r=r||song._r; if(!r||!r.key)return;
@@ -6424,7 +6425,7 @@ $('#vtPrev').addEventListener('click',ev=>{
 });
 chordDrag($('#vtPrev'),()=>$('#vtPrev').hidden?null:{noClick:t=>V.vtNoClick=t,
   move:(raw,k,col)=>{const t=moveChordText($('#vtextArea').value,raw,k,col); if(t!=null)vtSetText(t);},
-  del:(raw,k)=>vtSetText(setTokenText($('#vtextArea').value,raw,k,''))});
+  del:(raw,k)=>vtSetText(setTokenText($('#vtextArea').value,raw,k,'')), cur:()=>vtCur(), rep:(raw,k,n)=>vtSetText(setTokenText($('#vtextArea').value,raw,k,n))});
 function vtSetKind(i,k){
   const ta=$('#vtextArea'), L=ta.value.split('\n'); if(L[i]==null)return;
   let core=L[i].split(FORCE_C).join('').split(FORCE_L).join('').replace(/\s+$/,'');
@@ -6520,10 +6521,10 @@ setInterval(()=>{if(CP.pat&&$('#vtextArea').offsetParent===null){cpSet(null); CP
 /* ----- demi-roue d'accords : appui long sur un mot → note → (continuer) m ; rester = ♭/♯ à côté ; rester sur m/♭/♯ = accords rares ; sortir = annuler ----- */
 const CW={on:false};
 const CW_N=['C','D','E','F','G','A','B'], CW_FR={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'}, CW_RARE=['7','m7','maj7','sus2','sus4','dim','6','9'];
-const CW_G={r1:46,r2:112,m1:118,m2:162,rr1:34,rr2:142};
+const CW_G={r1:46,r2:112,m1:118,m2:162,x1:170,x2:236};
 function cwRoot(i,acc){const n=CW_N[(i+7)%7]; if(!acc)return n; const fix={'E#':'F','B#':'C','Cb':'B','Fb':'E'}, a=n+(acc>0?'#':'b'); return fix[a]||a;}
 const cwShow=s=>String(s).replace(/#/g,'♯').replace(/([A-G])b/g,'$1♭');
-function cwPolar(cx,cy,x,y){const dx=x-cx, dy=cy-y; return {r:Math.hypot(dx,dy), a:Math.atan2(dy,dx)*180/Math.PI};}
+function cwPolar(cx,cy,x,y){const dx=x-cx, dy=cy-y; let a=Math.atan2(dy,dx)*180/Math.PI; if(a<-90)a+=360; return {r:Math.hypot(dx,dy), a};}
 function cwWedge(cx,cy,r1,r2,a1,a2){const P=(r,a)=>[cx+r*Math.cos(a*Math.PI/180),cy-r*Math.sin(a*Math.PI/180)];
   const [x1,y1]=P(r2,a1),[x2,y2]=P(r2,a2),[x3,y3]=P(r1,a2),[x4,y4]=P(r1,a1);
   return `M${x1.toFixed(1)},${y1.toFixed(1)} A${r2},${r2} 0 0 1 ${x2.toFixed(1)},${y2.toFixed(1)} L${x3.toFixed(1)},${y3.toFixed(1)} A${r1},${r1} 0 0 0 ${x4.toFixed(1)},${y4.toFixed(1)} Z`;}
@@ -6538,25 +6539,35 @@ function cwOpen(ctx,span,pt){
   const box=span.getBoundingClientRect(), cw=charW(span)||12, wr=charRect(span,col,Math.max(end,col+1));
   const rc=wr||{left:box.left+col*cw,top:box.top,width:Math.max(cw,(end-col)*cw),height:box.height};
   const hl=document.createElement('div'); hl.className='wphl'; hl.style.cssText=`left:${rc.left-2}px;top:${rc.top-1}px;width:${Math.max(cw,rc.width)+4}px;height:${rc.height+2}px`; document.body.appendChild(hl); WP.hl=hl;
-  const sc=Math.min(1,(innerWidth-16)/(2*(CW_G.m2+12)), (innerHeight-80)/(CW_G.m2+90)); CW.k=sc;
-  const R=(CW_G.m2+10)*sc; let cx=rc.left+Math.max(cw,rc.width)/2, cy=rc.top-6;
-  cx=Math.max(R+8,Math.min(innerWidth-R-8,cx)); if(cy-R-58<0)cy=R+58; if(cy>innerHeight-20)cy=innerHeight-20;
-  Object.assign(CW,{on:true,cx,cy,phase:'notes',hov:null,base:null,rare:null,t:null,noDwell:null,start:Date.now()});
-  const el=document.createElement('div'); el.id='cwheel'; document.body.appendChild(el); CW.el=el;
-  cwDraw(); try{navigator.vibrate&&navigator.vibrate(12);}catch(e){}
+  cwStart(rc,null);
   return true;}
+function cwStart(rc,existing){
+  const sc=Math.min(1,(innerWidth-16)/(2*(CW_G.x2+8)), (innerHeight-60)/(CW_G.x2+70)); CW.k=sc;
+  const R=(CW_G.x2+8)*sc; let cx=rc.left+Math.max(8,rc.width)/2, cy=rc.top-6;
+  cx=Math.max(R+8,Math.min(innerWidth-R-8,cx)); if(cy-R-50<0)cy=R+50; if(cy>innerHeight-20)cy=innerHeight-20;
+  Object.assign(CW,{on:true,cx,cy,phase:'notes',hov:null,base:null,rare:null,t:null,noDwell:null,existing,start:Date.now()});
+  const el=document.createElement('div'); el.id='cwheel'; document.body.appendChild(el); CW.el=el;
+  cwDraw(); try{navigator.vibrate&&navigator.vibrate(12);}catch(e){}}
+// appui long sur un accord déjà posé : même demi-roue pour le remplacer, 🗑 pour l'effacer
+function cwOpenChord(ch,cur,ops){
+  const line=ch.parentElement, raw=+line.dataset.raw, k=+ch.dataset.k;
+  wpClose(); WP.ctx={r:cur._r,raw,col:0,kind:'c',add:(r,c,kd,src)=>ops.rep(raw,k,src)};
+  const rc=ch.getBoundingClientRect(); const hl=document.createElement('div'); hl.className='wphl'; hl.style.cssText=`left:${rc.left-2}px;top:${rc.top-1}px;width:${rc.width+4}px;height:${rc.height+2}px`; document.body.appendChild(hl); WP.hl=hl;
+  cwStart(rc,{del:()=>ops.del(raw,k),name:ch.textContent.trim()});}
 function cwChord(){const h=CW.hov; if(!h)return null;
+  if(h.t==='del')return null;
   if(h.t==='rare'){const b=CW.rare; return h.k==null?b.chord:cwRoot(b.i,b.acc)+CW_RARE[h.k];}
   return cwRoot(h.i,h.acc)+(h.t==='m'?'m':'');}
 function cwHit(x,y){const k=CW.k, g=CW_G, pm=cwPolar(CW.cx,CW.cy,x,y);
   if(CW.phase==='rare'&&pm.r<(g.r2+2)*k&&pm.a>-25&&pm.a<205)return {t:'back'};
   if(CW.phase==='focus'&&pm.r<g.r1*k)return {t:'back'};
-  if(CW.phase==='rare'){const p=cwPolar(CW.rare.x,CW.rare.y,x,y); if(p.r<g.rr1*k)return {t:'rare',k:null};
-    if(p.r>(g.rr2+34)*k||p.a<-20||p.a>200)return null; const a=Math.max(0,Math.min(179.9,p.a)); return {t:'rare',k:Math.floor((180-a)/(180/CW_RARE.length))};}
+  if(CW.phase==='rare'){if(pm.r>(g.x2+40)*k||pm.a<-25||pm.a>205)return null; if(pm.r<g.x1*k)return {t:'rare',k:null};
+    const a=Math.max(0,Math.min(179.9,pm.a)); return {t:'rare',k:Math.floor((180-a)/(180/CW_RARE.length))};}
   const p=cwPolar(CW.cx,CW.cy,x,y); if(p.r<g.r1*k||p.r>(g.m2+26)*k||p.a<-25||p.a>205)return null;
   let i=Math.floor((180-p.a)/(180/7)); i=Math.max(-1,Math.min(7,i));
   let acc=0, idx=i;
   if(CW.phase==='focus'){const b=CW.base.i; if(i<b-1||i>b+1)return null; acc=i-b; idx=b;}
+  else if(i<0&&CW.existing&&p.r<=(g.r2+10)*k)return {t:'del'};
   else if(i<0||i>6)return null;
   const isM=p.r>(g.r2+4)*k;
   if(isM){if(CW.phase==='notes'&&(!CW.hov||CW.hov.i!==idx))return {t:'n',i:idx,acc}; return {t:'m',i:idx,acc,slot:i};}
@@ -6564,10 +6575,8 @@ function cwHit(x,y){const k=CW.k, g=CW_G, pm=cwPolar(CW.cx,CW.cy,x,y);
 function cwDwell(){const h=CW.hov; if(!h)return;
   if(CW.phase==='notes'&&h.t==='n'){CW.phase='focus'; CW.base={i:h.i}; cwBuzz(); cwDraw(); return;}
   if((CW.phase==='notes'&&h.t==='m')||(CW.phase==='focus'&&(h.t==='m'||h.acc))){
-    const k=CW.k, g=CW_G, [a1,a2]=cwSec(h.slot!=null?h.slot:h.i), am=(a1+a2)/2, r=h.t==='m'?(g.m1+g.m2)/2:(g.r1+g.r2)/2;
-    let x=CW.cx+r*k*Math.cos(am*Math.PI/180), y=CW.cy-r*k*Math.sin(am*Math.PI/180); const R=(g.rr2+8)*k;
-    x=Math.max(R+8,Math.min(innerWidth-R-8,x)); y=Math.max(R+58,y);
-    CW.rare={x,y,i:h.i,acc:h.acc,chord:cwRoot(h.i,h.acc)+(h.t==='m'?'m':'')}; CW.prevPhase=CW.phase; CW.phase='rare'; CW.hov={t:'rare',k:null}; cwBuzz(); cwDraw();}}
+    const x=0,y=0;
+    CW.rare={slot:h.slot!=null?h.slot:h.i,isM:h.t==='m',i:h.i,acc:h.acc,chord:cwRoot(h.i,h.acc)+(h.t==='m'?'m':'')}; CW.prevPhase=CW.phase; CW.phase='rare'; CW.hov={t:'rare',k:null}; cwBuzz(); cwDraw();}}
 function cwBuzz(){try{navigator.vibrate&&navigator.vibrate(8);}catch(e){}}
 function cwMove(x,y){if(!CW.on)return; let h=cwHit(x,y);
   if(h&&h.t==='back'){clearTimeout(CW.t); if(CW.phase==='rare'){CW.noDwell=CW.prevPhase==='focus'?null:'m'; CW.phase=CW.prevPhase||'notes'; CW.rare=null;} else {CW.noDwell=CW.base.i; CW.phase='notes'; CW.base=null;} CW.hov=null; cwBuzz(); h=cwHit(x,y); if(h&&h.t==='back')h=null; cwDraw();}
@@ -6575,7 +6584,8 @@ function cwMove(x,y){if(!CW.on)return; let h=cwHit(x,y);
   if(key!==old){CW.hov=h; clearTimeout(CW.t); if(CW.noDwell!=null&&!(h&&h.t==='n'&&h.i===CW.noDwell)&&!(h&&h.t==='m'&&CW.noDwell==='m'))CW.noDwell=null;
     const blocked=h&&CW.phase==='notes'&&((h.t==='n'&&h.i===CW.noDwell)||(h.t==='m'&&CW.noDwell==='m'));
     if(h&&CW.phase!=='rare'&&!blocked)CW.t=setTimeout(cwDwell,CW.phase==='notes'&&h.t==='n'?550:850); cwDraw();}}
-function cwEnd(){if(!CW.on)return; clearTimeout(CW.t); const ch=cwChord(); CW.on=false; if(CW.el)CW.el.remove(); CW.el=null;
+function cwEnd(){if(!CW.on)return; clearTimeout(CW.t); const ch=cwChord(), del=CW.hov&&CW.hov.t==='del'&&CW.existing; CW.on=false; if(CW.el)CW.el.remove(); CW.el=null;
+  if(del){wpClose(); CW.existing.del(); toast('Accord supprimé'); cwBuzz(); return;}
   if(ch){wpApply(ch);} else {wpClose(); toast('Annulé'); cwBuzz();}}
 function cwDraw(){const el=CW.el; if(!el)return; const k=CW.k, g=CW_G, cx=CW.cx, cy=CW.cy, h=CW.hov; let s='';
   const S=v=>v*k;
@@ -6592,14 +6602,18 @@ function cwDraw(){const el=CW.el; if(!el)return; const k=CW.k, g=CW_G, cx=CW.cx,
       showM.push({slot:sl,i:b,acc:d});});}
     showM.forEach(m=>{const [a1,a2]=cwSec(m.slot), on=h&&h.t==='m'&&(h.slot===m.slot||h.slot==null&&h.i===m.i);
       s+=`<path d="${cwWedge(cx,cy,S(g.m1),S(g.m2)+(on?6:0),a1-2,a2+2)}" class="cwm${on?' on':''}"/>${cwLab(cx,cy,S((g.m1+g.m2)/2),(a1+a2)/2,on?cwShow(cwRoot(m.i,m.acc))+'m':'m','cwt cwmt'+(on?' on':''))}`;});
-  } else {const R=CW.rare, n=CW_RARE.length;
-    s+=`<path d="${cwWedge(R.x,R.y,S(g.rr1-4),S(g.rr2+8),182,-2)}" class="cwbg"/>`;
+  } else {const R=CW.rare, n=CW_RARE.length, [b1,b2]=cwSec(R.slot), base=h&&h.k==null;
+    s+=`<path d="${cwWedge(cx,cy,S(g.r1-6),S(g.x2+8),182,-2)}" class="cwbg"/>`;
+    CW_N.forEach((nn,i)=>{const [a1,a2]=cwSec(i); s+=`<g class="cwfade"><path d="${cwWedge(cx,cy,S(g.r1),S(g.r2),a1-.7,a2+.7)}" class="cwn"/></g>`;});
+    const br1=R.isM?g.m1:g.r1, br2=R.isM?g.m2:g.r2;
+    s+=`<path d="${cwWedge(cx,cy,S(br1),S(br2),b1-.7,b2+.7)}" class="${R.isM?'cwm':'cwn'}${base?' on':''}"/>${cwLab(cx,cy,S((br1+br2)/2),(b1+b2)/2,cwShow(R.chord),'cwt cwsm'+(base?' on':''))}`;
     CW_RARE.forEach((t,i)=>{const a1=180-i*180/n, a2=a1-180/n, on=h&&h.t==='rare'&&h.k===i;
-      s+=`<path d="${cwWedge(R.x,R.y,S(g.rr1),S(g.rr2)+(on?6:0),a1-.8,a2+.8)}" class="${i<3?'cwm':'cwa'}${on?' on':''}"/>${cwLab(R.x,R.y,S(g.rr1+(g.rr2-g.rr1)*.62),(a1+a2)/2,t,'cwt cwsm'+(on?' on':''))}`;});
-    s+=`<circle cx="${R.x}" cy="${R.y}" r="${S(g.rr1-6)}" class="cwc${h&&h.k==null?' on':''}"/><text x="${R.x}" y="${R.y+5}" class="cwt cwsm${h&&h.k==null?' on':''}">${esc(cwShow(R.chord))}</text>`;}
+      s+=`<path d="${cwWedge(cx,cy,S(g.x1),S(g.x2)+(on?6:0),a1-.8,a2+.8)}" class="${i<3?'cwm':'cwa'}${on?' on':''}"/>${cwLab(cx,cy,S((g.x1+g.x2)/2),(a1+a2)/2,t,'cwt'+(on?' on':''))}`;});}
+  if(CW.existing&&CW.phase==='notes'){const a1=180+180/7, a2=180, on=h&&h.t==='del';
+    s+=`<path d="${cwWedge(cx,cy,S(g.r1),S(g.r2)+(on?6:0),a1-.7,a2+.7)}" class="cwdel${on?' on':''}"/>${cwLab(cx,cy,S((g.r1+g.r2)/2),(a1+a2)/2,'🗑','cwt')}`;}
   const ch=cwChord();
-  const bx=CW.phase==='rare'?CW.rare.x:cx, by=(CW.phase==='rare'?CW.rare.y-S(g.rr2+16):cy-S(g.m2+16))-38;
-  el.innerHTML=`<svg width="${innerWidth}" height="${innerHeight}">${s}</svg><div class="cwbub${ch?'':' off'}" style="left:${bx}px;top:${Math.max(4,by)}px">${ch?esc(cwShow(ch)):'✕ annuler'}</div>`;}
+  const bx=cx, by=cy-S((CW.phase==='rare'?g.x2:g.m2)+16)-38;
+  el.innerHTML=`<svg width="${innerWidth}" height="${innerHeight}">${s}</svg><div class="cwbub${ch?'':' off'}" style="left:${bx}px;top:${Math.max(4,by)}px">${ch?esc(cwShow(ch)):h&&h.t==='del'?'🗑 supprimer':'✕ annuler'}</div>`;}
 addEventListener('pointermove',e=>{if(CW.on){e.preventDefault(); cwMove(e.clientX,e.clientY);}},{passive:false});
 addEventListener('touchmove',e=>{if(CW.on)e.preventDefault();},{passive:false});
 addEventListener('pointerup',e=>{if(CW.on){e.preventDefault(); CP.lpAt=Date.now(); cwEnd();}},true);
