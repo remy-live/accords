@@ -997,27 +997,74 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
 .dsgrid button{display:flex;flex-direction:column;gap:6px;padding:8px!important;border-radius:14px!important;text-align:left;border:2px solid var(--line)!important;background:var(--card)!important;color:var(--ink)!important;height:auto}
 .dsgrid button[aria-pressed=true]{border-color:var(--hl)!important}.dsgrid b{font-size:14px}.dsgrid small{color:var(--mute);font-size:11px}
 .dsprev{height:58px;border-radius:9px;display:flex;align-items:flex-end;gap:5px;padding:7px;box-sizing:border-box}.dsprev i{display:block;border-radius:4px;height:12px;flex:1}.dsprev i:first-child{flex:2}
-#rybar{position:fixed;left:10px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:40;display:flex;align-items:center;gap:8px;max-width:calc(100vw - 20px);padding:7px 8px;border-radius:16px;background:rgba(24,24,27,.94);border:1px solid #33333a;box-shadow:0 10px 26px rgba(0,0,0,.55);font:600 13px Inter,system-ui,sans-serif;color:#ddd}
-#rybar[hidden]{display:none}@media (max-width:560px),(orientation:portrait) and (max-width:900px){#rybar{bottom:calc(96px + env(safe-area-inset-bottom))}}
-#rybar button{border:0;background:#26262b;color:#eee;border-radius:10px;min-width:32px;height:32px;font:700 15px system-ui}
-#rybar .rypl{width:46px;height:46px;border-radius:50%;background:var(--hl,#fb923c);color:var(--onhl,#111);font-size:18px}
-#rybar .ryx{background:transparent;color:#888}
-#rybar .rymid{min-width:0;display:flex;flex-direction:column;gap:5px}
-#rybar .ryhd{display:flex;align-items:center;gap:8px}#rybar select{height:30px;border-radius:9px;background:#26262b;color:#eee;border:1px solid #3a3a40;font:600 13px system-ui;max-width:150px}
-#rybar .ryt{display:flex;align-items:center;gap:4px}#rybar .ryt b{min-width:48px;text-align:center}#rybar .ryt button{height:28px;min-width:28px}
-#rybar .rygr{display:flex;flex-direction:column;gap:2px;overflow:hidden}#rybar .rygr div{display:flex;align-items:center;gap:2px}
-#rybar .rygr span{width:22px;font-size:10px;color:#888}#rybar .rygr i{width:9px;height:9px;border-radius:2px;background:#2a2a30;flex:none}
-#rybar .rygr i.bt{margin-left:4px}#rybar .rygr i.h{background:#a1a1aa}#rybar .rygr i.a{background:#fff}#rybar .rygr i.on{outline:2px solid var(--hl,#fb923c);outline-offset:0}
-#rybar{flex-direction:column;align-items:stretch;gap:6px;padding:8px 10px}
-#rybar .ryhd{flex-wrap:wrap}#rybar .rypl{width:40px;height:40px}
-#rybar .ryab{display:flex;gap:3px}#rybar .ryab button[aria-pressed=true]{background:var(--hl,#fb923c);color:var(--onhl,#111)}#rybar .ryab .rygh{opacity:.55;border:1px dashed #555}#rybar .ryab .rywt{animation:rywait .5s steps(2) infinite;border:2px solid var(--hl,#fb923c)}@keyframes rywait{50%{opacity:.35}}
-#rybar .ryfill{padding:0 10px;font-size:13px}#rybar .ryfill.on{background:#dc2626;color:#fff}
-#rybar .ryed{padding:0 10px;font-size:13px}#rybar .ryed[aria-pressed=true]{background:#16a34a;color:#fff}
-#rybar .rytools{display:flex;flex-wrap:wrap;align-items:center;gap:6px}#rybar .rytools button{padding:0 10px;font-size:13px;height:30px}#rybar .ryhint{color:#888;font-size:12px}
-#rybar.ed{left:8px;right:8px;max-width:none}#rybar.ed .rygr{overflow-x:auto;padding-bottom:4px}
-#rybar.ed .rygr span{width:62px;font-size:11px;flex:none}#rybar.ed .rygr i{width:24px;height:24px;border-radius:5px;cursor:pointer}#rybar.ed .rygr i.bt{margin-left:5px}#rybar .rygr i.br{margin-left:12px}
-@media (max-width:560px){#rybar.ed .rygr span{width:44px;font-size:10px}#rybar.ed .rygr i{width:16px;height:22px;border-radius:4px}#rybar.ed .rygr i.bt{margin-left:3px}#rybar .rygr i.br{margin-left:8px}#rybar .ryhint{display:none}}
-#rybar.ed .rygr i.h{background:#a1a1aa}#rybar.ed .rygr i.a{background:#fff;box-shadow:inset 0 0 0 3px var(--hl,#fb923c)}
+#rybar{position:fixed;left:16px;right:16px;bottom:calc(14px + env(safe-area-inset-bottom));z-index:40;display:flex;align-items:center;gap:14px;padding:10px 14px 10px 10px;border-radius:22px;background:rgba(36,30,26,.97);border:1px solid #3d342d;box-shadow:0 16px 36px rgba(0,0,0,.55);font:600 14px Inter,system-ui,sans-serif;color:#f2ece6;box-sizing:border-box}
+#rybar[hidden],#rySheet[hidden]{display:none}
+#rybar button{border:1px solid #3d342d;background:#342b25;color:#f2ece6;border-radius:12px;min-width:40px;height:40px;font:700 15px Inter,system-ui,sans-serif;padding:0 10px;box-sizing:border-box}
+#rybar .rypl{width:64px;height:64px;min-width:64px;border-radius:50%;border:0;background:var(--acc);color:#fff;font-size:24px;box-shadow:0 0 0 5px color-mix(in srgb,var(--acc) 22%,transparent)}
+#rybar .rgp{display:flex;flex-direction:column;gap:4px}#rybar .rlab{font:700 10px Inter;letter-spacing:.08em;text-transform:uppercase;color:#a8998b}
+#rybar .rysty{display:inline-flex;align-items:center;gap:8px;min-width:170px;text-align:left}#rybar .rysty small{color:#a8998b;font-weight:600}#rybar .rysty span{margin-left:auto;color:#a8998b}
+#rybar .ryt{display:inline-flex;align-items:center;gap:4px}#rybar .ryt b{min-width:44px;text-align:center;font:800 20px ui-monospace,'JetBrains Mono',monospace}
+#rybar .ryab{display:inline-flex;padding:2px;border-radius:13px;background:#211b17;border:1px solid #3d342d}#rybar .ryab button{border:0;background:transparent;width:46px;height:36px}
+#rybar .ryab button[aria-pressed=true]{background:var(--acc);color:#fff}#rybar .rygh{opacity:.5;border:1px dashed #6b5d52!important}
+#rybar .rywt{box-shadow:inset 0 0 0 2px var(--acc);animation:rywait .6s steps(2) infinite}@keyframes rywait{50%{opacity:.4}}
+#rybar .ryfill{height:52px;padding:0 16px;background:#7f1d1d;border-color:#991b1b;color:#fecaca;font-weight:800}#rybar .ryfill.on{background:#dc2626;color:#fff}
+#rybar .rybeats{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;min-width:120px}#rybar .rybeats>div{display:flex;gap:8px}
+#rybar .rbt{width:30px;height:30px;border-radius:50%;background:#342b25;color:#a8998b;display:inline-flex;align-items:center;justify-content:center;font:800 13px Inter;transition:background .05s}
+#rybar .rbt.on{background:var(--acc);color:#fff;box-shadow:0 0 14px color-mix(in srgb,var(--acc) 70%,transparent)}#rybar .rybeats small{color:#a8998b;font-size:12px}
+#rybar .ryx{background:transparent;border-color:transparent;color:#a8998b}
+@media (max-width:820px){#rybar{flex-wrap:wrap;gap:10px;left:8px;right:8px}#rybar .rypl{width:52px;height:52px;min-width:52px}#rybar .rybeats{order:9;flex-basis:100%;flex-direction:row;justify-content:center}#rybar .rysty{min-width:0}#rybar .rytap{display:none}}
+@media (max-width:560px),(orientation:portrait) and (max-width:900px){#rybar{bottom:calc(96px + env(safe-area-inset-bottom))}}
+/* édition */
+#rybar.ed{display:block;left:0;right:0;bottom:0;background:#241e1a;border-radius:24px 24px 0 0;padding:14px 18px calc(14px + env(safe-area-inset-bottom));max-height:80vh;overflow-y:auto}
+#rybar .ryehd{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px}#rybar .ryehd .rypl{width:52px;height:52px;min-width:52px;font-size:20px}
+#rybar .ryettl{display:flex;flex-direction:column}#rybar .ryettl small{font:700 11px Inter;letter-spacing:.06em;color:#a8998b}#rybar .ryettl b{font-size:19px}
+#rybar .rytabs{display:inline-flex;padding:3px;border-radius:13px;background:#211b17;border:1px solid #3d342d}#rybar .rytabs button{border:0;background:transparent;height:38px;color:#a8998b}#rybar .rytabs button[aria-pressed=true]{background:var(--acc);color:#fff}
+#rybar select{height:40px;border-radius:12px;background:#342b25;color:#f2ece6;border:1px solid #3d342d;font:600 14px Inter;padding:0 8px;max-width:150px}
+#rybar .rydone{background:#166534;border-color:#166534;color:#dcfce7}#rybar .grow{flex:1}
+#rybar .rygr{overflow-x:auto;padding-bottom:6px;touch-action:pan-x}
+#rybar .rghead,#rybar .rgrow{display:flex;align-items:center;gap:5px;width:max-content}#rybar .rghead{margin:0 0 6px 138px}
+#rybar .rghead span{width:42px;text-align:center;font:700 12px ui-monospace,monospace;color:#a8998b}#rybar .rghead span.b1{color:#f2ece6}#rybar .rghead span.bt,#rybar .rgrow i.bt{margin-left:9px}
+#rybar .rgrow{margin-bottom:5px}#rybar .rgname{width:133px;justify-content:flex-start;display:inline-flex;align-items:center;gap:8px;background:transparent;border:0;font-size:14px}#rybar .rgname{white-space:nowrap;overflow:hidden}#rybar .rgname i{flex:none;width:11px;height:11px;border-radius:50%}
+#rybar .rgrow>i{width:42px;height:40px;border-radius:9px;background:#30271f;cursor:pointer;flex:none;touch-action:none;box-sizing:border-box}
+#rybar .rgrow>i.h{background:color-mix(in srgb,var(--c) 40%,transparent);border:2px solid var(--c)}#rybar .rgrow>i.a{background:var(--c);box-shadow:0 0 12px color-mix(in srgb,var(--c) 55%,transparent)}
+#rybar .rgrow>i.on{outline:3px solid #fff;outline-offset:1px}#rybar .rgrow.muted>i{opacity:.35}#rybar .rgmute{background:transparent;border:0;min-width:36px;font-size:15px}
+#rybar .ryefoot{display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin-top:8px;color:#a8998b;font-size:13px}#rybar .lg{display:inline-block;width:14px;height:14px;border-radius:4px;vertical-align:-3px;margin-right:5px}#rybar .lg.h{background:#f9731666;border:2px solid #f97316;box-sizing:border-box}#rybar .lg.a{background:#f97316}
+@media (max-width:820px){#rybar .rghead{margin-left:92px}#rybar .rgname{width:87px;font-size:12px}#rybar .rgrow>i{width:30px;height:36px}#rybar .rghead span{width:30px}#rybar .rghead span.bt,#rybar .rgrow i.bt{margin-left:6px}#rybar .ryefoot span:nth-child(3){display:none}}
+/* feuille des styles */
+#rySheet{position:fixed;inset:0;z-index:60}#rySheet .rsbk{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+#rySheet .rsbox{position:absolute;left:0;right:0;bottom:0;max-height:82vh;display:flex;flex-direction:column;border-radius:24px 24px 0 0;background:#2a231e;border-top:1px solid #3d342d;color:#f2ece6;font-family:Inter,system-ui,sans-serif;padding:10px 22px 0}
+#rySheet .rsgrip{width:56px;height:5px;border-radius:3px;background:#3d342d;margin:0 auto 10px}
+#rySheet .rshd{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:10px}#rySheet .rshd b{font-size:21px}#rySheet .rshd small{color:#a8998b}
+#rySheet input{height:42px;border-radius:12px;background:#342b25;border:1px solid #3d342d;color:#f2ece6;padding:0 12px;font-size:15px;width:240px}
+#rySheet .rshd button{height:42px;border-radius:12px;background:#342b25;border:1px solid #3d342d;color:#f2ece6;font:700 15px Inter;padding:0 14px}#rySheet .rsok{background:var(--acc)!important;border-color:var(--acc)!important;color:#fff!important}
+#rySheet .rsbody{overflow-y:auto;padding-bottom:calc(18px + env(safe-area-inset-bottom));columns:2 520px;column-gap:28px}
+#rySheet section{break-inside:avoid;margin-bottom:12px}#rySheet h4{margin:4px 0 8px;font:700 12px Inter;letter-spacing:.08em;text-transform:uppercase;color:#a8998b}
+#rySheet .rsgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(122px,1fr));gap:8px}
+#rySheet .rsc{display:flex;flex-direction:column;gap:7px;padding:9px 10px;border-radius:13px;background:#342b25;border:1px solid #3d342d;color:#f2ece6;text-align:left;min-height:72px}
+#rySheet .rsc.on{background:#3b2a1c;border:2px solid var(--acc)}#rySheet .rsch{display:flex;align-items:baseline;gap:6px}#rySheet .rsch b{font-size:14px}#rySheet .rsch small{margin-left:auto;font-size:10px;color:#a8998b}
+#rySheet .rmr{display:flex;gap:2px;margin-bottom:2px;line-height:0}#rySheet .rmr i{width:5px;height:5px;border-radius:1px;background:#3a312a;flex:none}#rySheet .rmr i.bt{margin-left:3px}
+
+/* bibliothèque épurée + fiche du bas */
+.lt2 td.tt b{display:inline}.lt2 td.tt small{display:block;color:var(--mute);font-size:13px;font-weight:500;margin-top:1px}
+.lt2 td.ky{font-family:ui-monospace,'JetBrains Mono',monospace;font-weight:700;color:var(--acc2)}.lt2 td.cp{font-size:12px;font-weight:700;color:var(--acc)}.lt2 td.fo{font-size:13px;color:var(--mute)}
+.lt2 th.c-capo,.lt2 th.c-mu,.lt2 th.c-act{cursor:default}.lt2 td.mu,.lt2 th.c-mu{width:40px;text-align:center}
+.lt2 .spmu{border:0;background:none;font-size:18px;padding:4px 8px;min-height:0}
+.lt2 td.act{white-space:nowrap;text-align:right;width:1%}.lt2 .lic{min-width:42px;height:40px;padding:0;border-radius:10px;font-size:16px;margin-left:4px;background:transparent;border:1px solid var(--line);opacity:.8}
+.lt2 .lsc{height:40px;padding:0 12px;border-radius:10px;border:0;background:var(--acc);color:#fff;font-weight:800;visibility:hidden}
+.lt2 tr.on .lsc{visibility:visible}.lt2 tr.on .lic{opacity:1}
+#libChips{display:flex;flex-wrap:wrap;align-items:center;gap:6px}#libChips small{opacity:.65;font-weight:600;margin-left:3px}
+#libChips label.chsel{display:inline-flex;align-items:center;gap:4px;margin:0;color:var(--mute)}#libChips label.chsel select{height:38px;border-radius:999px;padding:0 12px}
+#libChips .grow{flex:1;border:0!important;background:none!important;padding:0!important;min-width:8px;height:auto}#libChips .chico{border:0!important;background:none!important;padding:0!important;font-size:15px}
+@media (max-width:760px){.libtab.lt2 tr.lrow{grid-template-columns:auto minmax(0,1fr) auto auto;grid-template-areas:"ck tt ky act"}.lt2 td.tt{grid-area:tt}.lt2 td.ky{grid-area:ky}.lt2 td.act{grid-area:act}.lt2 td.mu{display:none!important}.lt2 td.tt small{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lt2 .lic{min-width:40px}
+#fCard .fqr{flex-wrap:wrap}}
+@media (max-width:760px){.lt2 td.fo,.lt2 th.c-dossier,.lt2 td.cp,.lt2 th.c-capo,.lt2 td.tg,.lt2 th.c-type{display:none}.lt2 .lsc{display:none}}
+#fiche{left:0;right:0;top:auto;width:auto;max-height:min(52vh,460px);border-left:0;border-top:1px solid var(--line);border-radius:22px 22px 0 0;box-shadow:0 -14px 34px rgba(0,0,0,.35);padding:12px 22px 14px}
+#fiche::before{content:'';display:block;width:56px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 8px}
+body.fiche-on main{margin:0 auto!important;padding-bottom:min(52vh,460px)}body.fiche-on .fab{display:none!important}
+@media (min-width:761px){#fiche .fhead{flex-wrap:wrap}#fiche .fbtns{margin:8px 0}#fCard{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:0 28px;align-items:start}#fCard>.fq{grid-column:2;grid-row:1/span 6}#fCard>#fAll{grid-column:1/-1}}
+.fsum{margin:4px 0 12px}.fsl{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-bottom:6px}
+.fsum>div{display:flex;flex-wrap:wrap;gap:6px}.fsec{padding:5px 10px;border-radius:8px;background:color-mix(in srgb,var(--ink) 8%,transparent);font-size:13px;font-weight:600}.fsec.ch{background:color-mix(in srgb,var(--acc2) 18%,transparent);color:var(--acc2)}
+.fch{padding:5px 10px;border-radius:8px;border:1px solid var(--line);font:700 14px ui-monospace,'JetBrains Mono',monospace;color:var(--acc)}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -1056,12 +1103,12 @@ html[data-design=neon] [aria-pressed=true]{box-shadow:0 0 14px rgba(var(--hlrgb)
         <button class="pri" id="ajout">Ajouter</button>
         <button id="newBtn" class="fab" title="Créer un morceau : texte, grille, page blanche, photo ou PDF">+ Nouveau</button>
         <input type="search" id="search" class="grow" placeholder="Chercher (titre, artiste, paroles…)">
-        <label class="lab">Tri <select id="tri"><option value="manuel">Manuel (↑↓)</option><option value="titre">Titre</option><option value="artiste">Artiste</option><option value="ton">Tonalité</option><option value="recent">Récentes</option><option value="dossier">Dossier</option><option value="type">Étiquette</option></select></label>
+        <label class="lab"><span class="chico" aria-hidden="true">↕</span><select id="tri" aria-label="Trier"><option value="manuel">Manuel (↑↓)</option><option value="titre">Titre</option><option value="artiste">Artiste</option><option value="ton">Tonalité</option><option value="recent">Récentes</option><option value="dossier">Dossier</option><option value="type">Étiquette</option></select></label>
         <label class="lab" style="display:none">Vue <select id="libView"><option value="liste">Liste</option><option value="tableau">Tableau</option><option value="nav">Navigateur</option></select></label>
         <select id="libNav"><option value="dossier">par dossier</option><option value="artiste">par artiste</option></select>
       </div>
       <div class="row">
-        <label class="lab">Dossier <select id="fFolder"></select></label>
+        <label class="lab"><span class="chico" aria-hidden="true">📁</span><select id="fFolder" aria-label="Dossier"></select></label>
         <label class="lab" style="display:none">Étiquette <select id="fType"></select></label>
         <span class="grow"></span>
         <button class="sm" id="foldAll">Tout plier</button><button class="sm" id="unfoldAll">Tout déplier</button>
@@ -2961,28 +3008,38 @@ function renderAll(){
   if(!S.songs.length) box.innerHTML='<p class="hint">Ajoute des chansons ci-dessus, puis colle leurs grilles. Tout est enregistré sur cet appareil ; active la synchronisation dans ⚙ pour les retrouver ailleurs.</p>';
   else if(!list.length) box.innerHTML='<p class="hint">Aucun morceau ne correspond à la recherche ou aux filtres.</p>';
   $$('.move').forEach(m=>m.style.display=S.sort==='manuel'&&!$('#search').value&&!S.fFolder&&!S.fType?'':'none');
-  $('#tri').value=S.sort||'manuel'; $('#libView').value=S.libView||'liste'; $('#libNav').value=S.libNav||'dossier'; $('#libNav').style.display=S.libView==='nav'?'':'none'; $('#foldAll').disabled=S.libView==='nav'&&S.libNavAt==null;
+  $('#tri').value=S.sort||'manuel'; $('#libView').value=S.libView||'liste'; $('#libNav').value=S.libNav||'dossier'; $('#libNav').style.display=S.libView==='nav'?'':'none'; $('#foldAll').disabled=S.libView==='nav'&&S.libNavAt==null; $('#foldAll').parentNode.style.display=S.libView!=='nav'?'none':'';
   selBarUI(); libChipsUI(); renderLists(); applyLook(); if(!$('#home').hidden)renderHome(); if(!$('#fiche').hidden&&FICHE&&songById(FICHE))openFiche(FICHE,true);
 }
 function renderLibTable(box,list){
-  const cols=[['artiste','Artiste'],['titre','Titre'],['ton','Ton'],['dossier','Dossier'],['type','Étiquettes']];
-  const t=document.createElement('table'); t.className='libtab';
-  t.classList.toggle('sel',selMode||SEL.size>0); t.innerHTML='<thead><tr>'+(selMode||SEL.size?'<th></th>':'')+cols.map(([k,n])=>`<th data-sort="${k}" class="${S.sort===k?'on':''}">${n}${S.sort===k?' ▾':''}</th>`).join('')+'</tr></thead><tbody></tbody>';
+  const cols=[['titre','Titre · artiste'],['ton','Ton'],['capo','Capo'],['dossier','Dossier'],['type','Étiquettes'],['mu','♫'],['act','']];
+  const t=document.createElement('table'); t.className='libtab lt2';
+  t.classList.toggle('sel',selMode||SEL.size>0); t.innerHTML='<thead><tr>'+(selMode||SEL.size?'<th></th>':'')+cols.map(([k,n])=>`<th ${/capo|mu|act/.test(k)?'':`data-sort="${k}"`} class="c-${k}${S.sort===k||k==='titre'&&S.sort==='artiste'?' on':''}">${k==='titre'&&S.sort==='artiste'?'Artiste · titre':n}${S.sort===k||k==='titre'&&S.sort==='artiste'?' ▾':''}</th>`).join('')+'</tr></thead><tbody></tbody>';
   const tb=t.tBodies[0];
   list.forEach(s=>{
-    const op=(S.libOpenIds||[]).includes(s.id), r=s._r||compute(s), sp=split(s.q), tr=document.createElement('tr'); tr.dataset.id=s.id; tr.className='lrow'+(op?' on':'');
-    const icons=(validGrid(s.bgrid)?'▦':'')+(s.kind==='sheet'?'📄':''), cap=+s.capoInfo?'<span class="cp"> capo '+s.capoInfo+'</span>':'';
-    tr.innerHTML=(selMode||SEL.size?`<td class="ck"><input type="checkbox" ${SEL.has(s.id)?'checked':''} tabindex="-1"></td>`:'')+`<td class="ar">${sp.artiste?esc(sp.artiste):`<span class="addart" data-art="${s.id}">+ artiste</span>`}</td><td class="tt"><b>${esc(sp.titre)}</b>${icons?`<span class="ic">${icons}</span>`:''}${(k=>k?`<button class="spplay" data-sp="${s.id}" style="background:${MU[k].c};color:${MU[k].f}" title="Écouter sur ${MU[k].n}">▶</button>`:'')(muPref(s))}</td><td class="ky">${r.key?esc(keyName(r.target,r.key.minor)):''}${cap}</td><td class="fo">${esc(s.folder||'')}</td><td class="tg">${tagsOf(s).map(t=>`<span class="tpill${t===WORK?' work':''}">${esc(t)}</span>`).join('')}</td>`; if(FICHE===s.id)tr.classList.add('on'); if(SEL.has(s.id))tr.classList.add('picked'); tb.appendChild(tr);
-    if(false){const d=document.createElement('tr'); d.className='ldet'; const td=document.createElement('td'); td.colSpan=5; s.open=true; td.appendChild(buildCard(s)); d.appendChild(td); tb.appendChild(d); update(s);}
+    const r=s._r||compute(s), sp=split(s.q), tr=document.createElement('tr'); tr.dataset.id=s.id; tr.className='lrow';
+    const icons=(validGrid(s.bgrid)?'▦':'')+(s.kind==='sheet'?'📄':''), mk=muPref(s);
+    tr.innerHTML=(selMode||SEL.size?`<td class="ck"><input type="checkbox" ${SEL.has(s.id)?'checked':''} tabindex="-1"></td>`:'')
+      +`<td class="tt"><b>${esc(sp.titre)}</b>${icons?`<span class="ic">${icons}</span>`:''}<small>${sp.artiste?esc(sp.artiste):`<span class="addart" data-art="${s.id}">+ artiste</span>`}</small></td>`
+      +`<td class="ky">${r.key?esc(keyName(r.target,r.key.minor)):''}</td><td class="cp">${+s.capoInfo?'capo '+s.capoInfo:''}</td><td class="fo">${s.folder?'📁 '+esc(s.folder):''}</td>`
+      +`<td class="tg">${tagsOf(s).map(t=>`<span class="tpill${t===WORK?' work':''}">${esc(t)}</span>`).join('')}</td>`
+      +`<td class="mu">${mk?`<button class="spmu" data-sp="${s.id}" style="color:${MU[mk].c}" title="Écouter sur ${MU[mk].n}" aria-label="Écouter sur ${MU[mk].n}">♫</button>`:''}</td>`
+      +`<td class="act"><button class="lsc" data-scene="${s.id}">▶ Scène</button><button class="lic" data-eye="${s.id}" aria-label="Voir la fiche" title="Voir la fiche">👁</button><button class="lic" data-ed="${s.id}" aria-label="Éditer" title="Éditer">✎</button></td>`;
+    if(FICHE===s.id||LIBPICK===s.id)tr.classList.add('on'); if(SEL.has(s.id))tr.classList.add('picked'); tb.appendChild(tr);
   });
   t.onclick=e=>{
-    const th=e.target.closest('th'); if(th){S.sort=th.dataset.sort; save(); renderAll(); return;}
+    const th=e.target.closest('th[data-sort]'); if(th){const k=th.dataset.sort; S.sort=k==='titre'?(S.sort==='titre'?'artiste':'titre'):k; save(); renderAll(); return;}
     const spb=e.target.closest('[data-sp]'); if(spb){e.stopPropagation(); muPlay(songById(spb.dataset.sp)); return;}
     const ad=e.target.closest('[data-art]'); if(ad){openFiche(ad.dataset.art); ficheName('a'); return;}
-    const tr=e.target.closest('tr.lrow'); if(tr&&tableSelectClick(e,tr.dataset.id))return; if(tr){openFiche(tr.dataset.id); $$('#songs tr.lrow').forEach(x=>x.classList.toggle('on',x===tr));}
+    const ey=e.target.closest('[data-eye]'); if(ey){const id=ey.dataset.eye; if(FICHE===id&&!$('#fiche').hidden)closeFiche(); else{LIBPICK=id; openFiche(id); $$('#songs tr.lrow').forEach(x=>x.classList.toggle('on',x.dataset.id===id));} return;}
+    const ed=e.target.closest('[data-ed]'); if(ed){const so=songById(ed.dataset.ed); if(so)editSong(so); return;}
+    const sc=e.target.closest('[data-scene]'); if(sc){const so=songById(sc.dataset.scene); if(so&&hasBody(so))openViewer([entryOf(so)],0); else toast('Ce morceau est encore vide : ✎ pour l\'écrire'); return;}
+    const tr=e.target.closest('tr.lrow'); if(tr&&tableSelectClick(e,tr.dataset.id))return;
+    if(tr){LIBPICK=tr.dataset.id; if(!$('#fiche').hidden&&FICHE!==tr.dataset.id)openFiche(tr.dataset.id); $$('#songs tr.lrow').forEach(x=>x.classList.toggle('on',x===tr));}
   };
   box.appendChild(t);
 }
+let LIBPICK=null;
 const navKeyOf=(by,s)=>by==='artiste'?(split(s.q).artiste||''):(s.folder||'');
 function navGroups(by,list){const m=new Map(); list.forEach(s=>{const k=navKeyOf(by,s); m.set(k,(m.get(k)||0)+1);}); return [...m].sort((a,b)=>a[0]===''?1:b[0]===''?-1:coll.compare(a[0],b[0]));}
 function renderLibNav(box,list){
@@ -3881,7 +3938,11 @@ $('#libChips').onclick=e=>{const b=e.target.closest('[data-f]'); if(!b)return; c
 function libChipsUI(){
   const tags=allTags(), cur=S.fType||'', k=S.fKind||'', n=S.songs.length;
   const c=(f,t,on)=>`<button data-f="${esc(f)}" aria-pressed="${on}">${esc(t)}</button>`;
-  $('#libChips').innerHTML=c('','Tous · '+n,!cur&&!k)+tags.map(t=>c(t,t,cur===t)).join('')+c('~bg','grille basse',k==='~bg')+c('~sheet','partitions',k==='~sheet')+c('~sp','écoute liée',k==='~sp');
+  const nt=t=>S.songs.filter(x=>tagsOf(x).includes(t)).length, nb=S.songs.filter(x=>validGrid(x.bgrid)).length, ns=S.songs.filter(x=>x.kind==='sheet').length, nm=S.songs.filter(x=>muPref(x)).length, cn=(t,m)=>esc(t)+(m?` <small>${m}</small>`:'');
+  const c2=(f,t,on)=>`<button data-f="${esc(f)}" aria-pressed="${on}">${t}</button>`;
+  const tl=$('#tri').closest('label'), fl=$('#fFolder').closest('label'); tl.remove(); fl.remove();
+  $('#libChips').innerHTML=c2('',cn('Tous',n),!cur&&!k)+tags.map(t=>c2(t,cn(t,nt(t)),cur===t)).join('')+(nb?c2('~bg',cn('Grille basse',nb),k==='~bg'):'')+(ns?c2('~sheet',cn('Partitions',ns),k==='~sheet'):'')+(nm?c2('~sp',cn('Écoute liée',nm),k==='~sp'):'')+'<span class="grow"></span>';
+  {tl.classList.add('chsel'); fl.classList.add('chsel'); $('#libChips').append(tl,fl);}
   $$('#libSw [data-v]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===(S.libView==='tableau'?'tableau':'liste')));
   $('#libCount').textContent=n+' morceau'+(n>1?'x':'');
 }
@@ -3895,11 +3956,18 @@ longPress($('#songs'),'tr.lrow,.card',(el,x,y)=>{const id=el.dataset.id||(el.clo
 $('#selShare2').onclick=()=>{if(!SEL.size)return toast('Coche d\'abord des morceaux'); openShareSel({songs:[...SEL]});};
 
 /* ---------- fiche simplifiée ---------- */
+function ficheSum(r){const secs=[], chs=[]; let last=null;
+  r.grid.forEach(L=>{if(L.t==='s'){const n=L.s.replace(/^\[|\]$/g,'').replace(/\s*\(.*$/,'').trim(); if(n&&!/^(TAB|BATTERIE)/.test(n)){if(last&&last.n===n)last.k++; else secs.push(last={n,k:1});}}
+    if(L.t==='c')L.s.split(/\s+/).forEach(t=>{if(/^[A-G][#b]?[^\s]{0,7}$/.test(t)&&!/[a-z]{4}/.test(t)&&!chs.includes(t))chs.push(t);});});
+  const isCh=n=>/refrain|chorus|ref\b/i.test(n);
+  return (secs.length?`<div class="fsum"><span class="fsl">Structure</span><div>${secs.map(x=>`<span class="fsec${isCh(x.n)?' ch':''}">${esc(x.n)}${x.k>1?' ×'+x.k:''}</span>`).join('')}</div></div>`:'')
+    +(chs.length?`<div class="fsum"><span class="fsl">Accords · ${chs.length}</span><div>${chs.slice(0,16).map(c=>`<span class="fch">${esc(c)}</span>`).join('')}</div></div>`:'')
+    +(!secs.length&&!chs.length?`<pre class="fprev">${r.grid.slice(0,12).map(lineHTML).join('\n')}</pre>`:'');}
 function ficheDraw(s){
   const r=compute(s), sp=split(s.q), lists=S.lists.filter(l=>l.items.some(it=>it.sid===s.id));
   $('#fTitle').innerHTML=`<span class="fname" data-nm="t" title="Toucher pour renommer">${esc(sp.titre||s.q)}</span>`;
   $('#fSub').innerHTML=`<span class="fname${sp.artiste?'':' empty'}" data-nm="a" title="Toucher pour changer l'artiste">${sp.artiste?esc(sp.artiste):'+ artiste'}</span>`+[s.tempo?s.tempo+' bpm':'',s.dur||''].filter(Boolean).map(x=>' · '+esc(x)).join('');
-  const prev=s.kind==='sheet'?`<p class="lab">📄 Partition · ${(s.pages||[]).length} page(s)</p>`:!(s.text||'').trim()&&validGrid(s.bgrid)?`<p class="lab">▦ Grille du bassiste</p>`:!(s.text||'').trim()?`<p class="lab">Morceau vide : ⋯ › Trouver la grille, ou ✎ Éditer pour l'écrire.</p>`:`<pre class="fprev">${r.grid.slice(0,40).map(lineHTML).join('\n')}</pre>`;
+  const prev=s.kind==='sheet'?`<p class="lab">📄 Partition · ${(s.pages||[]).length} page(s)</p>`:!(s.text||'').trim()&&validGrid(s.bgrid)?`<p class="lab">▦ Grille du bassiste</p>`:!(s.text||'').trim()?`<p class="lab">Morceau vide : ⋯ › Trouver la grille, ou ✎ Éditer pour l'écrire.</p>`:ficheSum(r);
   const d=r.key?((r.target-r.orig)%12+12)%12:0;
   const caps=[0,1,2,3,4,5,7].map(c=>`<button data-cap="${c}" aria-pressed="${(+s.capoInfo||0)===c}">${c}</button>`).join('');
   $('#fCard').innerHTML=prev+`<div class="fq">
@@ -7049,43 +7117,91 @@ function ryFill(p){const m=DR_METERS[p.meter], n=m.b*m.p, g={}; DR_INST.forEach(
   return {g,meter:p.meter,bars:1};}
 function ryRows(p,all){const used=DR_INST.filter(([k])=>/[^-]/.test(p.g[k]||''));
   return (all?DR_INST:used.length?used:DR_INST.filter(([k])=>/HH|SD|BD/.test(k))).map(([k])=>[k,p.g[k]]);}
+const RY_GROUPS=[['Rock · Pop',['Rock','Rock 16','Pop','Pop 16','Punk','Métal','Ballade','Half-time','Slow']],['Groove',['Funk','Hip-hop','Disco','Motown','Électro','Reggae']],['Ternaire',['Shuffle','Blues 12/8','Boogie','Jazz','6/8']],['Latin · monde',['Bossa','Samba','Rumba','Afro']],['Autres',['Valse','Marche','Country','Train']]];
+const RY_COL={C:'#f59e0b',R:'#eab308',HH:'#facc15',SD:'#f97316',T1:'#38bdf8',FT:'#60a5fa',BD:'#ef4444'};
+RY.mute=new Set();
+function ryMini(p,max){const n=ryN(p), rows=ryRows(p).slice(0,3); return rows.map(([k,r])=>`<div class="rmr">${[...r.slice(0,max||32)].map((c,i)=>`<i style="${c==='-'?'':`background:${RY_COL[k]}${/[XO]/.test(c)?'':'99'}`}"${i&&i%DR_METERS[p.meter].p===0?' class="bt"':''}></i>`).join('')}</div>`).join('');}
+function ryName(s){const sel=rySel(s); return sel==='mine'?'★ Mon rythme':sel==='own'?'Partie du morceau':sel;}
 function ryBar(){let b=$('#rybar'); if(b)return b; b=document.createElement('div'); b.id='rybar'; b.hidden=true; $('#viewer').appendChild(b);
-  b.addEventListener('click',e=>{const t=e.target.closest('[data-a],[data-c]'); if(!t)return; e.stopPropagation(); const cur=V.list[V.i]; if(!cur)return; const s=cur.s, a=t.dataset.a;
-    if(t.dataset.c!=null&&RY.edit&&t.dataset.k){const r=ryMine(s), p=r[RY.ed]||(r[RY.ed]=JSON.parse(JSON.stringify(r.A))), k=t.dataset.k, i=+t.dataset.c, row=(p.g[k]||'').padEnd(ryN(p),'-'), c=row[i]||'-';
-      const nx=c==='-'?(DR_CYM.has(k)?'x':'o'):/[xo]/.test(c)?(DR_CYM.has(k)?'X':'O'):'-'; p.g[k]=row.slice(0,i)+nx+row.slice(i+1); touch(s); save();
-      if(nx!=='-')drHit(k,nx===nx.toUpperCase()); ryDraw(); return;}
+  const cell=(t)=>t&&t.closest&&t.closest('#rybar .rygr i[data-k]');
+  let paint=null;
+  b.addEventListener('pointerdown',e=>{const c=cell(e.target); if(!c||!RY.edit)return; e.preventDefault(); const cur=V.list[V.i]; if(!cur)return;
+    const s=cur.s, r=ryMine(s), p=r[RY.ed]||(r[RY.ed]=JSON.parse(JSON.stringify(r.A))), k=c.dataset.k, i=+c.dataset.c, row=(p.g[k]||'').padEnd(ryN(p),'-'), ch=row[i]||'-';
+    const nx=ch==='-'?(DR_CYM.has(k)?'x':'o'):/[xo]/.test(ch)?(DR_CYM.has(k)?'X':'O'):'-'; paint={k,v:nx,done:new Set()};
+    const set=(k2,i2)=>{const pp=(r[RY.ed]||r.A); const rw=(pp.g[k2]||'').padEnd(ryN(pp),'-'); pp.g[k2]=rw.slice(0,i2)+paint.v+rw.slice(i2+1);};
+    paint.set=set; set(k,i); paint.done.add(k+i); if(nx!=='-'&&!RY.on)drHit(k,nx===nx.toUpperCase()); ryCells(); try{b.setPointerCapture(e.pointerId);}catch(_){}} );
+  b.addEventListener('pointermove',e=>{if(!paint)return; const el=document.elementFromPoint(e.clientX,e.clientY), c=cell(el); if(!c||c.dataset.k!==paint.k)return; const key=c.dataset.k+c.dataset.c; if(paint.done.has(key))return; paint.done.add(key); paint.set(c.dataset.k,+c.dataset.c); ryCells();});
+  const end=()=>{if(!paint)return; paint=null; const cur=V.list[V.i]; if(cur){touch(cur.s); save();}}; b.addEventListener('pointerup',end); b.addEventListener('pointercancel',end);
+  b.addEventListener('click',e=>{const t=e.target.closest('[data-a]'); if(!t)return; e.stopPropagation(); const cur=V.list[V.i]; if(!cur)return; const s=cur.s, a=t.dataset.a;
     if(a==='play'){RY.on?ryStop():ryStart(); return;}
     if(a==='x'){ryStop(); RY.edit=false; RY.hide[s.id]=1; b.hidden=true; return;}
     if(a==='dn'||a==='up'){setTempo((+s.tempo||90)+(a==='up'?2:-2)); ryDraw(); return;}
+    if(a==='tap'){const now=performance.now(); RY.taps=(RY.taps||[]).filter(x=>now-x<2500); RY.taps.push(now); if(RY.taps.length>=3){const d=(RY.taps[RY.taps.length-1]-RY.taps[0])/(RY.taps.length-1); setTempo(Math.round(60000/d)); ryDraw();} else toast('Tape encore…'); return;}
+    if(a==='style'){ryStyles(); return;}
     if(a==='A'||a==='B'){const base=ryBase(s);
-      if(a==='B'&&!base.B){const r=ryMine(s); r.B=JSON.parse(JSON.stringify(r.A)); touch(s); save(); toast('Variation B créée : modifie-la avec ✎');}
+      if(a==='B'&&!base.B){const r=ryMine(s); r.B=JSON.parse(JSON.stringify(r.A)); touch(s); save(); if(!RY.edit)toast('Refrain (B) créé : copie de A, modifie-le avec ✎');}
       if(RY.edit)RY.ed=a; RY.want=a; if(!RY.on)RY.pat=a; ryDraw(); return;}
-    if(a==='fill'){if(!RY.on){ryStart();} RY.fill=1; t.classList.add('on'); return;}
-    if(a==='edit'){RY.edit=!RY.edit; RY.ed=RY.pat||'A'; ryDraw(); return;}
+    if(a==='fill'){if(!RY.on)ryStart(); RY.fill=1; t.classList.add('on'); return;}
+    if(a==='edit'){RY.edit=true; RY.ed=RY.pat||'A'; RY.snap=JSON.stringify({rhy:s.rhy||null,sel:s.rhySel||null,rh:s.rhythm||null}); ryDraw(); return;}
+    if(a==='done'){RY.edit=false; ryDraw(); return;}
+    if(a==='undo'){try{const o=JSON.parse(RY.snap); if(o.rhy)s.rhy=o.rhy; else delete s.rhy; if(o.sel)s.rhySel=o.sel; else delete s.rhySel; if(o.rh)s.rhythm=o.rh; touch(s); save(); toast('Modifications annulées');}catch(_){} RY.edit=false; RY.ed='A'; RY.pat=RY.want='A'; ryDraw(); return;}
     if(a==='clear'){const r=ryMine(s), p=r[RY.ed]||r.A; DR_INST.forEach(([k])=>p.g[k]='-'.repeat(ryN(p))); touch(s); save(); ryDraw(); return;}
+    if(a==='copy'){const r=ryMine(s); r.B=JSON.parse(JSON.stringify(r.A)); RY.ed='B'; touch(s); save(); toast('A copié dans B'); ryDraw(); return;}
     if(a==='bars'){const r=ryMine(s), p=r[RY.ed]||r.A, n0=ryN(p); p.bars=p.bars===2?1:2; const n=ryN(p); DR_INST.forEach(([k])=>{const g=(p.g[k]||'').padEnd(n0,'-'); p.g[k]=n>n0?(g+g).slice(0,n):g.slice(0,n);}); touch(s); save(); ryDraw(); return;}
-    if(a==='del'){const r=ryMine(s); if(RY.ed==='B'){r.B=null; RY.ed='A'; RY.pat='A'; RY.want='A';} touch(s); save(); ryDraw(); return;}
+    if(a==='delB'){const r=ryMine(s); r.B=null; RY.ed='A'; RY.pat=RY.want='A'; touch(s); save(); ryDraw(); return;}
+    if(a==='hear'){drHit(t.dataset.k,true); return;}
+    if(a==='mute'){const k=t.dataset.k; RY.mute.has(k)?RY.mute.delete(k):RY.mute.add(k); ryDraw(); return;}
   });
   b.addEventListener('change',e=>{const cur=V.list[V.i]; if(!cur)return; const s=cur.s;
-    if(e.target.id==='ryStyle'){s.rhySel=e.target.value; delete s.rhythm; RY.pat='A'; RY.want='A'; touch(s); save(); ryDraw(); return;}
     if(e.target.id==='ryMeter'){const r=ryMine(s), p=r[RY.ed]||r.A; p.meter=e.target.value; const n=ryN(p); DR_INST.forEach(([k])=>p.g[k]=(p.g[k]||'').padEnd(n,'-').slice(0,n)); touch(s); save(); ryDraw();}});
   ['pointerdown','touchstart'].forEach(ev=>b.addEventListener(ev,e=>e.stopPropagation(),{passive:true}));
   return b;}
-function ryDraw(){const cur=V.list[V.i], b=ryBar(); if(!cur)return; const s=cur.s, base=ryBase(s), sel=rySel(s), own=!!ryPart(s);
-  const which=RY.edit?RY.ed:(RY.pat||'A'), p=base[which]||base.A, m=DR_METERS[p.meter], rows=ryRows(p,RY.edit);
-  const opts=(s.rhy?'<option value="mine">★ Mon rythme</option>':'')+(own?'<option value="own">Partie du morceau</option>':'')+Object.keys(DR_MODELS).map(k=>`<option value="${esc(k)}">${esc(k)}</option>`).join('');
-  const cell=(k,c,i)=>`<i class="${c==='-'?'':/[XO]/.test(c)?'a':'h'}${i%m.p===0?' bt':''}${i%(m.b*m.p)===0&&i?' br':''}" data-c="${i}"${RY.edit?` data-k="${k}"`:''}></i>`;
+function ryCells(){const cur=V.list[V.i]; if(!cur)return; const base=ryBase(cur.s), p=base[RY.ed]||base.A;
+  $$('#rybar .rygr i[data-k]').forEach(c=>{const ch=(p.g[c.dataset.k]||'')[+c.dataset.c]||'-'; c.className=(ch==='-'?'':/[XO]/.test(ch)?'a':'h')+(c.dataset.bt?' bt':'');});}
+function ryDraw(){const cur=V.list[V.i], b=ryBar(); if(!cur)return; const s=cur.s, base=ryBase(s);
+  const which=RY.edit?RY.ed:(RY.pat||'A'), p=base[which]||base.A, m=DR_METERS[p.meter];
+  const wait=x=>RY.on&&RY.want===x&&RY.pat!==x;
   b.classList.toggle('ed',RY.edit);
-  b.innerHTML=`<div class="ryhd"><button data-a="play" class="rypl" aria-label="${RY.on?'Arrêter':'Jouer'} le rythme">${RY.on?'■':'▶'}</button>
-    <select id="ryStyle" aria-label="Rythme">${opts}</select>
-    <span class="ryt"><button data-a="dn" aria-label="Tempo moins">−</button><b>♩ ${+s.tempo||90}</b><button data-a="up" aria-label="Tempo plus">+</button></span>
-    <span class="ryab"><button data-a="A" aria-pressed="${which==='A'}" class="${RY.on&&RY.want==='A'&&RY.pat!=='A'?'rywt':''}">A</button><button data-a="B" aria-pressed="${which==='B'}" class="${base.B?'':'rygh'}${RY.on&&RY.want==='B'&&RY.pat!=='B'?' rywt':''}">B</button></span>
-    <button data-a="fill" class="ryfill${RY.fill?' on':''}" title="Un break à la fin de la mesure, puis reprise">Break</button>
-    <button data-a="edit" class="ryed" aria-pressed="${RY.edit}" title="Modifier le rythme">${RY.edit?'✓ Fini':'✎'}</button>
-    <button data-a="x" class="ryx" aria-label="Fermer le rythme">✕</button></div>
-    ${RY.edit?`<div class="rytools"><select id="ryMeter" aria-label="Mesure">${Object.entries(DR_METERS).map(([k,x])=>`<option value="${k}">${x.n}</option>`).join('')}</select><button data-a="bars">${p.bars===2?'2 mesures':'1 mesure'}</button><button data-a="clear">Vider</button>${which==='B'?'<button data-a="del">Supprimer B</button>':''}<span class="ryhint">Touche une case : frappe · accent · rien</span></div>`:''}
-    <div class="rygr">${rows.map(([k,r])=>`<div><span>${RY.edit?RY_LAB[k]:k}</span>${[...r].map((c,i)=>cell(k,c,i)).join('')}</div>`).join('')}</div>`;
-  $('#ryStyle').value=sel; if(RY.edit)$('#ryMeter').value=p.meter;}
+  const beats=Array.from({length:m.b},(_,i)=>`<span class="rbt" data-b="${i}">${i+1}</span>`).join('');
+  if(!RY.edit){
+    b.innerHTML=`<button data-a="play" class="rypl" aria-label="${RY.on?'Arrêter':'Jouer'} le rythme">${RY.on?'■':'▶'}</button>
+    <div class="rgp"><span class="rlab">Rythme</span><button data-a="style" class="rysty">🥁 <b>${esc(ryName(s))}</b><small>${m.n.split(' ·')[0]}</small><span>▾</span></button></div>
+    <div class="rgp"><span class="rlab">Tempo</span><span class="ryt"><button data-a="dn" aria-label="Tempo moins">−</button><b>${+s.tempo||90}</b><button data-a="up" aria-label="Tempo plus">+</button><button data-a="tap" class="rytap">Tap</button></span></div>
+    <div class="rgp"><span class="rlab">Partie</span><span class="ryab"><button data-a="A" aria-pressed="${which==='A'}" class="${wait('A')?'rywt':''}">A</button><button data-a="B" aria-pressed="${which==='B'}" class="${base.B?'':'rygh'}${wait('B')?' rywt':''}" title="${base.B?'Refrain':'Créer un refrain (copie de A)'}">B</button></span></div>
+    <button data-a="fill" class="ryfill${RY.fill?' on':''}" title="Un break à la fin de la mesure, puis reprise avec une crash">⚡ Break</button>
+    <div class="rybeats"><div>${beats}</div><small id="ryStat">${RY.on?(wait('A')||wait('B')?(RY.want+' au prochain tour'):'Partie '+which):'prêt'}</small></div>
+    <button data-a="edit" class="ryed">✎ Modifier</button><button data-a="x" class="ryx" aria-label="Fermer le rythme">✕</button>`;
+    return;}
+  const n=ryN(p), lab=['','e','&','a'], head=Array.from({length:n},(_,i)=>{const sub=i%m.p; return `<span class="${sub?'':'b1'}${i&&sub===0?' bt':''}">${sub===0?(Math.floor(i/m.p)%m.b+1):(m.p===4?lab[sub]:m.p===2?'&':'·')}</span>`;}).join('');
+  const rows=DR_INST.map(([k])=>{const r=(p.g[k]||'').padEnd(n,'-');
+    return `<div class="rgrow${RY.mute.has(k)?' muted':''}"><button class="rgname" data-a="hear" data-k="${k}"><i style="background:${RY_COL[k]}"></i>${RY_LAB[k]}</button>${[...r].map((c,i)=>`<i data-k="${k}" data-c="${i}"${i&&i%m.p===0?' data-bt="1"':''} style="--c:${RY_COL[k]}" class="${c==='-'?'':/[XO]/.test(c)?'a':'h'}${i&&i%m.p===0?' bt':''}"></i>`).join('')}<button class="rgmute" data-a="mute" data-k="${k}" aria-label="Couper ${RY_LAB[k]}" aria-pressed="${RY.mute.has(k)}">${RY.mute.has(k)?'🔇':'🔈'}</button></div>`;}).join('');
+  b.innerHTML=`<div class="ryehd"><button data-a="play" class="rypl" aria-label="${RY.on?'Arrêter':'Jouer'}">${RY.on?'■':'▶'}</button>
+    <div class="ryettl"><small>MON RYTHME${rySel(s)==='mine'?'':' · d\'après '+esc(ryName(s))}</small><b>${esc(split(s.q).titre||s.q)}</b></div>
+    <span class="rytabs"><button data-a="A" aria-pressed="${which==='A'}">A · Couplet</button>${base.B?`<button data-a="B" aria-pressed="${which==='B'}">B · Refrain</button>`:`<button data-a="B" class="rygh">＋ Refrain</button>`}</span>
+    <span class="grow"></span>
+    <select id="ryMeter" aria-label="Mesure">${Object.entries(DR_METERS).map(([k,x])=>`<option value="${k}">${x.n}</option>`).join('')}</select>
+    <button data-a="bars">${p.bars===2?'2 mesures':'1 mesure'}</button>
+    <span class="ryt"><button data-a="dn" aria-label="Tempo moins">−</button><b>${+s.tempo||90}</b><button data-a="up" aria-label="Tempo plus">+</button></span>
+    <button data-a="undo">↺ Annuler</button><button data-a="done" class="rydone">✓ Fini</button></div>
+    <div class="rygr"><div class="rghead">${head}</div>${rows}</div>
+    <div class="ryefoot"><span><i class="lg h"></i>frappe</span><span><i class="lg a"></i>accent</span><span>Toucher : frappe → accent → vide · glisser : remplir la ligne · nom : écouter</span><span class="grow"></span><button data-a="clear">Vider ${which}</button>${which==='A'?'<button data-a="copy">Copier A → B</button>':'<button data-a="delB">Supprimer B</button>'}</div>`;
+  $('#ryMeter').value=p.meter;}
+function ryStyles(){const cur=V.list[V.i]; if(!cur)return; const s=cur.s, prev={sel:s.rhySel,rh:s.rhythm}, own=ryPart(s);
+  let el=$('#rySheet'); if(!el){el=document.createElement('div'); el.id='rySheet'; $('#viewer').appendChild(el);}
+  const card=(v,n,p,meta)=>`<button class="rsc${rySel(s)===v?' on':''}" data-v="${esc(v)}"><span class="rsch"><b>${esc(n)}</b><small>${esc(meta)}</small></span><span class="rmini">${ryMini(p,16)}</span></button>`;
+  const mod=k=>{const m=DR_MODELS[k]; return ryNorm({g:m.g,meter:m.m,bars:1});};
+  const mine=(s.rhy?card('mine','★ Mon rythme',ryNorm(s.rhy.A),DR_METERS[s.rhy.A.meter].n.split(' ·')[0]):'')+(own?card('own','Partie du morceau',ryNorm(own),DR_METERS[own.meter].n.split(' ·')[0]):'');
+  const all=new Set(RY_GROUPS.flatMap(g=>g[1])), extra=Object.keys(DR_MODELS).filter(k=>!all.has(k));
+  const groups=(mine?[['Les miens',null,mine]]:[]).concat(RY_GROUPS.map(([g,ks])=>[g,ks.filter(k=>DR_MODELS[k])])).concat(extra.length?[['Plus',extra]]:[]);
+  el.innerHTML=`<div class="rsbk"></div><div class="rsbox"><div class="rsgrip"></div><div class="rshd"><b>Choisir un rythme</b><small>toucher pour écouter</small><span class="grow"></span><input type="search" id="rsQ" placeholder="🔍 Chercher : funk, valse…" aria-label="Chercher un rythme"><button data-x="cancel">Annuler</button><button data-x="ok" class="rsok">✓ Garder</button></div>
+    <div class="rsbody">${groups.map(([g,ks,html])=>`<section data-g="${esc(g)}"><h4>${esc(g)}</h4><div class="rsgrid">${html||ks.map(k=>card(k,k,mod(k),DR_METERS[DR_MODELS[k].m].n.split(' ·')[0])).join('')}</div></section>`).join('')}</div></div>`;
+  el.hidden=false;
+  const close=ok=>{if(!ok){s.rhySel=prev.sel; if(prev.rh)s.rhythm=prev.rh; if(!prev.sel)delete s.rhySel; touch(s); save(); if(RY.on){ryStop();}} el.hidden=true; ryDraw();};
+  el.onclick=e=>{e.stopPropagation(); if(e.target.classList.contains('rsbk'))return close(false); const x=e.target.closest('[data-x]'); if(x)return close(x.dataset.x==='ok');
+    const c=e.target.closest('.rsc'); if(!c)return; s.rhySel=c.dataset.v; delete s.rhythm; RY.pat=RY.want='A'; touch(s); save(); $$('#rySheet .rsc').forEach(z=>z.classList.toggle('on',z===c)); const t=$('#rySheet .rsok'); if(t)t.textContent='✓ Garder '+c.querySelector('b').textContent;
+    if(RY.on){ryStop();} ryStart();};
+  ['pointerdown','touchstart'].forEach(ev=>el.addEventListener(ev,e=>e.stopPropagation(),{passive:true}));
+  $('#rsQ').oninput=()=>{const q=$('#rsQ').value.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,''); $$('#rySheet .rsc').forEach(c=>c.hidden=q&&!c.querySelector('b').textContent.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').includes(q)); $$('#rySheet section').forEach(sc=>sc.hidden=![...sc.querySelectorAll('.rsc')].some(c=>!c.hidden));};}
 function ryStart(){const cur=V.list[V.i]; if(!cur)return;
   try{actx=actx||new (window.AudioContext||window.webkitAudioContext)(); if(actx.resume)actx.resume();}catch(e){toast('Audio indisponible'); return;}
   if(V.metro)metroStop(); RY.on=true; RY.id=cur.s.id; RY.pos=0; RY.pat=RY.want=RY.pat||'A'; RY.fill=0; RY.inFill=null; RY.crash=false; RY.next=actx.currentTime+.08; RY.q=[]; ryDraw();
@@ -7098,14 +7214,18 @@ function ryStart(){const cur=V.list[V.i]; if(!cur)return;
         else if(RY.fill&&RY.pos+bar>=N){RY.fill=0; RY.inFill=ryFill(p);}
         else if(RY.pos>=N||RY.pos===0&&RY.want!==RY.pat){if(RY.want!==RY.pat){RY.pat=RY.want; p=base[RY.pat]||base.A;} RY.pos=0;}}
       const src=RY.inFill||p, n=ryN(src), i=RY.inFill?RY.pos%n:RY.pos%ryN(p), dur=60/(+c.s.tempo||90)/DR_METERS[src.meter].p;
-      DR_INST.forEach(([k])=>{const ch=src.g[k][i]; if(ch&&ch!=='-')drHit(k,/[XO]/.test(ch),RY.next);});
+      DR_INST.forEach(([k])=>{if(RY.mute.has(k))return; const ch=src.g[k][i]; if(ch&&ch!=='-')drHit(k,/[XO]/.test(ch),RY.next);});
       if(RY.crash&&i===0){drHit('C',true,RY.next); RY.crash=false;}
       RY.q.push([RY.next,RY.inFill?-1:i,RY.pat]); RY.next+=dur; RY.pos++;}};
   RY.timer=setInterval(sched,25); sched();
   const paint=()=>{if(!RY.on)return; let c=null; while(RY.q.length&&RY.q[0][0]<=actx.currentTime){c=RY.q.shift();}
-    if(c){if(c[1]===0&&(RY.edit?RY.ed:RY.drawn)!==c[2]&&!RY.edit){RY.drawn=c[2]; ryDraw();}
-      $$('#rybar .rygr i.on').forEach(x=>x.classList.remove('on')); if(c[1]>=0&&(!RY.edit||RY.ed===c[2]))$$(`#rybar .rygr i[data-c="${c[1]}"]`).forEach(x=>x.classList.add('on'));
-      const f=$('#rybar .ryfill'); if(f)f.classList.toggle('on',!!(RY.fill||c[1]<0));} RY.raf=requestAnimationFrame(paint);};
+    if(c){const cu=V.list[V.i];
+      if(!RY.edit&&c[1]===0&&RY.drawn!==c[2]){RY.drawn=c[2]; ryDraw();}
+      $$('#rybar .rygr i.on').forEach(x=>x.classList.remove('on')); if(RY.edit&&c[1]>=0&&RY.ed===c[2])$$(`#rybar .rygr i[data-c="${c[1]}"]`).forEach(x=>x.classList.add('on'));
+      if(cu&&c[1]>=0){const base=ryBase(cu.s), p=base[c[2]]||base.A, m=DR_METERS[p.meter], bt=Math.floor(c[1]/m.p)%m.b; $$('#rybar .rbt').forEach(x=>x.classList.toggle('on',+x.dataset.b===bt));}
+      const f=$('#rybar .ryfill'); if(f)f.classList.toggle('on',!!(RY.fill||c[1]<0));
+      const st=$('#ryStat'); if(st)st.textContent=c[1]<0?'Break !':(RY.want!==RY.pat?RY.want+' au prochain tour':'Partie '+c[2]);}
+    RY.raf=requestAnimationFrame(paint);};
   RY.raf=requestAnimationFrame(paint);}
 function ryStop(){RY.on=false; RY.fill=0; RY.inFill=null; clearInterval(RY.timer); cancelAnimationFrame(RY.raf); if($('#rybar')&&!$('#rybar').hidden)ryDraw();}
 // à chaque morceau : la barre s'affiche d'elle-même si le morceau a une partie batterie (ou un rythme à soi)
