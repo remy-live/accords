@@ -4482,7 +4482,7 @@ function vRender(){try{if(typeof ryUpdate==='function')setTimeout(ryUpdate,0);}c
   vDispUI();
   st.classList.toggle('edit',!!V.edit); $('#vedbar').hidden=!V.edit; $('#vedit').setAttribute('aria-pressed',!!V.edit); closeInline();
   $$('#vemode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===(V.emode||'chords')));
-  $('#vedHint').textContent=V.emode==='text'?'Touche une ligne pour la modifier.':'Touche un mot pour y poser un accord · appui long sur un mot : roue d'accords · appui long dans la marge : copier les accords.';
+  $('#vedHint').textContent=V.emode==='text'?'Touche une ligne pour la modifier.':'Touche un mot pour y poser un accord · appui long sur un mot : roue d’accords · appui long dans la marge : copier les accords.';
   $('#vsimp').setAttribute('aria-pressed',!!e.s.simple);
   $('#vview').textContent='👁 Vue : '+{grille:'Grille',paroles:'Paroles brutes',accords:'Grille basse'}[e.s.view||'grille']; $('#vtv').classList.toggle('linked',Kara.linked());
   if(!$('#vlist').hidden) vListRender();
@@ -6328,7 +6328,7 @@ $('#vtKbd').addEventListener('pointerdown',e=>e.preventDefault()); $('#vtKbd').o
 // trois façons de voir l'éditeur : le texte, les deux côte à côte (grand écran), l'aperçu seul où l'on travaille au doigt
 function vtSetMode(m,quiet){if(m==='both'&&innerWidth<=820)m='prev'; const p=$('#vtPrev'); p.hidden=m==='text'; $('.vtwrap').classList.toggle('prevonly',m==='prev');
   $$('#vtMode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m||(m==='prev'&&b.dataset.m==='both'&&false)));
-  if(!quiet){S.vtMode=m; save(); if(m!=='text'&&!S.vtPrevTip){S.vtPrevTip=1; save(); toast('Touche un mot pour y poser un accord · appui long sur un mot : roue d'accords · appui long dans la marge : copier les accords');}}
+  if(!quiet){S.vtMode=m; save(); if(m!=='text'&&!S.vtPrevTip){S.vtPrevTip=1; save(); toast('Touche un mot pour y poser un accord · appui long sur un mot : roue d’accords · appui long dans la marge : copier les accords');}}
   if(m!=='text'){const r=compute({q:'',text:$('#vtextArea').value,view:'grille',tabs:[]}); p.innerHTML=r.grid.map(L=>lineHTML(L)).join('\n'); cpDecorate(p,$('#vtextArea').value);}}
 $$('#vtMode button').forEach(b=>b.onclick=()=>vtSetMode(b.dataset.m));
 $('#vtFull').onclick=()=>{S.vtFull=!S.vtFull; save(); $('#vtext').classList.toggle('full',S.vtFull); $('#vtFull').setAttribute('aria-pressed',S.vtFull);
@@ -6875,7 +6875,7 @@ $('#vlite').onclick=()=>{const e=V.list[V.i]; if(!e)return;
     if((e.s.view||'grille')!=='grille'&&(e.s.view||'grille')!=='accords'){toast('Passe en vue Grille (accords + paroles) pour retoucher les accords'); return;}
     if((e.s.view||'grille')==='accords'){openBG(e,0,0); return;}}
   V.lite=!V.lite; V.moveCh=null; wpClose(); $('#vlite').setAttribute('aria-pressed',V.lite); $('#vstage').classList.toggle('lite',V.lite); $('#vstage').classList.remove('mving');
-  if(V.lite)toast('Retouche : touche un mot pour poser un accord (appui long : roue d'accords) · touche un accord pour le changer ou le déplacer (◀ ▶ ou ✋) · pages : flèches ‹ ›',5000);};
+  if(V.lite)toast('Retouche : touche un mot pour poser un accord (appui long : roue d’accords) · touche un accord pour le changer ou le déplacer (◀ ▶ ou ✋) · pages : flèches ‹ ›',5000);};
 function showVDiag(cur,ch){
   const name=ch.textContent, svg=diagramSVG(name), d=$('#vdiag');
   V.dctx={e:cur,raw:+ch.parentElement.dataset.raw,k:+ch.dataset.k,shown:name};
