@@ -6548,7 +6548,9 @@ function cwOpen(ctx,span,pt){
 function cwChord(){const h=CW.hov; if(!h)return null;
   if(h.t==='rare'){const b=CW.rare; return h.k==null?b.chord:cwRoot(b.i,b.acc)+CW_RARE[h.k];}
   return cwRoot(h.i,h.acc)+(h.t==='m'?'m':'');}
-function cwHit(x,y){const k=CW.k, g=CW_G;
+function cwHit(x,y){const k=CW.k, g=CW_G, pm=cwPolar(CW.cx,CW.cy,x,y);
+  if(CW.phase==='rare'&&pm.r<(g.r2+2)*k&&pm.a>-25&&pm.a<205)return {t:'back'};
+  if(CW.phase==='focus'&&pm.r<(g.r1-10)*k)return {t:'back'};
   if(CW.phase==='rare'){const p=cwPolar(CW.rare.x,CW.rare.y,x,y); if(p.r<g.rr1*k)return {t:'rare',k:null};
     if(p.r>(g.rr2+34)*k||p.a<-20||p.a>200)return null; const a=Math.max(0,Math.min(179.9,p.a)); return {t:'rare',k:Math.floor((180-a)/(180/CW_RARE.length))};}
   const p=cwPolar(CW.cx,CW.cy,x,y); if(p.r<(g.r1-10)*k||p.r>(g.m2+26)*k||p.a<-25||p.a>205)return null;
@@ -6565,10 +6567,12 @@ function cwDwell(){const h=CW.hov; if(!h)return;
     const k=CW.k, g=CW_G, [a1,a2]=cwSec(h.slot!=null?h.slot:h.i), am=(a1+a2)/2, r=h.t==='m'?(g.m1+g.m2)/2:(g.r1+g.r2)/2;
     let x=CW.cx+r*k*Math.cos(am*Math.PI/180), y=CW.cy-r*k*Math.sin(am*Math.PI/180); const R=(g.rr2+8)*k;
     x=Math.max(R+8,Math.min(innerWidth-R-8,x)); y=Math.max(R+58,y);
-    CW.rare={x,y,i:h.i,acc:h.acc,chord:cwRoot(h.i,h.acc)+(h.t==='m'?'m':'')}; CW.phase='rare'; CW.hov={t:'rare',k:null}; cwBuzz(); cwDraw();}}
+    CW.rare={x,y,i:h.i,acc:h.acc,chord:cwRoot(h.i,h.acc)+(h.t==='m'?'m':'')}; CW.prevPhase=CW.phase; CW.phase='rare'; CW.hov={t:'rare',k:null}; cwBuzz(); cwDraw();}}
 function cwBuzz(){try{navigator.vibrate&&navigator.vibrate(8);}catch(e){}}
-function cwMove(x,y){if(!CW.on)return; const h=cwHit(x,y), key=JSON.stringify(h), old=JSON.stringify(CW.hov);
-  if(key!==old){CW.hov=h; clearTimeout(CW.t); if(h&&CW.phase!=='rare')CW.t=setTimeout(cwDwell,450); cwDraw();}}
+function cwMove(x,y){if(!CW.on)return; let h=cwHit(x,y);
+  if(h&&h.t==='back'){clearTimeout(CW.t); if(CW.phase==='rare'){CW.phase=CW.prevPhase||'notes'; CW.rare=null;} else {CW.phase='notes'; CW.base=null;} CW.hov=null; cwBuzz(); h=cwHit(x,y); if(h&&h.t==='back')h=null;}
+  const key=JSON.stringify(h), old=JSON.stringify(CW.hov);
+  if(key!==old){CW.hov=h; clearTimeout(CW.t); if(h&&CW.phase!=='rare')CW.t=setTimeout(cwDwell,CW.phase==='notes'&&h.t==='n'?550:850); cwDraw();}}
 function cwEnd(){if(!CW.on)return; clearTimeout(CW.t); const ch=cwChord(); CW.on=false; if(CW.el)CW.el.remove(); CW.el=null;
   if(ch){wpApply(ch);} else {wpClose(); toast('Annulé'); cwBuzz();}}
 function cwDraw(){const el=CW.el; if(!el)return; const k=CW.k, g=CW_G, cx=CW.cx, cy=CW.cy, h=CW.hov; let s='';
