@@ -6541,7 +6541,7 @@ function cwOpen(ctx,span,pt){
   const sc=Math.min(1,(innerWidth-16)/(2*(CW_G.m2+12)), (innerHeight-80)/(CW_G.m2+90)); CW.k=sc;
   const R=(CW_G.m2+10)*sc; let cx=rc.left+Math.max(cw,rc.width)/2, cy=rc.top-6;
   cx=Math.max(R+8,Math.min(innerWidth-R-8,cx)); if(cy-R-58<0)cy=R+58; if(cy>innerHeight-20)cy=innerHeight-20;
-  Object.assign(CW,{on:true,cx,cy,phase:'notes',hov:null,base:null,rare:null,t:null,start:Date.now()});
+  Object.assign(CW,{on:true,cx,cy,phase:'notes',hov:null,base:null,rare:null,t:null,noDwell:null,start:Date.now()});
   const el=document.createElement('div'); el.id='cwheel'; document.body.appendChild(el); CW.el=el;
   cwDraw(); try{navigator.vibrate&&navigator.vibrate(12);}catch(e){}
   return true;}
@@ -6550,10 +6550,10 @@ function cwChord(){const h=CW.hov; if(!h)return null;
   return cwRoot(h.i,h.acc)+(h.t==='m'?'m':'');}
 function cwHit(x,y){const k=CW.k, g=CW_G, pm=cwPolar(CW.cx,CW.cy,x,y);
   if(CW.phase==='rare'&&pm.r<(g.r2+2)*k&&pm.a>-25&&pm.a<205)return {t:'back'};
-  if(CW.phase==='focus'&&pm.r<(g.r1-10)*k)return {t:'back'};
+  if(CW.phase==='focus'&&pm.r<g.r1*k)return {t:'back'};
   if(CW.phase==='rare'){const p=cwPolar(CW.rare.x,CW.rare.y,x,y); if(p.r<g.rr1*k)return {t:'rare',k:null};
     if(p.r>(g.rr2+34)*k||p.a<-20||p.a>200)return null; const a=Math.max(0,Math.min(179.9,p.a)); return {t:'rare',k:Math.floor((180-a)/(180/CW_RARE.length))};}
-  const p=cwPolar(CW.cx,CW.cy,x,y); if(p.r<(g.r1-10)*k||p.r>(g.m2+26)*k||p.a<-25||p.a>205)return null;
+  const p=cwPolar(CW.cx,CW.cy,x,y); if(p.r<g.r1*k||p.r>(g.m2+26)*k||p.a<-25||p.a>205)return null;
   let i=Math.floor((180-p.a)/(180/7)); i=Math.max(-1,Math.min(7,i));
   let acc=0, idx=i;
   if(CW.phase==='focus'){const b=CW.base.i; if(i<b-1||i>b+1)return null; acc=i-b; idx=b;}
@@ -6570,9 +6570,11 @@ function cwDwell(){const h=CW.hov; if(!h)return;
     CW.rare={x,y,i:h.i,acc:h.acc,chord:cwRoot(h.i,h.acc)+(h.t==='m'?'m':'')}; CW.prevPhase=CW.phase; CW.phase='rare'; CW.hov={t:'rare',k:null}; cwBuzz(); cwDraw();}}
 function cwBuzz(){try{navigator.vibrate&&navigator.vibrate(8);}catch(e){}}
 function cwMove(x,y){if(!CW.on)return; let h=cwHit(x,y);
-  if(h&&h.t==='back'){clearTimeout(CW.t); if(CW.phase==='rare'){CW.phase=CW.prevPhase||'notes'; CW.rare=null;} else {CW.phase='notes'; CW.base=null;} CW.hov=null; cwBuzz(); h=cwHit(x,y); if(h&&h.t==='back')h=null;}
+  if(h&&h.t==='back'){clearTimeout(CW.t); if(CW.phase==='rare'){CW.noDwell=CW.prevPhase==='focus'?null:'m'; CW.phase=CW.prevPhase||'notes'; CW.rare=null;} else {CW.noDwell=CW.base.i; CW.phase='notes'; CW.base=null;} CW.hov=null; cwBuzz(); h=cwHit(x,y); if(h&&h.t==='back')h=null; cwDraw();}
   const key=JSON.stringify(h), old=JSON.stringify(CW.hov);
-  if(key!==old){CW.hov=h; clearTimeout(CW.t); if(h&&CW.phase!=='rare')CW.t=setTimeout(cwDwell,CW.phase==='notes'&&h.t==='n'?550:850); cwDraw();}}
+  if(key!==old){CW.hov=h; clearTimeout(CW.t); if(CW.noDwell!=null&&!(h&&h.t==='n'&&h.i===CW.noDwell)&&!(h&&h.t==='m'&&CW.noDwell==='m'))CW.noDwell=null;
+    const blocked=h&&CW.phase==='notes'&&((h.t==='n'&&h.i===CW.noDwell)||(h.t==='m'&&CW.noDwell==='m'));
+    if(h&&CW.phase!=='rare'&&!blocked)CW.t=setTimeout(cwDwell,CW.phase==='notes'&&h.t==='n'?550:850); cwDraw();}}
 function cwEnd(){if(!CW.on)return; clearTimeout(CW.t); const ch=cwChord(); CW.on=false; if(CW.el)CW.el.remove(); CW.el=null;
   if(ch){wpApply(ch);} else {wpClose(); toast('Annulé'); cwBuzz();}}
 function cwDraw(){const el=CW.el; if(!el)return; const k=CW.k, g=CW_G, cx=CW.cx, cy=CW.cy, h=CW.hov; let s='';
