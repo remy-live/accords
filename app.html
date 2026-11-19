@@ -791,7 +791,7 @@ body.inscene #spEmbed{bottom:12px}
 #viewer.sun .pchip{border-color:#b00000;color:#b00000}#viewer.sun .pchip.in{background:#b00000;color:#fff}
 #vaddOpts{display:grid;gap:6px}#vcurOpts select{width:100%}
 #vlive,#vfollowBtn{display:none!important}#vgroup{position:relative}#vgroupN{position:absolute;top:4px;right:6px;background:#22c55e;color:#04210f;font:700 11px/16px system-ui;font-style:normal;min-width:16px;height:16px;border-radius:8px;padding:0 4px}
-.grpbox [hidden],.sendbox [hidden]{display:none!important}.sendbox{max-width:520px}.sdqr{background:#fff;border-radius:12px;padding:10px;margin:10px auto;width:min(360px,100%)}.sdqr svg{width:100%;height:auto;display:block}#sdWho{flex-wrap:wrap;gap:8px}
+.grpbox [hidden],.sendbox [hidden]{display:none!important}.sendbox{max-width:980px;width:min(980px,96vw)}.sdgrid{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 28px;align-items:start}.sdl{display:flex;flex-direction:column;align-items:center}.sdr h3{margin:14px 0 8px}.sdr h3:first-of-type{margin-top:16px}.sdqr{background:#fff;border-radius:12px;padding:10px;margin:4px auto;width:min(360px,52vh,100%);box-sizing:border-box}.sdl #sdInfo{max-width:360px;text-align:center}@media (max-width:700px){.sdgrid{grid-template-columns:1fr}.sdqr{width:min(280px,36vh,100%)}.sdr h3{margin:10px 0 6px}}.sdqr svg{width:100%;height:auto;display:block}#sdWho{flex-wrap:wrap;gap:8px}
 .grpbox{max-width:560px}.grprole{margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid #333;display:grid;gap:6px}.grprole .gopt{display:flex;gap:10px;align-items:center;text-align:left;cursor:pointer}.grprole .gopt input{flex:none;width:20px;height:20px}
 #vstage .ly.kon{background:rgba(56,189,248,.16);box-shadow:0 0 0 2px #38bdf8;border-radius:6px;-webkit-box-decoration-break:clone;box-decoration-break:clone}.grpstate{padding:10px 12px;border-radius:10px;background:rgba(127,127,127,.14);color:inherit;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}.grpstate b{flex:1 1 auto}
 .grpbig{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grpbig button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 10px;border-radius:14px;font-size:16px}.grpbig i{font-style:normal;font-size:30px}.grpbig small{opacity:.7;font-size:12px}
@@ -1411,13 +1411,13 @@ body.fiche-on main{margin:0 auto!important;padding-bottom:min(52vh,460px)}body.f
   <div id="cleanBody"></div>
 </div></div>
 <div id="sendBox" class="modal" hidden><div class="box sendbox">
-  <h2><span id="sdName">Envoyer</span> <button class="close">✕</button></h2>
-  <span class="seg" id="sdWhat"><button data-w="song">Ce morceau</button><button data-w="list">Toute la playlist</button></span>
-  <div id="sdQr" class="sdqr"></div><p class="lab" id="sdInfo"></p>
+  <h2><span id="sdName">Partager</span> <button class="close">✕</button></h2>
+  <div class="sdgrid"><div class="sdl"><div id="sdQr" class="sdqr"></div><p class="lab" id="sdInfo"></p></div>
+  <div class="sdr"><span class="seg" id="sdWhat"><button data-w="song">Ce morceau</button><button data-w="list">Toute la playlist</button></span>
   <h3>Musiciens connectés</h3><div id="sdWho" class="row"></div>
-  <div class="row"><button id="sdOther">WhatsApp, mail, fichier, PDF…</button></div>
+  <h3>Autrement</h3><div class="row"><button id="sdOther">WhatsApp, mail, fichier, PDF…</button></div>
   <h3>📥 Recevoir un morceau</h3>
-  <div class="row"><button id="sdScan">📷 Scanner le QR d'un ami</button></div><p class="lab">Quand un ami t'envoie un morceau par Wi-Fi, une fenêtre s'ouvre ici même, avec « ▶ Jouer maintenant ».</p>
+  <div class="row"><button id="sdScan">📷 Scanner le QR d'un ami</button></div><p class="lab">Quand un ami t'envoie un morceau par Wi-Fi, une fenêtre s'ouvre ici même, avec « ▶ Jouer maintenant ».</p></div></div>
 </div></div>
 <div id="grpBox" class="modal" hidden><div class="box grpbox">
   <h2>Jouer en groupe <button class="close">✕</button></h2>
@@ -1696,6 +1696,7 @@ body.fiche-on main{margin:0 auto!important;padding-bottom:min(52vh,460px)}body.f
       <span class="vtempo"><span id="beat"></span><button id="vtdn" aria-label="Tempo moins">−</button><button id="vmetro" aria-label="Métronome">♩<span id="vtempo"></span></button><button id="vtup" aria-label="Tempo plus">+</button></span>
       <button id="vaudio" aria-label="Bande son" hidden>▶</button>
       <button id="vscroll" aria-label="Défilement" hidden>⇣</button>
+      <button id="vshare" aria-label="Partager ce morceau" title="Partager ce morceau">⇪</button>
       <button id="vtv" aria-label="Lancer au vidéoprojecteur" title="Lancer au vidéoprojecteur (appui long : panneau Projecteur)">📺</button>
       <button id="vreq" class="reqb" hidden aria-label="Demandes du public" title="Demandes du public">🎤<em id="vreqN">0</em></button>
       <button id="vlite" aria-label="Retoucher les accords" title="Retoucher les accords ici même">✎</button>
@@ -1722,7 +1723,7 @@ body.fiche-on main{margin:0 auto!important;padding-bottom:min(52vh,460px)}body.f
         <button id="vlive" class="cl"><i>📡</i>Diffuser</button><button id="vmsgItem" class="cl" hidden><i>📣</i>Message</button>
         <button id="vfollowBtn" class="cl"><i>👥</i>Suivre</button>
         <button id="vgroup" class="cl"><i>👥</i>Groupe<em id="vgroupN" hidden></em></button>
-        <button id="vsend" class="cl"><i>📤</i>Envoyer</button>
+        <button id="vsend" class="cl"><i>📤</i>Partager</button>
         <button id="vmemo" class="cl"><i>🎙</i>Mémo</button>
         <button id="vrythm" class="cl"><i>🥁</i>Rythme</button>
         <button id="vcleanBtn" class="cl"><i>⛶</i>Épuré</button>
@@ -5134,7 +5135,7 @@ $('#vreq').onclick=()=>{Req.pend.length=0; Kara.open(); setTimeout(()=>{const x=
 if(KPS().req)setTimeout(()=>Req.poll(),3000);
 // 📺 en un geste : envoie et lance le morceau ; si le karaoké n'est pas relié, on scanne d'abord son QR
 async function tvSend(entry,btn){
-  if(!entry){toast('Aucun morceau à envoyer');return;}
+  if(!entry){toast('Aucun morceau à partager');return;}
   if(!Kara.linked()){Kara.afterLink=()=>tvSend(entry,btn); toast('Scanne le QR affiché par le karaoké'); startScan(); return;}
   if(btn){btn.disabled=true; btn.classList.remove('tvok','tvko');}
   const ok=await Kara.send(entry,true);
@@ -6093,11 +6094,12 @@ function sdPack(){
   return {ents,list:SD.what==='list'?l:null,pack:{app:'accords-paroles',version:2,from:meName(),date:new Date().toISOString(),songs,
     lists:SD.what==='list'&&l?[{id:l.id,name:l.name,date:l.date||'',notes:l.notes||'',items:ents.map(x=>({sid:x.s.id,target:x.item?x.item.target??null:null,capo:x.item?x.item.capo??null:null,notes:'',dur:''})),up:l.up}]:[]}};
 }
+$('#vshare').onclick=e=>{e.stopPropagation(); openSend();};
 function openSend(){const e=V.list[V.i]; if(!e){toast('Aucun morceau à envoyer');return;} SD.what='song'; $('#vmenu').hidden=true; modal('#sendBox',true); sdDraw();}
 async function sdDraw(){
   const e=V.list[V.i], l=isList()?V.listRef:null; if(!e)return; if(!l)SD.what='song';
   $('#sdWhat').hidden=!l; $$('#sdWhat button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.w===SD.what));
-  $('#sdName').textContent=SD.what==='list'?'Envoyer « '+l.name+' »':'Envoyer « '+e.s.q+' »';
+  $('#sdName').textContent=SD.what==='list'?'Partager « '+l.name+' »':'Partager « '+e.s.q+' »';
   const rs=shRecips();
   $('#sdWho').innerHTML=rs.length?rs.map(r=>`<button data-k="${esc(r.key)}">📤 ${esc((r.n||'Musicien').split(' · ')[0])}</button>`).join('')+(rs.length>1?'<button data-k="*" class="pri">À tous</button>':'')
     :'<span class="lab">Personne de connecté en Wi-Fi : fais-lui scanner le QR avec 📷 dans son appli Accords.</span>';
@@ -7778,7 +7780,7 @@ const icon=(n,s)=>`<svg class="ico" width="${s||20}" height="${s||20}" viewBox="
 function iconize(){
   const tile={vedit:'pencil',vsearch:'search',vtuner:'gauge',vspot:'phones',vpdf:'file',vyt:'play',vkara:'tv',vlive:'radio',vmsgItem:'mega',vfollowBtn:'users',vcleanBtn:'max',vdispBtn:'sliders',vquit:'out',vgroup:'users',vsend:'share',vmemo:'mic',vrythm:'drum'};
   Object.entries(tile).forEach(([id,n])=>{const i=document.querySelector('#'+id+' > i'); if(i)i.innerHTML=icon(n,21);});
-  const only={vclose:'x',vprev:'left',vnext:'right',vsize:'type',vlite:'pencil',vtv:'tv',vmenuBtn:'more',vlistBtn:'list',vscroll:'down',bprev:'left',bnext:'right',bscroll:'down',settingsBtn:'gear',scanBtn:'camera',linkBtn:'link',fClose:'x',fMore:'more'};
+  const only={vclose:'x',vprev:'left',vnext:'right',vsize:'type',vlite:'pencil',vtv:'tv',vshare:'share',vmenuBtn:'more',vlistBtn:'list',vscroll:'down',bprev:'left',bnext:'right',bscroll:'down',settingsBtn:'gear',scanBtn:'camera',linkBtn:'link',fClose:'x',fMore:'more'};
   Object.entries(only).forEach(([id,n])=>{const b=document.getElementById(id); if(b)b.innerHTML=icon(n,id[0]==='b'?26:20);});
   const lab={fScene:['play','Scène'],fEdit:['pencil','Éditer'],newBtn:['plus','Nouveau']};
   Object.entries(lab).forEach(([id,[n,t]])=>{const b=document.getElementById(id); if(b)b.innerHTML=icon(n,18)+'<span>'+t+'</span>';});
