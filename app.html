@@ -1233,6 +1233,34 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 .qlyr[aria-pressed=true]{color:var(--acc)!important;border-color:var(--acc)!important}.qlyr[aria-pressed=true] i{background:var(--acc)}.qlyr[aria-pressed=true] i:after{left:14px}
 @media (max-width:520px){.qlyr{padding:0 6px;font-size:0;gap:0}.qlyr i{margin:0}.qlyr:before{content:'♪';font-size:13px;margin-right:4px}}
 @media (min-width:700px) and (max-width:1240px){.libhead #libCount{display:none}.libhead .dd .ddl{display:none}}
+
+/* B : une seule barre */
+.libhead.lhb{flex-wrap:nowrap;gap:8px;align-items:center}.libhead.lhb h2{flex:none;white-space:nowrap}.libhead.lhb #libCount{flex:none;display:inline!important;margin-left:-4px}
+.lhsep{flex:none;width:1px;height:26px;background:var(--line)}
+#libChipsBox{flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}#libChipsBox::-webkit-scrollbar{display:none}
+#libChipsBox #libChips{flex-wrap:nowrap;margin:0;padding:2px 0}#libChipsBox #libChips>*{flex:none}#libChipsBox #libChips .grow{display:none}
+.libhead.lhb label.chsel{flex:none}.libhead.lhb .dd .ddl{display:none}
+.libhead.lhb #libSw button{padding:0 10px;font-size:16px}
+.lhico{flex:none;width:40px;height:40px;padding:0!important;border-radius:10px;border:1px solid var(--line)!important;background:var(--card)!important;color:var(--ink)!important;font-size:20px;line-height:1}
+.lhfilt{display:none;flex:none;height:40px;padding:0 12px;border-radius:10px;border:1px solid var(--line)!important;background:var(--card)!important;color:var(--ink)!important;font-weight:600;font-size:14px;white-space:nowrap}
+.lhfilt.on{border-color:var(--acc)!important;color:var(--acc)!important}.lhfilt b{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--acc);color:#fff;font-size:11px;margin-left:3px}
+#libAct{display:none}
+/* D : téléphone */
+@media (max-width:699px){
+ .libhead.lhb{flex-wrap:wrap;row-gap:8px}.libhead.lhb #libSw,.libhead.lhb .lhsep,#libChipsBox,.libhead.lhb label.chsel{display:none!important}
+ .libhead.lhb h2{font-size:22px}.lhfilt{display:inline-flex;align-items:center;margin-left:auto}.libhead.lhb #scene{flex:none}
+ #libAct{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-2px 0 8px}#libAct .lacnt{font-size:12.5px;color:var(--mute);font-weight:600;margin-right:2px}
+ #libAct button{height:28px;padding:0 10px;border-radius:8px;border:0!important;background:color-mix(in srgb,var(--acc) 14%,transparent)!important;color:var(--acc)!important;font-size:12.5px;font-weight:600}}
+#lfSheet{position:fixed;inset:0;z-index:94;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}#lfSheet[hidden]{display:none}
+#lfSheet .lfs{width:min(560px,100%);max-height:85vh;overflow-y:auto;background:var(--card);color:var(--ink);border-radius:20px 20px 0 0;padding:8px 16px calc(16px + env(safe-area-inset-bottom));box-sizing:border-box}
+#lfSheet .lfhd{display:flex;align-items:center;justify-content:space-between;margin:6px 0 2px}#lfSheet .lfhd b{font-size:19px}#lfSheet .lfhd button{height:36px;padding:0 16px;border-radius:10px;background:var(--acc)!important;color:#fff!important;border:0!important;font-weight:700}
+#lfSheet h5{margin:14px 0 6px;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute)}
+#lfSheet .lfc{display:flex;flex-wrap:wrap;gap:6px}#lfSheet .lfc button{height:36px;padding:0 13px;border-radius:999px;border:1px solid var(--line)!important;background:var(--card)!important;color:var(--ink)!important;font-size:14px;font-weight:600}
+#lfSheet .lfc button[aria-pressed=true]{background:var(--ink)!important;color:var(--bg)!important;border-color:var(--ink)!important}#lfSheet small{opacity:.6;margin-left:3px}
+.libhead.lhb .dd b{max-width:120px;overflow:hidden;text-overflow:ellipsis;display:inline-block;vertical-align:middle}
+.libhead.lhb #libCount{font-size:13px}@media (max-width:1320px){.libhead.lhb #libCount{display:none!important}}
+#libChipsBox{min-width:180px}#libChipsBox #libChips button{height:36px;padding:0 12px}
+@media (max-width:699px){.libhead.lhb{flex-wrap:nowrap}.libhead.lhb #libCount{display:none!important}.libhead.lhb h2{font-size:21px;flex:1}.lhfilt .lft{display:none}.lhfilt{padding:0 11px;margin-left:0}}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -4156,6 +4184,47 @@ function songMenu(s,x,y){
     {ico:'✎',t:'Éditer',fn:()=>editSong(s)},{ico:'✓',t:'Sélectionner',fn:()=>{selMode=true; SEL.add(s.id); renderAll();}},'-',
     {ico:'🗑',t:'Supprimer',red:1,fn:()=>deleteSongs([s.id])}]);
 }
+/* ---------- en-tête de la bibliothèque : une seule barre (B) ; sur téléphone, bouton Filtres + panneau (D) ---------- */
+function libHeadB(tl,fl,tbB,smB){const hd=$('#lib .libhead'); if(!hd.dataset.b){hd.dataset.b=1; hd.classList.add('lhb');
+    const h2=hd.querySelector('h2'), cnt=$('#libCount'), sw=$('#libSw'), sc=$('#scene'), gr=hd.querySelector('.grow');
+    const sep=document.createElement('span'); sep.className='lhsep';
+    const more=document.createElement('button'); more.id='libMore'; more.className='lhico'; more.title='Plus d’actions'; more.textContent='⋯';
+    const filt=document.createElement('button'); filt.id='libFilt'; filt.className='lhfilt'; filt.type='button';
+    const box=document.createElement('span'); box.id='libChipsBox'; box.append($('#libChips'));
+    hd.innerHTML=''; hd.append(h2,cnt,sw,sep,box,tl,fl,filt,more,sc); if(gr)gr.remove();
+    const act=document.createElement('div'); act.id='libAct'; hd.after(act); const hid=document.createElement('span'); hid.id='libHid'; hid.hidden=true; act.after(hid);
+    more.onclick=e=>{e.stopPropagation(); libMoreMenu(more);}; filt.onclick=()=>libFilters();
+    $$('#libSw [data-v]').forEach(b=>{b.title=b.textContent.trim(); b.textContent=b.dataset.v==='liste'?'☰':'▦';});}
+  else{const box=$('#libChipsBox'), f=$('#libFilt'); if(tl.parentNode!==$('#lib .libhead')){f.before(tl,fl);}}
+  $('#libHid').append(tbB,smB);
+  const n=(S.fType||S.fKind?1:0)+(S.fFolder?1:0); $('#libFilt').innerHTML='⚲<span class="lft"> Filtres</span>'+(n?` <b>${n}</b>`:''); $('#libFilt').classList.toggle('on',!!n);}
+function libMoreMenu(btn){let m=$('#ddPop'); if(m){m.remove(); if(m.dataset.for==='more')return;}
+  m=document.createElement('div'); m.id='ddPop'; m.dataset.for='more';
+  m.innerHTML=`<button type="button" data-a="tri">⚡ Tri rapide</button><button type="button" data-a="sel">${esc($('#selMode').textContent)}</button>`;
+  document.body.appendChild(m); const r=btn.getBoundingClientRect(); m.style.cssText=`top:${r.bottom+6}px;left:${Math.max(8,Math.min(r.right-220,innerWidth-228))}px;min-width:220px`;
+  m.onclick=e=>{const b=e.target.closest('[data-a]'); if(!b)return; m.remove(); (b.dataset.a==='tri'?$('#triBtn'):$('#selMode')).click();};
+  setTimeout(()=>{const off=e=>{if(!m.contains(e.target)&&e.target!==btn){m.remove(); removeEventListener('pointerdown',off,true);}}; addEventListener('pointerdown',off,true);},0);}
+// filtres actifs en petites étiquettes retirables (téléphone)
+function libActUI(){const a=$('#libAct'); if(!a)return; const it=[];
+  const lab={'~bg':'Grille basse','~sheet':'Partitions','~sp':'Écoute liée'};
+  if(S.fType)it.push(['t','🏷 '+S.fType]); if(S.fKind)it.push(['k',lab[S.fKind]||S.fKind]); if(S.fFolder)it.push(['f','📁 '+(S.fFolder==='∅'?'Sans dossier':S.fFolder)]);
+  const o=$('#tri').options[$('#tri').selectedIndex];
+  a.innerHTML=`<span class="lacnt">${visibleSongs().length} morceau${visibleSongs().length>1?'x':''} · ↕ ${esc(o?o.text:'')}</span>`+it.map(([k,t])=>`<button type="button" data-x="${k}">${esc(t)} ✕</button>`).join('');
+  a.onclick=e=>{const b=e.target.closest('[data-x]'); if(!b)return; const k=b.dataset.x; if(k==='t')S.fType=''; if(k==='k')S.fKind=''; if(k==='f'){S.fFolder=''; $('#fFolder').value='';} save(); renderAll();};}
+function libFilters(){let el=$('#lfSheet'); if(!el){el=document.createElement('div'); el.id='lfSheet'; document.body.appendChild(el);
+    el.addEventListener('click',e=>{if(e.target===el||e.target.closest('[data-close]')){el.hidden=true; return;}
+      const b=e.target.closest('[data-g]'); if(!b)return; const g=b.dataset.g, v=b.dataset.v;
+      if(g==='tag'){if(v==='')S.fType='',S.fKind=''; else if(v[0]==='~')S.fKind=S.fKind===v?'':v; else S.fType=S.fType===v?'':v;}
+      if(g==='dos'){S.fFolder=v; $('#fFolder').value=v;} if(g==='tri'){S.sort=v; $('#tri').value=v;} if(g==='vue'){S.libView=v; S.libNavAt=null;}
+      save(); renderAll(); libFilters();});}
+  const tags=allTags(), cur=S.fType||'', k=S.fKind||'', c=(g,v,t,on,n)=>`<button type="button" data-g="${g}" data-v="${esc(v)}" aria-pressed="${!!on}">${esc(t)}${n!=null?` <small>${n}</small>`:''}</button>`;
+  const nt=t=>S.songs.filter(x=>tagsOf(x).includes(t)).length, nb=S.songs.filter(x=>validGrid(x.bgrid)).length, ns=S.songs.filter(x=>x.kind==='sheet').length, nm=S.songs.filter(x=>muPref(x)).length;
+  el.innerHTML=`<div class="lfs"><span class="shgrip"></span><div class="lfhd"><b>Filtres</b><button type="button" data-close aria-label="Fermer">OK</button></div>
+   <h5>Étiquettes</h5><div class="lfc">${c('tag','','Tous',!cur&&!k,S.songs.length)}${tags.map(t=>c('tag',t,t,cur===t,nt(t))).join('')}${nb?c('tag','~bg','Grille basse',k==='~bg',nb):''}${ns?c('tag','~sheet','Partitions',k==='~sheet',ns):''}${nm?c('tag','~sp','Écoute liée',k==='~sp',nm):''}</div>
+   <h5>Dossier</h5><div class="lfc">${[...$('#fFolder').options].map(o=>c('dos',o.value,o.text,(S.fFolder||'')===o.value)).join('')}</div>
+   <h5>Trier par</h5><div class="lfc">${[...$('#tri').options].map(o=>c('tri',o.value,o.text,$('#tri').value===o.value)).join('')}</div>
+   <h5>Affichage</h5><div class="lfc">${c('vue','liste','☰ Liste',S.libView!=='tableau')}${c('vue','tableau','▦ Tableau',S.libView==='tableau')}</div></div>`;
+  el.hidden=false;}
 /* ---------- listes déroulantes en pastilles (le <select> reste caché et garde la logique) ---------- */
 function ddMake(sel,ico,lab){if(!sel)return; let b=sel.nextElementSibling; if(!b||!b.classList.contains('dd')){b=document.createElement('button'); b.type='button'; b.className='dd'; sel.after(b); b.onclick=e=>{e.preventDefault(); e.stopPropagation(); ddOpen(sel,b);};}
   const o=sel.options[sel.selectedIndex]; b.innerHTML=`<span class="ddi">${ico}</span><span class="ddl">${esc(lab)}</span><b>${esc(o?o.text:'')}</b><span class="ddc">▾</span>`; b.setAttribute('aria-label',lab+' : '+(o?o.text:''));}
@@ -4177,8 +4246,7 @@ function libChipsUI(){
   const c2=(f,t,on)=>`<button data-f="${esc(f)}" aria-pressed="${on}">${t}</button>`;
   const tl=$('#tri').closest('label'), fl=$('#fFolder').closest('label'); tl.remove(); fl.remove(); const tbB=$('#triBtn'), smB=$('#selMode'); tbB.remove(); smB.remove();
   $('#libChips').innerHTML=c2('',cn('Tous',n),!cur&&!k)+tags.map(t=>c2(t,cn(t,nt(t)),cur===t)).join('')+(nb?c2('~bg',cn('Grille basse',nb),k==='~bg'):'')+(ns?c2('~sheet',cn('Partitions',ns),k==='~sheet'):'')+(nm?c2('~sp',cn('Écoute liée',nm),k==='~sp'):'')+'<span class="grow"></span>';
-  {tl.classList.add('chsel'); fl.classList.add('chsel'); const hd=$('#lib .libhead'), gr=hd.querySelector('.grow'); gr.before(tl,fl); ddMake($('#tri'),'↕','Tri'); ddMake($('#fFolder'),'📁','Dossier');
-   $('#libChips').append(tbB,smB);}
+  {tl.classList.add('chsel'); fl.classList.add('chsel'); libHeadB(tl,fl,tbB,smB); ddMake($('#tri'),'↕','Tri'); ddMake($('#fFolder'),'📁','Dossier'); libActUI();}
   $$('#libSw [data-v]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===(S.libView==='tableau'?'tableau':'liste')));
   $('#libCount').textContent=n+' morceau'+(n>1?'x':'');
 }
