@@ -1223,6 +1223,16 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 @media (max-width:760px){#cwSet .cwsegs{grid-template-columns:1fr}#cwSet .cwpv{height:130px}#cwSet .cwtest small{font-size:11.5px}#cwSet .cwtl{font-size:17px}}
 #cwSet .cwseg button,#cwSet .cwrow b{white-space:nowrap}#cwSet .cwsegs .cwrow>span:first-child{flex:none}#cwSet .cwsegs .cwrow{justify-content:space-between}
 #cwSet .cwsegs{grid-template-columns:1fr!important}#cwSet .cwsegs .cwrow{min-height:40px}
+.dd{border-radius:10px!important}
+#libChips #triBtn,#libChips #selMode{height:38px;border-radius:10px;padding:0 12px;font-size:13.5px;font-weight:600;border:1px solid var(--line)!important;color:var(--ink)!important;background:var(--card)!important}
+#libChips #selMode[aria-pressed=true]{border-color:var(--acc)!important;color:var(--acc)!important}
+.libhead label.chsel{display:inline-flex;align-items:center;margin:0;position:relative}.libhead label.chsel select{position:absolute!important;opacity:0;pointer-events:none;width:1px!important;height:1px!important;padding:0!important}.libhead label.chsel .chico{display:none}
+.libhead .dd{height:40px}
+.qlyr{flex:none;display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 10px 0 6px;margin-right:4px;border-radius:9px;border:1px solid var(--line)!important;background:transparent!important;color:var(--mute)!important;font-size:13px;font-weight:600;box-shadow:none;white-space:nowrap}
+.qlyr i{width:28px;height:16px;border-radius:8px;background:var(--line);position:relative;flex:none}.qlyr i:after{content:'';position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#fff;transition:left .15s}
+.qlyr[aria-pressed=true]{color:var(--acc)!important;border-color:var(--acc)!important}.qlyr[aria-pressed=true] i{background:var(--acc)}.qlyr[aria-pressed=true] i:after{left:14px}
+@media (max-width:520px){.qlyr{padding:0 6px;font-size:0;gap:0}.qlyr i{margin:0}.qlyr:before{content:'♪';font-size:13px;margin-right:4px}}
+@media (min-width:700px) and (max-width:1240px){.libhead #libCount{display:none}.libhead .dd .ddl{display:none}}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -1231,7 +1241,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
   <div class="top noprint">
     <h1>🎸 Accords</h1>
     <div class="tabs" style="display:none"><button id="tabLib" aria-pressed="true">Bibliothèque</button><button id="tabLists">Playlists</button></div>
-    <label class="hsearch grow"><span aria-hidden="true">🔍</span><input type="search" id="homeQ" placeholder="Chercher un morceau, un artiste, des paroles…" autocomplete="off"></label>
+    <label class="hsearch grow"><span aria-hidden="true">🔍</span><input type="search" id="homeQ" placeholder="Chercher un morceau, un artiste…" autocomplete="off"><button type="button" id="qLyr" class="qlyr" aria-pressed="false" title="Chercher aussi dans les paroles"><i></i>Paroles</button></label>
     <button id="myQrBtn" class="hbtn" title="Afficher mon QR pour que les musiciens me suivent"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg><span class="hl"> Mon QR</span></button>
     <button id="shareHome" class="hbtn" title="Envoyer des morceaux et des playlists"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg><span> Partager</span></button>
     <button id="scanBtn" aria-label="Scanner un QR code" title="Scanner un QR code">📷</button>
@@ -3150,7 +3160,7 @@ function refreshFilters(){
 }
 function visibleSongs(){
   const f=($('#search').value||'').trim().toLowerCase(), ff=S.fFolder||'', ft=S.fType||'';
-  return ordered().filter(s=>(!f||(s.q+' '+(s.text||'')+' '+(s.notes||'')+' '+(s.folder||'')+' '+tagsOf(s).join(' ')).toLowerCase().includes(f))
+  return ordered().filter(s=>(!f||(s.q+' '+(S.qLyr?(s.text||'')+' '+(s.notes||''):'')+' '+(s.folder||'')+' '+tagsOf(s).join(' ')).toLowerCase().includes(f))
     &&(!ff||(ff==='∅'?!s.folder:s.folder===ff))&&(!ft||(ft==='∅'?!tagsOf(s).length:hasTag(s,ft)))
     &&(!S.fKind||(S.fKind==='~bg'?validGrid(s.bgrid):S.fKind==='~sheet'?s.kind==='sheet':muLinks(s).length>0)));
 }
@@ -4165,9 +4175,10 @@ function libChipsUI(){
   const c=(f,t,on)=>`<button data-f="${esc(f)}" aria-pressed="${on}">${esc(t)}</button>`;
   const nt=t=>S.songs.filter(x=>tagsOf(x).includes(t)).length, nb=S.songs.filter(x=>validGrid(x.bgrid)).length, ns=S.songs.filter(x=>x.kind==='sheet').length, nm=S.songs.filter(x=>muPref(x)).length, cn=(t,m)=>esc(t)+(m?` <small>${m}</small>`:'');
   const c2=(f,t,on)=>`<button data-f="${esc(f)}" aria-pressed="${on}">${t}</button>`;
-  const tl=$('#tri').closest('label'), fl=$('#fFolder').closest('label'); tl.remove(); fl.remove();
+  const tl=$('#tri').closest('label'), fl=$('#fFolder').closest('label'); tl.remove(); fl.remove(); const tbB=$('#triBtn'), smB=$('#selMode'); tbB.remove(); smB.remove();
   $('#libChips').innerHTML=c2('',cn('Tous',n),!cur&&!k)+tags.map(t=>c2(t,cn(t,nt(t)),cur===t)).join('')+(nb?c2('~bg',cn('Grille basse',nb),k==='~bg'):'')+(ns?c2('~sheet',cn('Partitions',ns),k==='~sheet'):'')+(nm?c2('~sp',cn('Écoute liée',nm),k==='~sp'):'')+'<span class="grow"></span>';
-  {tl.classList.add('chsel'); fl.classList.add('chsel'); $('#libChips').append(tl,fl); ddMake($('#tri'),'↕','Tri'); ddMake($('#fFolder'),'📁','Dossier');}
+  {tl.classList.add('chsel'); fl.classList.add('chsel'); const hd=$('#lib .libhead'), gr=hd.querySelector('.grow'); gr.before(tl,fl); ddMake($('#tri'),'↕','Tri'); ddMake($('#fFolder'),'📁','Dossier');
+   $('#libChips').append(tbB,smB);}
   $$('#libSw [data-v]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===(S.libView==='tableau'?'tableau':'liste')));
   $('#libCount').textContent=n+' morceau'+(n>1?'x':'');
 }
@@ -4276,6 +4287,8 @@ $('#newMultiBox').appendChild($('#liste')); $('#newMultiBox').appendChild($('#aj
 $('#ajout').addEventListener('click',()=>setTimeout(()=>{if(!$('#liste').value.trim())modal('#newBox',false);},50));
 // la recherche du haut cherche dans la bibliothèque
 $('#homeQ').oninput=()=>{const v=$('#homeQ').value; if($('#lib').hidden&&v)showTab('lib'); $('#search').value=v; $('#search').dispatchEvent(new Event('input',{bubbles:true}));};
+$('#qLyr').onclick=e=>{e.preventDefault(); e.stopPropagation(); S.qLyr=!S.qLyr; save(); $('#qLyr').setAttribute('aria-pressed',!!S.qLyr); $('#homeQ').placeholder=S.qLyr?'Chercher un morceau, un artiste, des paroles…':'Chercher un morceau, un artiste…'; $('#search').dispatchEvent(new Event('input',{bubbles:true})); toast(S.qLyr?'Recherche aussi dans les paroles':'Recherche dans les titres et artistes');};
+setTimeout(()=>{try{$('#qLyr').setAttribute('aria-pressed',!!S.qLyr); if(S.qLyr)$('#homeQ').placeholder='Chercher un morceau, un artiste, des paroles…';}catch(e){}},0);
 micify($('#homeQ')); setTimeout(()=>{const w=$('#search').closest('.micw')||$('#search'); w.style.display='none';},0);
 const listDate=l=>{const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(l.date||''); return m?new Date(+m[1],+m[2]-1,+m[3]):null;};
 function nextConcert(){
@@ -6800,7 +6813,7 @@ function cwStart(rc,existing,list,noRot,label){
   if(!o&&!circ){const downOK=innerHeight-rc.top+2>=Rm+4, upOK=bot+2>=Rm+4;
     if(st.pos==='down'?downOK||!upOK:st.pos==='auto'?!upOK&&downOK:false)o='D';}
   const clx=x=>Math.max(Rm+4,Math.min(innerWidth-Rm-4,x));
-  if(circ){cx=clx(wx); cy=Math.max(Rm+4,Math.min(innerHeight-Rm-4,(rc.top-30+bot)/2));}
+  if(circ){cx=clx(wx); cy=Math.max(Rm+4,Math.min(innerHeight-Rm-4,wy));}
   else if(o==='D'){cx=clx(wx); cy=pick?bot+6:rc.top-2; if(cy+Rm+4>innerHeight)cy=innerHeight-Rm-4;}
   else if(!o){cx=clx(wx); cy=pick?rc.top-6:bot+2; if(cy-Rm-4<0)cy=Rm+4; if(cy>innerHeight-8)cy=innerHeight-8;}
   else {cx=o==='L'?Math.max(10,Math.min(rc.left-2,innerWidth-R-8)):Math.min(innerWidth-10,Math.max(rc.left+rc.width+2,R+8)); cy=Math.max(R+56,Math.min(innerHeight-R-8,wy));}
