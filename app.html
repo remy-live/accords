@@ -6897,8 +6897,11 @@ function cwOpenChord(ch,cur,ops){
   wpClose(); WP.ctx={r:cur._r,raw,col:0,kind:'c',add:(r,c,kd,src)=>ops.rep(raw,k,src)};
   const rc=ch.getBoundingClientRect(); const hl=document.createElement('div'); hl.className='wphl'; hl.style.cssText=`left:${rc.left-2}px;top:${rc.top-1}px;width:${rc.width+4}px;height:${rc.height+2}px`; document.body.appendChild(hl); WP.hl=hl;
   cwStart(rc,{del:()=>ops.del(raw,k),name:ch.textContent.trim()},cwSongChords(ch),false,cwShow(cwPlain(ch.textContent)));}
+const cwMj=x=>CWS().mj==='M'?String(x).replace('m(maj7)','mM7').replace('maj','M'):x;
 function cwSuffix(q,x){if(x==null)return q==null?'':CW_Q[q][1];
-  const X=CW_X[x]; if(q===0||q===3)return x===1?'7'+CW_Q[q][1]:CW_Q[q][1]; if(q===1)return X==='maj7'?'m(maj7)':'m'+X; return X;}
+  const X=CW_X[x]; if(q===0||q===3)return x===1?'7'+CW_Q[q][1]:CW_Q[q][1]; if(q===1)return cwMj(X==='maj7'?'m(maj7)':'m'+X); return cwMj(X);}
+// 3ᵉ étage : il suit la couleur choisie — le 7 est toujours juste au-dessus (m → m7, maj → 7, sus4 → 7sus4)
+const cwXAng=i=>{const qq=CW.q==null?2:CW.q; return cwCol(CW.root.slot,qq)+(1-i)*cwCW();};
 function cwChord(){const h=CW.hov; if(!h)return null; if(h.t==='s')return h.n; if(h.t==='del'||h.t==='set')return null; const r=CW.root; if(!r)return null;
   const root=cwRoot(r.i,r.acc); if(h.t==='n')return root; if(h.t==='q')return root+cwSuffix(h.j,null); if(h.t==='x')return root+cwSuffix(CW.q==null?2:CW.q,h.j); return null;}
 function cwHit(x0,y0){const w0=cwHit0(x0,y0); if(w0)return w0;
@@ -6913,9 +6916,9 @@ function cwHit0(x0,y0){
     if(CW.phase==='focus'){const b=CW.base.i; if(i<b-1||i>b+1)return null; return {t:'n',slot:i,i:b,acc:i-b};}
     if(i<0)return CW.existing?{t:'del'}:null; if(i>6)return {t:'set'}; return {t:'n',slot:i,i,acc:0};}
   const r=CW.root; if(!r)return null; const w=cwCW();
-  let j=-1; for(let c=0;c<4;c++){if(Math.abs(p.a-cwCol(r.slot,c))<=w/2+1.5){j=c; break;}}
+  if(p.r<=(cwE(g.q2)+2)*k){let j=-1; for(let c=0;c<4;c++){if(Math.abs(p.a-cwCol(r.slot,c))<=w/2+1.5){j=c; break;}} return j<0?null:{t:'q',j};}
+  let j=-1; for(let c=0;c<4;c++){if(Math.abs(p.a-cwXAng(c))<=w/2+1.5){j=c; break;}}
   if(j<0)return null;
-  if(p.r<=(cwE(g.q2)+2)*k)return {t:'q',j};
   if(CW.q===0||CW.q===3){return j===1?{t:'x',j}:null;}
   return {t:'x',j};}
 function cwDwell(){const h=CW.hov; if(!h||CW.phase!=='notes'||h.t!=='n')return; CW.phase='focus'; CW.base={i:h.i}; cwBuzz(); cwDraw();}
@@ -6952,10 +6955,10 @@ function cwDraw(){const el=CW.el; if(!el)return; const k=CW.k, g=CW_G, cx=CW.cx,
     if(CW.existing){const on=h&&h.t==='del'; s+=tile(g.r1,g.r2,180+st,180,'cwdel',on,true)+cwLab(cx,cy,S_((g.r1+g.r2)/2),180+st/2,'🗑','cwt');}
     const on=h&&h.t==='set'; s+=tile(g.r1,g.r2,0,-st,'cwset',on,true)+cwLab(cx,cy,S_((g.r1+g.r2)/2),-st/2,'⚙','cwt'+(on?' on':''));}
   if(r){const w=cwCW();
-    CW_Q.forEach(([t],j)=>{const c=cwCol(r.slot,j), on=h&&h.t==='q'&&h.j===j, sel=CW.q===j&&h&&h.t==='x';
+    CW_Q.forEach(([t0],j)=>{const t=j===2&&CWS().mj==='M'?'M':t0;const c=cwCol(r.slot,j), on=h&&h.t==='q'&&h.j===j, sel=CW.q===j&&h&&h.t==='x';
       s+=tile(cwE(g.q1),cwE(g.q2),c+w/2,c-w/2,j===1?'cwm':j===2?'cwM':'cwa',on||sel,false)+cwLab(cx,cy,S_((cwE(g.q1)+cwE(g.q2))/2),c,t,'cwt cwsm'+(on||sel?' on':''));});
     const qq=CW.q==null?2:CW.q;
-    CW_X.forEach((t,j)=>{const c=cwCol(r.slot,j), on=h&&h.t==='x'&&h.j===j, dis=(qq===0||qq===3)&&j!==1;
+    CW_X.forEach((t0,j)=>{const c=cwXAng(j), on=h&&h.t==='x'&&h.j===j, dis=(qq===0||qq===3)&&j!==1, t=dis?cwMj(t0):cwSuffix(qq,j);
       s+=`<g class="${dis?'cwfade':''}">${tile(cwE(g.x1),cwE(g.x2),c+w/2,c-w/2,'cwx',on,false)}${cwLab(cx,cy,S_((cwE(g.x1)+cwE(g.x2))/2),c,t,'cwt cwsm'+(on?' on':''))}</g>`;});}
   const ch=cwChord(), R=S_((CW.root?cwE(g.x2):g.r2)+16); let by=CW.o?cy-R-48:cy-R-40;
   if(CW.o==='D'){by=cy+R+8; if(by>innerHeight-56){const ct=CW.chips.length?Math.min(...CW.chips.map(c=>c.y)):cy-S_(g.r2*Math.sin(Math.PI/7))-20; by=Math.max(4,ct-56);}}
@@ -6979,7 +6982,7 @@ function cwSettings(){let el=$('#cwSet'); if(!el){el=document.createElement('div
   el.innerHTML=`<div class="cwsheet"><span class="shgrip"></span><div class="cwhd"><b>⚙ Réglages de la roue</b><button data-x aria-label="Fermer">✕</button></div><div class="cwgrid"><div class="cwleft"><div class="cwpv" id="cwPv"></div><div class="cwtest"><small>Essaie ici : appui long sur un mot, glisse, relâche</small><div class="cwtl" id="cwTl"></div></div></div><div class="cwright">
     <div class="cwtgs">${tg('song','Accords du morceau','sous le mot : glisser vers le bas pour les poser')}${tg('rot','Tourner la roue au bord','collé à gauche ou à droite, la roue s’ouvre vers le centre')}${tg('fr','Noms des notes','Do, Ré, Mi… sous les lettres')}${tg('vib','Vibrer','à chaque changement d’étage')}</div>
     <div class="cwrow cwstyrow"><span><b>Style</b> <small>${esc(cwSty().nom)}</small></span></div><div class="cwsty">${CW_STY.map(y=>`<button data-k="style" data-v="${y.id}"${cwSty().id===y.id?' aria-pressed="true"':''} title="${esc(y.nom)}"><span class="sw" style="background:${y.bg}">${['n','m','x'].map((c,i)=>`<i style="border-radius:${Math.min(9,y.rc*1.2+1)}px;${y.ol?`border:2px solid ${i===1?y.on:y[c]};background:${i===1?y.on:'transparent'}`:`background:${i===1?y.on:y[c]}`}"></i>`).join('')}</span><em>${esc(y.nom)}</em></button>`).join('')}</div>
-    <div class="cwsegs">${seg('form','Forme',[['demi','Demi'],['cercle','Cercle']])}${seg('pos','Position',[['up','Dessus'],['down','Dessous'],['auto','Auto']])}${seg('dwell','♭ / ♯',[[300,'0,3 s'],[550,'0,5 s'],[800,'0,8 s']])}${seg('size','Taille',[['S','S'],['M','M'],['L','L']])}</div></div></div></div>`;
+    <div class="cwsegs">${seg('form','Forme',[['demi','Demi'],['cercle','Cercle']])}${seg('pos','Position',[['up','Dessus'],['down','Dessous'],['auto','Auto']])}${seg('mj','Majeur',[['maj','maj7'],['M','M7']])}${seg('dwell','♭ / ♯',[[300,'0,3 s'],[550,'0,5 s'],[800,'0,8 s']])}${seg('size','Taille',[['S','S'],['M','M'],['L','L']])}</div></div></div></div>`;
   cwPreview(); cwTestLine();
   el.hidden=false;}
 
