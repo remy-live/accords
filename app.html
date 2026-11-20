@@ -1122,6 +1122,7 @@ body.fiche-on main{margin:0 auto!important;padding-bottom:min(52vh,460px)}body.f
 #liteSnack{position:fixed;left:50%;transform:translateX(-50%);z-index:42;width:min(460px,calc(100% - 28px));box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:6px 6px 6px 16px;border-radius:14px;background:#3a3029;border:1px solid #574a40;box-shadow:0 10px 24px rgba(0,0,0,.5);color:#f2ece6;font:600 15px Inter,system-ui,sans-serif}#liteSnack[hidden]{display:none}
 #liteSnack span{flex:1}#liteSnack b{color:var(--acc);font-family:ui-monospace,'JetBrains Mono',monospace}#liteSnack button{height:42px;padding:0 14px;border-radius:10px;background:var(--acc)!important;color:#1c1714!important;border:0!important;font:800 14px Inter,system-ui,sans-serif}
 #vtUndo.has,#vtRedo.has{background:var(--acc)!important;color:#1c1714!important;border-color:var(--acc)!important;font-weight:800}
+#wpop .gmcp{display:flex;gap:6px;width:100%;margin-bottom:6px}#wpop .gmcp button{flex:1;height:48px;font-weight:800;background:var(--acc)!important;color:#1c1714!important;border-color:var(--acc)!important;white-space:nowrap}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -6505,16 +6506,17 @@ function vtSetKind(i,k){
   else if(k==='c'||k==='l')out=auto(core)===k?core:core+' '+(k==='c'?FORCE_C:FORCE_L);
   L[i]=out; vtSetText(L.join('\n'));
 }
-$('#vtGut').addEventListener('click',ev=>{
-  const d=ev.target.closest('#vtGut>div'); if(!d)return; const i=[...$('#vtGut').children].indexOf(d), line=$('#vtextArea').value.split('\n')[i]; if(line==null||!line.trim())return;
-  wpClose(); const el=document.createElement('div'); el.id='wpop'; el.className='wpop vtkind';
-  el.innerHTML=`<span class="vtkl">Ligne ${i+1} :</span>`+[['c','Accords'],['l','Paroles'],['s','Section'],['k','Repère'],['a','Auto']].map(([k,n])=>`<button data-k="${k}">${n}</button>`).join('')+(cpCopy($('#vtextArea').value,i)?'<button data-k="cp">📋 Copier ses accords</button>':'')+(CP.pat?'<button data-k="pa">🖌 Coller les accords</button>':'')+'<button class="wpx" data-k="x" aria-label="Fermer">✕</button>';
+$('#vtGut').addEventListener('click',ev=>{const d=ev.target.closest('#vtGut>div'); if(d)gutMenu(d);});
+function gutMenu(d){
+  const i=[...$('#vtGut').children].indexOf(d), line=$('#vtextArea').value.split('\n')[i]; if(line==null||!line.trim())return;
+  wpClose(); const el=document.createElement('div'); el.id='wpop'; el.className='wpop vtkind'; const canCp=!!cpCopy($('#vtextArea').value,i), canPa=!!CP.pat&&CP.src!==i;
+  el.innerHTML=(canCp||canPa?`<div class="gmcp">${canCp?'<button data-k="cp" class="pri">📋 Copier les accords</button>':''}${canPa?`<button data-k="pa" class="pri">🖌 Coller ${esc(CP.pat.toks.map(t=>t.s).join(' '))}</button>`:''}</div>`:'')+`<span class="vtkl">Ligne ${i+1} :</span>`+[['c','Accords'],['l','Paroles'],['s','Section'],['k','Repère'],['a','Auto']].map(([k,n])=>`<button data-k="${k}">${n}</button>`).join('')+'<button class="wpx" data-k="x" aria-label="Fermer">✕</button>';
   document.body.appendChild(el); WP.el=el; const r=d.getBoundingClientRect(); el.style.left=Math.max(8,Math.min(innerWidth-el.offsetWidth-8,r.right+6))+'px'; el.style.top=Math.max(8,Math.min(innerHeight-el.offsetHeight-8,r.top-8))+'px';
   el.onclick=e=>{const b=e.target.closest('button'); if(!b)return; wpClose(); const v=$('#vtextArea').value;
-    if(b.dataset.k==='cp'){const p=cpCopy(v,i); if(p)cpSet(p); return;}
-    if(b.dataset.k==='pa'){const n=cpPaste(v,i,CP.pat); if(n!=null)vtSetText(n); return;}
+    if(b.dataset.k==='cp'){const p=cpCopy(v,i); if(p){CP.src=i; cpSet(p); cpGutMark();} return;}
+    if(b.dataset.k==='pa'){const n=cpPaste(v,i,CP.pat); if(n!=null&&n!==v){const before=v.split('\n').length; vtSetText(n); if(n.split('\n').length>before&&CP.src>i)CP.src++; setTimeout(cpGutMark,250); toast('Accords collés');} return;}
     if(b.dataset.k!=='x')vtSetKind(i,b.dataset.k);};
-});
+}
 /* ----- copier les accords : appui long sur une ligne = pinceau ; « ↓ idem » ; « ⤓ mêmes accords » pour un bloc entier ----- */
 const CP={pat:null};
 const cpWords=s=>{const w=[],re=/\S+/g; let m; while((m=re.exec(s)))w.push({a:m.index,b:m.index+m[0].length}); return w;};
@@ -6557,7 +6559,7 @@ function cpSet(pat){CP.pat=pat; let el=$('#cpPill');
   if(!pat){if(el)el.remove(); return;}
   if(!el){el=document.createElement('div'); el.id='cpPill'; document.body.appendChild(el);
     el.onclick=e=>{if(e.target.closest('button')){cpSet(null); CP.src=null; cpGutMark();}};}
-  el.innerHTML=`<span>🖌 <b>${esc(pat.toks.map(t=>t.s).join(' '))}</b> copiés · appui long sur une autre marge</span><button aria-label="Arrêter de coller">✕ Fini</button>`;
+  el.innerHTML=`<span>🖌 <b>${esc(pat.toks.map(t=>t.s).join(' '))}</b> copiés · touche une autre marge pour coller</span><button aria-label="Arrêter de coller">✕ Fini</button>`;
   try{navigator.vibrate&&navigator.vibrate(20);}catch(e){}}
 // branche le geste sur un conteneur : getCtx() -> {get, set, noClick} ou null
 function cpWire(box,getCtx){let T=null;
@@ -6724,14 +6726,11 @@ function paintWord(span,x,y){const ta=$('#vtextArea'), v=ta.value, raw=+span.dat
   vtSetText(addChordText(v,raw,col,'l',PAINT.src)); try{navigator.vibrate&&navigator.vibrate(10);}catch(e){}}
 
 /* ----- copier / coller les accords : appui long dans la marge de l'éditeur ----- */
-function cpGutMark(){const g=$('#vtGut'); if(!g)return; [...g.children].forEach((d,i)=>{d.classList.toggle('cpsrc',CP.pat&&CP.src===i); d.classList.toggle('cptgt',!!CP.pat&&CP.src!==i&&(d.classList.contains('c')||d.classList.contains('l')));});}
+function cpGutMark(){const g=$('#vtGut'); if(!g)return; [...g.children].forEach((d,i)=>{d.classList.toggle('cpsrc',CP.pat&&CP.src===i); d.classList.remove('cptgt');});}
 (function(){const g=$('#vtGut'); let T=null;
   g.addEventListener('pointerdown',e=>{const d=e.target.closest('#vtGut>div'); if(!d)return; const i=[...g.children].indexOf(d), x0=e.clientX, y0=e.clientY;
-    clearTimeout(T&&T.t); if(CP.pat)d.classList.add('cphold');
-    T={d,x0,y0,t:setTimeout(()=>{T=null; d.classList.remove('cphold'); CP.gutAt=Date.now()+60000; const v=$('#vtextArea').value;
-      if(!CP.pat||CP.src===i){if(CP.src===i){cpSet(null); CP.src=null; cpGutMark(); toast('Copie annulée'); return;}
-        const p=cpCopy(v,i); if(!p){toast('Cette ligne n\'a pas d\'accords à copier'); return;} CP.src=i; cpSet(p); cpGutMark(); return;}
-      const n=cpPaste(v,i,CP.pat); if(n!=null&&n!==v){const before=v.split('\n').length; vtSetText(n); if(n.split('\n').length>before&&CP.src>i)CP.src++; setTimeout(cpGutMark,250); try{navigator.vibrate&&navigator.vibrate(18);}catch(_){} toast('Accords collés');}},520)};});
+    clearTimeout(T&&T.t);
+    T={d,x0,y0,t:setTimeout(()=>{T=null; CP.gutAt=Date.now()+60000; try{navigator.vibrate&&navigator.vibrate(12);}catch(_){} gutMenu(d);},450)};});
   addEventListener('pointermove',e=>{if(T&&Math.hypot(e.clientX-T.x0,e.clientY-T.y0)>10){clearTimeout(T.t); T.d.classList.remove('cphold'); T=null;}});
   const up=()=>{if(T){clearTimeout(T.t); T.d.classList.remove('cphold'); T=null;} if(CP.gutAt>Date.now()+1000)CP.gutAt=Date.now();};
   addEventListener('pointerup',up); addEventListener('pointercancel',up);
