@@ -1116,7 +1116,7 @@ body.fiche-on main{margin:0 auto!important;padding-bottom:min(52vh,460px)}body.f
 #vliteUR{position:static;flex:1;display:flex;align-items:center;gap:8px;padding:0 4px;background:none;border:0;box-shadow:none;border-radius:0}#vliteUR[hidden]{display:none}
 #viewer .vctl.liteon{background:#2f2620}
 #vliteUR .lurl{flex:1;font:800 13px Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);white-space:nowrap}
-#vliteUR button{flex:none;width:auto;min-width:64px;height:46px;padding:0 14px;white-space:nowrap;border-radius:12px;font:800 19px Inter,system-ui,sans-serif;background:#342b25!important;color:#7d6f63!important;border:1px solid #4a3f37!important}
+#vliteUR button{flex:none;width:auto!important;min-width:64px!important;height:46px;padding:0 14px;white-space:nowrap;border-radius:12px;font:800 19px Inter,system-ui,sans-serif;background:#342b25!important;color:#7d6f63!important;border:1px solid #4a3f37!important}
 #vliteUR button b{font-size:15px}#vliteUR button.has{background:var(--acc)!important;color:#1c1714!important;border-color:var(--acc)!important}
 #vliteUR .lufin{background:#342b25!important;color:#f2ece6!important;font-size:16px}
 #liteSnack{position:fixed;left:50%;transform:translateX(-50%);z-index:42;width:min(460px,calc(100% - 28px));box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:6px 6px 6px 16px;border-radius:14px;background:#3a3029;border:1px solid #574a40;box-shadow:0 10px 24px rgba(0,0,0,.5);color:#f2ece6;font:600 15px Inter,system-ui,sans-serif}#liteSnack[hidden]{display:none}
@@ -3559,10 +3559,11 @@ function chordDrag(st,getOps){let D=null;
   addEventListener('pointermove',e=>{if(!D)return; if(!D.on){const dx=e.clientX-D.x0, dy=e.clientY-D.y0; if(Math.hypot(dx,dy)>8){clearTimeout(D.t); if(Math.abs(dx)>Math.abs(dy)*1.2)D.start(); else {D=null; return;}} else return;} e.preventDefault(); D.move(e.clientX,e.clientY);},{passive:false});
   const end=e=>{if(!D)return; clearTimeout(D.t); const d=D; D=null;
     if(!d.on){if(e.type==='pointerup'&&Math.hypot(e.clientX-d.x0,e.clientY-d.y0)<10){d.ops.noClick(0); d.ch.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:e.clientX,clientY:e.clientY})); d.ops.noClick(Date.now());} return;}
-    if(d.hl)d.hl.remove(); d.ch.classList.remove('chdrag','chdel'); d.ch.style.transform=''; d.ops.noClick(Date.now());
-    if(e.type==='pointercancel')return;
-    if(d.del){d.ops.del(d.raw,d.k); toast('Accord supprimé'); return;}
-    if(d.col!=null)d.ops.move(d.raw,d.k,d.col+(d.off||0));};
+    if(d.hl)d.hl.remove(); d.ops.noClick(Date.now()); const reset=()=>{d.ch.classList.remove('chdrag','chdel'); d.ch.style.transform='';};
+    if(e.type==='pointercancel'){reset(); return;}
+    if(d.del){reset(); d.ops.del(d.raw,d.k); toast('Accord supprimé'); return;}
+    // l'accord reste à sa nouvelle place jusqu'au réaffichage (sinon il revient un instant à l'ancienne)
+    d.ch.classList.remove('chdel'); if(d.col!=null)d.ops.move(d.raw,d.k,d.col+(d.off||0)); setTimeout(()=>{if(d.ch.isConnected)reset();},450);};
   addEventListener('pointerup',end); addEventListener('pointercancel',end);
 }
 chordDrag($('#vstage'),()=>{if(!(V.edit&&V.emode!=='text'||V.lite)||FOLLOW)return null; const cur=V.list[V.i]; if(!cur)return null;
@@ -6700,6 +6701,12 @@ function cwLab(cx,cy,r,a,t,cls,sub){const x=+(cx+r*Math.cos(a*Math.PI/180)).toFi
 const cwSec=i=>{const s=180/7; return [180-i*s,180-(i+1)*s];};
 const cwCW=()=>180/7*0.62;
 const cwCol=(slot,j)=>{const [a1,a2]=cwSec(slot), mid=(a1+a2)/2, w=cwCW(); return mid+(1.5-j)*w;};
+const cwE=r=>CW_G.r2+(r-CW_G.r2)*(CW.eS||1);
+function cwScr(x,y){let dx=x-CW.cx, dy=y-CW.cy; if(CW.o)[dx,dy]=[-dy,dx]; if(CW.o==='R')dx=-dx; return [CW.cx+dx,CW.cy+dy];}
+function cwFit(slot){const g=CW_G, k=CW.k, w=cwCW(), angs=[]; for(let j=0;j<4;j++){const c=cwCol(slot,j); angs.push(c-w/2,c,c+w/2);}
+  for(let f=1;f>=.5;f-=.05){const r=(g.r2+(g.x2+4-g.r2)*f)*k;
+    if(angs.every(a=>{const [x,y]=cwScr(CW.cx+r*Math.cos(a*Math.PI/180),CW.cy-r*Math.sin(a*Math.PI/180)); return x>=3&&x<=innerWidth-3&&y>=3&&y<=innerHeight-3;}))return f;}
+  return .5;}
 function cwBuzz(n){if(!CWS().vib)return; try{navigator.vibrate&&navigator.vibrate(n||8);}catch(e){}}
 function cwSongChords(el){const box=el&&el.closest('#vtPrev,#vstage')||document.querySelector('#vstage'), seen=[], out=[];
   if(!box)return out; box.querySelectorAll('.ch').forEach(c=>{const n=cwPlain(c.textContent); if(n&&!seen.includes(n)){seen.push(n); out.push(n);}}); return out.slice(0,8);}
@@ -6717,9 +6724,11 @@ function cwStart(rc,existing,list,noRot){
   let k=Math.min(mul,(innerWidth-16)/(2*R0),(innerHeight-60)/(R0+70)), o=0;
   if(st.rot&&!noRot){const kr=Math.min(mul,(innerHeight-130)/(2*R0),(innerWidth-16)/R0); if(wx<R0*k*.6)o='L'; else if(wx>innerWidth-R0*k*.6)o='R'; if(o)k=kr;}
   const R=R0*k; let cx, cy;
-  if(!o){cx=Math.max(R+8,Math.min(innerWidth-R-8,wx)); cy=rc.top-6; if(cy-R-50<0)cy=R+50; if(cy>innerHeight-20)cy=innerHeight-20;}
+  // placée au plus près du mot : on ne réserve que la place des notes + des étages tassés ; les étages se tassent au besoin (cwFit)
+  const Rm=(CW_G.r2+(CW_G.x2-CW_G.r2)*.55+6)*k;
+  if(!o){cx=Math.max(Rm+4,Math.min(innerWidth-Rm-4,wx)); cy=rc.top-6; if(cy-Rm-4<0)cy=Rm+4; if(cy>innerHeight-20)cy=innerHeight-20;}
   else {cx=o==='L'?Math.max(10,Math.min(wx,innerWidth-R-8)):Math.min(innerWidth-10,Math.max(wx,R+8)); cy=Math.max(R+56,Math.min(innerHeight-R-8,wy));}
-  Object.assign(CW,{pick:null,on:true,k,o,cx,cy,phase:'notes',hov:null,base:null,root:null,q:null,t:null,noDwell:null,existing,start:Date.now(),chips:[]});
+  Object.assign(CW,{pick:null,eS:1,on:true,k,o,cx,cy,phase:'notes',hov:null,base:null,root:null,q:null,t:null,noDwell:null,existing,start:Date.now(),chips:[]});
   // accords du morceau sous le mot (ou sous la roue tournée)
   if(st.song&&list&&list.length){const cwid=n=>Math.max(46,cwShow(n).length*12+22), tot=list.reduce((s,n)=>s+cwid(n)+8,-8);
     let y=o?cy+R+8:Math.max(rc.top+rc.height+12,cy+CW_G.r2*k*Math.sin(Math.PI/7)+14); if(y+44>innerHeight-4)y=(o?cy-R-100:rc.top-R-110); let x=Math.max(8,Math.min(innerWidth-tot-8,(o?cx+(o==='L'?R/2:-R/2):wx)-tot/2));
@@ -6740,20 +6749,20 @@ function cwHit(x0,y0){const w0=cwHit0(x0,y0); if(w0)return w0;
 function cwHit0(x0,y0){
   const [x,y]=cwStd(x0,y0), k=CW.k, g=CW_G, p=cwPolar(CW.cx,CW.cy,x,y);
   if(p.r<g.r1*k)return CW.phase==='focus'?{t:'back'}:null;
-  if(p.r>(g.x2+26)*k||p.a<-30||p.a>210)return null;
+  if(p.r>(cwE(g.x2)+26)*k||p.a<-30||p.a>210)return null;
   if(p.r<=(g.r2+4)*k){let i=Math.floor((180-p.a)/(180/7)); i=Math.max(-1,Math.min(7,i));
     if(CW.phase==='focus'){const b=CW.base.i; if(i<b-1||i>b+1)return null; return {t:'n',slot:i,i:b,acc:i-b};}
     if(i<0)return CW.existing?{t:'del'}:null; if(i>6)return {t:'set'}; return {t:'n',slot:i,i,acc:0};}
   const r=CW.root; if(!r)return null; const w=cwCW();
   let j=-1; for(let c=0;c<4;c++){if(Math.abs(p.a-cwCol(r.slot,c))<=w/2+1.5){j=c; break;}}
   if(j<0)return null;
-  if(p.r<=(g.q2+2)*k)return {t:'q',j};
+  if(p.r<=(cwE(g.q2)+2)*k)return {t:'q',j};
   if(CW.q===0||CW.q===3){return j===1?{t:'x',j}:null;}
   return {t:'x',j};}
 function cwDwell(){const h=CW.hov; if(!h||CW.phase!=='notes'||h.t!=='n')return; CW.phase='focus'; CW.base={i:h.i}; cwBuzz(); cwDraw();}
 function cwMove(x,y){if(!CW.on)return; let h=cwHit(x,y);
   if(h&&h.t==='back'){clearTimeout(CW.t); CW.noDwell=CW.base.i; CW.phase='notes'; CW.base=null; CW.root=null; CW.q=null; CW.hov=null; cwBuzz(); h=cwHit(x,y); if(h&&h.t==='back')h=null; cwDraw();}
-  if(h&&h.t==='n'){if(!CW.root||CW.root.slot!==h.slot||CW.root.acc!==h.acc){CW.root={slot:h.slot,i:h.i,acc:h.acc}; CW.q=null;}}
+  if(h&&h.t==='n'){if(!CW.root||CW.root.slot!==h.slot||CW.root.acc!==h.acc){CW.root={slot:h.slot,i:h.i,acc:h.acc}; CW.q=null; CW.eS=cwFit(h.slot);}}
   if(h&&h.t==='q')CW.q=h.j;
   const key=JSON.stringify(h), old=JSON.stringify(CW.hov);
   if(key!==old){CW.hov=h; clearTimeout(CW.t);
@@ -6767,7 +6776,7 @@ function cwEnd(){if(!CW.on)return; clearTimeout(CW.t); const ch=cwChord(), h=CW.
   if(ch){wpApply(ch);} else {wpClose(); toast('Annulé'); cwBuzz();}}
 function cwDraw(){const el=CW.el; if(!el)return; const k=CW.k, g=CW_G, cx=CW.cx, cy=CW.cy, h=CW.hov, S_=v=>v*k; let s='';
   const tile=(r1,r2,a1,a2,cls,on,grow)=>`<path d="${cwTile(cx,cy,S_(r1),S_(r2)+(on&&grow?S_(5):0),a1,a2,k)}" class="${cls}${on?' on':''}" style="stroke-width:${2*S_(g.rc)}px"/>`;
-  s+=`<path d="M${cx-S_(g.x2+10)},${cy+2} A${S_(g.x2+10)},${S_(g.x2+10)} 0 0 1 ${cx+S_(g.x2+10)},${cy+2} Z" class="cwbg"/>`;
+  {const rb=S_((CW.root?cwE(g.x2):g.r2)+10); s+=`<path d="M${cx-rb},${cy+2} A${rb},${rb} 0 0 1 ${cx+rb},${cy+2} Z" class="cwbg"/>`;}
   const r=CW.root;
   CW_N.forEach((n,i)=>{const [a1,a2]=cwSec(i);
     if(CW.phase==='focus'){const b=CW.base.i; if(Math.abs(i-b)>1){s+=`<g class="cwfade">${tile(g.r1,g.r2,a1,a2,'cwn',false)}</g>`; return;}
@@ -6780,11 +6789,12 @@ function cwDraw(){const el=CW.el; if(!el)return; const k=CW.k, g=CW_G, cx=CW.cx,
     const on=h&&h.t==='set'; s+=tile(g.r1,g.r2,0,-st,'cwset',on,true)+cwLab(cx,cy,S_((g.r1+g.r2)/2),-st/2,'⚙','cwt'+(on?' on':''));}
   if(r){const w=cwCW();
     CW_Q.forEach(([t],j)=>{const c=cwCol(r.slot,j), on=h&&h.t==='q'&&h.j===j, sel=CW.q===j&&h&&h.t==='x';
-      s+=tile(g.q1,g.q2,c+w/2,c-w/2,j===1?'cwm':j===2?'cwM':'cwa',on||sel,false)+cwLab(cx,cy,S_((g.q1+g.q2)/2),c,t,'cwt cwsm'+(on||sel?' on':''));});
+      s+=tile(cwE(g.q1),cwE(g.q2),c+w/2,c-w/2,j===1?'cwm':j===2?'cwM':'cwa',on||sel,false)+cwLab(cx,cy,S_((cwE(g.q1)+cwE(g.q2))/2),c,t,'cwt cwsm'+(on||sel?' on':''));});
     const qq=CW.q==null?2:CW.q;
     CW_X.forEach((t,j)=>{const c=cwCol(r.slot,j), on=h&&h.t==='x'&&h.j===j, dis=(qq===0||qq===3)&&j!==1;
-      s+=`<g class="${dis?'cwfade':''}">${tile(g.x1,g.x2,c+w/2,c-w/2,'cwx',on,false)}${cwLab(cx,cy,S_((g.x1+g.x2)/2),c,t,'cwt cwsm'+(on?' on':''))}</g>`;});}
-  const ch=cwChord(), R=S_(g.x2+16), by=CW.o?cy-R-48:cy-R-40;
+      s+=`<g class="${dis?'cwfade':''}">${tile(cwE(g.x1),cwE(g.x2),c+w/2,c-w/2,'cwx',on,false)}${cwLab(cx,cy,S_((cwE(g.x1)+cwE(g.x2))/2),c,t,'cwt cwsm'+(on?' on':''))}</g>`;});}
+  const ch=cwChord(), R=S_((CW.root?cwE(g.x2):g.r2)+16); let by=CW.o?cy-R-48:cy-R-40;
+  if(by<4){const cb=CW.chips.length?Math.max(...CW.chips.map(c=>c.y+c.h)):cy+S_(g.r2*Math.sin(Math.PI/7))+20; by=Math.min(innerHeight-60,cb+10);}
   const chips=CW.chips.map(c=>`<div class="cwchip${h&&h.t==='s'&&h.n===c.n?' on':''}${CW.phase!=='notes'&&CW.root?' dim':''}" style="left:${c.x}px;top:${c.y}px;width:${c.w}px">${esc(cwShow(c.n))}</div>`).join('');
   el.innerHTML=`<svg width="${innerWidth}" height="${innerHeight}"><g transform="${cwGT()}">${s}</g></svg>${chips}<div class="cwbub${ch?'':' off'}" style="left:${Math.max(70,Math.min(innerWidth-70,CW.o?cx+(CW.o==='L'?R/2:-R/2):cx))}px;top:${Math.max(4,by)}px">${ch?esc(cwShow(ch)):h&&h.t==='del'?'🗑 supprimer':h&&h.t==='set'?'⚙ réglages':'✕ annuler'}</div>`;}
 addEventListener('pointermove',e=>{if(CW.on){e.preventDefault(); cwMove(e.clientX,e.clientY);}},{passive:false});
