@@ -1261,6 +1261,32 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 .libhead.lhb #libCount{font-size:13px}@media (max-width:1320px){.libhead.lhb #libCount{display:none!important}}
 #libChipsBox{min-width:180px}#libChipsBox #libChips button{height:36px;padding:0 12px}
 @media (max-width:699px){.libhead.lhb{flex-wrap:nowrap}.libhead.lhb #libCount{display:none!important}.libhead.lhb h2{font-size:21px;flex:1}.lhfilt .lft{display:none}.lhfilt{padding:0 11px;margin-left:0}}
+
+/* cartes */
+.lcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.lcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 12px 10px;display:flex;flex-direction:column;gap:8px;cursor:pointer;min-width:0}
+.lcard:hover{border-color:var(--acc)}.lcard.picked{outline:2px solid var(--acc)}.lcard.open{grid-column:span 2}
+.lch{display:flex;align-items:flex-start;gap:8px}.lct{flex:1;min-width:0}.lct b{display:block;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lct small{color:var(--mute);font-size:13px}
+.lcchips{display:flex;flex-wrap:wrap;gap:4px;min-height:22px}.lcchips span{font:700 12px ui-monospace,monospace;color:var(--acc2,var(--acc));background:color-mix(in srgb,var(--acc) 10%,transparent);padding:2px 6px;border-radius:6px}
+.lcpv{margin:0;font-size:12.5px;line-height:1.35;max-height:200px;overflow:hidden;background:color-mix(in srgb,var(--ink) 4%,transparent);border-radius:8px;padding:8px}
+.lcf{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.lcfo{font-size:12px;color:var(--mute)}.lcf .lic,.lcomp .lic{width:34px;height:30px}
+/* compact */
+.lcomp{columns:260px;column-gap:18px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 8px}
+.lci{break-inside:avoid;display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:8px;cursor:pointer;font-size:14px}.lci:hover{background:color-mix(in srgb,var(--acc) 8%,transparent)}.lci.picked{background:color-mix(in srgb,var(--acc) 16%,transparent)}
+.lci .lic{width:28px;height:26px;font-size:11px;flex:none}.lcn{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.lcn small{color:var(--mute);font-size:12.5px}
+.lck{font:700 12.5px ui-monospace,monospace;color:var(--acc2,var(--acc));flex:none}
+/* côte à côte */
+.lside{display:grid;grid-template-columns:minmax(240px,320px) 1fr;gap:12px;align-items:start}
+.lsl{background:var(--card);border:1px solid var(--line);border-radius:14px;max-height:calc(100vh - 200px);overflow-y:auto;padding:4px}
+.lsi{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:9px;cursor:pointer}.lsi .lcn{display:flex;flex-direction:column}.lsi .lcn b{font-size:14.5px;overflow:hidden;text-overflow:ellipsis}.lsi:hover{background:color-mix(in srgb,var(--acc) 8%,transparent)}
+.lsi.on{background:var(--acc);color:#fff}.lsi.on small,.lsi.on .lck{color:#fff!important}.lsi.picked{outline:2px solid var(--acc)}
+.lsr{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;max-height:calc(100vh - 200px);overflow-y:auto;position:sticky;top:8px}
+.lsh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.lsh b{font-size:20px;display:block}.lsh small{color:var(--mute);font-size:13.5px}.lsh .pri{height:38px;border-radius:10px;padding:0 14px}
+.lstg{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.lspv{margin:6px 0 0;font-size:14px;line-height:1.4;white-space:pre-wrap}
+.libhead.lhb #libSw button{padding:0 9px}
+@media (max-width:699px){.lcard.open{grid-column:auto}.lcards{grid-template-columns:1fr 1fr;gap:8px}.lcard{padding:10px}}
+.lcf{flex-wrap:nowrap}.lcf .tgw{flex:1;min-width:0;display:flex;gap:4px;overflow:hidden}.lcf .lcfo{flex:none;white-space:nowrap}.lcf>button{flex:none}.lcard{justify-content:space-between}
+@media (max-width:699px){.lcf .lcfo{display:none}}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -1291,7 +1317,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
   <section id="lib">
     <div class="noprint">
       <div class="libhead"><h2>Bibliothèque</h2><span class="lab" id="libCount"></span><span class="grow"></span>
-        <span class="seg2" id="libSw"><button data-v="liste">☰ Liste</button><button data-v="tableau">▦ Tableau</button></span>
+        <span class="seg2" id="libSw"><button data-v="liste">☰ Liste</button><button data-v="tableau">▦ Tableau</button><button data-v="cartes">▤ Cartes</button><button data-v="cote">◫ Côte à côte</button><button data-v="compact">≣ Compact</button></span>
         <button id="triBtn" class="selbtn" title="Ranger vite beaucoup de morceaux">⚡ Tri rapide</button><button id="selMode" class="selbtn">✓ Sélectionner</button><button class="pri" id="scene">▶ Scène</button></div>
       <div id="libChips" class="chips"></div>
       <textarea id="liste" rows="2" placeholder="Une chanson par ligne : Artiste - Titre"></textarea>
@@ -3197,7 +3223,11 @@ const groupKey=s=>(S.sort==='dossier'?s.folder:tagsOf(s)[0])||'';
 function renderAll(){
   const box=$('#songs'); box.innerHTML=''; refreshFilters();
   const list=visibleSongs(); shownIds=list.map(s=>s.id);
-  if((S.libView==='tableau'||PHONE())&&list.length) renderLibTable(box,list);
+  const lv=S.libView||'liste';
+  if(lv==='cartes'&&list.length) renderLibCards(box,list);
+  else if(lv==='compact'&&list.length) renderLibCompact(box,list);
+  else if(lv==='cote'&&list.length&&!PHONE()) renderLibSide(box,list);
+  else if((lv==='tableau'||PHONE())&&list.length) renderLibTable(box,list);
   else if(S.libView==='nav'&&list.length) renderLibNav(box,list);
   else if(grouped()){
     const groups=new Map(); list.forEach(s=>{const k=groupKey(s); if(!groups.has(k))groups.set(k,[]); groups.get(k).push(s);});
@@ -3251,6 +3281,42 @@ function renderLibTable(box,list){
   box.appendChild(t);
 }
 let LIBPICK=null, LIBOPEN=null;
+/* ---------- autres présentations : cartes, côte à côte, compact ---------- */
+function libItemClick(e,box){
+  const spb=e.target.closest('[data-sp]'); if(spb){e.stopPropagation(); muPlay(songById(spb.dataset.sp)); return true;}
+  const ed=e.target.closest('[data-ed]'); if(ed){const so=songById(ed.dataset.ed); if(so)editSong(so); return true;}
+  const sc=e.target.closest('[data-scene]'); if(sc){const so=songById(sc.dataset.scene); if(so&&hasBody(so))openViewer([entryOf(so)],0); else toast('Ce morceau est encore vide : ✎ pour l\'écrire'); return true;}
+  const pc=e.target.closest('[data-pk],[data-pc],[data-pt]'); if(pc&&!selMode&&!SEL.size){e.stopPropagation(); lpOpen(pc); return true;}
+  const it=e.target.closest('[data-id]'); if(it&&tableSelectClick(e,it.dataset.id))return true; return false;}
+const libKey=(s,r)=>r.key?esc(keyName(r.target,r.key.minor)):'';
+function libPreviewHTML(s,max){const r=s._r||compute(s); let lines=[], k=0; for(const L of r.grid){if(L.t==='b'&&!lines.length)continue; if(L.t==='x')continue; lines.push(L); if(L.t!=='b'&&++k>=max)break;}
+  return lines.length?lines.map(lineHTML).join('\n'):'<span class="lab">Morceau encore vide : ✎ pour l’écrire.</span>';}
+function renderLibCards(box,list){const g=document.createElement('div'); g.className='lcards'+(selMode||SEL.size?' sel':'');
+  g.innerHTML=list.map(s=>{const r=s._r||compute(s), sp=split(s.q), mk=muPref(s), op=LIBOPEN===s.id;
+    return `<div class="lcard${SEL.has(s.id)?' picked':''}${op?' open':''}" data-id="${s.id}">
+      <div class="lch"><div class="lct"><b>${esc(sp.titre)}</b><small>${esc(sp.artiste||'')}</small></div>${r.key?`<button class="lcell lk" data-pk="${s.id}" title="Changer la tonalité">${libKey(s,r)}</button>`:''}</div>
+      ${op?`<pre class="lcpv">${libPreviewHTML(s,6)}</pre>`:`<div class="lcchips">${(()=>{try{return (analyzeText(s.text||'').chords||[]).slice(0,7).map(c=>`<span>${esc(c)}</span>`).join('');}catch(_){return '';}})()}</div>`}
+      <div class="lcf"><span class="tgw">${tagsOf(s).map(t=>`<span class="tpill${t===WORK?' work':''}" data-pt="${s.id}">${esc(t)}</span>`).join('')}</span>${s.folder?`<span class="lcfo">📁 ${esc(s.folder)}</span>`:''}
+      ${mk?`<button class="spmu" data-sp="${s.id}" style="color:${MU[mk].c}" title="Écouter sur ${MU[mk].n}">♫</button>`:''}<button class="lic lplay" data-scene="${s.id}" aria-label="Jouer en scène">▶</button><button class="lic" data-ed="${s.id}" aria-label="Éditer">✎</button></div></div>`;}).join('');
+  g.onclick=e=>{if(libItemClick(e,g))return; const c=e.target.closest('.lcard'); if(!c)return; LIBPICK=c.dataset.id; LIBOPEN=LIBOPEN===c.dataset.id?null:c.dataset.id; renderAll();};
+  box.appendChild(g);}
+function renderLibCompact(box,list){const g=document.createElement('div'); g.className='lcomp'+(selMode||SEL.size?' sel':'');
+  g.innerHTML=list.map(s=>{const r=s._r||compute(s), sp=split(s.q);
+    return `<div class="lci${SEL.has(s.id)?' picked':''}" data-id="${s.id}"><button class="lic lplay" data-scene="${s.id}" aria-label="Jouer en scène">▶</button><span class="lcn"><b>${esc(sp.titre)}</b>${sp.artiste?` <small>${esc(sp.artiste)}</small>`:''}</span><span class="lck">${libKey(s,r)}</span></div>`;}).join('');
+  g.onclick=e=>{if(libItemClick(e,g))return; const c=e.target.closest('.lci'); if(c)openFiche(c.dataset.id);};
+  box.appendChild(g);}
+function renderLibSide(box,list){if(!LIBPICK||!list.some(x=>x.id===LIBPICK))LIBPICK=list[0].id;
+  const w=document.createElement('div'); w.className='lside';
+  const left=list.map(s=>{const r=s._r||compute(s), sp=split(s.q); return `<div class="lsi${s.id===LIBPICK?' on':''}${SEL.has(s.id)?' picked':''}" data-id="${s.id}"><span class="lcn"><b>${esc(sp.titre)}</b><small>${esc(sp.artiste||'')}</small></span><span class="lck">${libKey(s,r)}</span></div>`;}).join('');
+  const s=songById(LIBPICK), r=s._r||compute(s), sp=split(s.q), mk=muPref(s);
+  const right=`<div class="lsh"><div><b>${esc(sp.titre)}</b><small>${esc(sp.artiste||'')}${s.folder?` · 📁 ${esc(s.folder)}`:''}</small></div><span class="grow"></span>
+    ${r.key?`<button class="lcell lk" data-pk="${s.id}" title="Changer la tonalité">${libKey(s,r)}</button>`:''}<button class="lcell lc${+s.capoInfo?'':' none'}" data-pc="${s.id}" title="Capo">${+s.capoInfo?'Capo '+(+s.capoInfo):'Capo'}</button>
+    ${mk?`<button class="spmu" data-sp="${s.id}" style="color:${MU[mk].c}">♫</button>`:''}<button class="lic" data-ed="${s.id}" aria-label="Éditer">✎</button><button class="pri" data-scene="${s.id}">▶ Scène</button></div>
+    <div class="lstg">${tagsOf(s).map(t=>`<span class="tpill${t===WORK?' work':''}" data-pt="${s.id}">${esc(t)}</span>`).join('')}<button class="lcell lt" data-pt="${s.id}" aria-label="Étiquettes">＋</button></div>
+    <pre class="lspv">${libPreviewHTML(s,400)}</pre>`;
+  w.innerHTML=`<div class="lsl">${left}</div><div class="lsr">${right}</div>`;
+  w.onclick=e=>{if(libItemClick(e,w))return; const it=e.target.closest('.lsi'); if(!it)return; LIBPICK=it.dataset.id; renderAll(); const n=$('#songs .lsi.on'); if(n)n.scrollIntoView({block:'nearest'});};
+  box.appendChild(w);}
 // aperçu sous la ligne
 function libPrevRow(s,n){const r=s._r||compute(s), tr=document.createElement('tr'); tr.className='lprev'; tr.dataset.id=s.id;
   let lines=[], k=0; for(const L of r.grid){if(L.t==='b'&&!lines.length)continue; if(L.t==='x')continue; lines.push(L); if(L.t!=='b'&&++k>=9)break;}
@@ -4194,7 +4260,7 @@ function libHeadB(tl,fl,tbB,smB){const hd=$('#lib .libhead'); if(!hd.dataset.b){
     hd.innerHTML=''; hd.append(h2,cnt,sw,sep,box,tl,fl,filt,more,sc); if(gr)gr.remove();
     const act=document.createElement('div'); act.id='libAct'; hd.after(act); const hid=document.createElement('span'); hid.id='libHid'; hid.hidden=true; act.after(hid);
     more.onclick=e=>{e.stopPropagation(); libMoreMenu(more);}; filt.onclick=()=>libFilters();
-    $$('#libSw [data-v]').forEach(b=>{b.title=b.textContent.trim(); b.textContent=b.dataset.v==='liste'?'☰':'▦';});}
+    $$('#libSw [data-v]').forEach(b=>{b.title=b.textContent.trim().replace(/^\S+\s/,''); b.textContent={liste:'☰',tableau:'▦',cartes:'▤',cote:'◫',compact:'≣'}[b.dataset.v];});}
   else{const box=$('#libChipsBox'), f=$('#libFilt'); if(tl.parentNode!==$('#lib .libhead')){f.before(tl,fl);}}
   $('#libHid').append(tbB,smB);
   const n=(S.fType||S.fKind?1:0)+(S.fFolder?1:0); $('#libFilt').innerHTML='⚲<span class="lft"> Filtres</span>'+(n?` <b>${n}</b>`:''); $('#libFilt').classList.toggle('on',!!n);}
@@ -4223,7 +4289,7 @@ function libFilters(){let el=$('#lfSheet'); if(!el){el=document.createElement('d
    <h5>Étiquettes</h5><div class="lfc">${c('tag','','Tous',!cur&&!k,S.songs.length)}${tags.map(t=>c('tag',t,t,cur===t,nt(t))).join('')}${nb?c('tag','~bg','Grille basse',k==='~bg',nb):''}${ns?c('tag','~sheet','Partitions',k==='~sheet',ns):''}${nm?c('tag','~sp','Écoute liée',k==='~sp',nm):''}</div>
    <h5>Dossier</h5><div class="lfc">${[...$('#fFolder').options].map(o=>c('dos',o.value,o.text,(S.fFolder||'')===o.value)).join('')}</div>
    <h5>Trier par</h5><div class="lfc">${[...$('#tri').options].map(o=>c('tri',o.value,o.text,$('#tri').value===o.value)).join('')}</div>
-   <h5>Affichage</h5><div class="lfc">${c('vue','liste','☰ Liste',S.libView!=='tableau')}${c('vue','tableau','▦ Tableau',S.libView==='tableau')}</div></div>`;
+   <h5>Affichage</h5><div class="lfc">${c('vue','tableau','▦ Liste',!['cartes','compact'].includes(S.libView))}${c('vue','cartes','▤ Cartes',S.libView==='cartes')}${c('vue','compact','≣ Compact',S.libView==='compact')}</div></div>`;
   el.hidden=false;}
 /* ---------- listes déroulantes en pastilles (le <select> reste caché et garde la logique) ---------- */
 function ddMake(sel,ico,lab){if(!sel)return; let b=sel.nextElementSibling; if(!b||!b.classList.contains('dd')){b=document.createElement('button'); b.type='button'; b.className='dd'; sel.after(b); b.onclick=e=>{e.preventDefault(); e.stopPropagation(); ddOpen(sel,b);};}
@@ -4247,7 +4313,7 @@ function libChipsUI(){
   const tl=$('#tri').closest('label'), fl=$('#fFolder').closest('label'); tl.remove(); fl.remove(); const tbB=$('#triBtn'), smB=$('#selMode'); tbB.remove(); smB.remove();
   $('#libChips').innerHTML=c2('',cn('Tous',n),!cur&&!k)+tags.map(t=>c2(t,cn(t,nt(t)),cur===t)).join('')+(nb?c2('~bg',cn('Grille basse',nb),k==='~bg'):'')+(ns?c2('~sheet',cn('Partitions',ns),k==='~sheet'):'')+(nm?c2('~sp',cn('Écoute liée',nm),k==='~sp'):'')+'<span class="grow"></span>';
   {tl.classList.add('chsel'); fl.classList.add('chsel'); libHeadB(tl,fl,tbB,smB); ddMake($('#tri'),'↕','Tri'); ddMake($('#fFolder'),'📁','Dossier'); libActUI();}
-  $$('#libSw [data-v]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===(S.libView==='tableau'?'tableau':'liste')));
+  $$('#libSw [data-v]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===(S.libView||'liste')));
   $('#libCount').textContent=n+' morceau'+(n>1?'x':'');
 }
 let LASTSEL=null;
