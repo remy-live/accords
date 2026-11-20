@@ -1206,6 +1206,23 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #cwSet .cwtw{display:inline-flex;flex-direction:column;align-items:flex-start;padding:0 2px;border-radius:6px;cursor:pointer}#cwSet .cwtw em{font:800 16px ui-monospace,monospace;font-style:normal;color:var(--acc);min-height:20px}
 #cwSet .cwtw:active{background:#3a2a1c}
 @media (min-width:760px){#cwSet .cwgrid{grid-template-columns:minmax(300px,1fr) 1.2fr}#cwSet .cwright{max-height:calc(94vh - 90px)}#cwSet .cwpv{height:260px}}
+#cwSet .cwsheet{padding-top:6px}#cwSet .cwhd{margin:2px 0}#cwSet .cwhd b{font-size:17px}
+#cwSet .cwtgs{display:grid;grid-template-columns:1fr 1fr;column-gap:14px}#cwSet .cwrow{min-height:44px;padding:3px 0}#cwSet .cwrow b{font-size:14px}
+#cwSet .cwtg .tg{transform:scale(.85)}
+#cwSet .cwsegs{display:grid;grid-template-columns:1fr 1fr;column-gap:14px}#cwSet .cwsegs .cwrow{gap:8px}#cwSet .cwseg button{min-width:0;height:34px;padding:0 9px;font-size:13px}
+#cwSet .cwsty{grid-template-columns:repeat(5,1fr);gap:4px;padding-bottom:6px}#cwSet .cwsty button{padding:4px 2px 3px;gap:2px;border-radius:10px}#cwSet .cwsty .sw{padding:4px;gap:2px}#cwSet .cwsty .sw i{width:9px;height:14px}#cwSet .cwsty em{font-size:10.5px}
+#cwSet .cwstyrow{min-height:30px}
+#cwSet .cwpv{height:150px}#cwSet .cwtest{padding:6px 12px}#cwSet .cwtl{font-size:19px}
+#cwSet .cwright{max-height:calc(94vh - 270px)}
+@media (min-width:760px){#cwSet .cwsheet{width:min(860px,100%)}#cwSet .cwpv{height:220px}#cwSet .cwsty{grid-template-columns:repeat(5,1fr)}#cwSet .cwright{max-height:calc(94vh - 70px)}}
+@media (max-width:420px){#cwSet .cwsegs{grid-template-columns:1fr}#cwSet .cwtgs{column-gap:10px}#cwSet .cwrow b{font-size:13px}}
+#cwSet .cwseg{flex-wrap:nowrap!important}#cwSet .cwseg button{height:32px!important;min-height:0!important;padding:0 8px!important;font-size:12.5px!important;line-height:1}
+#cwSet .cwrow b{font-size:13.5px!important}#cwSet .cwstyrow small{display:inline;margin-left:6px}#cwSet .cwstyrow span{flex-direction:row!important;align-items:baseline}
+#cwSet .cwsty button{min-height:0!important;height:auto!important}#cwSet .cwsty em{font-size:10.5px!important}
+#cwSet .cwhd button{width:34px!important;height:34px!important;min-height:0!important}
+@media (max-width:760px){#cwSet .cwsegs{grid-template-columns:1fr}#cwSet .cwpv{height:130px}#cwSet .cwtest small{font-size:11.5px}#cwSet .cwtl{font-size:17px}}
+#cwSet .cwseg button,#cwSet .cwrow b{white-space:nowrap}#cwSet .cwsegs .cwrow>span:first-child{flex:none}#cwSet .cwsegs .cwrow{justify-content:space-between}
+#cwSet .cwsegs{grid-template-columns:1fr!important}#cwSet .cwsegs .cwrow{min-height:40px}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -6876,12 +6893,12 @@ function cwSettings(){let el=$('#cwSet'); if(!el){el=document.createElement('div
     el.addEventListener('click',e=>{if(e.target===el||e.target.closest('[data-x]')){el.hidden=true; return;}
       const t=e.target.closest('[data-k]'); if(!t)return; const c=Object.assign({},S.cw||{}), k=t.dataset.k, v=t.dataset.v;
       c[k]=v==null?!CWS()[k]:(k==='dwell'?+v:v); S.cw=c; save(); cwSettings();});}
-  const st=CWS(), tg=(k,l,d)=>`<button class="cwrow" data-k="${k}"><span><b>${l}</b>${d?`<small>${d}</small>`:''}</span><i class="tg${st[k]?' on':''}"></i></button>`,
+  const st=CWS(), tg=(k,l,d)=>`<button class="cwrow cwtg" data-k="${k}" title="${d||''}"><span><b>${l}</b></span><i class="tg${st[k]?' on':''}"></i></button>`,
     seg=(k,l,opts)=>`<div class="cwrow"><span><b>${l}</b></span><span class="cwseg">${opts.map(([v,t])=>`<button data-k="${k}" data-v="${v}"${String(st[k])===String(v)?' aria-pressed="true"':''}>${t}</button>`).join('')}</span></div>`;
   el.innerHTML=`<div class="cwsheet"><span class="shgrip"></span><div class="cwhd"><b>⚙ Réglages de la roue</b><button data-x aria-label="Fermer">✕</button></div><div class="cwgrid"><div class="cwleft"><div class="cwpv" id="cwPv"></div><div class="cwtest"><small>Essaie ici : appui long sur un mot, glisse, relâche</small><div class="cwtl" id="cwTl"></div></div></div><div class="cwright">
-    ${tg('song','Accords du morceau','sous le mot : glisser vers le bas pour les poser')}${tg('rot','Tourner la roue au bord','collé à gauche ou à droite, la roue s’ouvre vers le centre')}${tg('fr','Noms des notes','Do, Ré, Mi… sous les lettres')}${tg('vib','Vibrer','à chaque changement d’étage')}
-    <div class="cwrow cwstyrow"><span><b>Style de la roue</b><small>${esc(cwSty().nom)}</small></span></div><div class="cwsty">${CW_STY.map(y=>`<button data-k="style" data-v="${y.id}"${cwSty().id===y.id?' aria-pressed="true"':''} title="${esc(y.nom)}"><span class="sw" style="background:${y.bg}">${['n','m','x'].map((c,i)=>`<i style="border-radius:${Math.min(9,y.rc*1.2+1)}px;${y.ol?`border:2px solid ${i===1?y.on:y[c]};background:${i===1?y.on:'transparent'}`:`background:${i===1?y.on:y[c]}`}"></i>`).join('')}</span><em>${esc(y.nom)}</em></button>`).join('')}</div>
-    ${seg('form','Forme de la roue',[['demi','Demi-cercle'],['cercle','Cercle']])}${seg('pos','Position de la roue',[['up','Au-dessus'],['down','En dessous'],['auto','Selon la place']])}${seg('dwell','Délai ♭ / ♯',[[300,'0,3 s'],[550,'0,5 s'],[800,'0,8 s']])}${seg('size','Taille de la roue',[['S','S'],['M','M'],['L','L']])}</div></div></div>`;
+    <div class="cwtgs">${tg('song','Accords du morceau','sous le mot : glisser vers le bas pour les poser')}${tg('rot','Tourner la roue au bord','collé à gauche ou à droite, la roue s’ouvre vers le centre')}${tg('fr','Noms des notes','Do, Ré, Mi… sous les lettres')}${tg('vib','Vibrer','à chaque changement d’étage')}</div>
+    <div class="cwrow cwstyrow"><span><b>Style</b> <small>${esc(cwSty().nom)}</small></span></div><div class="cwsty">${CW_STY.map(y=>`<button data-k="style" data-v="${y.id}"${cwSty().id===y.id?' aria-pressed="true"':''} title="${esc(y.nom)}"><span class="sw" style="background:${y.bg}">${['n','m','x'].map((c,i)=>`<i style="border-radius:${Math.min(9,y.rc*1.2+1)}px;${y.ol?`border:2px solid ${i===1?y.on:y[c]};background:${i===1?y.on:'transparent'}`:`background:${i===1?y.on:y[c]}`}"></i>`).join('')}</span><em>${esc(y.nom)}</em></button>`).join('')}</div>
+    <div class="cwsegs">${seg('form','Forme',[['demi','Demi'],['cercle','Cercle']])}${seg('pos','Position',[['up','Dessus'],['down','Dessous'],['auto','Auto']])}${seg('dwell','♭ / ♯',[[300,'0,3 s'],[550,'0,5 s'],[800,'0,8 s']])}${seg('size','Taille',[['S','S'],['M','M'],['L','L']])}</div></div></div></div>`;
   cwPreview(); cwTestLine();
   el.hidden=false;}
 
