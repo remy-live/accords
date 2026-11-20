@@ -1168,6 +1168,9 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #vdisp .cwsty{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:4px 0}#vdisp .cwsty button{height:auto;padding:6px 2px 4px;border-radius:12px;display:flex;flex-direction:column;align-items:center;gap:4px}
 #vdisp .cwsty button[aria-pressed=true],#vdisp .dsmini button[aria-pressed=true]{outline:2px solid var(--hl,var(--acc));outline-offset:-2px}
 #vdisp .cwsty .sw{display:flex;gap:3px;padding:6px;border-radius:9px}#vdisp .cwsty .sw i{width:12px;height:18px;box-sizing:border-box;display:block}#vdisp .cwsty em{font:600 11px Inter,system-ui,sans-serif;font-style:normal}
+#cwheel .cwctr{fill:var(--cbg);stroke:var(--con);stroke-width:1.5;stroke-dasharray:3 3;opacity:.95}#cwheel .cwctr.ex{stroke-dasharray:none}
+#cwheel .cwctrt{fill:var(--ct);text-anchor:middle;font-family:ui-monospace,'JetBrains Mono',monospace;font-weight:700}#cwheel .cwctrt.ex{fill:var(--con);font-weight:800}
+#cwSet .cwseg{flex-wrap:wrap;justify-content:flex-end}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -6669,7 +6672,7 @@ const CW={on:false};
 const CW_N=['C','D','E','F','G','A','B'], CW_FR={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
 const CW_Q=[['sus2','sus2'],['m','m'],['maj',''],['sus4','sus4']], CW_X=['6','7','maj7','9'];
 const CW_G={r1:46,r2:112,q1:118,q2:156,x1:160,x2:198,rc:6};
-const CWS=()=>Object.assign({song:1,fr:1,vib:1,dwell:550,size:'M',rot:1},S.cw||{});
+const CWS=()=>Object.assign({song:1,fr:1,vib:1,dwell:550,size:'M',rot:1,pos:'up'},S.cw||{});
 // 10 styles de roue : n note, a ♭♯/sus, m mineur, M maj, x ajout, set ⚙, del 🗑, bg fond, on choisi, t texte, to texte choisi, sb sous-texte, rc arrondi, ol = contour
 const CW_STY=[
  {id:'braise',nom:'Braise',n:'#342b25',a:'#203038',m:'#3a2f45',M:'#2c2a24',x:'#22302a',set:'#2a3a2f',del:'#4a1d1d',bg:'rgba(18,15,13,.86)',on:'#e8a160',t:'#f2ece6',to:'#1c1714',sb:'#a8998b',rc:6},
@@ -6690,9 +6693,9 @@ const cwShow=s=>String(s).replace(/#/g,'♯').replace(/([A-G])b/g,'$1♭');
 const cwPlain=s=>String(s).replace(/♯/g,'#').replace(/♭/g,'b').trim();
 function cwPolar(cx,cy,x,y){const dx=x-cx, dy=cy-y; let a=Math.atan2(dy,dx)*180/Math.PI; if(a<-90)a+=360; return {r:Math.hypot(dx,dy), a};}
 // orientation : 0 = ouverte vers le haut, 'L' = bord gauche (ouverte vers la droite), 'R' = bord droit (miroir)
-function cwStd(x,y){let dx=x-CW.cx, dy=y-CW.cy; if(CW.o==='R')dx=-dx; if(CW.o)[dx,dy]=[dy,-dx]; return [CW.cx+dx,CW.cy+dy];}
-const cwGT=()=>CW.o==='L'?`rotate(90 ${CW.cx} ${CW.cy})`:CW.o==='R'?`translate(${2*CW.cx},0) scale(-1,1) rotate(90 ${CW.cx} ${CW.cy})`:'';
-const cwTT=(x,y)=>CW.o==='L'?` transform="rotate(-90 ${x} ${y})"`:CW.o==='R'?` transform="rotate(-90 ${x} ${y}) translate(${2*x},0) scale(-1,1)"`:'';
+function cwStd(x,y){let dx=x-CW.cx, dy=y-CW.cy; if(CW.o==='D')return [CW.cx+dx,CW.cy-dy]; if(CW.o==='R')dx=-dx; if(CW.o)[dx,dy]=[dy,-dx]; return [CW.cx+dx,CW.cy+dy];}
+const cwGT=()=>CW.o==='D'?`translate(0,${2*CW.cy}) scale(1,-1)`:CW.o==='L'?`rotate(90 ${CW.cx} ${CW.cy})`:CW.o==='R'?`translate(${2*CW.cx},0) scale(-1,1) rotate(90 ${CW.cx} ${CW.cy})`:'';
+const cwTT=(x,y)=>CW.o==='D'?` transform="translate(0,${2*y}) scale(1,-1)"`:CW.o==='L'?` transform="rotate(-90 ${x} ${y})"`:CW.o==='R'?` transform="rotate(-90 ${x} ${y}) translate(${2*x},0) scale(-1,1)"`:'';
 function cwTile(cx,cy,r1,r2,a1,a2,k){const rc=CW_G.rc*k, g=1.2*k, mid=(r1+r2)/2, da=(rc+g)/mid*180/Math.PI, ri=r1+rc+g, ro=r2-rc-g, b1=a1-da, b2=a2+da;
   const P=(r,a)=>[cx+r*Math.cos(a*Math.PI/180),cy-r*Math.sin(a*Math.PI/180)], [x1,y1]=P(ro,b1),[x2,y2]=P(ro,b2),[x3,y3]=P(ri,b2),[x4,y4]=P(ri,b1);
   return `M${x1.toFixed(1)},${y1.toFixed(1)} A${ro},${ro} 0 0 1 ${x2.toFixed(1)},${y2.toFixed(1)} L${x3.toFixed(1)},${y3.toFixed(1)} A${ri},${ri} 0 0 0 ${x4.toFixed(1)},${y4.toFixed(1)} Z`;}
@@ -6702,7 +6705,7 @@ const cwSec=i=>{const s=180/7; return [180-i*s,180-(i+1)*s];};
 const cwCW=()=>180/7*0.62;
 const cwCol=(slot,j)=>{const [a1,a2]=cwSec(slot), mid=(a1+a2)/2, w=cwCW(); return mid+(1.5-j)*w;};
 const cwE=r=>CW_G.r2+(r-CW_G.r2)*(CW.eS||1);
-function cwScr(x,y){let dx=x-CW.cx, dy=y-CW.cy; if(CW.o)[dx,dy]=[-dy,dx]; if(CW.o==='R')dx=-dx; return [CW.cx+dx,CW.cy+dy];}
+function cwScr(x,y){let dx=x-CW.cx, dy=y-CW.cy; if(CW.o==='D')return [CW.cx+dx,CW.cy-dy]; if(CW.o)[dx,dy]=[-dy,dx]; if(CW.o==='R')dx=-dx; return [CW.cx+dx,CW.cy+dy];}
 function cwFit(slot){const g=CW_G, k=CW.k, w=cwCW(), angs=[]; for(let j=0;j<4;j++){const c=cwCol(slot,j); angs.push(c-w/2,c,c+w/2);}
   for(let f=1;f>=.5;f-=.05){const r=(g.r2+(g.x2+4-g.r2)*f)*k;
     if(angs.every(a=>{const [x,y]=cwScr(CW.cx+r*Math.cos(a*Math.PI/180),CW.cy-r*Math.sin(a*Math.PI/180)); return x>=3&&x<=innerWidth-3&&y>=3&&y<=innerHeight-3;}))return f;}
@@ -6718,20 +6721,23 @@ function cwOpen(ctx,span,pt){
   const box=span.getBoundingClientRect(), cw=charW(span)||12, wr=charRect(span,col,Math.max(end,col+1));
   const rc=wr||{left:box.left+col*cw,top:box.top,width:Math.max(cw,(end-col)*cw),height:box.height};
   const hl=document.createElement('div'); hl.className='wphl'; hl.style.cssText=`left:${rc.left-2}px;top:${rc.top-1}px;width:${Math.max(cw,rc.width)+4}px;height:${rc.height+2}px`; document.body.appendChild(hl); WP.hl=hl;
-  cwStart(rc,null,cwSongChords(span)); return true;}
-function cwStart(rc,existing,list,noRot){
+  cwStart(rc,null,cwSongChords(span),false,isC?'':txt.slice(col,Math.max(end,col+1)).trim()); return true;}
+function cwStart(rc,existing,list,noRot,label){
   const st=CWS(), mul={S:.85,M:1,L:1.15}[st.size]||1, R0=CW_G.x2+8, wx=rc.left+Math.max(8,rc.width)/2, wy=rc.top+rc.height/2;
   let k=Math.min(mul,(innerWidth-16)/(2*R0),(innerHeight-60)/(R0+70)), o=0;
   if(st.rot&&!noRot){const kr=Math.min(mul,(innerHeight-130)/(2*R0),(innerWidth-16)/R0); if(wx<R0*k*.6)o='L'; else if(wx>innerWidth-R0*k*.6)o='R'; if(o)k=kr;}
   const R=R0*k; let cx, cy;
   // placée au plus près du mot : on ne réserve que la place des notes + des étages tassés ; les étages se tassent au besoin (cwFit)
   const Rm=(CW_G.r2+(CW_G.x2-CW_G.r2)*.55+6)*k;
-  if(!o){cx=Math.max(Rm+4,Math.min(innerWidth-Rm-4,wx)); cy=rc.top-6; if(cy-Rm-4<0)cy=Rm+4; if(cy>innerHeight-20)cy=innerHeight-20;}
-  else {cx=o==='L'?Math.max(10,Math.min(wx,innerWidth-R-8)):Math.min(innerWidth-10,Math.max(wx,R+8)); cy=Math.max(R+56,Math.min(innerHeight-R-8,wy));}
-  Object.assign(CW,{pick:null,eS:1,on:true,k,o,cx,cy,phase:'notes',hov:null,base:null,root:null,q:null,t:null,noDwell:null,existing,start:Date.now(),chips:[]});
+  if(!o){const bot=rc.top+rc.height, downOK=innerHeight-bot-6>=Rm+4, upOK=rc.top-6>=Rm+4;
+    if(st.pos==='down'?downOK||!upOK:st.pos==='auto'?!upOK&&downOK:false)o='D';}
+  if(o==='D'){cx=Math.max(Rm+4,Math.min(innerWidth-Rm-4,wx)); cy=rc.top+rc.height+6; if(cy+Rm+4>innerHeight)cy=innerHeight-Rm-4;}
+  else if(!o){cx=Math.max(Rm+4,Math.min(innerWidth-Rm-4,wx)); cy=rc.top-6; if(cy-Rm-4<0)cy=Rm+4; if(cy>innerHeight-20)cy=innerHeight-20;}
+  else if(o==='L'||o==='R'){cx=o==='L'?Math.max(10,Math.min(wx,innerWidth-R-8)):Math.min(innerWidth-10,Math.max(wx,R+8)); cy=Math.max(R+56,Math.min(innerHeight-R-8,wy));}
+  Object.assign(CW,{label:label||'',pick:null,eS:1,on:true,k,o,cx,cy,phase:'notes',hov:null,base:null,root:null,q:null,t:null,noDwell:null,existing,start:Date.now(),chips:[]});
   // accords du morceau sous le mot (ou sous la roue tournée)
   if(st.song&&list&&list.length){const cwid=n=>Math.max(46,cwShow(n).length*12+22), tot=list.reduce((s,n)=>s+cwid(n)+8,-8);
-    let y=o?cy+R+8:Math.max(rc.top+rc.height+12,cy+CW_G.r2*k*Math.sin(Math.PI/7)+14); if(y+44>innerHeight-4)y=(o?cy-R-100:rc.top-R-110); let x=Math.max(8,Math.min(innerWidth-tot-8,(o?cx+(o==='L'?R/2:-R/2):wx)-tot/2));
+    let y=o==='D'?Math.min(rc.top-54,cy-CW_G.r2*k*Math.sin(Math.PI/7)-56):o?cy+R+8:Math.max(rc.top+rc.height+12,cy+CW_G.r2*k*Math.sin(Math.PI/7)+14); if(y<4)y=o==='D'?cy+(CW_G.x2+20)*k:y; if(y+44>innerHeight-4)y=(o?cy-R-100:rc.top-R-110); let x=Math.max(8,Math.min(innerWidth-tot-8,(o==='L'||o==='R'?cx+(o==='L'?R/2:-R/2):wx)-tot/2));
     CW.chips=list.map(n=>{const w=cwid(n), c={n,x,y,w,h:42}; x+=w+8; return c;});}
   const el=document.createElement('div'); el.id='cwheel'; cwStyApply(el); document.body.appendChild(el); CW.el=el;
   cwDraw(); cwBuzz(12);}
@@ -6739,7 +6745,7 @@ function cwOpenChord(ch,cur,ops){
   const line=ch.parentElement, raw=+line.dataset.raw, k=+ch.dataset.k;
   wpClose(); WP.ctx={r:cur._r,raw,col:0,kind:'c',add:(r,c,kd,src)=>ops.rep(raw,k,src)};
   const rc=ch.getBoundingClientRect(); const hl=document.createElement('div'); hl.className='wphl'; hl.style.cssText=`left:${rc.left-2}px;top:${rc.top-1}px;width:${rc.width+4}px;height:${rc.height+2}px`; document.body.appendChild(hl); WP.hl=hl;
-  cwStart(rc,{del:()=>ops.del(raw,k),name:ch.textContent.trim()},cwSongChords(ch));}
+  cwStart(rc,{del:()=>ops.del(raw,k),name:ch.textContent.trim()},cwSongChords(ch),false,cwShow(cwPlain(ch.textContent)));}
 function cwSuffix(q,x){if(x==null)return q==null?'':CW_Q[q][1];
   const X=CW_X[x]; if(q===0||q===3)return x===1?'7'+CW_Q[q][1]:CW_Q[q][1]; if(q===1)return X==='maj7'?'m(maj7)':'m'+X; return X;}
 function cwChord(){const h=CW.hov; if(!h)return null; if(h.t==='s')return h.n; if(h.t==='del'||h.t==='set')return null; const r=CW.root; if(!r)return null;
@@ -6777,6 +6783,8 @@ function cwEnd(){if(!CW.on)return; clearTimeout(CW.t); const ch=cwChord(), h=CW.
 function cwDraw(){const el=CW.el; if(!el)return; const k=CW.k, g=CW_G, cx=CW.cx, cy=CW.cy, h=CW.hov, S_=v=>v*k; let s='';
   const tile=(r1,r2,a1,a2,cls,on,grow)=>`<path d="${cwTile(cx,cy,S_(r1),S_(r2)+(on&&grow?S_(5):0),a1,a2,k)}" class="${cls}${on?' on':''}" style="stroke-width:${2*S_(g.rc)}px"/>`;
   {const rb=S_((CW.root?cwE(g.x2):g.r2)+10); s+=`<path d="M${cx-rb},${cy+2} A${rb},${rb} 0 0 1 ${cx+rb},${cy+2} Z" class="cwbg"/>`;}
+  if(CW.label){const L=CW.label.length>9?CW.label.slice(0,8)+'…':CW.label, fs=Math.max(11,Math.min(20,(g.r1*1.7*k)/Math.max(1,L.length)*1.6)), ex=!!CW.existing;
+    const rr=S_(g.r1-4); s+=`<path d="M${cx-rr},${cy} A${rr},${rr} 0 0 1 ${cx+rr},${cy} Z" class="cwctr${ex?' ex':''}"/><text x="${cx}" y="${cy-S_(14)}" class="cwctrt${ex?' ex':''}" style="font-size:${fs}px"${cwTT(cx,cy-S_(14))}>${esc(L)}</text>`;}
   const r=CW.root;
   CW_N.forEach((n,i)=>{const [a1,a2]=cwSec(i);
     if(CW.phase==='focus'){const b=CW.base.i; if(Math.abs(i-b)>1){s+=`<g class="cwfade">${tile(g.r1,g.r2,a1,a2,'cwn',false)}</g>`; return;}
@@ -6794,9 +6802,10 @@ function cwDraw(){const el=CW.el; if(!el)return; const k=CW.k, g=CW_G, cx=CW.cx,
     CW_X.forEach((t,j)=>{const c=cwCol(r.slot,j), on=h&&h.t==='x'&&h.j===j, dis=(qq===0||qq===3)&&j!==1;
       s+=`<g class="${dis?'cwfade':''}">${tile(cwE(g.x1),cwE(g.x2),c+w/2,c-w/2,'cwx',on,false)}${cwLab(cx,cy,S_((cwE(g.x1)+cwE(g.x2))/2),c,t,'cwt cwsm'+(on?' on':''))}</g>`;});}
   const ch=cwChord(), R=S_((CW.root?cwE(g.x2):g.r2)+16); let by=CW.o?cy-R-48:cy-R-40;
-  if(by<4){const cb=CW.chips.length?Math.max(...CW.chips.map(c=>c.y+c.h)):cy+S_(g.r2*Math.sin(Math.PI/7))+20; by=Math.min(innerHeight-60,cb+10);}
+  if(CW.o==='D'){by=cy+R+8; if(by>innerHeight-56){const ct=CW.chips.length?Math.min(...CW.chips.map(c=>c.y)):cy-S_(g.r2*Math.sin(Math.PI/7))-20; by=Math.max(4,ct-56);}}
+  else if(by<4){const cb=CW.chips.length?Math.max(...CW.chips.map(c=>c.y+c.h)):cy+S_(g.r2*Math.sin(Math.PI/7))+20; by=Math.min(innerHeight-60,cb+10);}
   const chips=CW.chips.map(c=>`<div class="cwchip${h&&h.t==='s'&&h.n===c.n?' on':''}${CW.phase!=='notes'&&CW.root?' dim':''}" style="left:${c.x}px;top:${c.y}px;width:${c.w}px">${esc(cwShow(c.n))}</div>`).join('');
-  el.innerHTML=`<svg width="${innerWidth}" height="${innerHeight}"><g transform="${cwGT()}">${s}</g></svg>${chips}<div class="cwbub${ch?'':' off'}" style="left:${Math.max(70,Math.min(innerWidth-70,CW.o?cx+(CW.o==='L'?R/2:-R/2):cx))}px;top:${Math.max(4,by)}px">${ch?esc(cwShow(ch)):h&&h.t==='del'?'🗑 supprimer':h&&h.t==='set'?'⚙ réglages':'✕ annuler'}</div>`;}
+  el.innerHTML=`<svg width="${innerWidth}" height="${innerHeight}"><g transform="${cwGT()}">${s}</g></svg>${chips}<div class="cwbub${ch?'':' off'}" style="left:${Math.max(70,Math.min(innerWidth-70,CW.o==='L'||CW.o==='R'?cx+(CW.o==='L'?R/2:-R/2):cx))}px;top:${Math.max(4,by)}px">${ch?esc(cwShow(ch)):h&&h.t==='del'?'🗑 supprimer':h&&h.t==='set'?'⚙ réglages':'✕ annuler'}</div>`;}
 addEventListener('pointermove',e=>{if(CW.on){e.preventDefault(); cwMove(e.clientX,e.clientY);}},{passive:false});
 addEventListener('touchmove',e=>{if(CW.on)e.preventDefault();},{passive:false});
 addEventListener('pointerup',e=>{if(CW.on){e.preventDefault(); CP.lpAt=Date.now(); cwEnd();}},true);
@@ -6810,7 +6819,7 @@ function cwSettings(){let el=$('#cwSet'); if(!el){el=document.createElement('div
   el.innerHTML=`<div class="cwsheet"><span class="shgrip"></span><div class="cwhd"><b>⚙ Réglages de la roue</b><button data-x aria-label="Fermer">✕</button></div>
     ${tg('song','Accords du morceau','sous le mot : glisser vers le bas pour les poser')}${tg('rot','Tourner la roue au bord','collé à gauche ou à droite, la roue s’ouvre vers le centre')}${tg('fr','Noms des notes','Do, Ré, Mi… sous les lettres')}${tg('vib','Vibrer','à chaque changement d’étage')}
     <div class="cwrow cwstyrow"><span><b>Style de la roue</b><small>${esc(cwSty().nom)}</small></span></div><div class="cwsty">${CW_STY.map(y=>`<button data-k="style" data-v="${y.id}"${cwSty().id===y.id?' aria-pressed="true"':''} title="${esc(y.nom)}"><span class="sw" style="background:${y.bg}">${['n','m','x'].map((c,i)=>`<i style="border-radius:${Math.min(9,y.rc*1.2+1)}px;${y.ol?`border:2px solid ${i===1?y.on:y[c]};background:${i===1?y.on:'transparent'}`:`background:${i===1?y.on:y[c]}`}"></i>`).join('')}</span><em>${esc(y.nom)}</em></button>`).join('')}</div>
-    ${seg('dwell','Délai ♭ / ♯',[[300,'0,3 s'],[550,'0,5 s'],[800,'0,8 s']])}${seg('size','Taille de la roue',[['S','S'],['M','M'],['L','L']])}</div>`;
+    ${seg('pos','Position de la roue',[['up','Au-dessus'],['down','En dessous'],['auto','Selon la place']])}${seg('dwell','Délai ♭ / ♯',[[300,'0,3 s'],[550,'0,5 s'],[800,'0,8 s']])}${seg('size','Taille de la roue',[['S','S'],['M','M'],['L','L']])}</div>`;
   el.hidden=false;}
 
 // roue ouverte depuis un bouton (＋) : on maintient, on glisse, on relâche → cb(accord)
