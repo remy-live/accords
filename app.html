@@ -450,7 +450,7 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 #setNav button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid transparent;background:transparent;min-height:56px}
 #setNav button small{font-size:12px;opacity:.65;font-weight:400}#setNav button b{font-size:15px}
 #setNav button[aria-pressed=true]{background:rgba(var(--hlrgb,251,146,60),.14);border-color:rgba(var(--hlrgb,251,146,60),.5)}#setNav button[aria-pressed=true] b{color:var(--hl,#fb923c)}
-#setNav .setdanger{color:#ef4444;min-height:44px}.setcred{margin:4px 12px}
+#setNav .setdanger{color:#ef4444;min-height:44px}.setcred{margin:4px 12px}#setNav .setshare{min-height:44px;font-weight:700;color:var(--hl,#fb923c)}
 .setgroup{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--card);margin:0 0 10px}
 .setgroup>*{margin:0!important;padding:12px 14px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px;min-height:54px;flex-wrap:wrap}.setgroup>*:last-child{border-bottom:0}
 .setgroup>.opt>span:first-child{flex:1;min-width:140px;font-weight:600}.setgroup>.opt>span.lab:first-child{font-weight:400}
@@ -1391,6 +1391,26 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 .bgoc{touch-action:pan-y}.bgv{pointer-events:auto}.bgv b{cursor:grab;touch-action:none}
 .bgoc.sug .bgv b{color:#1d4ed8;border-color:#93c5fd;font-style:italic}.bgoc.sug{outline:2px dashed #60a5fa;outline-offset:-2px}
 #bgoSure{height:34px;padding:0 12px;border-radius:9px;background:#1d4ed8!important;color:#fff!important;border:0!important;font-weight:700}
+
+/* ===== Accords 10 : un peu de neuf (design « Accords » par défaut, retouches légères pour les autres) ===== */
+:root{--r10:14px}
+button,select,input,textarea{transition:background-color .15s,border-color .15s,box-shadow .15s,transform .08s}
+button:active{transform:scale(.97)}
+button.pri{box-shadow:0 6px 18px -8px color-mix(in srgb,var(--acc) 70%,transparent)}
+:focus-visible{outline:2px solid color-mix(in srgb,var(--acc) 70%,transparent);outline-offset:2px}
+#bnav{backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);background:color-mix(in srgb,var(--card) 82%,transparent)!important}
+#bnav button{border-radius:14px;padding:5px 18px;outline:0!important}
+#bnav button[aria-pressed=true]{background:color-mix(in srgb,var(--acc) 14%,transparent);box-shadow:none!important;border:0!important}
+.fab{border-radius:18px!important;box-shadow:0 12px 28px -10px color-mix(in srgb,var(--acc) 75%,transparent),0 2px 6px rgba(0,0,0,.18)!important}
+.card,.htile,.htools>button,.hempty{border-radius:var(--r10)!important}
+.htools>button:hover,.htile:hover{transform:translateY(-1px)}
+html[data-design=accords] body{background:radial-gradient(1200px 520px at 50% -180px,color-mix(in srgb,var(--acc) 9%,transparent),transparent 70%) fixed,var(--bg)}
+html[data-design=accords] .logo{background:linear-gradient(135deg,#fdba74,var(--acc) 55%,#ea580c);box-shadow:0 4px 12px -4px color-mix(in srgb,var(--acc) 80%,transparent);border-radius:10px}
+html[data-design=accords] .hero{position:relative;overflow:hidden;background:radial-gradient(420px 220px at 92% 10%,color-mix(in srgb,var(--acc) 38%,transparent),transparent 70%),radial-gradient(360px 200px at 0% 120%,rgba(45,212,191,.16),transparent 70%),linear-gradient(120deg,#1a1715,#2f2a26)}
+html[data-design=accords] .hero::after{content:"♪";position:absolute;right:190px;top:-26px;font-size:150px;line-height:1;color:rgba(255,255,255,.04);pointer-events:none}
+@media (max-width:700px){html[data-design=accords] .hero::after{right:-10px}}
+html[data-design=accords] h1,html[data-design=accords] h2,html[data-design=accords] h3{letter-spacing:-.015em}
+html[data-design=accords] .hsearch{border-radius:16px!important}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -1499,7 +1519,8 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
       <button data-cat="io"><b>Importer / exporter</b><small>Fichiers, PDF, karaoké</small></button>
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
-      <p class="lab setcred">Accords &amp; paroles — Rémy DEVODDERE</p>
+      <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.0</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes">
       <section data-cat="moi"><h3>Moi</h3>
@@ -2820,6 +2841,11 @@ async function shareBlob(name,blob,title){
   try{const f=new File([blob],name,{type:blob.type}); if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title}); return;}}catch(e){if(e.name==='AbortError')return;}
   saveBlob(name,blob);
 }
+// envoyer l'appli à un autre musicien : dans l'appli Android, elle s'envoie elle-même (APK) ; sinon, le lien
+const APP_URL='https://remy-live.github.io/accords/';
+function shareApp(){const t='Envoyer l’appli Accords';
+  if(APP&&window.Android.shareApp){window.Android.shareApp(t,'Voici l’appli Accords 🎸 (Android : ouvre le fichier joint pour l’installer). Sur iPhone ou ordi : '+APP_URL); return;}
+  shareText(t,'Voici l’appli Accords 🎸 : '+APP_URL+' (Android : bouton « Télécharger pour Android » ; iPhone/ordi : « Ouvrir l’appli »)');}
 async function shareText(title,text){
   if(APP){window.Android.shareText(title,text); return;}
   try{if(navigator.share){await navigator.share({title,text}); return;}}catch(e){if(e.name==='AbortError')return;}
@@ -7987,9 +8013,10 @@ function bgNext(){const g=BG.g, c=BG.sel; if(c.k<bgSlotsOf(bgBar(),bgMeter(c.si)
   if(c.si<g.secs.length-1){c.si++; c.bi=0; return;}
   bgSplice(g.secs[c.si],g.secs[c.si].bars.length,0,['']); c.bi++;}
 /* ----- saisie des accords : ligne de notes (doigt), clavier de l'ordi, ou roue — selon l'appareil ----- */
-const bgIn=()=>Object.assign({mode:'auto',big:false},S.bgIn||{});
+const bgIn=()=>{if(S.bgIn&&!S.bgIn.v10){S.bgIn={mode:'auto',big:!!S.bgIn.big,v10:1};} return Object.assign({mode:'auto',big:false},S.bgIn||{});};
 const bgTouch=()=>{try{return matchMedia('(pointer:coarse)').matches;}catch(_){return false;}};
-const bgInMode=()=>{const m=bgIn().mode; return m==='auto'?(bgTouch()?'ligne':'clavier'):m;};
+const bgInMode=()=>bgIn().mode;
+const bgWheelOn=()=>['auto','roue'].includes(bgIn().mode);
 const BG_NOTES=()=>S.fr?['Do','Ré','Mi','Fa','Sol','La','Si']:['C','D','E','F','G','A','B'];
 const BG_NSUB={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
 // tablette/ordi en paysage : la ligne va dans le panneau de droite ; téléphone/portrait : sous la grille
@@ -8050,9 +8077,9 @@ document.addEventListener('keydown',e=>{if($('#bgEd').hidden||e.metaKey||e.ctrlK
   if(k==='ArrowDown'){e.preventDefault(); bgMoveBy(+BG.g.per||4); return;} if(k==='ArrowUp'){e.preventDefault(); bgMoveBy(-(+BG.g.per||4)); return;}
   if(k==='Escape'&&BG.paint){bgPaint(null);}});
 // réglage de la saisie
-$('#bgInBtn').onclick=ev=>{let p=$('#bgInPop'); if(p){p.remove(); return;} p=document.createElement('div'); p.id='bgInPop'; const st=bgIn(), auto=bgTouch()?'ligne de notes':'clavier de l’ordi';
+$('#bgInBtn').onclick=ev=>{let p=$('#bgInPop'); if(p){p.remove(); return;} p=document.createElement('div'); p.id='bgInPop'; const st=bgIn();
   const opt=(v,t,sub)=>`<button data-im="${v}" aria-pressed="${st.mode===v}"><b>${t}</b><span>${sub}</span></button>`;
-  p.innerHTML=`<b class="bgih">Saisie des accords</b>${opt('auto','Auto','ici : '+auto)}${opt('ligne','Ligne de notes','C D E F G A B · ♭ ♯ m 7 sous la grille')}${opt('clavier','Clavier de l’ordi','on tape « em7 », Entrée = case suivante')}${opt('roue','Roue','appui sur une case : roue centrée')}
+  p.innerHTML=`<b class="bgih">Saisie des accords</b>${opt('auto','Ligne + roue (conseillé)','ligne de notes, et appui sur une case = roue')}${opt('ligne','Ligne de notes seule','C D E F G A B · ♯ · m')}${opt('clavier','Clavier de l’ordi','on tape « em7 », Entrée = case suivante')}${opt('roue','Roue seule','appui sur une case = roue')}
     <label class="bgib"><input type="checkbox" id="bgInBig"${st.big?' checked':''}> Ligne agrandie (maj7, sus4, dim, %, accords du morceau)</label><span class="bgis">Le clavier de l’ordi marche toujours. Une case coupée en 2, 3 ou 4 se remplit temps par temps.</span>`;
   document.body.appendChild(p); const rc=ev.currentTarget.getBoundingClientRect(); p.style.top=(rc.bottom+6)+'px'; p.style.right=Math.max(8,innerWidth-rc.right)+'px';
   p.onclick=e=>{const b=e.target.closest('[data-im]'); if(b){S.bgIn=Object.assign(bgIn(),{mode:b.dataset.im}); save(); p.remove(); bgDraw(); toast('Saisie : '+b.querySelector('b').textContent);}};
@@ -8193,9 +8220,9 @@ $('#bgEd').addEventListener('pointerdown',ev=>{
   if(chip)chord=toSource(BG.r,chip.textContent)||chip.textContent;
   else if(cell){const si=+cell.dataset.si, bi=+cell.dataset.bi, bar=BG.g.secs[si].bars[bi], rc=cell.getBoundingClientRect(), k=bgPartAt(bar.length,(ev.clientX-rc.left)/rc.width,(ev.clientY-rc.top)/rc.height,bgMeter(si)); if(bar[k]==='=')k=2; if(bar[k]&&bar[k]!=='%'){chord=bar[k]; from={si,bi,k};}}
   if(BG.paint)return;
-  if(cell&&!chord&&bgInMode()==='roue'){const h=bgHit(ev.clientX,ev.clientY); if(!h)return; BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord:null,wheel:1,timer:setTimeout(()=>bgWheel(h.si,h.bi,h.k,cell),300)}; return;}
+  if(cell&&!chord&&bgWheelOn()){const h=bgHit(ev.clientX,ev.clientY); if(!h)return; BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord:null,wheel:1,timer:setTimeout(()=>bgWheel(h.si,h.bi,h.k,cell),300)}; return;}
   if(!chord)return;
-  if(from&&bgInMode()==='roue')setTimeout(()=>{const d=BGD; if(d&&d.from===from&&Math.hypot(d.cx-d.x,d.cy-d.y)<10)bgWheel(from.si,from.bi,from.k,cell);},850);
+  if(from&&bgWheelOn())setTimeout(()=>{const d=BGD; if(d&&d.from===from&&Math.hypot(d.cx-d.x,d.cy-d.y)<10)bgWheel(from.si,from.bi,from.k,cell);},850);
   if(chip){const v=chord; setTimeout(()=>{const d=BGD; if(d&&d.chip&&Math.hypot(d.cx-d.x,d.cy-d.y)<10){clearTimeout(d.timer); if(d.ghost)d.ghost.remove(); BGD=null; BG.noClick=Date.now()+300; BG.lp=Date.now(); bgPaint(BG.paint===v?null:v); try{navigator.vibrate&&navigator.vibrate(15);}catch(_){}}},500);}
   BGD={pt:ev.pointerType,chip:!!chip,x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord,from,on:false,timer:from?setTimeout(bgDragOn,420):0};
 });
@@ -8315,6 +8342,7 @@ $('#bgRegen').onclick=()=>{if(!confirm('Recréer la grille à partir des accords
 function bgClose(){BGT.buf=''; bgTypeShow(); const ip=$('#bgInPop'); if(ip)ip.remove(); $('#bgEd').hidden=true; V.lastKey=null; vRender();}
 function bgDoSave(quiet){const s=BG.s; s.bgMode=BG.mode; if(BG.mode==='link')s.bgrid=null; else s.bgrid=JSON.parse(JSON.stringify(BG.g)); delete s._r; if((s.view||'grille')!=='accords')s.view='accords'; touch(s); save(); if(s._el)update(s); else if($('#viewer').hidden)renderAll(); BG.dirty=false; bgClose(); if(!quiet)toast('Grille enregistrée');}
 $('#bgSave').onclick=()=>bgDoSave();
+$('#shareAppBtn').onclick=shareApp; try{if(APP&&window.Android.appVersion)$('#appVer').textContent=window.Android.appVersion();}catch(_){}
 $('#bgModeBtn').onclick=ev=>{let p=$('#bgInPop'); if(p){p.remove(); if(p.dataset.k==='md')return;} p=document.createElement('div'); p.id='bgInPop'; p.dataset.k='md'; const m=BG.mode;
   const opt=(v,t,sub)=>`<button data-mm="${v}" aria-pressed="${m===v}"><b>${t}</b><span>${sub}</span></button>`;
   p.innerHTML=`<b class="bgih">Qui commande la grille ?</b>${opt('link','🔗 Les paroles','la grille se recalcule toute seule à partir des accords des paroles')}${opt('mix','⇄ Mixte','section par section : chacune suit les paroles ou est retouchée')}${opt('lock','🔒 Grille figée','la grille ne bouge plus ; paroles et grille sont indépendantes')}<span class="bgis">En Mixte, la structure (ordre des sections) suit les paroles.</span>`;
