@@ -557,7 +557,10 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 #bgSlots button{touch-action:none}
 #bgKeysW{flex:0 0 auto;display:flex;justify-content:center;border-top:1px solid #26262b;background:var(--s1,#121215)}#bgKeysW>#bgKeys{width:100%;max-width:560px;border-top:0}#bgKeysW.inpad{border:0;background:none;display:block}#bgKeysW.inpad>#bgKeys{padding:0;max-width:none;background:none}
 #bgKeys .tg{font-size:20px}#bgKeys .tg.on{background:#6ea8fe!important;color:#0b1220!important;border-color:#6ea8fe!important}#bgKeys .tg.lk{box-shadow:0 0 0 3px rgba(110,168,254,.35)}#bgKeys .tg small{font-size:10px;margin:2px 0 0}#bgKeys button.off{opacity:.25}
-#bgKeys .bgkN button{background:#1b2333}#bgKeys .bgkT button{flex:1 1 0}#bgKeys{display:flex;flex-direction:column;gap:6px;padding:8px 10px;background:var(--s1,#121215);border-top:1px solid #26262b}
+#bgKeys .bgkN button{background:#1b2333}#bgKeys .bgkT button{flex:1 1 0;font-size:18px}#bgKeys .bgkT .nx{color:#86efac;background:#13261b;border-color:#245c39}#bgKeys .bgkT [data-kx=more].on{background:#6ea8fe;color:#0b1220;border-color:#6ea8fe}
+#bgKeys{position:relative}#bgKeys .bgbub{position:absolute;left:0;right:0;z-index:20;padding:8px;border-radius:16px;background:#17181d;border:1px solid #3a3d46;box-shadow:0 14px 30px rgba(0,0,0,.55)}
+#bgKeys .bgbub.dn{top:calc(100% + 8px)}#bgKeys .bgbub.up{bottom:calc(100% + 8px)}
+#bgKeys .bgbub>div{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}#bgKeys .bgbub button{height:42px;font-size:15px;background:#1f2026;border-color:#3a3d46}#bgKeys{display:flex;flex-direction:column;gap:6px;padding:8px 10px;background:var(--s1,#121215);border-top:1px solid #26262b}
 #bgKeys .bgkr{display:flex;gap:6px;align-items:center}#bgKeys .bgkn,#bgKeys .bgkm{display:flex;gap:6px;flex:7 1 0}#bgKeys .bgkm{flex:4.6 1 0;padding-left:8px}#bgKeys .bgkr>i{width:6px;flex:0 0 6px}
 #bgKeys button{flex:1 1 0;min-width:0;height:44px;padding:0 1px;font:800 18px ui-monospace,Menlo,monospace;border-radius:11px;color:var(--tx,#f4f4f5);background:#1b2333;border:1px solid #34405a;user-select:none;-webkit-user-select:none;touch-action:none;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
 #bgKeys .bgkM button.acc,#bgKeys .bgkm2 button.acc{background:#141a26}#bgKeys .bgkm2 button{background:#1d1830;border-color:#3b3360}#bgKeys .bgkm2 button.acc{background:#171428}
@@ -1520,7 +1523,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.0</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.0.1</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes">
       <section data-cat="moi"><h3>Moi</h3>
@@ -8023,8 +8026,10 @@ const BG_NSUB={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
 const bgSide=()=>{try{return matchMedia('(orientation:landscape) and (min-width:701px)').matches;}catch(_){return false;}};
 // ♯/♭ et m : comme la touche Maj d'un téléphone — 1 toucher = pour le prochain accord, double toucher = verrouillé
 BG.tg={acc:0,m:0};
-function bgTgTap(k){const t=BG.tg, now=Date.now(), dbl=BG.tgLast&&BG.tgLast.k===k&&now-BG.tgLast.t<380; BG.tgLast={k,t:now};
-  t[k]=dbl?2:(t[k]?0:1); bgKeysDraw(null,BG.chips||[]);}
+function bgTgTap(k){const t=BG.tg, now=Date.now(), prev=BG.tgLast, dbl=prev&&prev.k===k&&now-prev.t<380;
+  // juste après une note : m / ♯ modifient l'accord posé (A puis m = Am) ; sinon ils s'appliquent au prochain accord
+  if(!dbl&&!t[k]&&BG.last===bgKey()&&bgCurSrc()){BG.tgLast={k,t:now,applied:1}; bgMod(k==='m'?'m':((BG.r&&BG.r.flats)?'b':'#')); return;}
+  BG.tgLast={k,t:now}; t[k]=dbl?2:(t[k]?0:1); bgKeysDraw(null,BG.chips||[]);}
 function bgTgUse(){let ch=false; ['acc','m'].forEach(k=>{if(BG.tg[k]===1){BG.tg[k]=0; ch=true;}}); return ch;}
 function bgKeysDraw(main,chips){BG.chips=chips; const w0=$('#bgKeysW'); if(w0)w0.remove(); const side=bgSide(); main=document.createElement('div'); main.id='bgKeysW'; main.className=side?'inpad':'';
   if(side){const ph=$('#bgPad .bgph'); ph.after(main);} else $('#bgEd .bgformed').before(main); $('#bgEd').classList.toggle('haskeys',!side);
@@ -8037,9 +8042,11 @@ function bgKeysDraw(main,chips){BG.chips=chips; const w0=$('#bgKeysW'); if(w0)w0
   const tgb=(key,txt,ttl)=>`<button data-kt="${key}" class="tg${tg[key]?' on':''}${tg[key]===2?' lk':''}" title="${ttl}">${txt}${tg[key]===2?'<small>🔒</small>':''}</button>`;
   let h=BG.paint?`<div class="bgkr"><span class="bgqp">🖌 ${esc(BG.paint==='%'?'%':bgName(BG.paint,cn))} : touche ou glisse</span><button data-kp="" class="bgok">✓ Fini</button></div>`:'';
   h+=`<div class="bgkr bgkN">${nat.map((n,i)=>{const L=lab(n,i); return L?`<button data-kc="${esc(L)}">${esc(L.replace('#','♯').replace(/(.)b/,'$1♭'))}</button>`:`<button class="off" disabled>·</button>`;}).join('')}</div>`;
-  h+=`<div class="bgkr bgkT">${tgb('acc',AS,'1 toucher = prochain accord · double toucher = verrouillé')}${tgb('m','m','1 toucher = prochain accord · double toucher = verrouillé')}<button data-kx="more" aria-pressed="${big}" title="Plus : 7, maj7, %…">${big?'▾':'⋯'}</button><button data-kx="next" title="Case suivante">→</button></div>`;
-  if(big)h+=`<div class="bgkr bgk2"><button data-km="7">7</button>${['maj7','sus4','dim','6','9','add9'].map(q=>`<button data-kq="${q}">${esc(cwMj(q))}</button>`).join('')}<button data-kx="%">%</button><button data-kx="vide">vide</button></div>`;
+  const bub=!!BG.bub;
+  h+=`<div class="bgkr bgkT"><button data-kx="prev" title="Case précédente">←</button>${tgb('acc',AS,'1 toucher = prochain accord · double toucher = verrouillé')}${tgb('m','m','1 toucher = prochain accord · double toucher = verrouillé')}<button data-km="7" class="tg7">7</button><button data-kx="more" class="${bub?'on':''}" title="Plus : M7, sus4, %…">${bub?(side?'▴':'▾'):'⋯'}</button><button data-kx="next" class="nx" title="Case suivante">→</button></div>`;
+  if(bub)h+=`<div class="bgbub ${side?'dn':'up'}"><div>${['maj7','sus4','dim','6','9','add9'].map(q=>`<button data-kq="${q}">${esc(cwMj(q))}</button>`).join('')}<button data-kx="%">%</button><button data-kx="vide">vide</button></div></div>`;
   k.innerHTML=h; main.appendChild(k);}
+function bgPrev(){if(BG.sel.k>0){BG.sel.k--; bgDraw();} else {bgMoveBy(-1); const b=bgBar(); BG.sel.k=b[0]==='%'?0:bgSlotsOf(b,bgMeter(BG.sel.si)).length-1; bgDraw();}}
 const bgKey=()=>BG.sel.si+'/'+BG.sel.bi+'/'+BG.sel.k;
 function bgCurSrc(){const b=bgBar(), sl=bgSlotsOf(b,bgMeter(BG.sel.si)); if(b[0]==='%')return ''; return b[sl[Math.min(BG.sel.k,sl.length-1)][0]]||'';}
 function bgWriteCur(name){const src=name===''?'':(!BG.r.shift&&!S.fr&&parseChord(name)?name:(toSource(BG.r,name)||name)); bgSet(()=>{const b=bgBar(), m=bgMeter(BG.sel.si); if(b[0]==='%')b.splice(0,b.length,''); const sl=bgSlotsOf(b,m); sl[Math.min(BG.sel.k,sl.length-1)].forEach(i=>b[i]=src);});}
@@ -8053,9 +8060,11 @@ function bgMod(md){const src=bgCurSrc(); if(!src){toast('Touche d’abord la not
   bgWriteCur(rt+ac+q+bass); BG.last=bgKey();}
 $('#bgEd').addEventListener('pointerdown',ev=>{const b=ev.target.closest('#bgKeys button'); if(!b)return; ev.stopPropagation(); ev.preventDefault(); BG.noClick=Date.now(); const d=b.dataset;
   if(d.kt){bgTgTap(d.kt); return;}
+  if(BG.bub&&b.closest('.bgbub'))BG.bub=false;
   if(d.kn)bgNote(d.kn); else if(d.km)bgMod(d.km); else if(d.kq)bgMod(d.kq); else if(d.kc){if(BG.paint){const v=toSource(BG.r,d.kc)||d.kc; bgPaint(BG.paint===v?null:v); return;} BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord:(!BG.r.shift&&!S.fr&&parseChord(d.kc)?d.kc:(toSource(BG.r,d.kc)||d.kc)),from:null,on:false,kb:d.kc,any:1,timer:0,pt:ev.pointerType}; return;}
   else if(d.kp!=null)bgPaint(null);
-  else if(d.kx==='more'){S.bgIn=Object.assign(bgIn(),{big:!bgIn().big}); save(); bgDraw();}
+  else if(d.kx==='more'){BG.bub=!BG.bub; bgKeysDraw(null,BG.chips||[]);}
+  else if(d.kx==='prev'){bgPrev(); BG.last=null;}
   else if(d.kx==='%'){$('#bgPct').click(); BG.last=null;} else if(d.kx==='vide'){bgWriteCur(''); BG.last=null;} else if(d.kx==='next'){bgNext(); BG.last=null; bgDraw();}},true);
 // clavier de l'ordi : on tape l'accord dans la case choisie
 const BGT={buf:''};
@@ -8073,7 +8082,7 @@ document.addEventListener('keydown',e=>{if($('#bgEd').hidden||e.metaKey||e.ctrlK
   if(k==='Backspace'||k==='Delete'){e.preventDefault(); bgWriteCur(''); return;}
   if(k==='Enter'||k===' '||k==='Tab'){e.preventDefault(); bgNext(); bgDraw(); return;}
   if(k==='ArrowRight'){e.preventDefault(); const b=bgBar(); if(BG.sel.k<bgSlotsOf(b,bgMeter(BG.sel.si)).length-1&&b[0]!=='%'){BG.sel.k++; bgDraw();} else bgMoveBy(1); return;}
-  if(k==='ArrowLeft'){e.preventDefault(); if(BG.sel.k>0){BG.sel.k--; bgDraw();} else {bgMoveBy(-1); const b=bgBar(); BG.sel.k=b[0]==='%'?0:bgSlotsOf(b,bgMeter(BG.sel.si)).length-1; bgDraw();} return;}
+  if(k==='ArrowLeft'){e.preventDefault(); bgPrev(); return;}
   if(k==='ArrowDown'){e.preventDefault(); bgMoveBy(+BG.g.per||4); return;} if(k==='ArrowUp'){e.preventDefault(); bgMoveBy(-(+BG.g.per||4)); return;}
   if(k==='Escape'&&BG.paint){bgPaint(null);}});
 // réglage de la saisie
