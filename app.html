@@ -1321,6 +1321,10 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 .lpw{grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr)}.lpb{flex-wrap:nowrap}.lpb button{white-space:nowrap}.lpb .pri{min-width:0}
 @media (max-width:699px){.lpw{grid-template-columns:1fr}}
 .lpb>button{flex:none!important}.lpb .pri{flex:1 0 auto!important;padding:0 18px!important;min-width:110px!important}
+.lpnav{display:flex;align-items:center;gap:8px}.lpnav button{width:38px;height:34px;padding:0;border-radius:9px;font-size:20px;line-height:1;border:1px solid var(--line)!important;background:var(--card)!important;color:var(--ink)!important}
+.lpnav button:disabled{opacity:.35}.lpnav span{font:700 13px Inter,system-ui,sans-serif;color:var(--mute);min-width:44px;text-align:center}.lpnav small{color:var(--mute);font-size:11.5px;margin-left:auto}
+.lpv,.lspv{touch-action:pan-y}
+@media (max-width:699px){.lpnav small{display:none}}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -3315,6 +3319,28 @@ function renderLibTable(box,list){
   box.appendChild(t);
 }
 let LIBPICK=null, LIBOPEN=null;
+// feuilleter : passer au morceau suivant / précédent sans refermer l'aperçu
+function libNav(d){const side=(S.libView==='cote'&&!PHONE()), cur=side?LIBPICK:LIBOPEN, i=shownIds.indexOf(cur), j=i<0?(d>0?0:shownIds.length-1):i+d;
+  if(j<0||j>=shownIds.length){toast(d>0?'Dernier morceau':'Premier morceau'); return;}
+  const old=document.querySelector('#songs .lcprev,#songs tr.lprev,#songs .lsr'), top=old?old.getBoundingClientRect().top:null;
+  LIBPICK=shownIds[j]; if(!side)LIBOPEN=shownIds[j]; renderAll();
+  const nw=document.querySelector('#songs .lcprev,#songs tr.lprev,#songs .lsr'); if(!nw)return;
+  if(top!=null&&!side){const dt=nw.getBoundingClientRect().top-top; (document.scrollingElement||document.documentElement).scrollTop+=dt;}
+  const r=nw.getBoundingClientRect(); if(r.top<70||r.top>innerHeight-120)nw.scrollIntoView({block:'center'});
+  if(side){const it=$('#songs .lsi.on'); if(it)it.scrollIntoView({block:'nearest'});}}
+(()=>{let sw=null, swAt=0; const box=()=>$('#songs');
+  document.addEventListener('pointerdown',e=>{const p=e.target.closest('#songs .lpv,#songs .lspv'); sw=p?{x:e.clientX,y:e.clientY}:null;},true);
+  document.addEventListener('pointerup',e=>{if(!sw)return; const dx=e.clientX-sw.x, dy=e.clientY-sw.y; sw=null; if(Math.abs(dx)>60&&Math.abs(dx)>1.6*Math.abs(dy)){swAt=Date.now(); libNav(dx<0?1:-1);}},true);
+  document.addEventListener('click',e=>{if(Date.now()-swAt<350&&e.target.closest('#songs')){e.stopPropagation(); e.preventDefault();}
+    const n=e.target.closest('#songs [data-nav]'); if(n){e.stopPropagation(); libNav(+n.dataset.nav);}},true);
+  document.addEventListener('keydown',e=>{const lib=$('#lib'); if(!lib||!lib.offsetParent)return; if(e.target.closest('input,textarea,select,[contenteditable]'))return;
+    if(document.querySelector('#viewer:not([hidden]),#vtext:not([hidden]),#cwSet:not([hidden]),#lfSheet:not([hidden]),#lpop,.modal:not([hidden])'))return;
+    const side=S.libView==='cote'&&!PHONE(), cur=side?LIBPICK:LIBOPEN, k=e.key;
+    if(k==='ArrowDown'||k==='PageDown'||(cur&&k==='ArrowRight')){e.preventDefault(); libNav(1);}
+    else if(k==='ArrowUp'||k==='PageUp'||(cur&&k==='ArrowLeft')){e.preventDefault(); libNav(-1);}
+    else if(cur&&k==='Enter'){e.preventDefault(); const so=songById(cur); if(so&&hasBody(so))openViewer([entryOf(so)],0);}
+    else if(cur&&(k==='e'||k==='E')){e.preventDefault(); const so=songById(cur); if(so)editSong(so);}
+    else if(cur&&k==='Escape'&&!side){LIBOPEN=null; renderAll();}});})();
 /* ---------- autres présentations : cartes, côte à côte, compact ---------- */
 function libItemClick(e,box){
   const spb=e.target.closest('[data-sp]'); if(spb){e.stopPropagation(); muPlay(songById(spb.dataset.sp)); return true;}
@@ -3358,7 +3384,8 @@ function libPrevInner(s){const r=s._r||compute(s);
   let lines=[], k=0; for(const L of r.grid){if(L.t==='b'&&!lines.length)continue; if(L.t==='x')continue; lines.push(L); if(L.t!=='b'&&++k>=12)break;}
   const body=lines.length?lines.map(lineHTML).join('\n'):'<span class="lab">Morceau encore vide : ✎ pour l\'écrire.</span>';
   const tmp=+s.tempo?`♩ ${+s.tempo}`:'', mk=muPref(s);
-  return `<div class="lpw"><div class="lpv"><pre>${body}</pre></div><div class="lpr">
+  const ix=shownIds.indexOf(s.id), nn=shownIds.length;
+  return `<div class="lpw"><div class="lpv"><pre>${body}</pre></div><div class="lpr">${nn>1&&ix>=0?`<div class="lpnav"><button data-nav="-1" aria-label="Morceau précédent"${ix?'':' disabled'}>‹</button><span>${ix+1} / ${nn}</span><button data-nav="1" aria-label="Morceau suivant"${ix<nn-1?'':' disabled'}>›</button><small>← → ou balayer</small></div>`:''}
     <div class="lpq">${r.key?`<button class="lcell lk" data-pk="${s.id}" title="Tonalité">${esc(keyName(r.target,r.key.minor))} ▾</button>`:''}<button class="lcell lc${+s.capoInfo?'':' none'}" data-pc="${s.id}">Capo ${+s.capoInfo||0} ▾</button>${tagsOf(s).map(t=>`<span class="tpill${t===WORK?' work':''}" data-pt="${s.id}">${esc(t)}</span>`).join('')}<button class="lcell lt" data-pt="${s.id}" aria-label="Étiquettes">＋</button>${mk?`<button class="spmu" data-sp="${s.id}" style="color:${MU[mk].c}" title="Écouter sur ${MU[mk].n}">♫ ${MU[mk].n}</button>`:''}</div>
     <div class="lpm">${tmp?`<span>${tmp}</span>`:''}${s.note?`<span>📝 ${esc(String(s.note).slice(0,60))}</span>`:''}</div>
     <div class="lpb"><button class="pri" data-scene="${s.id}">▶ Scène</button><button data-ed="${s.id}">✎ Éditer</button><button data-eye="${s.id}" title="Tout : structure, liens, mémos, playlists…">👁 Détails</button></div></div></div>`;}
