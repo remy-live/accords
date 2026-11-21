@@ -535,6 +535,14 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 .bgt{display:flex;flex-direction:column}.bgt span{font-size:11px;color:#93c5fd;font-weight:800;letter-spacing:.6px}.bgt b{font-size:17px}
 .bgseg{display:inline-flex;gap:3px;padding:3px;background:#1b1b20;border-radius:12px}.bgseg button{height:38px!important;min-width:42px;border:0!important}
 #bgEd .bgok{background:var(--hl,#fb923c);color:var(--onhl,#111);border:0;font-weight:800}
+.bgchips button.on{outline:3px solid var(--hl,#fb923c);outline-offset:1px}
+#bgQuick{position:sticky;bottom:0;z-index:3;display:none;flex-wrap:wrap;gap:6px;padding:8px 6px;margin-top:8px;background:var(--s1,#121215);border-top:1px solid #26262b}
+#bgQuick button{min-width:46px;height:40px;padding:0 8px;font:700 15px ui-monospace,Menlo,monospace;border-radius:9px;color:var(--hl,#fb923c);background:#2a1a0e;border:1px solid #5b3a12;user-select:none;-webkit-user-select:none;touch-action:none}
+#bgQuick button.on{background:var(--hl,#fb923c);color:#111}#bgQuick button.bgok{color:#fff;background:#2563eb;border-color:#2563eb}
+#bgQuick .bgqp{width:100%;font-size:12px;color:#a1a1aa}
+#bgMain.painting #bgQuick{display:flex}#bgMain.painting,#bgMain.painting .bgc{touch-action:none}
+@media (orientation:portrait),(max-width:700px){#bgQuick{display:flex}}
+#bgRowList{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto}#bgRowList button{text-align:left;height:auto!important;padding:6px 8px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#bgRowList button span{font-family:ui-monospace,Menlo,monospace;color:var(--hl,#fb923c)}
 .bgbody{flex:1;display:grid;grid-template-columns:1fr 340px;min-height:0}
 #bgEd #bgMain{overflow-y:auto;padding:10px 18px;max-width:none;margin:0;width:auto;min-width:0}
 #bgMain .bgc{cursor:pointer;user-select:none;-webkit-user-select:none}#bgChips button{user-select:none;-webkit-user-select:none;touch-action:pan-y}
@@ -1344,6 +1352,13 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 .bgoc.guess .bgv b{font-style:italic;opacity:.85}
 .bgv b.ref{color:#1d4ed8;border-color:#bfdbfe;font-size:12.5px}.k-ord .bgol em{background:#1d4ed8}
 .bgseq{font:700 15px Inter,system-ui,sans-serif;padding:4px 2px}.bgseq b{color:#1d4ed8}
+#bgoPal{border-top:1px solid var(--line);background:var(--card);padding:6px 12px calc(8px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:4px}#bgoPal .lab{font-size:12px}
+.bgpl{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}.bgpl button{flex:none;height:42px;min-width:50px;padding:0 12px;border-radius:11px;font:800 16px ui-monospace,monospace;border:1.5px solid var(--acc)!important;color:var(--acc)!important;background:var(--card)!important;touch-action:none}
+.bgpl button.on{background:var(--acc)!important;color:#fff!important}.bgpl button.pri{color:#fff!important;background:var(--acc)!important;font-family:Inter,system-ui,sans-serif;font-size:14px}
+.bgoc.cur{box-shadow:0 0 0 3px var(--acc);z-index:1}.bgoc.cur.ha{background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 22%,#fff) 50%,#fff 50%)}.bgoc.cur.hb{background:linear-gradient(135deg,#fff 50%,color-mix(in srgb,var(--acc) 22%,#fff) 50%)}
+.bgoc{touch-action:pan-y}.bgv{pointer-events:auto}.bgv b{cursor:grab;touch-action:none}
+.bgoc.sug .bgv b{color:#1d4ed8;border-color:#93c5fd;font-style:italic}.bgoc.sug{outline:2px dashed #60a5fa;outline-offset:-2px}
+#bgoSure{height:34px;padding:0 12px;border-radius:9px;background:#1d4ed8!important;color:#fff!important;border:0!important;font-weight:700}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -2136,7 +2151,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
           <h4>Section</h4><button id="bgRSec" class="bgblue">+ En faire une section…</button>
           <button id="bgRNone">✕ Annuler la sélection</button>
         </div>
-        <div class="bgph"><b id="bgWhere"></b><span class="bgrs"> · glisse le doigt sur les mesures pour en sélectionner plusieurs</span></div>
+        <div class="bgph"><b id="bgWhere"></b><span class="bgrs"> · glisse sur les mesures = sélection · appui sur une case vide = roue (sur un accord : appui long) · appui long sur un accord du morceau = pinceau</span></div>
         <div id="bgClip" hidden><span class="bgck">EN MÉMOIRE</span><b id="bgClipTxt"></b><span class="bgrs" id="bgClipFrom"></span>
           <div class="bggrid2"><button id="bgPaste" class="bgok">Coller après</button><button id="bgPasteRep">Remplacer</button></div><button id="bgClipX" class="bgcx" aria-label="Oublier la copie">✕</button></div>
         <h4>Découpage</h4><div class="bggrid4" id="bgSplit"></div>
@@ -2145,7 +2160,8 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
         <h4>Accords du morceau</h4><div class="bgchips" id="bgChips"></div>
         <div class="bggrid2"><button id="bgOther">Autre accord…</button><button id="bgPct">% même mesure</button></div>
         <h4>Mesures</h4>
-        <div class="bggrid2"><button id="bgIns">+ Avant</button><button id="bgApp">+ Après</button><button id="bgDupRow">Dupliquer la ligne</button><button id="bgDel" class="bgdanger">Supprimer</button></div>
+        <div id="bgRowList" hidden></div>
+        <div class="bggrid2"><button id="bgIns">+ Avant</button><button id="bgApp">+ Après</button><button id="bgDupRow">Dupliquer la ligne</button><button id="bgRowFrom">⧉ Ligne = une autre…</button><button id="bgDel" class="bgdanger">Supprimer</button></div>
         <h4>Section</h4>
         <div class="bggrid2"><button id="bgSecAdd" class="bgblue">+ Section</button><button id="bgSecCut" class="bgblue">✂ Couper ici</button><button id="bgSecGlue" class="bgblue">⤒ Recoller</button><button id="bgSecRen">Renommer</button><button id="bgSec34" class="bgteal">Section en 3/4</button><button id="bgSecDel" class="bgdanger">Supprimer la section</button></div>
       </aside>
@@ -5859,7 +5875,47 @@ function bgoDetect(c){const W=c.width, H=c.height, d=c.getContext('2d').getImage
         if(t&&n/t<.012){split=false; rep=true;}}
       cells.push({x0,x1,y0:b.y0,y1:b.y1,ink:k,split,v:rep?'%':undefined});}
     rows.push({y0:b.y0,y1:b.y1,label:cells[0],cells:cells.slice(1)});});
-  return {rows,W,H};}
+  return {rows,W,H,dk};}
+/* ---------- grille depuis la photo : saisie rapide (roue, palette, pinceau, glisser, copier une ligne, apprentissage de l'écriture) ---------- */
+const BGN=['C','C#','D','Eb','E','F','F#','G','Ab','A','Bb','B'], BGN_I={C:0,'B#':0,'C#':1,Db:1,D:2,'D#':3,Eb:3,E:4,Fb:4,F:5,'E#':5,'F#':6,Gb:6,G:7,'G#':8,Ab:8,A:9,'A#':10,Bb:10,B:11,Cb:11};
+function bgoDiatonic(k){const m=String(k||'').trim().replace(/-$/,'m').match(/^([A-Ga-g])([#b]?)(m(?!aj))?/); if(!m)return [];
+  const r=BGN_I[m[1].toUpperCase()+m[2]]; if(r==null)return []; const flat=/b/.test(m[2])||['F'].includes(m[1].toUpperCase())&&!m[3];
+  const nm=i=>{const n=BGN[(r+i)%12]; return flat?n:n.replace('Eb','D#').replace('Ab','G#').replace('Bb','A#');}, fix=n=>({'D#':'Eb','A#':'Bb','G#':'Ab'}[n]&&!/[#]/.test(m[2])&&!m[3]&&flat?{'D#':'Eb','A#':'Bb','G#':'Ab'}[n]:n);
+  return m[3]?[nm(0)+'m',nm(3),nm(5)+'m',nm(7),nm(7)+'m',nm(8),nm(10),nm(7)+'7'].map(fix):[nm(0),nm(2)+'m',nm(4)+'m',nm(5),nm(7),nm(9)+'m',nm(7)+'7'].map(fix);}
+const bgoVal=c=>c.split?[c.a,c.b]:[c.v];
+function bgoFill(ri,ci,half,v,learn){const c=BGO.rows[ri].cells[ci]; if(v==='∅'){c.v='';c.a=c.b='';c.split=false;c.ink=0; const el=$(`#bgoG [data-r="${ri}"][data-c="${ci}"]`); el.classList.add('empty'); el.classList.remove('split'); bgoCell(ri,ci); return;}
+  if(c.ink<=.02){c.ink=.03; $(`#bgoG [data-r="${ri}"][data-c="${ci}"]`).classList.remove('empty');}
+  if(c.split)c[half||'a']=v; else c.v=v; c.auto=0; c.sug=0; bgoCell(ri,ci); if(learn!==false)bgoLearn(ri,ci,half);}
+// curseur : case en cours (et moitié pour une case coupée)
+function bgoCur(ri,ci,h){$$('#bgoG .bgoc.cur').forEach(e=>e.classList.remove('cur','ha','hb')); BGO.cur=ri==null?null:{ri,ci,h:h||'a'}; if(ri==null)return;
+  const el=$(`#bgoG [data-r="${ri}"][data-c="${ci}"]`); if(el){el.classList.add('cur'); if(BGO.rows[ri].cells[ci].split)el.classList.add(BGO.cur.h==='b'?'hb':'ha'); const r=el.getBoundingClientRect(), G=$('#bgoG').getBoundingClientRect(); if(r.bottom>G.bottom-70||r.top<G.top)el.scrollIntoView({block:'center'});}}
+function bgoAdvance(){const k=BGO.cur; if(!k)return; const c=BGO.rows[k.ri].cells[k.ci]; if(c.split&&k.h==='a'){bgoCur(k.ri,k.ci,'b'); return;} const n=bgoNext(k.ri,k.ci); bgoCur(n?n[0]:null,n?n[1]:null,'a');}
+// palette du bas : accords utilisés + tonalité + % + vide ; appui long = pinceau
+function bgoPal(){const el=$('#bgoPal'); if(!el)return; const used=bgoUsed(), dia=bgoDiatonic($('#bgoK').value), all=[...new Set([...used,...dia])];
+  el.innerHTML=`<span class="lab">${BGO.paint?'🖌 '+esc(cwShow(BGO.paint))+' : touche ou glisse sur les cases':'Toucher = case en cours · appui long = pinceau'}</span><div class="bgpl">${all.map(x=>`<button data-pv="${esc(x)}"${BGO.paint===x?' class="on"':''}>${esc(cwShow(x))}</button>`).join('')}<button data-pv="%"${BGO.paint==='%'?' class="on"':''}>%</button><button data-pv="∅">vide</button>${BGO.paint?'<button data-pv="" class="pri">✓ Fini</button>':''}</div>`;}
+// apprentissage : dessin de chaque case réduit à 20×20 ; une case remplie propose sa valeur aux cases qui lui ressemblent
+function bgoFeat(c,half){const W=BGO.W, dk=BGO.dk; let x0=c.x0,x1=c.x1,y0=c.y0,y1=c.y1; const cw=x1-x0, ch=y1-y0;
+  if(half==='a'){x1=x0+cw*.62; y1=y0+ch*.6;} else if(half==='b'){x0=x0+cw*.38; y0=y0+ch*.4;}
+  const mx=cw*.08, my=ch*.1; x0=Math.round(Math.max(c.x0+mx,x0)); x1=Math.round(Math.min(c.x1-mx,x1)); y0=Math.round(Math.max(c.y0+my,y0)); y1=Math.round(Math.min(c.y1-my,y1));
+  const L=Math.hypot(cw,ch), onD=(x,y)=>c.split&&Math.abs((c.y1-6-y)*(cw-12)-(x-c.x0-6)*(ch-12))/L<9;
+  let bx0=1e9,by0=1e9,bx1=-1,by1=-1,n=0; for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++)if(dk[y*W+x]&&!onD(x,y)){n++; if(x<bx0)bx0=x; if(x>bx1)bx1=x; if(y<by0)by0=y; if(y>by1)by1=y;}
+  if(n<25)return null; const S=20, f=new Float32Array(S*S), bw=bx1-bx0+1, bh=by1-by0+1, sz=Math.max(bw,bh), ox=bx0-(sz-bw)/2, oy=by0-(sz-bh)/2;
+  for(let y=by0;y<=by1;y++)for(let x=bx0;x<=bx1;x++)if(dk[y*W+x]&&!onD(x,y)){const i=Math.min(S-1,Math.floor((x-ox)/sz*S)), j=Math.min(S-1,Math.floor((y-oy)/sz*S)); f[j*S+i]++;}
+  const g=new Float32Array(S*S); for(let j=0;j<S;j++)for(let i=0;i<S;i++){let s=0; for(let dj=-1;dj<=1;dj++)for(let di=-1;di<=1;di++){const a=i+di,b=j+dj; if(a>=0&&b>=0&&a<S&&b<S)s+=f[b*S+a]*(di||dj?.5:1);} g[j*S+i]=s;}
+  let nn=0; for(const v of g)nn+=v*v; nn=Math.sqrt(nn)||1; for(let i=0;i<g.length;i++)g[i]/=nn; return {g,ar:bw/bh};}
+const bgoSim=(a,b)=>{if(!a||!b)return 0; let s=0; for(let i=0;i<a.g.length;i++)s+=a.g[i]*b.g[i]; return s*(1-Math.min(.25,Math.abs(Math.log(a.ar/b.ar))*.15));};
+function bgoLearn(ri,ci,half){const c=BGO.rows[ri].cells[ci], v=c.split?c[half||'a']:c.v; if(!v||v==='?'||v==='∅')return; const f=bgoFeat(c,c.split?(half||'a'):null); if(!f)return;
+  BGO.ex=(BGO.ex||[]).filter(e=>!(e.ri===ri&&e.ci===ci&&e.h===(half||'a'))); BGO.ex.push({ri,ci,h:half||'a',v,f}); bgoSuggest();}
+function bgoSuggest(){const ex=BGO.ex||[]; if(!ex.length)return; let n=0;
+  BGO.rows.forEach((r,ri)=>{if(r.kind==='ord'||r.kind==='ign')return; r.cells.forEach((c,ci)=>{if(c.ink<=.02)return; (c.split?['a','b']:['v']).forEach(h=>{
+      const cur=c.split?c[h]:c.v; if(cur&&cur!=='?'&&!c.auto&&!c.sug)return; // déjà confirmée
+      const key=h==='v'?null:h; c._f=c._f||{}; const f=c._f[h]||(c._f[h]=bgoFeat(c,key)); if(!f)return;
+      const best={}; ex.forEach(e=>{const s=bgoSim(f,e.f); if(!(s<=best[e.v]))best[e.v]=s;}); const arr=Object.entries(best).sort((a,b)=>b[1]-a[1]);
+      if(!arr.length)return; const [v,s]=arr[0], s2=arr[1]?arr[1][1]:0; if(s>.72&&s-s2>.03){if(c.split)c[h]=v; else c.v=v; c.auto=1; c.sug=1; c.conf=Math.round(s*100); n++;}});
+    bgoCell(ri,ci);});});
+  const sure=bgoSure(); $('#bgoSure').hidden=!sure; $('#bgoSure').textContent=`✓ Valider ${sure} proposition${sure>1?'s':''} sûre${sure>1?'s':''}`;}
+const bgoSure=()=>{let n=0; BGO.rows.forEach(r=>r.cells.forEach(c=>{if(c.sug&&c.conf>=86)n++;})); return n;};
+
 const BGO_SEC=[['IN','Intro'],['VS','Couplet'],['CH','Refrain'],['BG','Pont'],['IT','Interlude'],['SO','Solo'],['OUT','Outro']];
 function bgoNorm(t){t=String(t||'').trim().replace(/\s+/g,'').replace(/^[|:]+|[|:]+$/g,''); if(!t)return ''; if(/^[%/x×7.]{1,2}$/i.test(t)&&/[%/]/.test(t))return '%';
   t=t.replace(/^([A-G][#b]?)-/,'$1m').replace(/^([a-g])/,m=>m.toUpperCase()); return CHORD_RE.test(t)?t:'';}
@@ -5877,26 +5933,36 @@ function bgoCrop(c,m,maxW){const cw=c.x1-c.x0, ch=c.y1-c.y0, mx=Math.round(cw*(m
 function bgoCell(ri,ci){const el=$(`#bgoG [data-r="${ri}"][data-c="${ci}"] .bgv`); if(!el)return; const c=BGO.rows[ri].cells[ci];
   if(BGO.rows[ri].kind==='ord'){el.innerHTML=''; el.parentElement.classList.toggle('chk',c.ink>.02&&!(BGO.rows[ri].refs||[]).length); el.parentElement.classList.remove('guess'); return;}
   el.innerHTML=c.split?`<b>${esc(cwShow(c.a||'?'))}</b><b>${esc(cwShow(c.b||'?'))}</b>`:(c.v?`<b>${esc(cwShow(c.v))}</b>`:'');
-  el.parentElement.classList.toggle('chk',!!(c.ink>.02&&(c.auto||(c.split&&(!c.a||!c.b||c.a==='?'||c.b==='?'))||(!c.split&&(!c.v||c.v==='?'))))); el.parentElement.classList.toggle('guess',!!(c.auto&&(c.split?(c.a!=='?'||c.b!=='?'):c.v!=='?')));}
+  el.parentElement.classList.toggle('sug',!!c.sug); el.parentElement.classList.toggle('chk',!!(c.ink>.02&&(c.auto&&!c.sug||(c.split&&(!c.a||!c.b||c.a==='?'||c.b==='?'))||(!c.split&&(!c.v||c.v==='?'))))); el.parentElement.classList.toggle('guess',!!(c.auto&&(c.split?(c.a!=='?'||c.b!=='?'):c.v!=='?')));}
 async function bgoOpen(f){ocrUI('Recherche du quadrillage…',.2); let c;
   try{c=await bgoLoad(f);}catch(e){ocrUI(null); toast('Impossible de lire ce fichier'); return;}
   const g=bgoDetect(c); ocrUI(null); if(!g||!g.rows.length){toast('Quadrillage non trouvé : essaie une photo bien droite et nette'); return;}
-  Object.assign(BGO,{c,rows:g.rows,on:true}); let sec=0;
+  Object.assign(BGO,{c,rows:g.rows,on:true,dk:g.dk,W:g.W,ex:[],paint:null,cur:null}); let sec=0;
   BGO.rows.forEach((r,i)=>{const any=r.cells.some(x=>x.ink>.02); r.kind=r.label.ink>.02?'sec':(any?'suite':'vide'); if(r.kind==='sec')r.name=sec++===0?'Intro':'Section '+sec;});
   let el=$('#bgo'); if(!el){el=document.createElement('div'); el.id='bgo'; document.body.appendChild(el);}
-  el.innerHTML=`<div class="bgoh"><b>▦ Grille depuis la photo</b><input id="bgoT" placeholder="Artiste - Titre" value="${esc($('#newTitle').value.trim())}"><label>Tonalité <input id="bgoK" placeholder="Em" size="4"></label><label>♩ <input id="bgoBpm" placeholder="120" size="3" inputmode="numeric"></label><span id="bgoProg" class="lab"></span><span class="grow"></span><button id="bgoX">Annuler</button><button id="bgoOk" class="pri">Créer la grille</button></div>
-    <div class="bgoi lab">Touche une case pour corriger (Entrée = case suivante) · appui long = roue d’accords · touche le nom à gauche pour nommer la section ou ignorer la ligne.</div><div id="bgoG"></div>`;
+  el.innerHTML=`<div class="bgoh"><b>▦ Grille depuis la photo</b><input id="bgoT" placeholder="Artiste - Titre" value="${esc($('#newTitle').value.trim())}"><label>Tonalité <input id="bgoK" placeholder="Em" size="4"></label><label>♩ <input id="bgoBpm" placeholder="120" size="3" inputmode="numeric"></label><span id="bgoProg" class="lab"></span><button id="bgoSure" hidden></button><span class="grow"></span><button id="bgoX">Annuler</button><button id="bgoOk" class="pri">Créer la grille</button></div>
+    <div class="bgoi lab">Appuie sur une case : la roue s’ouvre, relâche = rempli et case suivante · toucher bref = clavier · glisser depuis un accord = le recopier · case de gauche = nom, copie de ligne, enchaînement. Chaque case remplie apprend ton écriture et propose les autres (en bleu).</div><div id="bgoG"></div><div id="bgoPal"></div>`;
   const G=$('#bgoG'); G.innerHTML=BGO.rows.map((r,ri)=>`<div class="bgor k-${r.kind}" data-row="${ri}"><div class="bgol" data-lab="${ri}"><span class="bgoim"></span><em>${r.kind==='sec'?esc(r.name):r.kind==='suite'?'↳ suite':r.kind==='ign'?'⊘ ignorée':''}</em></div>${r.cells.map((c,ci)=>`<div class="bgoc${c.ink>.02?'':' empty'}${c.split?' split':''}" data-r="${ri}" data-c="${ci}"><span class="bgoim"></span><span class="bgv"></span></div>`).join('')}</div>`).join('');
   BGO.rows.forEach((r,ri)=>{G.querySelector(`[data-lab="${ri}"] .bgoim`).appendChild(bgoCrop(r.label,.04,90)); r.cells.forEach((c,ci)=>{G.querySelector(`[data-r="${ri}"][data-c="${ci}"] .bgoim`).appendChild(bgoCrop(c,.04,110)); bgoCell(ri,ci);});});
   el.hidden=false; $('#bgoX').onclick=()=>{BGO.on=false; el.hidden=true;}; $('#bgoOk').onclick=bgoBuild;
-  // toucher = petite fenêtre de saisie ; appui long = roue
-  let lp=null;
-  G.onpointerdown=e=>{const ce=e.target.closest('.bgoc'); if(!ce||ce.classList.contains('empty')&&!e.shiftKey)return; clearTimeout(lp); const x0=e.clientX,y0=e.clientY;
-    lp=setTimeout(()=>{lp='done'; const ri=+ce.dataset.r, ci=+ce.dataset.c, c=BGO.rows[ri].cells[ci], half=c.split&&(e.offsetX/ce.clientWidth+e.offsetY/ce.clientHeight)>1?'b':'a';
-      cwPick(ce,n=>{if(c.split)c[half]=n; else c.v=n; c.auto=0; bgoCell(ri,ci);},bgoUsed());},420);
-    const mv=ev=>{if(Math.hypot(ev.clientX-x0,ev.clientY-y0)>10){clearTimeout(lp); removeEventListener('pointermove',mv);}}; addEventListener('pointermove',mv);};
-  G.onclick=e=>{if(lp==='done'){lp=null; return;} clearTimeout(lp); const la=e.target.closest('[data-lab]'); if(la){bgoLabPop(+la.dataset.lab,la); return;}
-    const ce=e.target.closest('.bgoc'); if(!ce)return; bgoPop(+ce.dataset.r,+ce.dataset.c,ce,e);};
+  // appui = roue (après 180 ms, sinon c'est un défilement) ; toucher bref = clavier ; glisser depuis l'accord = le recopier ; pinceau
+  const cellAt=(x,y)=>{const e=document.elementFromPoint(x,y); return e&&e.closest('#bgoG .bgoc');}, halfOf=(ce,x,y)=>{const r=ce.getBoundingClientRect(); return (x-r.left)/r.width+(y-r.top)/r.height>1?'b':'a';};
+  let T=null;
+  G.onpointerdown=e=>{const ce=e.target.closest('.bgoc'); if(!ce)return; const ri=+ce.dataset.r, ci=+ce.dataset.c, c=BGO.rows[ri].cells[ci]; if(BGO.rows[ri].kind==='ord'||BGO.rows[ri].kind==='ign')return;
+    const h=c.split?halfOf(ce,e.clientX,e.clientY):'a', x0=e.clientX, y0=e.clientY;
+    if(BGO.paint){e.preventDefault(); bgoFill(ri,ci,h,BGO.paint); T={paint:1,last:ce}; return;}
+    if(e.target.closest('.bgv b')&&(c.split?c[h]:c.v)){e.preventDefault(); T={drag:c.split?c[h]:c.v,last:ce}; return;}
+    T={t:setTimeout(()=>{T.wheel=1; bgoCur(ri,ci,h); cwPick(ce,n=>{bgoFill(ri,ci,h,n); bgoAdvance(); bgoPal();},[...new Set([...bgoUsed(),...bgoDiatonic($('#bgoK').value)])].slice(0,8),{tap:()=>bgoPop(ri,ci,ce)});},180),x0,y0,ri,ci,h,ce};};
+  addEventListener('pointermove',e=>{if(!T||!BGO.on)return; if(T.t&&!T.wheel&&Math.hypot(e.clientX-T.x0,e.clientY-T.y0)>8){clearTimeout(T.t); T=null; return;}
+    if(T.paint||T.drag){const ce=cellAt(e.clientX,e.clientY); if(ce&&ce!==T.last){T.last=ce; const ri=+ce.dataset.r, ci=+ce.dataset.c, c=BGO.rows[ri].cells[ci]; if(BGO.rows[ri].kind==='ord')return; bgoFill(ri,ci,c.split?halfOf(ce,e.clientX,e.clientY):'a',T.paint?BGO.paint:T.drag); T.moved=1;}}},{passive:true});
+  addEventListener('pointerup',()=>{if(!T)return; const t=T; T=null; if(t.t&&!t.wheel){clearTimeout(t.t); bgoCur(t.ri,t.ci,t.h); bgoPop(t.ri,t.ci,t.ce);} if(t.drag||t.paint)bgoPal();},true);
+  G.onclick=e=>{const la=e.target.closest('[data-lab]'); if(la)bgoLabPop(+la.dataset.lab,la);};
+  $('#bgoPal').onpointerdown=e=>{const b=e.target.closest('[data-pv]'); if(!b)return; e.preventDefault(); const v=b.dataset.pv; let long=false;
+    const t=setTimeout(()=>{long=true; BGO.paint=v&&v!=='∅'?v:null; bgoPal(); try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}},450);
+    b.onpointerup=()=>{clearTimeout(t); if(long)return; if(v===''){BGO.paint=null; bgoPal(); return;} if(BGO.paint){BGO.paint=BGO.paint===v?null:v; bgoPal(); return;}
+      const k=BGO.cur; if(!k){toast('Touche d’abord une case'); return;} bgoFill(k.ri,k.ci,k.h,v); bgoAdvance(); bgoPal();};};
+  $('#bgoSure').onclick=()=>{BGO.rows.forEach((r,ri)=>r.cells.forEach((c,ci)=>{if(c.sug&&c.conf>=86){c.auto=0; c.sug=0; bgoCell(ri,ci);}})); bgoSuggest(); toast('Propositions validées');};
+  $('#bgoK').oninput=()=>bgoPal(); bgoPal(); const f0=bgoNext(0,-1); if(f0)bgoCur(f0[0],f0[1],'a');
   bgoOCR().catch(e=>{$('#bgoProg').textContent='Lecture automatique indisponible : remplis les cases';});}
 const bgoUsed=()=>{const s=new Set(); BGO.rows.forEach(r=>r.cells.forEach(c=>[c.v,c.a,c.b].forEach(v=>{if(v&&v!=='?'&&v!=='%')s.add(v);}))); return [...s].slice(0,8);};
 function bgoNext(ri,ci){for(let r=ri;r<BGO.rows.length;r++){if(BGO.rows[r].kind==='ign'||BGO.rows[r].kind==='vide')continue; for(let c=(r===ri?ci+1:0);c<8;c++)if(BGO.rows[r].cells[c]&&BGO.rows[r].cells[c].ink>.02)return [r,c];} return null;}
@@ -5917,8 +5983,8 @@ function bgoPop(ri,ci,ce,ev){$('#bgoPop')&&$('#bgoPop').remove(); if(BGO.rows[ri
   document.body.appendChild(p); const r=ce.getBoundingClientRect(); p.style.left=Math.max(8,Math.min(innerWidth-p.offsetWidth-8,r.left))+'px'; p.style.top=(r.bottom+p.offsetHeight+8<innerHeight?r.bottom+6:Math.max(8,r.top-p.offsetHeight-6))+'px';
   const ins=[...p.querySelectorAll('input')], fx=v=>bgoNorm(v)||v.trim(); let foc=half==='b'?ins[1]:ins[0]; setTimeout(()=>{foc.focus(); foc.select();},30);
   ins.forEach(i=>i.onfocus=()=>foc=i);
-  const save=()=>{ins.forEach(i=>{const v=fx(i.value); if(i.dataset.h==='v')c.v=v; else c[i.dataset.h]=v;}); c.auto=0; bgoCell(ri,ci);};
-  const go=()=>{save(); p.remove(); const n=bgoNext(ri,ci); if(n){const e2=$(`#bgoG [data-r="${n[0]}"][data-c="${n[1]}"]`); e2.scrollIntoView({block:'nearest'}); bgoPop(n[0],n[1],e2);}};
+  const save=()=>{let ch=false; ins.forEach(i=>{const v=fx(i.value), old=i.dataset.h==='v'?c.v:c[i.dataset.h]; if(v!==old||c.auto)ch=true; if(i.dataset.h==='v')c.v=v; else c[i.dataset.h]=v;}); if(!ch)return; c.auto=0; c.sug=0; bgoCell(ri,ci); ins.forEach(i=>bgoLearn(ri,ci,i.dataset.h==='v'?'a':i.dataset.h)); bgoPal();};
+  const go=()=>{save(); p.remove(); const n=bgoNext(ri,ci); if(n){bgoCur(n[0],n[1],'a'); const e2=$(`#bgoG [data-r="${n[0]}"][data-c="${n[1]}"]`); bgoPop(n[0],n[1],e2);}};
   p.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault(); if(c.split&&foc===ins[0]){ins[1].focus(); return;} go();} if(e.key==='Escape')p.remove();};
   p.onclick=e=>{const b=e.target.closest('button'); if(!b)return; if(b.dataset.ok!=null){go(); return;}
     if(b.dataset.q){foc.value=b.dataset.q; if(c.split&&foc===ins[0]){ins[1].focus(); return;} go(); return;}
@@ -5927,12 +5993,15 @@ function bgoPop(ri,ci,ce,ev){$('#bgoPop')&&$('#bgoPop').remove(); if(BGO.rows[ri
   setTimeout(()=>{const off=e=>{if(!p.contains(e.target)){save(); p.remove(); removeEventListener('pointerdown',off,true);}}; addEventListener('pointerdown',off,true);},0);}
 function bgoLabPop(ri,el){$('#bgoPop')&&$('#bgoPop').remove(); const r=BGO.rows[ri], p=document.createElement('div'); p.id='bgoPop';
   p.innerHTML=`<div class="bgpp"><input value="${esc(r.kind==='sec'?r.name:'')}" placeholder="Nom de la section"><button class="pri" data-ok>OK</button></div><div class="bgpc">${BGO_SEC.map(([,n])=>`<button data-n="${n}">${n}</button>`).join('')}</div>
+    <div class="bgpc"><span class="lab">⧉ Mêmes accords que :</span>${BGO.rows.map((x,j)=>j!==ri&&(x.kind==='sec'||x.kind==='suite')&&x.cells.some(c=>c.v||c.a)?`<button data-cp="${j}">${esc(x.kind==='sec'?x.name:'ligne '+(j+1))}</button>`:'').join('')}</div>
     <div class="bgpc"><button data-k="suite">↳ Suite de la section d’avant</button><button data-k="ord">⇒ Enchaînement (=D VS2 =D CH2)</button><button data-k="ign">⊘ Ignorer la ligne</button></div>`;
   document.body.appendChild(p); const b=el.getBoundingClientRect(); p.style.left=Math.max(8,b.left)+'px'; p.style.top=(b.bottom+p.offsetHeight+8<innerHeight?b.bottom+6:Math.max(8,b.top-p.offsetHeight-6))+'px';
   const inp=p.querySelector('input'); setTimeout(()=>inp.focus(),30);
   const set=(k,n)=>{r.kind=k; if(n!=null)r.name=n; const row=$(`#bgoG [data-row="${ri}"]`); row.className='bgor k-'+k; row.querySelector('em').textContent=k==='sec'?r.name:k==='suite'?'↳ suite':k==='ord'?'⇒ enchaînement':'⊘ ignorée'; p.remove(); r.cells.forEach((c,ci)=>bgoCell(ri,ci)); if(k==='ord'){const ce=row.querySelector('.bgoc:not(.empty)')||row.querySelector('.bgoc'); bgoRefPop(ri,0,ce);}};
   p.onkeydown=e=>{if(e.key==='Enter'&&inp.value.trim())set('sec',inp.value.trim()); if(e.key==='Escape')p.remove();};
-  p.onclick=e=>{const x=e.target.closest('button'); if(!x)return; if(x.dataset.ok!=null){if(inp.value.trim())set('sec',inp.value.trim()); else p.remove(); return;} if(x.dataset.n)set('sec',x.dataset.n); if(x.dataset.k)set(x.dataset.k);};
+  p.onclick=e=>{const x=e.target.closest('button'); if(!x)return;
+    if(x.dataset.cp!=null){const src=BGO.rows[+x.dataset.cp]; r.cells.forEach((c,ci)=>{const o=src.cells[ci]; if(!o)return; if(!(o.v||o.a))return; c.split=!!o.split; c.v=o.v; c.a=o.a; c.b=o.b; c.auto=0; c.sug=0; if(c.ink<=.02)c.ink=.03; const ce=$(`#bgoG [data-r="${ri}"][data-c="${ci}"]`); ce.classList.toggle('split',c.split); ce.classList.remove('empty'); bgoCell(ri,ci);}); if(r.kind==='vide')set('suite'); else p.remove(); toast('Ligne recopiée'); return;}
+    if(x.dataset.ok!=null){if(inp.value.trim())set('sec',inp.value.trim()); else p.remove(); return;} if(x.dataset.n)set('sec',x.dataset.n); if(x.dataset.k)set(x.dataset.k);};
   setTimeout(()=>{const off=e=>{if(!p.contains(e.target)){p.remove(); removeEventListener('pointerdown',off,true);}}; addEventListener('pointerdown',off,true);},0);}
 function bgoBuild(){const secs=[]; let cur=null; const form=[], secIx={}; let nsec=0;
   BGO.rows.forEach(r=>{if(r.kind==='ign'||r.kind==='vide')return;
@@ -7282,7 +7351,7 @@ function cwMove(x,y){if(!CW.on)return; let h=cwHit(x,y);
     if(h&&h.t==='n'&&CW.phase==='notes'&&h.i!==CW.noDwell)CW.t=setTimeout(cwDwell,CWS().dwell);
     if(h&&h.t!=='n')cwBuzz(); cwDraw();}}
 function cwEnd(){if(!CW.on)return; clearTimeout(CW.t); const ch=cwChord(), h=CW.hov, del=h&&h.t==='del'&&CW.existing; CW.on=false; if(CW.el)CW.el.remove(); CW.el=null;
-  if(CW.pick){const f=CW.pick; CW.pick=null; if(h&&h.t==='set'){cwSettings(); return;} if(ch)f(ch); else {toast('Annulé'); cwBuzz();} return;}
+  if(CW.pick){const f=CW.pick, tp=CW.onTap; CW.pick=null; CW.onTap=null; if(h&&h.t==='set'){cwSettings(); return;} if(ch)f(ch); else if(tp&&!h&&Date.now()-CW.start<600)tp(); else {toast('Annulé'); cwBuzz();} return;}
   if(del){wpClose(); CW.existing.del(); toast('Accord supprimé'); cwBuzz(); return;}
   if(h&&h.t==='set'){wpClose(); cwSettings(); return;}
   if(ch){wpApply(ch);} else {wpClose(); toast('Annulé'); cwBuzz();}}
@@ -7354,7 +7423,7 @@ function cwTestLine(){const tl=$('#cwTl'); if(!tl)return; const W=['Twisting','m
       cwStart(rc,null,['Am','Em','G'],false,W[i]); CW.pick=n=>{(cwTestLine.got=cwTestLine.got||{})[i]=n; cwTestLine(); cwBuzz(10);}; CW.gh=null;},380);
     const up=()=>{clearTimeout(t); removeEventListener('pointerup',up,true); removeEventListener('pointercancel',up,true);}; addEventListener('pointerup',up,true); addEventListener('pointercancel',up,true);};}
 // roue ouverte depuis un bouton (＋) : on maintient, on glisse, on relâche → cb(accord)
-function cwPick(btn,cb,list){wpClose(); const rc=btn.getBoundingClientRect(); cwStart({left:rc.left,top:rc.top,width:rc.width,height:0},null,list,true); CW.pick=cb;}
+function cwPick(btn,cb,list,o){wpClose(); const rc=btn.getBoundingClientRect(); cwStart({left:rc.left,top:rc.top,width:rc.width,height:0},null,list,true); CW.pick=cb; CW.onTap=o&&o.tap||null;}
 /* ----- mode peinture : toucher un accord de la palette, puis tous les mots qui l'ont ----- */
 const PAINT={ch:null};
 function paintSet(ch){PAINT.ch=ch; let el=$('#paintPill'); $$('#vtChips button').forEach(b=>b.setAttribute('aria-pressed',String(!!ch&&b.textContent===ch)));
@@ -7808,7 +7877,9 @@ function bgDraw(){
   const mt=bgMtOf(sc,c.bi)||{};
   $('#bgMeas').innerHTML=`<button data-mm="rs" aria-pressed="${!!mt.rs}">‖: Début</button><button data-mm="re" aria-pressed="${!!mt.re}">:‖ Fin${mt.re>2?' ×'+mt.re:''}</button><button data-mm="v" aria-pressed="${!!mt.v}">${mt.v?mt.v+'. fois':'1. / 2.'}</button><button data-mm="n" aria-pressed="${!!mt.n}">✎ ${mt.n?esc(mt.n):'Note'}</button>`;
   const chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].slice(0,15);
-  $('#bgChips').innerHTML=chips.map(x=>`<button>${esc(x)}</button>`).join('');
+  $('#bgChips').innerHTML=chips.map(x=>`<button${BG.paint&&(toSource(BG.r,x)||x)===BG.paint?' class="on"':''}>${esc(x)}</button>`).join('');
+  const q=document.createElement('div'); q.id='bgQuick'; q.innerHTML=(BG.paint?`<span class="bgqp">🖌 ${esc(BG.paint==='%'?'%':bgName(BG.paint,cn))} : touche ou glisse</span>`:'')+chips.map(x=>`<button data-q="${esc(x)}"${BG.paint&&(toSource(BG.r,x)||x)===BG.paint?' class="on"':''}>${esc(x)}</button>`).join('')+`<button data-q="%"${BG.paint==='%'?' class="on"':''}>%</button>`+(BG.paint?'<button data-q="" class="bgok">✓ Fini</button>':''); main.appendChild(q);
+  main.classList.toggle('painting',!!BG.paint); $('#bgEd').classList.toggle('painting',!!BG.paint);
   $('#bgSec34').textContent=m===3&&+g.meter!==3?'Section en 4/4':+g.meter===3?(m===3?'Section en 4/4':'Section en 3/4'):'Section en 3/4';
   // structure
   $('#bgForm').innerHTML=g.form.map((i,j)=>`<button data-j="${j}" aria-pressed="${j===BG.f}">${esc((g.secs[i]||{}).n||'—')}</button>`).join('')||'<span class="lab">vide</span>';
@@ -7820,6 +7891,18 @@ function bgNext(){const g=BG.g, c=BG.sel; if(c.k<bgSlotsOf(bgBar(),bgMeter(c.si)
   c.k=0; if(c.bi<g.secs[c.si].bars.length-1){c.bi++; return;}
   if(c.si<g.secs.length-1){c.si++; c.bi=0; return;}
   bgSplice(g.secs[c.si],g.secs[c.si].bars.length,0,['']); c.bi++;}
+// remplir une case précise (sans avancer) : case entière si elle n'est pas coupée, sinon le temps touché
+function bgFillAt(si,bi,k,src){const bar=BG.g.secs[si].bars[bi]; if(src==='%'){bar.splice(0,bar.length,'%'); return;}
+  if(bar[0]==='%'||bar.length===1){bar.splice(0,bar.length,src); return;} if(bar[k]==='=')k=2; bar[k]=src;}
+function bgHit(x,y){const el=document.elementFromPoint(x,y), c=el&&el.closest('#bgMain .bgc'); if(!c||c.classList.contains('bgghostc'))return null; const si=+c.dataset.si, bi=+c.dataset.bi, bar=BG.g.secs[si].bars[bi], rc=c.getBoundingClientRect();
+  return {si,bi,k:bgPartAt(bar[0]==='%'?1:bar.length,(x-rc.left)/rc.width,(y-rc.top)/rc.height,bgMeter(si)),el:c};}
+function bgPaint(v){BG.paint=v||null; bgDraw(); if(v)toast('🖌 '+(v==='%'?'%':bgName(v,BG.r.cn))+' : touche ou glisse sur les mesures',2200);}
+function bgWheel(si,bi,k,el){if(BGD){clearTimeout(BGD.timer); if(BGD.ghost)BGD.ghost.remove(); BGD=null;} BGR=null; BG.noClick=Date.now()+400;
+  $$('#bgMain .dropon,#bgMain .dropl,#bgMain .dropr').forEach(e=>e.classList.remove('dropon','dropl','dropr'));
+  const bar=BG.g.secs[si].bars[bi], sl=bgSlotsOf(bar,bgMeter(si)); let ks=sl.findIndex(ix=>ix.includes(bar[k]==='='?2:k)); BG.sel={si,bi,k:Math.max(0,ks)};
+  $$('#bgMain .bgc.on').forEach(e=>e.classList.remove('on')); el.classList.add('on');
+  const chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].slice(0,8); try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}
+  cwPick(el,n=>bgPut(n),chips);}
 function bgPut(name){const src=toSource(BG.r,name)||name; bgSet(()=>{const b=bgBar(); if(b[0]==='%'){b.splice(0,b.length,'');} bgSlotsOf(b,bgMeter(BG.sel.si))[Math.min(BG.sel.k,bgSlotsOf(b,bgMeter(BG.sel.si)).length-1)].forEach(i=>b[i]=src); bgNext();});}
 $('#bgMain').onclick=ev=>{if(Date.now()-(BG.noClick||0)<400)return; const nm=ev.target.closest('.bgname'); if(nm){bgRenameInline(nm); return;}
   const t=ev.target.closest('.bgc,.bgsec'); if(!t)return; const si=+t.dataset.si;
@@ -7835,7 +7918,19 @@ $('#bgMeas').onclick=async ev=>{const b=ev.target.closest('[data-mm]'); if(!b)re
     if(a==='rs')mt.rs=mt.rs?0:1; else if(a==='re')mt.re=!mt.re?2:mt.re<4?mt.re+1:0; else if(a==='v')mt.v=!mt.v?1:mt.v<3?mt.v+1:0; else mt.n=v;
     Object.keys(mt).forEach(k=>{if(!mt[k])delete mt[k];}); sc.mt[bi]=Object.keys(mt).length?mt:null; if(!sc.mt.some(Boolean))delete sc.mt;});};
 $('#bgSlots').onclick=ev=>{const b=ev.target.closest('[data-k]'); if(!b)return; BG.sel.k=+b.dataset.k; bgDraw();};
-$('#bgChips').onclick=ev=>{if(Date.now()-(BG.noClick||0)<400)return; const b=ev.target.closest('button'); if(b)bgPut(b.textContent);};
+$('#bgChips').onclick=ev=>{if(Date.now()-(BG.lp||0)<700||!BG.paint&&Date.now()-(BG.noClick||0)<400)return; const b=ev.target.closest('button'); if(!b)return; if(BG.paint){const v=toSource(BG.r,b.textContent)||b.textContent; bgPaint(BG.paint===v?null:v); return;} bgPut(b.textContent);};
+// barre rapide sous la grille : toucher = case en cours, appui long = pinceau
+$('#bgMain').addEventListener('pointerdown',ev=>{const b=ev.target.closest('#bgQuick [data-q]'); if(!b)return; ev.stopPropagation(); ev.preventDefault(); const q=b.dataset.q, v=q==='%'||q===''?q:(toSource(BG.r,q)||q); let long=false;
+  const t=setTimeout(()=>{long=true; if(v)bgPaint(BG.paint===v?null:v); try{navigator.vibrate&&navigator.vibrate(15);}catch(_){}},450);
+  const up=()=>{document.removeEventListener('pointerup',up); clearTimeout(t); BG.noClick=Date.now(); if(long)return; if(v===''){bgPaint(null); return;} if(BG.paint){bgPaint(BG.paint===v?null:v); return;}
+    if(v==='%')$('#bgPct').click(); else bgPut(q);}; document.addEventListener('pointerup',up);},true);
+// pinceau : chaque mesure touchée ou survolée prend l'accord
+let BGP=null;
+$('#bgEd').addEventListener('pointerdown',ev=>{if(!BG.paint||ev.button>0)return; if(ev.target.closest('#bgQuick'))return; const h=bgHit(ev.clientX,ev.clientY); if(!h)return; ev.stopPropagation(); ev.preventDefault(); BGP={last:''}; try{$('#bgEd').setPointerCapture(ev.pointerId);}catch(_){} bgPaintAt(ev.clientX,ev.clientY);},true);
+function bgPaintAt(x,y){const h=bgHit(x,y); if(!h)return; const key=h.si+'/'+h.bi+'/'+h.k; if(BGP.last===key)return; BGP.last=key; BG.noClick=Date.now(); BG.sel={si:h.si,bi:h.bi,k:0}; bgSet(()=>bgFillAt(h.si,h.bi,h.k,BG.paint));}
+document.addEventListener('pointermove',ev=>{if(BGP&&(ev.pointerType!=='mouse'||ev.buttons))bgPaintAt(ev.clientX,ev.clientY);});
+document.addEventListener('touchmove',ev=>{if(!BGP)return; const t=ev.touches[0]; if(t){bgPaintAt(t.clientX,t.clientY); if(ev.cancelable)ev.preventDefault();}},{passive:false});
+['pointerup','touchend','pointercancel'].forEach(n=>document.addEventListener(n,()=>{if(BGP){BGP=null; BG.noClick=Date.now();}}));
 // nom de section modifiable sur place
 function bgRenameInline(el){
   const si=+el.closest('.bgsec').dataset.si, sc=BG.g.secs[si]; if(!sc)return;
@@ -7911,14 +8006,20 @@ $('#bgEd').addEventListener('pointerdown',ev=>{
   const chip=ev.target.closest('#bgChips button'); const cell=ev.target.closest('#bgMain .bgc');
   if(chip)chord=toSource(BG.r,chip.textContent)||chip.textContent;
   else if(cell){const si=+cell.dataset.si, bi=+cell.dataset.bi, bar=BG.g.secs[si].bars[bi], rc=cell.getBoundingClientRect(), k=bgPartAt(bar.length,(ev.clientX-rc.left)/rc.width,(ev.clientY-rc.top)/rc.height,bgMeter(si)); if(bar[k]==='=')k=2; if(bar[k]&&bar[k]!=='%'){chord=bar[k]; from={si,bi,k};}}
+  if(BG.paint)return;
+  if(cell&&!chord){const h=bgHit(ev.clientX,ev.clientY); if(!h)return; BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord:null,wheel:1,timer:setTimeout(()=>bgWheel(h.si,h.bi,h.k,cell),300)}; return;}
   if(!chord)return;
-  BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord,from,on:false,timer:setTimeout(bgDragOn,from?420:300)};
+  if(from)setTimeout(()=>{const d=BGD; if(d&&d.from===from&&Math.hypot(d.cx-d.x,d.cy-d.y)<10)bgWheel(from.si,from.bi,from.k,cell);},850);
+  if(chip){const v=chord; setTimeout(()=>{const d=BGD; if(d&&d.chip&&Math.hypot(d.cx-d.x,d.cy-d.y)<10){clearTimeout(d.timer); if(d.ghost)d.ghost.remove(); BGD=null; BG.noClick=Date.now()+300; BG.lp=Date.now(); bgPaint(BG.paint===v?null:v); try{navigator.vibrate&&navigator.vibrate(15);}catch(_){}}},500);}
+  BGD={chip:!!chip,x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord,from,on:false,timer:from?setTimeout(bgDragOn,420):0};
 });
-document.addEventListener('pointermove',ev=>{if(!BGD)return; const dx=ev.clientX-BGD.x, dy=ev.clientY-BGD.y;
+document.addEventListener('pointermove',ev=>{if(!BGD)return; const dx=ev.clientX-BGD.x, dy=ev.clientY-BGD.y; BGD.cx=ev.clientX; BGD.cy=ev.clientY;
+  if(BGD.wheel){if(Math.hypot(dx,dy)>10){clearTimeout(BGD.timer); BGD=null;} return;}
   if(!BGD.on){if(Math.hypot(dx,dy)>10){if(!BGD.from&&(Math.abs(dx)>Math.abs(dy)||ev.pointerType==='mouse'))bgDragOn(); else {clearTimeout(BGD.timer); BGD=null; return;}}}
   bgDragMove(ev.clientX,ev.clientY);});
-document.addEventListener('pointerup',()=>bgDragEnd(false)); document.addEventListener('pointercancel',()=>{if(BGD&&!BGD.on)bgDragEnd(true);});
-document.addEventListener('touchmove',ev=>{if(!BGD)return; const t=ev.touches[0]; if(!t)return;
+document.addEventListener('pointerup',()=>{if(BGD&&BGD.wheel){clearTimeout(BGD.timer); BGD=null; return;} bgDragEnd(false);}); document.addEventListener('pointercancel',()=>{if(BGD&&!BGD.on)bgDragEnd(true);});
+document.addEventListener('touchmove',ev=>{if(!BGD)return; const t=ev.touches[0]; if(!t)return; BGD.cx=t.clientX; BGD.cy=t.clientY;
+  if(BGD.wheel){if(Math.hypot(t.clientX-BGD.x,t.clientY-BGD.y)>10){clearTimeout(BGD.timer); BGD=null;} return;}
   if(!BGD.on){const dx=t.clientX-BGD.x, dy=t.clientY-BGD.y; if(Math.hypot(dx,dy)>10&&Math.abs(dx)>Math.abs(dy)&&!BGD.from)bgDragOn();}
   if(BGD&&BGD.on){ev.preventDefault(); bgDragMove(t.clientX,t.clientY);}},{passive:false});
 document.addEventListener('touchend',ev=>{if(BGD&&BGD.on){const t=ev.changedTouches[0]; if(t)bgDragMove(t.clientX,t.clientY); bgDragEnd(false);}});
@@ -7986,6 +8087,14 @@ $('#bgIns').onclick=()=>bgSet(()=>{bgSplice(BG.g.secs[BG.sel.si],BG.sel.bi,0,[''
 $('#bgApp').onclick=()=>bgSet(()=>{bgSplice(BG.g.secs[BG.sel.si],BG.sel.bi+1,0,['']); BG.sel.bi++; BG.sel.k=0;});
 $('#bgDel').onclick=()=>bgSet(()=>{const sc=BG.g.secs[BG.sel.si]; bgSplice(sc,BG.sel.bi,1); if(!sc.bars.length)sc.bars.push(['']);});
 $('#bgDupRow').onclick=()=>bgSet(()=>{const per=+BG.g.per||4, sc=BG.g.secs[BG.sel.si], a=Math.floor(BG.sel.bi/per)*per, row=JSON.parse(JSON.stringify(sc.bars.slice(a,a+per))), rmt=JSON.parse(JSON.stringify((sc.mt||[]).slice(a,a+per))); bgSplice(sc,a+row.length,0,...row); if(rmt.some(Boolean)){sc.mt=sc.mt||[]; rmt.forEach((x,j)=>{sc.mt[a+row.length+j]=x;});} BG.sel.bi=a+row.length;});
+// recopier une autre ligne (de n'importe quelle section) sur la ligne de la mesure choisie
+$('#bgRowFrom').onclick=()=>{const L=$('#bgRowList'); if(!L.hidden){L.hidden=true; return;} const per=+BG.g.per||4, cur=BG.sel, a0=Math.floor(cur.bi/per)*per; let h='<span class="lab">Recopier sur cette ligne :</span>';
+  BG.g.secs.forEach((sc,si)=>{for(let a=0;a<sc.bars.length;a+=per){if(si===cur.si&&a===a0)continue; const bars=sc.bars.slice(a,a+per); if(bars.every(b=>b.every(x=>!x)))continue;
+    h+=`<button data-rf="${si}/${a}"><b>${esc(sc.n||'—')}${sc.bars.length>per?' '+(a/per+1):''}</b> <span>${esc(bars.map(bgBarTxt).join(' | '))}</span></button>`;}});
+  L.innerHTML=h; L.hidden=false;};
+$('#bgRowList').onclick=ev=>{const b=ev.target.closest('[data-rf]'); if(!b)return; const [si,a]=b.dataset.rf.split('/').map(Number), per=+BG.g.per||4, src=JSON.parse(JSON.stringify(BG.g.secs[si].bars.slice(a,a+per))), c=BG.sel, a0=Math.floor(c.bi/per)*per, sc=BG.g.secs[c.si];
+  bgSet(()=>{const n=Math.min(per,Math.max(src.length,sc.bars.length-a0)); bgSplice(sc,a0,Math.min(per,sc.bars.length-a0),...src.slice(0,n)); BG.sel={si:c.si,bi:Math.min(a0+src.length,sc.bars.length-1),k:0};});
+  $('#bgRowList').hidden=true; toast('Ligne recopiée');};
 function bgRename(si){const sc=BG.g.secs[si], n=prompt('Nom de la section :',sc.n||''); if(n==null)return; bgSet(()=>sc.n=n.trim());}
 $('#bgSecRen').onclick=()=>bgRename(BG.sel.si);
 $('#bgSecAdd').onclick=()=>{const names=['Intro','Couplet','Refrain','Pont','Solo','Outro'], used=new Set(BG.g.secs.map(x=>x.n)), def=names.find(x=>!used.has(x))||'Section';
