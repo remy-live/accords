@@ -554,6 +554,7 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 #vtBgNote{padding:8px 14px;background:#16233a;color:#dbeafe;font:500 13px Inter,system-ui;border-bottom:1px solid #2c4a7a;display:flex;align-items:center;gap:10px;flex-wrap:wrap}#vtBgNote button{height:30px;padding:0 10px;border-radius:8px;border:1px solid #2c4a7a;background:#0b1220;color:#dbeafe;font:700 12.5px Inter,system-ui}
 @media (max-width:700px){.bgsw{margin-left:0}.bgmd{max-width:150px;overflow:hidden;text-overflow:ellipsis}}
 
+#bgSlots button{touch-action:none}
 #bgKeysW{flex:0 0 auto;display:flex;justify-content:center;border-top:1px solid #26262b;background:var(--s1,#121215)}#bgKeysW>#bgKeys{width:100%;max-width:560px;border-top:0}#bgKeysW.inpad{border:0;background:none;display:block}#bgKeysW.inpad>#bgKeys{padding:0;max-width:none;background:none}
 #bgKeys .tg{font-size:20px}#bgKeys .tg.on{background:#6ea8fe!important;color:#0b1220!important;border-color:#6ea8fe!important}#bgKeys .tg.lk{box-shadow:0 0 0 3px rgba(110,168,254,.35)}#bgKeys .tg small{font-size:10px;margin:2px 0 0}#bgKeys button.off{opacity:.25}
 #bgKeys .bgkN button{background:#1b2333}#bgKeys .bgkT button{flex:1 1 0}#bgKeys{display:flex;flex-direction:column;gap:6px;padding:8px 10px;background:var(--s1,#121215);border-top:1px solid #26262b}
@@ -8073,6 +8074,25 @@ function bgWheel(si,bi,k,el){if(BGD){clearTimeout(BGD.timer); if(BGD.ghost)BGD.g
   let chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].filter(Boolean).slice(0,8); try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}
   cwStart({left:cx-w/2,top:cy-h/2,width:w,height:h},cur?{del:()=>{bgSet(()=>bgFillAt(si,bi,kk,'')); toast('Accord supprimé');},name}:null,chips,false,name?cwShow(name):'');
   CW.pick=n=>{BG.sel={si,bi,k:Math.max(0,ks)}; bgPut(n);}; CW.onTap=null;}
+// « Temps » à droite : appui long = roue sur le temps ; glisser vers le haut / le bas = accord suivant / précédent
+let BGSC=null;
+function bgScrubList(){const fl=!!(BG.r&&BG.r.flats), roots=[...Array(12)].map((_,i)=>noteName(i,fl,S.fr)); return [...new Set([...(BG.r.chips||[]),...diatonic(BG.r),...roots,...roots.map(x=>x+'m')])].filter(Boolean);}
+$('#bgSlots').addEventListener('pointerdown',ev=>{const b=ev.target.closest('[data-k]'); if(!b||ev.button>0||BG.paint)return; const ks=+b.dataset.k, si=BG.sel.si, bi=BG.sel.bi, bar=BG.g.secs[si].bars[bi]; if(bar[0]==='%')return;
+  const k=bgSlotsOf(bar,bgMeter(si))[ks][0], cur=bar[k]||'', list=bgScrubList(), d0=cur?bgName(cur,BG.r.cn):''; let ix=list.indexOf(d0);
+  BGSC={x:ev.clientX,y:ev.clientY,si,bi,k,ks,list,ix,base:ix,step:0,on:false,id:ev.pointerId,
+    t:setTimeout(()=>{if(!BGSC||BGSC.on)return; const rc=b.getBoundingClientRect(), S0=BGSC; BGSC=null; BG.noClick=Date.now()+300; BG.sel={si,bi,k:ks};
+      try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}
+      cwStart({left:rc.left+rc.width/2-50,top:rc.top,width:100,height:rc.height},cur?{del:()=>{bgSet(()=>bgFillAt(si,bi,k,'')); toast('Accord supprimé');},name:d0}:null,[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].slice(0,8),false,d0?cwShow(d0):'');
+      CW.pick=n=>{BG.sel={si,bi,k:ks}; bgPut(n);}; CW.onTap=null;},420)};
+  try{$('#bgEd').setPointerCapture(ev.pointerId);}catch(_){} });
+document.addEventListener('pointermove',ev=>{const c=BGSC; if(!c)return; const dy=c.y-ev.clientY;
+  if(!c.on){if(Math.abs(dy)<12){if(Math.abs(ev.clientX-c.x)>14){clearTimeout(c.t); BGSC=null;} return;} c.on=true; clearTimeout(c.t); const g=document.createElement('div'); g.className='bgghost'; document.body.appendChild(g); c.g=g;}
+  ev.preventDefault(); const st=Math.round(dy/22); c.g.style.left=ev.clientX+'px'; c.g.style.top=ev.clientY+'px';
+  if(st!==c.step){c.step=st; const n=c.list.length, i=(((c.base<0?(st>0?-1:0):c.base)+st)%n+n)%n, nm=c.list[i], src=(!BG.r.shift&&!S.fr&&parseChord(nm))?nm:(toSource(BG.r,nm)||nm);
+    if(BG.mode==='link'){c.g.remove(); clearTimeout(c.t); BGSC=null; bgSet(()=>{}); return;}
+    bgSet(()=>bgFillAt(c.si,c.bi,c.k,src)); BG.sel={si:c.si,bi:c.bi,k:c.ks}; try{navigator.vibrate&&navigator.vibrate(5);}catch(_){} }
+  c.g.textContent='↕ '+(bgName(BG.g.secs[c.si].bars[c.bi][c.k],BG.r.cn)||'—');},{passive:false});
+['pointerup','pointercancel'].forEach(n=>document.addEventListener(n,()=>{const c=BGSC; if(!c)return; clearTimeout(c.t); if(c.g)c.g.remove(); if(c.on){BG.noClick=Date.now(); bgDraw();} BGSC=null;}));
 function bgPut(name){const src=toSource(BG.r,name)||name; bgSet(()=>{const b=bgBar(); if(b[0]==='%'){b.splice(0,b.length,'');} bgSlotsOf(b,bgMeter(BG.sel.si))[Math.min(BG.sel.k,bgSlotsOf(b,bgMeter(BG.sel.si)).length-1)].forEach(i=>b[i]=src); bgNext();});}
 $('#bgMain').onclick=ev=>{const sa=ev.target.closest('[data-sa]'); if(sa){bgSecAct(+sa.dataset.si,sa.dataset.sa); return;} if(ev.target.closest('[data-md="ask"]')){bgAskMode(null); return;} if(ev.target.closest('.bgwarn,.bgsact,.bgln'))return; if(Date.now()-(BG.noClick||0)<400)return; const nm=ev.target.closest('.bgname'); if(nm){bgRenameInline(nm); return;}
   const t=ev.target.closest('.bgc,.bgsec'); if(!t)return; const si=+t.dataset.si;
@@ -8088,7 +8108,7 @@ $('#bgMeas').onclick=async ev=>{const b=ev.target.closest('[data-mm]'); if(!b)re
   bgSet(()=>{sc.mt=sc.mt||[]; while(sc.mt.length<sc.bars.length)sc.mt.push(null); const mt=sc.mt[bi]||{};
     if(a==='rs')mt.rs=mt.rs?0:1; else if(a==='re')mt.re=!mt.re?2:mt.re<4?mt.re+1:0; else if(a==='v')mt.v=!mt.v?1:mt.v<3?mt.v+1:0; else mt.n=v;
     Object.keys(mt).forEach(k=>{if(!mt[k])delete mt[k];}); sc.mt[bi]=Object.keys(mt).length?mt:null; if(!sc.mt.some(Boolean))delete sc.mt;});};
-$('#bgSlots').onclick=ev=>{const b=ev.target.closest('[data-k]'); if(!b)return; BG.sel.k=+b.dataset.k; bgDraw();};
+$('#bgSlots').onclick=ev=>{if(Date.now()-(BG.noClick||0)<400)return; const b=ev.target.closest('[data-k]'); if(!b)return; BG.sel.k=+b.dataset.k; bgDraw();};
 $('#bgChips').onclick=ev=>{if(Date.now()-(BG.lp||0)<700||!BG.paint&&Date.now()-(BG.noClick||0)<400)return; const b=ev.target.closest('button'); if(!b)return; if(BG.paint){const v=toSource(BG.r,b.textContent)||b.textContent; bgPaint(BG.paint===v?null:v); return;} bgPut(b.textContent);};
 // pinceau : chaque mesure touchée ou survolée prend l'accord
 let BGP=null;
