@@ -537,6 +537,23 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 #bgEd .bgok{background:var(--hl,#fb923c);color:var(--onhl,#111);border:0;font-weight:800}
 .bgchips button.on{outline:3px solid var(--hl,#fb923c);outline-offset:1px}
 #bgMain.painting,#bgMain.painting .bgc{touch-action:none}
+@media (max-width:1400px){.bghead>.lab{display:none}}
+.bgsw{display:inline-flex;padding:3px;border-radius:11px;background:#17181d;border:1px solid #3a3d46;margin-left:10px}.bgsw button{height:34px!important;padding:0 12px!important;border:0!important;background:transparent!important;color:#e4e4e7!important;font:700 13.5px Inter,system-ui!important;border-radius:8px!important}.bgsw button.on{background:#6ea8fe!important;color:#0b1220!important}
+.bgmd{height:32px!important;padding:0 12px!important;border-radius:999px!important;font:700 13px Inter,system-ui!important;white-space:nowrap;margin-left:6px}
+.bgmd.link{background:#13261b!important;color:#86efac!important;border:1px solid #245c39!important}.bgmd.mix{background:#16233a!important;color:#93c5fd!important;border:1px solid #2c4a7a!important}.bgmd.lock{background:#2a1d10!important;color:#fdba74!important;border:1px solid #7c4a1c!important}
+.bgst{display:inline-flex;align-items:center;height:24px;padding:0 10px;margin-left:10px;border-radius:999px;font:700 12px Inter,system-ui;letter-spacing:0;text-transform:none;vertical-align:middle}
+.bgst.link{background:#13261b;color:#86efac;border:1px solid #245c39}.bgst.hand{background:#16233a;color:#93c5fd;border:1px solid #2c4a7a}.bgst.warn{background:#3a2a06;color:#fde047;border:1px solid #7a5c0a}.bgst.lock{background:#2a1d10;color:#fdba74;border:1px solid #7c4a1c}
+.bgwarn{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 4px;padding:8px 12px;border-radius:12px;background:#3a2a06;border:1px solid #7a5c0a;color:#fef9c3;font:500 13px Inter,system-ui}.bgwarn span{flex:1;min-width:200px}
+.bgwarn button,.bgsact button,.bgln button{height:34px;padding:0 12px;border-radius:10px;background:#1b2333;border:1px solid #34405a;color:#f4f4f5;font:700 12.5px Inter,system-ui}
+.bgsact{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}.bgsact button.off{opacity:.45}.bgsact button.lk{background:#2a1d10;border-color:#7c4a1c;color:#fdba74}
+.bgln{margin:0 0 10px;padding:10px 12px;border-radius:12px;background:#13261b;border:1px solid #245c39;color:#bbf7d0;font:500 13px Inter,system-ui;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+#bgAsk{position:absolute;inset:0;z-index:80;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}
+#bgAsk .bgak{width:min(420px,100%);padding:16px;border-radius:16px;background:#17181d;border:1px solid #3a3d46;color:#f4f4f5;font:500 14px/1.45 Inter,system-ui}#bgAsk .bgak>b{font-size:17px}#bgAsk p{margin:6px 0 12px;color:#a1a1aa}
+#bgAsk .bgab{display:flex;flex-direction:column;gap:8px}#bgAsk .bgab button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border-radius:12px;background:#1f2026;border:1px solid #3a3d46;color:inherit;font:700 15px Inter,system-ui;text-align:left;height:auto}
+#bgAsk .bgab button small{font:500 12px Inter,system-ui;color:#a1a1aa}#bgAsk .bgab button.pri{background:#16233a;border-color:#6ea8fe}#bgAsk .bgab button.ghost{align-items:center;background:transparent;border-color:transparent;color:#a1a1aa}
+#vtBgNote{padding:8px 14px;background:#16233a;color:#dbeafe;font:500 13px Inter,system-ui;border-bottom:1px solid #2c4a7a;display:flex;align-items:center;gap:10px;flex-wrap:wrap}#vtBgNote button{height:30px;padding:0 10px;border-radius:8px;border:1px solid #2c4a7a;background:#0b1220;color:#dbeafe;font:700 12.5px Inter,system-ui}
+@media (max-width:700px){.bgsw{margin-left:0}.bgmd{max-width:150px;overflow:hidden;text-overflow:ellipsis}}
+
 #bgKeysW{flex:0 0 auto}#bgKeys{display:flex;flex-direction:column;gap:6px;padding:8px 10px;background:var(--s1,#121215);border-top:1px solid #26262b}
 #bgKeys .bgkr{display:flex;gap:6px;align-items:center}#bgKeys .bgkn,#bgKeys .bgkm{display:flex;gap:6px;flex:7 1 0}#bgKeys .bgkm{flex:4.6 1 0;padding-left:8px}#bgKeys .bgkr>i{width:6px;flex:0 0 6px}
 #bgKeys button{flex:1 1 0;min-width:0;height:54px;padding:0 2px;font:800 21px ui-monospace,Menlo,monospace;border-radius:11px;color:var(--tx,#f4f4f5);background:#1b2333;border:1px solid #34405a;user-select:none;-webkit-user-select:none;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
@@ -2142,12 +2159,12 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
   <div id="bgEd" hidden>
     <header class="bghead">
       <button id="bgBack" aria-label="Retour">‹</button>
-      <div class="bgt"><span>GRILLE</span><b id="bgTitle"></b></div>
+      <div class="bgt"><span>GRILLE</span><b id="bgTitle"></b></div><span class="bgsw"><button id="bgToTxt">✎ Paroles</button><button class="on">▦ Grille</button></span><button id="bgModeBtn" class="bgmd">🔗</button>
       <span class="grow"></span>
       <span class="lab">Cases par ligne</span>
       <span class="bgseg" id="bgPer"><button data-v="2">2</button><button data-v="4">4</button><button data-v="6">6</button><button data-v="8">8</button></span>
       <span class="bgseg" id="bgMeter"><button data-v="4">4/4</button><button data-v="3">3/4</button></span>
-      <button id="bgInBtn" title="Façon de saisir les accords">⚙ Saisie</button><button id="bgRegen">↻ Recréer depuis les paroles</button>
+      <button id="bgInBtn" title="Façon de saisir les accords">⚙ Saisie</button><button id="bgRegen" title="Recréer la grille depuis les paroles">↻ Recréer</button>
       <button id="bgSave" class="bgok">Enregistrer</button>
     </header>
     <div class="bgbody">
@@ -2190,7 +2207,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
       <label class="lab vttempo">♩ <input type="number" id="vtextTempo" class="num" placeholder="bpm"></label>
       <span class="seg vtmode" id="vtMode"><button data-m="text">✎ Texte</button><button data-m="both" class="vtboth">⇆ Les deux</button><button data-m="prev">👆 Aperçu</button></span>
       <button id="vtFull" aria-label="Plein écran" title="Plein écran">⛶</button>
-      <button class="pri" id="vtextSave">Enregistrer</button>
+      <button id="vtToGrid" title="Éditer la grille du bassiste">▦ Grille</button><button class="pri" id="vtextSave">Enregistrer</button>
     </div>
     <div class="row vtitem" id="vtextItemWrap"><div class="vtnote"><input type="text" id="vtextItem" placeholder="Note pour ce concert"></div></div>
     <div class="vtwrap"><div id="vtGut" title="Touche un libellé pour changer le type de la ligne"></div><textarea id="vtextArea" spellcheck="false" wrap="off" inputmode="none" placeholder="Colle ou écris le morceau ici : une ligne d'accords au-dessus de chaque ligne de paroles."></textarea><pre id="vtPrev" aria-label="Aperçu" hidden></pre></div>
@@ -2348,23 +2365,23 @@ function squeeze(arr){
 // ov : tonalité/capo propres à une playlist (sinon ceux du morceau)
 /* ---------- grille du bassiste : une case = une mesure ---------- */
 const validGrid=g=>!!(g&&Array.isArray(g.secs)&&g.secs.length&&Array.isArray(g.form));
-function autoGrid(lines,song){
-  const MES=song.mes||{}, BT=+song.beats===3?3:4, secs=[], form=[]; let cur=null, gi=0, left=0;
-  const start=(name,ref)=>{cur={n:name,bars:[],ref}; left=0;};
+function autoGrid(lines,song,occ){
+  const MES=song.mes||{}, BT=+song.beats===3?3:4, secs=[], form=[]; let cur=null, gi=0, left=0, li=0;
+  const start=(name,ref)=>{cur={n:name,bars:[],ref,from:li,to:li}; left=0;};
   const close=()=>{
     if(!cur)return; const c=cur; cur=null; if(!c.bars.length)return;
     while(c.bars.length&&c.bars[c.bars.length-1].every(x=>!x))c.bars.pop();
     const key=JSON.stringify(c.bars), base=c.n.replace(/\s*\d+$/,'');
     let j=secs.findIndex(x=>JSON.stringify(x.bars)===key&&(x.n.replace(/\s*\d+$/,'')===base||!c.n));
     if(j<0){let n=c.n||String.fromCharCode(65+secs.filter(x=>/^[A-Z]$/.test(x.n)).length); if(secs.some(x=>x.n===n)){let k=2; while(secs.some(x=>x.n===n+' '+k))k++; n=n+' '+k;} secs.push({n,bars:c.bars}); j=secs.length-1;}
-    form.push(j);};
+    form.push(j); if(occ)occ.push({j,from:c.from,to:c.to});};
   const push=tok=>{
     if(!cur)start('');
     let d=+MES[gi++]||BT; if(left<=0){cur.bars.push([]); left=BT;}
     const b=cur.bars[cur.bars.length-1]; b.push(tok); const take=Math.min(d,left); left-=take; d-=take;
     while(d>0){const prev=cur.bars[cur.bars.length-1]; cur.bars.push(prev.length>1?[tok]:['%']); const t=Math.min(d,BT); left=BT-t; d-=t;}
   };
-  lines.forEach(L=>{
+  lines.forEach(L=>{li=L.i; if(cur)cur.to=L.i;
     if(L.t==='s'){close(); start(L.s.replace(/[\[\]]/g,'').replace(/^↻\s*/,'').trim());}
     else if(L.t==='b'){if(cur&&!cur.n&&cur.bars.length)close();}
     else if(L.t==='c')L.s.trim().split(/\s+/).forEach(tok=>{const tc=tokChord(tok); if(tc&&!tc.c.bass)push(tok.replace(/^[(\[{]+|[)\]},]+$/g,'')); else if(tok==='%'&&cur&&cur.bars.length){cur.bars.push(['%']); left=0;}});
@@ -2373,6 +2390,14 @@ function autoGrid(lines,song){
   secs.forEach(x=>x.bars=x.bars.map(b=>b.length>4?b.slice(0,4):b));
   return {per:4,meter:BT,secs,form};
 }
+// paroles / grille : qui commande ? 'link' = la grille suit les paroles · 'mix' = section par section · 'lock' = grille figée
+const bgModeOf=s=>s.bgMode||(validGrid(s.bgrid)?'lock':'link');
+const bgSig=sc=>JSON.stringify(sc&&sc.bars||[]);
+function bgMerge(g,auto){if(!validGrid(g))return auto; const used=new Set();
+  const secs=auto.secs.map(a=>{const h=g.secs.find(x=>x.n===a.n&&(x.hand||x.lock)); if(h){used.add(h); return JSON.parse(JSON.stringify(h));} return {n:a.n,bars:JSON.parse(JSON.stringify(a.bars))};});
+  const form=auto.form.slice(); g.secs.forEach((x,i)=>{if(!used.has(x)&&x.hand&&!auto.secs.some(a=>a.n===x.n)){secs.push(JSON.parse(JSON.stringify(x))); if((g.form||[]).includes(i))form.push(secs.length-1);}});
+  return {per:g.per||auto.per,meter:g.meter||auto.meter,secs,form};}
+function bgResolve(song,auto){const m=bgModeOf(song); if(m==='link'||!validGrid(song.bgrid))return auto; if(m==='mix')return bgMerge(song.bgrid,auto); return song.bgrid;}
 const bgName=(tok,cn)=>{if(!tok||tok==='%')return tok||''; const tc=tokChord(tok); return tc?cn(tc.c):tok;};
 function bgForm(g){const out=[]; (g.form||[]).forEach(i=>{const sc=g.secs[i]; if(!sc)return; const l=out[out.length-1]; if(l&&l.i===i)l.k++; else out.push({i,n:sc.n||'?',k:1});}); return out;}
 function bgLines(g,cn){
@@ -2477,7 +2502,7 @@ function compute(song,ov){
   const k=squeeze(gF.map(L=>L.s)), k2=squeeze(ly.map(L=>L.s));
   r.grid=k.map(i=>gF[i]); r.lyr=k2.map(i=>ly[i]);
   // grille du bassiste : la grille enregistrée (song.bgrid), sinon une grille proposée à partir des accords
-  r.autoGrid=autoGrid(lines,song); r.bg=validGrid(song.bgrid)?song.bgrid:r.autoGrid; r.bgAuto=!validGrid(song.bgrid);
+  r.autoGrid=autoGrid(lines,song); r.bg=bgResolve(song,r.autoGrid); r.bgAuto=r.bg===r.autoGrid;
   r.bars=bgLines(r.bg,cn); r.barsGi=[];
   r.gridTxt=r.grid.map(L=>L.s).join('\n'); r.lyrics=r.lyr.map(L=>L.s).join('\n'); r.barsTxt=r.bars.map(L=>L.s).join('\n');
   r.gridHTML=r.grid.map(lineHTML).join('\n');
@@ -7018,10 +7043,15 @@ function openEditor(song,entry){
   {const sp=split(song.q||''); $('#vtTitre').value=/^Nouveau morceau( \d+)?$/.test(sp.titre)&&!sp.artiste?'':sp.titre; $('#vtArtiste').value=sp.artiste;} $('#vtextArea').value=txt; vtHistReset(); $('#vtextNotes').value=song.notes||''; $('#vtextTempo').value=song.tempo||'';
   $('#vtextItemWrap').hidden=!ED.item; $('#vtextItem').value=ED.item?ED.item.notes||'':'';
   vtSetMode(S.vtMode||'text',true); $('#vtext').classList.toggle('full',!!S.vtFull); $('#vtFull').setAttribute('aria-pressed',!!S.vtFull); V.vtWarnOpen=false;
-  $('#vtext').hidden=false; vtKbd(false); vtAnalyze(); vtCaret();
+  $('#vtext').hidden=false; vtKbd(false); vtAnalyze(); vtCaret(); vtBgNote();
 }
 $('#vedText').onclick=()=>{const e=V.list[V.i]; if(e)openEditor(e.s,e);};
 $('#vtextCancel').onclick=()=>{$('#vtext').hidden=true;};
+$('#vtToGrid').onclick=()=>{if(!ED)return; const s=ED.s, it=ED.item, li=ED.list; $('#vtextSave').click(); const e=entryOf(s); if(it){e.item=it; e.list=li;} openBG(e,0,0);};
+function vtBgNote(){let n=$('#vtBgNote'); if(!ED){if(n)n.remove(); return;} const s=ED.s, m=bgModeOf(s); let h='';
+  if(m==='lock'&&validGrid(s.bgrid))h='🔒 La grille du bassiste est <b>figée</b> : tes changements d’accords ici ne s’y reportent pas.';
+  else if(m==='mix'&&validGrid(s.bgrid)){const hs=s.bgrid.secs.filter(x=>x.hand||x.lock).map(x=>(x.lock?'🔒 ':'✎ ')+x.n); if(hs.length)h='⇄ Grille du bassiste retouchée pour : <b>'+esc(hs.join(', '))+'</b>. Le reste suit ces paroles.';}
+  if(!h){if(n)n.remove(); return;} if(!n){n=document.createElement('div'); n.id='vtBgNote'; $('#vtext .vthead').after(n);} n.innerHTML=h+' <button id="vtBgGo">▦ Voir la grille</button>'; $('#vtBgGo').onclick=()=>$('#vtToGrid').click();}
 $('#vtextSave').onclick=()=>{
   if(!ED)return; const s=ED.s;
   beginEdit(s); {const t=$('#vtTitre').value.trim(), a=$('#vtArtiste').value.trim(); if(t||a){const q=a&&t?a+' - '+t:(t||a); if(q!==s.q){s.q=q; delete s._r;}}} s.text=$('#vtextArea').value; if(ED.tabsMerged)s.tabs=[]; s.notes=$('#vtextNotes').value; s.tempo=$('#vtextTempo').value?+$('#vtextTempo').value:'';
@@ -7860,7 +7890,7 @@ const BG={};
 document.body.appendChild($('#bgEd')); // l'éditeur de grille s'ouvre aussi depuis l'accueil
 function openBG(e,si,bi){
   const s=e.s, r=compute(s,e.item?{target:e.item.target,capo:e.item.capo}:null);
-  BG.e=e; BG.s=s; BG.r=r; BG.g=JSON.parse(JSON.stringify(r.bg)); BG.dirty=false; BG.f=null; BG.rng=null;
+  BG.e=e; BG.s=s; BG.r=r; BG.g=JSON.parse(JSON.stringify(r.bg)); BG.dirty=false; BG.f=null; BG.rng=null; BG.mode=bgModeOf(s); BG.auto=r.autoGrid; BG.ask=null;
   if(!BG.g.secs.length){BG.g.secs=[{n:'Couplet',bars:[[''],[''],[''],['']]}]; BG.g.form=[0];}
   BG.sel={si:Math.min(si||0,BG.g.secs.length-1),bi:bi||0,k:0}; bgClamp();
   $('#bgTitle').textContent=s.q; $('#bgEd').hidden=false; bgDraw();
@@ -7888,7 +7918,7 @@ function bgDraw(){
   $('#bgMeas').innerHTML=`<button data-mm="rs" aria-pressed="${!!mt.rs}">‖: Début</button><button data-mm="re" aria-pressed="${!!mt.re}">:‖ Fin${mt.re>2?' ×'+mt.re:''}</button><button data-mm="v" aria-pressed="${!!mt.v}">${mt.v?mt.v+'. fois':'1. / 2.'}</button><button data-mm="n" aria-pressed="${!!mt.n}">✎ ${mt.n?esc(mt.n):'Note'}</button>`;
   let chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].filter(Boolean).slice(0,15); if(!chips.length)chips=(S.fr?['Do','Sol','Lam','Fa','Mim','Rém','Ré','La','Mi']:['C','G','Am','F','Em','Dm','D','A','E']);
   $('#bgChips').innerHTML=chips.map(x=>`<button${BG.paint&&(toSource(BG.r,x)||x)===BG.paint?' class="on"':''}>${esc(x)}</button>`).join('');
-  bgKeysDraw(main,chips);
+  bgKeysDraw(main,chips); bgStateDraw(main);
   main.classList.toggle('painting',!!BG.paint); $('#bgEd').classList.toggle('painting',!!BG.paint);
   $('#bgSec34').textContent=m===3&&+g.meter!==3?'Section en 4/4':+g.meter===3?(m===3?'Section en 4/4':'Section en 3/4'):'Section en 3/4';
   // structure
@@ -7896,7 +7926,57 @@ function bgDraw(){
   $('#bgAddForm').innerHTML=g.secs.map((x,i)=>`<button data-i="${i}">+ ${esc(x.n||'—')}</button>`).join('');
   ['#bgFL','#bgFR','#bgFX'].forEach(x=>$(x).disabled=BG.f==null);
 }
-function bgSet(fn){fn(); BG.dirty=true; bgDraw();}
+function bgStateDraw(main){const md=BG.mode, b=$('#bgModeBtn'); if(b){b.textContent={link:'🔗 suit les paroles ▾',mix:'⇄ mixte ▾',lock:'🔒 grille figée ▾'}[md]; b.className='bgmd '+md;}
+  if(md==='link'){const d=document.createElement('div'); d.className='bgln'; d.innerHTML='🔗 Cette grille <b>suit les paroles</b> : elle change quand tu modifies les accords des paroles. <button data-md="ask">Retoucher…</button>'; main.prepend(d); return;}
+  if(md!=='mix')return;
+  const lab={link:['🔗 suit les paroles','link'],hand:['✎ retouchée','hand'],warn:['⚠ paroles changées','warn'],lock:['🔒 figée','lock']};
+  BG.g.secs.forEach((sc,si)=>{const st=bgSecState(sc), h=main.querySelector(`.bgsec[data-si="${si}"]`), row=main.querySelector(`.bgrow[data-si="${si}"]`); if(!h||!row)return;
+    const p=document.createElement('span'); p.className='bgst '+lab[st][1]; p.textContent=lab[st][0]; h.appendChild(p);
+    let after=row;
+    if(st==='warn'){const a=bgAutoSec(sc.n), w=document.createElement('div'); w.className='bgwarn'; w.innerHTML=`<span>Les paroles disent maintenant <b>${esc(bgFlat(a).map(x=>bgName(x,BG.r.cn)).join(' · ')||'—')}</b></span><button data-sa="take" data-si="${si}">Reprendre les paroles</button><button data-sa="keep" data-si="${si}">Garder ma grille</button>`; after.after(w); after=w;}
+    if(si===BG.sel.si){const t=document.createElement('div'); t.className='bgsact'; const rp=st!=='link'?bgReportPlan(si):null;
+      t.innerHTML=(st==='link'?'':`<button data-sa="report" data-si="${si}"${rp&&rp.why?` class="off" title="${esc(rp.why)}"`:''}>⇧ Reporter dans les paroles</button>`+(bgAutoSec(sc.n)?`<button data-sa="back" data-si="${si}">↺ Revenir aux paroles</button>`:''))+`<button data-sa="lock" data-si="${si}" class="lk">${sc.lock?'🔓 Défiger cette section':'🔒 Figer cette section'}</button>`;
+      after.after(t);}});}
+function bgSet(fn){
+  if(BG.mode==='link'){if(!$('#bgAsk'))bgAskMode(fn); return;}
+  const before=new Map(BG.g.secs.map(sc=>[sc.n,JSON.stringify([sc.bars,sc.m||0,sc.mt||0])]));
+  fn(); BG.dirty=true;
+  if(BG.mode==='mix')BG.g.secs.forEach(sc=>{if(before.get(sc.n)!==JSON.stringify([sc.bars,sc.m||0,sc.mt||0])&&!sc.hand){sc.hand=1; const a=bgAutoSec(sc.n); sc.base=a?bgSig(a):null;}});
+  bgDraw();}
+const bgAutoSec=n=>(BG.auto&&BG.auto.secs||[]).find(x=>x.n===n);
+function bgSecState(sc){if(BG.mode!=='mix')return BG.mode; const a=bgAutoSec(sc.n); if(sc.lock)return 'lock'; if(!sc.hand)return a?'link':'hand'; if(a&&sc.base!=null&&sc.base!==bgSig(a))return 'warn'; return 'hand';}
+// petite fenêtre de choix dans l'éditeur de grille
+function bgDlg(title,txt,btns){const o=$('#bgAsk'); if(o)o.remove(); const d=document.createElement('div'); d.id='bgAsk'; d.innerHTML=`<div class="bgak"><b>${title}</b><p>${txt}</p><div class="bgab">${btns.map((b,i)=>`<button data-i="${i}" class="${b[2]||''}">${b[0]}</button>`).join('')}</div></div>`;
+  $('#bgEd').appendChild(d); d.onclick=e=>{const b=e.target.closest('[data-i]'); if(!b&&e.target!==d)return; d.remove(); if(b){const f=btns[+b.dataset.i][1]; if(f)f();}};}
+function bgAskMode(fn){bgDlg('🔗 Cette grille suit les paroles','Pour la retoucher, choisis :',[['⇄ Mixte<small>seulement les sections que je retouche ; le reste suit les paroles</small>',()=>{bgSetMode('mix'); if(fn)bgSet(fn);},'pri'],['🔒 Figer la grille<small>toute la grille devient indépendante des paroles</small>',()=>{bgSetMode('lock'); if(fn)bgSet(fn);}],['Annuler',null,'ghost']]);}
+function bgSetMode(m,force){const old=BG.mode; if(m===old)return;
+  if(m==='link'&&!force){bgDlg('Revenir à « suit les paroles » ?','La grille sera recalculée à partir des paroles. Tes retouches seront remplacées.',[['⇄ Passer en Mixte<small>garde tes retouches</small>',()=>bgSetMode('mix'),'pri'],['Remplacer par les paroles',()=>bgSetMode('link',true)],['Annuler',null,'ghost']]); return;}
+  if(m==='link'){const per=BG.g.per; BG.g=JSON.parse(JSON.stringify(BG.auto)); if(per)BG.g.per=per;}
+  else if(m==='mix'){if(old==='lock')BG.g.secs.forEach(sc=>{const a=bgAutoSec(sc.n); if(a&&bgSig(a)===bgSig(sc)&&!sc.mt&&!sc.m){delete sc.hand; delete sc.base;} else {sc.hand=1; sc.base=a?bgSig(a):null;}});
+    BG.g=bgMerge(BG.g,BG.auto);}
+  BG.mode=m; BG.dirty=true; BG.sel={si:Math.min(BG.sel.si,BG.g.secs.length-1),bi:0,k:0}; BG.f=null; bgDraw(); toast({link:'🔗 La grille suit les paroles',mix:'⇄ Mixte : section par section',lock:'🔒 Grille figée'}[m]);}
+// reporter les accords d'une section retouchée dans les paroles (seulement si leur nombre est le même)
+const bgFlat=sc=>sc.bars.flat().filter(x=>x&&x!=='%'&&x!=='=');
+function bgReportPlan(si){const sc=BG.g.secs[si], a=bgAutoSec(sc.n); if(!a)return {why:'cette section n’existe pas dans les paroles'};
+  const txt=BG.s.text||'', occ=[]; const lines=parseSheet(txt).lines; autoGrid(lines,BG.s,occ); const ja=BG.auto.secs.indexOf(a); const mine=occ.filter(o=>o.j===ja);
+  const want=bgFlat(sc), raw=txt.split('\n'), plan=[];
+  for(const o of mine){const toks=[]; lines.filter(L=>L.t==='c'&&L.i>=o.from&&L.i<=o.to).forEach(L=>{const re=/\S+/g; let m; while((m=re.exec(raw[L.i]||''))){const tc=tokChord(m[0].replace(/^[(\[{]+|[)\]},]+$/g,'')); if(tc&&!tc.c.bass)toks.push({li:L.i,at:m.index,t:m[0]});}});
+    if(toks.length!==want.length)return {why:`les paroles ont ${toks.length} accord(s) dans « ${sc.n} », la grille ${want.length}`}; plan.push(toks);}
+  return mine.length?{plan,want}:{why:'section introuvable dans les paroles'};}
+function bgReport(si){const r=bgReportPlan(si); if(r.why){toast('Impossible : '+r.why,3500); return;} const raw=(BG.s.text||'').split('\n');
+  r.plan.forEach(toks=>{const byLine={}; toks.forEach((t,i)=>(byLine[t.li]=byLine[t.li]||[]).push({...t,nw:r.want[i]}));
+    Object.entries(byLine).forEach(([li,ts])=>{let L=raw[li]; ts.sort((x,y)=>y.at-x.at).forEach(t=>{const pre=t.t.match(/^[(\[{]*/)[0], post=t.t.match(/[)\]},]*$/)[0], nt=pre+t.nw+post; let end=t.at+t.t.length, tail=L.slice(end);
+      if(nt.length>t.t.length){const sp=tail.match(/^ */)[0].length, eat=Math.min(sp-1<0?0:Math.max(0,sp-1),nt.length-t.t.length); tail=tail.slice(eat);} else if(nt.length<t.t.length&&/^ /.test(tail))tail=' '.repeat(t.t.length-nt.length)+tail;
+      L=L.slice(0,t.at)+nt+tail;}); raw[li]=L;});});
+  beginEdit(BG.s); BG.s.text=raw.join('\n'); delete BG.s._r; afterEdit(BG.s);
+  const r2=compute(BG.s,BG.e.item?{target:BG.e.item.target,capo:BG.e.item.capo}:null); BG.r=r2; BG.auto=r2.autoGrid; const sc=BG.g.secs[si], a=bgAutoSec(sc.n); if(a&&bgSig(a)===bgSig(sc)&&!sc.lock){delete sc.hand; delete sc.base;} else if(a)sc.base=bgSig(a);
+  BG.dirty=true; bgDraw(); toast('Accords reportés dans les paroles');}
+function bgSecAct(si,a){const sc=BG.g.secs[si], au=bgAutoSec(sc.n);
+  if(a==='take'||a==='back'){if(!au)return; BG.g.secs[si]={n:sc.n,bars:JSON.parse(JSON.stringify(au.bars))};}
+  else if(a==='keep'){if(au)sc.base=bgSig(au);}
+  else if(a==='lock'){sc.lock=sc.lock?0:1; if(!sc.lock)delete sc.lock; else if(!sc.hand){sc.hand=1; sc.base=au?bgSig(au):null;}}
+  else if(a==='report'){bgReport(si); return;}
+  BG.dirty=true; bgDraw();}
 function bgNext(){const g=BG.g, c=BG.sel; if(c.k<bgSlotsOf(bgBar(),bgMeter(c.si)).length-1&&bgBar()[0]!=='%'){c.k++; return;}
   c.k=0; if(c.bi<g.secs[c.si].bars.length-1){c.bi++; return;}
   if(c.si<g.secs.length-1){c.si++; c.bi=0; return;}
@@ -7972,7 +8052,7 @@ function bgWheel(si,bi,k,el){if(BGD){clearTimeout(BGD.timer); if(BGD.ghost)BGD.g
   const chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].slice(0,8); try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}
   const rc=el.getBoundingClientRect(), cx=rc.left+rc.width/2; cwPick({getBoundingClientRect:()=>({left:cx-60,top:rc.top,width:120,height:rc.height})},n=>bgPut(n),chips,{circ:1});}
 function bgPut(name){const src=toSource(BG.r,name)||name; bgSet(()=>{const b=bgBar(); if(b[0]==='%'){b.splice(0,b.length,'');} bgSlotsOf(b,bgMeter(BG.sel.si))[Math.min(BG.sel.k,bgSlotsOf(b,bgMeter(BG.sel.si)).length-1)].forEach(i=>b[i]=src); bgNext();});}
-$('#bgMain').onclick=ev=>{if(Date.now()-(BG.noClick||0)<400)return; const nm=ev.target.closest('.bgname'); if(nm){bgRenameInline(nm); return;}
+$('#bgMain').onclick=ev=>{const sa=ev.target.closest('[data-sa]'); if(sa){bgSecAct(+sa.dataset.si,sa.dataset.sa); return;} if(ev.target.closest('[data-md="ask"]')){bgAskMode(null); return;} if(ev.target.closest('.bgwarn,.bgsact,.bgln'))return; if(Date.now()-(BG.noClick||0)<400)return; const nm=ev.target.closest('.bgname'); if(nm){bgRenameInline(nm); return;}
   const t=ev.target.closest('.bgc,.bgsec'); if(!t)return; const si=+t.dataset.si;
   if(BG.rng){BG.rng=null; if(!t.classList.contains('bgsec')){BG.sel={si,bi:+t.dataset.bi,k:0}; bgDraw(); return;}}
   BG.last=null; BGT.buf=''; bgTypeShow();
@@ -8185,13 +8265,21 @@ $('#bgSec34').onclick=()=>bgSet(()=>{const g=BG.g, sc=g.secs[BG.sel.si], base=+g
 $('#bgPer').onclick=ev=>{const b=ev.target.closest('button'); if(b)bgSet(()=>BG.g.per=+b.dataset.v);};
 $('#bgMeter').onclick=ev=>{const b=ev.target.closest('button'); if(!b)return; bgSet(()=>{const g=BG.g; g.meter=+b.dataset.v; g.secs.forEach(sc=>{if(+sc.m===g.meter)delete sc.m;});});};
 $('#bgForm').onclick=ev=>{const b=ev.target.closest('[data-j]'); if(!b)return; const j=+b.dataset.j; BG.f=BG.f===j?null:j; if(BG.f!=null){BG.sel={si:BG.g.form[j],bi:0,k:0};} bgDraw();};
-$('#bgAddForm').onclick=ev=>{const b=ev.target.closest('[data-i]'); if(!b)return; bgSet(()=>{const at=BG.f==null?BG.g.form.length:BG.f+1; BG.g.form.splice(at,0,+b.dataset.i); BG.f=at;});};
-$('#bgFL').onclick=()=>{const j=BG.f; if(j==null||j<1)return; bgSet(()=>{const f=BG.g.form; [f[j-1],f[j]]=[f[j],f[j-1]]; BG.f=j-1;});};
-$('#bgFR').onclick=()=>{const j=BG.f, f=BG.g.form; if(j==null||j>=f.length-1)return; bgSet(()=>{[f[j+1],f[j]]=[f[j],f[j+1]]; BG.f=j+1;});};
-$('#bgFX').onclick=()=>{const j=BG.f; if(j==null)return; bgSet(()=>{BG.g.form.splice(j,1); BG.f=null;});};
+$('#bgAddForm').onclick=ev=>{if(BG.mode==='mix'){toast('En Mixte, l’ordre des sections suit les paroles (🔒 pour le changer ici)',3000); return;} const b=ev.target.closest('[data-i]'); if(!b)return; bgSet(()=>{const at=BG.f==null?BG.g.form.length:BG.f+1; BG.g.form.splice(at,0,+b.dataset.i); BG.f=at;});};
+$('#bgFL').onclick=()=>{if(BG.mode==='mix'){toast('En Mixte, l’ordre des sections suit les paroles (🔒 pour le changer ici)',3000); return;} const j=BG.f; if(j==null||j<1)return; bgSet(()=>{const f=BG.g.form; [f[j-1],f[j]]=[f[j],f[j-1]]; BG.f=j-1;});};
+$('#bgFR').onclick=()=>{if(BG.mode==='mix'){toast('En Mixte, l’ordre des sections suit les paroles (🔒 pour le changer ici)',3000); return;} const j=BG.f, f=BG.g.form; if(j==null||j>=f.length-1)return; bgSet(()=>{[f[j+1],f[j]]=[f[j],f[j+1]]; BG.f=j+1;});};
+$('#bgFX').onclick=()=>{if(BG.mode==='mix'){toast('En Mixte, l’ordre des sections suit les paroles (🔒 pour le changer ici)',3000); return;} const j=BG.f; if(j==null)return; bgSet(()=>{BG.g.form.splice(j,1); BG.f=null;});};
 $('#bgRegen').onclick=()=>{if(!confirm('Recréer la grille à partir des accords des paroles ? Tes modifications de la grille seront remplacées.'))return; const a=compute({...BG.s,bgrid:null}).autoGrid; bgSet(()=>{const per=BG.g.per; BG.g=JSON.parse(JSON.stringify(a)); if(per)BG.g.per=per; BG.sel={si:0,bi:0,k:0}; BG.f=null;});};
 function bgClose(){BGT.buf=''; bgTypeShow(); const ip=$('#bgInPop'); if(ip)ip.remove(); $('#bgEd').hidden=true; V.lastKey=null; vRender();}
-$('#bgSave').onclick=()=>{const s=BG.s; s.bgrid=JSON.parse(JSON.stringify(BG.g)); if((s.view||'grille')!=='accords')s.view='accords'; touch(s); save(); if(s._el)update(s); else if($('#viewer').hidden)renderAll(); BG.dirty=false; bgClose(); toast('Grille enregistrée');};
+function bgDoSave(quiet){const s=BG.s; s.bgMode=BG.mode; if(BG.mode==='link')s.bgrid=null; else s.bgrid=JSON.parse(JSON.stringify(BG.g)); delete s._r; if((s.view||'grille')!=='accords')s.view='accords'; touch(s); save(); if(s._el)update(s); else if($('#viewer').hidden)renderAll(); BG.dirty=false; bgClose(); if(!quiet)toast('Grille enregistrée');}
+$('#bgSave').onclick=()=>bgDoSave();
+$('#bgModeBtn').onclick=ev=>{let p=$('#bgInPop'); if(p){p.remove(); if(p.dataset.k==='md')return;} p=document.createElement('div'); p.id='bgInPop'; p.dataset.k='md'; const m=BG.mode;
+  const opt=(v,t,sub)=>`<button data-mm="${v}" aria-pressed="${m===v}"><b>${t}</b><span>${sub}</span></button>`;
+  p.innerHTML=`<b class="bgih">Qui commande la grille ?</b>${opt('link','🔗 Les paroles','la grille se recalcule toute seule à partir des accords des paroles')}${opt('mix','⇄ Mixte','section par section : chacune suit les paroles ou est retouchée')}${opt('lock','🔒 Grille figée','la grille ne bouge plus ; paroles et grille sont indépendantes')}<span class="bgis">En Mixte, la structure (ordre des sections) suit les paroles.</span>`;
+  document.body.appendChild(p); const rc=ev.currentTarget.getBoundingClientRect(); p.style.top=(rc.bottom+6)+'px'; p.style.left=Math.max(8,Math.min(rc.left,innerWidth-330))+'px'; p.style.right='auto';
+  p.onclick=e=>{const b=e.target.closest('[data-mm]'); if(b){p.remove(); bgSetMode(b.dataset.mm);}};
+  setTimeout(()=>document.addEventListener('pointerdown',function f(e){if(!e.target.closest('#bgInPop,#bgModeBtn')){p.remove(); document.removeEventListener('pointerdown',f,true);}},true),0);};
+$('#bgToTxt').onclick=()=>{const s=BG.s; if(BG.dirty)bgDoSave(true); else bgClose(); openEditor(s,BG.e&&BG.e.item?BG.e:null);};
 $('#bgBack').onclick=()=>{if(BG.dirty&&!confirm('Quitter sans enregistrer la grille ?'))return; bgClose();};
 $('#vbgEdit').onclick=e=>{e.stopPropagation(); const c=V.list[V.i]; if(c)openBG(c,0,0);};
 $('#vdBass').onclick=()=>{const e=V.list[V.i]; $('#vdisp').hidden=true; if(!e)return; setViewMode('accords'); if(!(FOLLOW&&!e.mine))openBG(e,0,0);};
