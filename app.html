@@ -580,7 +580,7 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 #bgMain .bgc{cursor:pointer;user-select:none;-webkit-user-select:none}#bgChips button{user-select:none;-webkit-user-select:none;touch-action:pan-y}
 #bgMain .bgc.dropon{outline:3px dashed var(--hl,#fb923c);outline-offset:-4px;z-index:3}
 #bgMain .bgc.dropl{box-shadow:inset 6px 0 0 var(--hl,#fb923c);z-index:3}#bgMain .bgc.dropr{box-shadow:inset -6px 0 0 var(--hl,#fb923c);z-index:3}
-.bgghost{position:fixed;z-index:80;transform:translate(-50%,-190%);opacity:.92;pointer-events:none;padding:8px 14px;border-radius:12px;background:var(--hl,#fb923c);color:var(--onhl,#111);font:800 22px ui-monospace,Menlo,monospace;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.bgghost.ms{transform:translate(14px,12px)!important;font-size:16px!important;padding:5px 10px!important}.bgghost{position:fixed;z-index:80;transform:translate(-50%,-150%);opacity:.92;pointer-events:none;padding:8px 14px;border-radius:12px;background:var(--hl,#fb923c);color:var(--onhl,#111);font:800 22px ui-monospace,Menlo,monospace;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .bgghost.del{background:#b91c1c;color:#fff}
 .bgnamein{font:700 15px system-ui;padding:4px 8px;border-radius:6px;border:2px solid #93c5fd;background:var(--s0,#0e0e10);color:#ececf0;width:200px}#bgMain .bgsec{cursor:pointer}
 #bgMain .bgc.bgghostc{border:2px dashed #2dd4bf;background:rgba(45,212,191,.08);opacity:.75;pointer-events:none}#bgMain .bgc.bgghostc text{fill:#5eead4}
@@ -8026,7 +8026,7 @@ function bgMod(md){const src=bgCurSrc(); if(!src){toast('Touche d’abord la not
   bgWriteCur(rt+ac+q+bass); BG.last=bgKey();}
 $('#bgEd').addEventListener('pointerdown',ev=>{const b=ev.target.closest('#bgKeys button'); if(!b)return; ev.stopPropagation(); ev.preventDefault(); BG.noClick=Date.now(); const d=b.dataset;
   if(d.kt){bgTgTap(d.kt); return;}
-  if(d.kn)bgNote(d.kn); else if(d.km)bgMod(d.km); else if(d.kq)bgMod(d.kq); else if(d.kc){if(BG.paint){const v=toSource(BG.r,d.kc)||d.kc; bgPaint(BG.paint===v?null:v); return;} BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord:(!BG.r.shift&&!S.fr&&parseChord(d.kc)?d.kc:(toSource(BG.r,d.kc)||d.kc)),from:null,on:false,kb:d.kc,any:1,timer:0}; return;}
+  if(d.kn)bgNote(d.kn); else if(d.km)bgMod(d.km); else if(d.kq)bgMod(d.kq); else if(d.kc){if(BG.paint){const v=toSource(BG.r,d.kc)||d.kc; bgPaint(BG.paint===v?null:v); return;} BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord:(!BG.r.shift&&!S.fr&&parseChord(d.kc)?d.kc:(toSource(BG.r,d.kc)||d.kc)),from:null,on:false,kb:d.kc,any:1,timer:0,pt:ev.pointerType}; return;}
   else if(d.kp!=null)bgPaint(null);
   else if(d.kx==='more'){S.bgIn=Object.assign(bgIn(),{big:!bgIn().big}); save(); bgDraw();}
   else if(d.kx==='%'){$('#bgPct').click(); BG.last=null;} else if(d.kx==='vide'){bgWriteCur(''); BG.last=null;} else if(d.kx==='next'){bgNext(); BG.last=null; bgDraw();}},true);
@@ -8082,7 +8082,7 @@ $('#bgSlots').addEventListener('pointerdown',ev=>{const b=ev.target.closest('[da
   BGSC={x:ev.clientX,y:ev.clientY,si,bi,k,ks,list,ix,base:ix,step:0,on:false,id:ev.pointerId,
     t:setTimeout(()=>{if(!BGSC||BGSC.on)return; const rc=b.getBoundingClientRect(), S0=BGSC; BGSC=null; BG.noClick=Date.now()+300; BG.sel={si,bi,k:ks};
       try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}
-      cwStart({left:rc.left+rc.width/2-50,top:rc.top,width:100,height:rc.height},cur?{del:()=>{bgSet(()=>bgFillAt(si,bi,k,'')); toast('Accord supprimé');},name:d0}:null,[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].slice(0,8),false,d0?cwShow(d0):'');
+      const pr=$('#bgPad').getBoundingClientRect(), pc=pr.width<innerWidth*.8?pr.left+pr.width/2:rc.left+rc.width/2; cwStart({left:pc-50,top:rc.top,width:100,height:rc.height},cur?{del:()=>{bgSet(()=>bgFillAt(si,bi,k,'')); toast('Accord supprimé');},name:d0}:null,[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].slice(0,8),false,d0?cwShow(d0):'');
       CW.pick=n=>{BG.sel={si,bi,k:ks}; bgPut(n);}; CW.onTap=null;},420)};
   try{$('#bgEd').setPointerCapture(ev.pointerId);}catch(_){} });
 document.addEventListener('pointermove',ev=>{const c=BGSC; if(!c)return; const dy=c.y-ev.clientY;
@@ -8151,7 +8151,7 @@ function bgTarget(x,y){
   const row=el.closest('#bgMain .bgrow'); if(row){const si=+row.dataset.si; return {si,ins:BG.g.secs[si].bars.length,el:row.lastElementChild,cls:'dropr'};}
   return {void:1};
 }
-function bgDragOn(){if(!BGD||BGD.on)return; BGD.on=true; const g=document.createElement('div'); g.className='bgghost'; g.textContent=bgName(BGD.chord,BG.r.cn); document.body.appendChild(g); BGD.ghost=g; bgDragMove(BGD.cx,BGD.cy); try{navigator.vibrate&&navigator.vibrate(12);}catch(e){}}
+function bgDragOn(){if(!BGD||BGD.on)return; BGD.on=true; const g=document.createElement('div'); g.className='bgghost'+(BGD.pt==='mouse'?' ms':''); g.textContent=bgName(BGD.chord,BG.r.cn); document.body.appendChild(g); BGD.ghost=g; bgDragMove(BGD.cx,BGD.cy); try{navigator.vibrate&&navigator.vibrate(12);}catch(e){}}
 function bgPartPoly(bar,m,k){const n=bar[0]==='%'?1:bar.length, C=[.5,.5], UL=[[0,0],[1,0],[0,1]], LR=[[1,0],[1,1],[0,1]], L=[[0,0],[0,1],C], T=[[0,0],[1,0],C], B=[[0,1],[1,1],C], R=[[1,0],[1,1],C];
   if(n<=1)return [[0,0],[1,0],[1,1],[0,1]]; if(n===2)return k?LR:UL; if(n===3)return (m===3?[L,T,LR]:[UL,B,R])[k]||UL; if(bar[3]==='=')return [L,T,LR,LR][k]; return [L,T,B,R][k];}
 function bgDropGhost(t,chord){let o=$('#bgDropG'); if(t.bi==null||!t.el){if(o)o.remove(); return;} const bar=BG.g.secs[t.si].bars[t.bi], m=bgMeter(t.si), full=bar[0]==='%'||bar.every(x=>!x), pts=full?bgPartPoly([''],m,0):bgPartPoly(bar,m,t.k), rc=t.el.getBoundingClientRect();
@@ -8197,7 +8197,7 @@ $('#bgEd').addEventListener('pointerdown',ev=>{
   if(!chord)return;
   if(from&&bgInMode()==='roue')setTimeout(()=>{const d=BGD; if(d&&d.from===from&&Math.hypot(d.cx-d.x,d.cy-d.y)<10)bgWheel(from.si,from.bi,from.k,cell);},850);
   if(chip){const v=chord; setTimeout(()=>{const d=BGD; if(d&&d.chip&&Math.hypot(d.cx-d.x,d.cy-d.y)<10){clearTimeout(d.timer); if(d.ghost)d.ghost.remove(); BGD=null; BG.noClick=Date.now()+300; BG.lp=Date.now(); bgPaint(BG.paint===v?null:v); try{navigator.vibrate&&navigator.vibrate(15);}catch(_){}}},500);}
-  BGD={chip:!!chip,x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord,from,on:false,timer:from?setTimeout(bgDragOn,420):0};
+  BGD={pt:ev.pointerType,chip:!!chip,x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord,from,on:false,timer:from?setTimeout(bgDragOn,420):0};
 });
 document.addEventListener('pointermove',ev=>{if(!BGD)return; const dx=ev.clientX-BGD.x, dy=ev.clientY-BGD.y; BGD.cx=ev.clientX; BGD.cy=ev.clientY;
   if(BGD.wheel){if(Math.hypot(dx,dy)>10){clearTimeout(BGD.timer); BGD=null;} return;}
