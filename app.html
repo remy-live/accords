@@ -5664,7 +5664,7 @@ const Live={on:false,rev:0,key:'',url:'',t:null,
     $('#liveLib').checked=!!S.liveLib; $('#vlive').setAttribute('aria-pressed',this.on); $('#liveOff').hidden=this.on; $('#liveOn').hidden=!this.on; if(!this.on)return;
     $('#liveUrl').textContent=this.url.replace(/^https?:\/\//,'').replace(/\/\?suivre$/,''); $('#liveUrl').dataset.full=this.url; const cl=liveClients();
     $('#liveClients').innerHTML=cl.all.length?cl.all.map(c=>`<span>● ${esc(c.n||'Navigateur')}</span>`).join(''):'<span class="lab" style="background:none;border:0;color:inherit;font-weight:400">En attente d\'un musicien…</span>';
-    if($('#liveQR').dataset.url!==this.url){try{await loadScript('qrcode.js'); const qr=qrcode(0,'M'); qr.addData(this.url); qr.make(); $('#liveQR').innerHTML=qr.createSvgTag(6,2); $('#liveQR').dataset.url=this.url;}catch(e){$('#liveQR').textContent='';}}
+    if($('#liveQR').dataset.url!==this.url){try{await loadQRGen(); const qr=qrcode(0,'M'); qr.addData(this.url); qr.make(); $('#liveQR').innerHTML=qr.createSvgTag(6,2); $('#liveQR').dataset.url=this.url;}catch(e){$('#liveQR').textContent='';}}
   }
 };
 $('#vlive').hidden=!APP; $('#vlive').onclick=()=>Live.open();
@@ -5823,8 +5823,12 @@ $('#ocrFile').onchange=async e=>{const files=[...e.target.files]; if(!files.leng
    première lecture par Tesseract, puis vérification rapide case par case (taper, ou appui long = roue).
    ====================================================================== */
 const BGO={};
+// pdf.js : fichier local (APK, dossier de l'appli) sinon CDN (live server, page seule)
+async function loadPdfJs(){if(window.pdfjsLib&&window.pdfjsLib._src)return window.pdfjsLib; const CDN='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/';
+  let src='pdf.min.js'; try{await loadScript('pdf.min.js');}catch(e){await loadScript(CDN+'pdf.min.js'); src=CDN+'pdf.min.js';}
+  const L=window.pdfjsLib; L.GlobalWorkerOptions.workerSrc=src===CDN+'pdf.min.js'?CDN+'pdf.worker.min.js':'pdf.worker.min.js'; L._src=src; return L;}
 // toutes les pages d'un PDF (scanné ou non) en images, largeur ~ w px
-async function pdfPages(f,w){await loadScript('pdf.min.js'); const L=window.pdfjsLib; L.GlobalWorkerOptions.workerSrc='pdf.worker.min.js';
+async function pdfPages(f,w){const L=await loadPdfJs();
   const doc=await L.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise, out=[];
   for(let n=1;n<=Math.min(doc.numPages,20);n++){const pg=await doc.getPage(n), v0=pg.getViewport({scale:1}), vp=pg.getViewport({scale:w/v0.width});
     const c=document.createElement('canvas'); c.width=Math.round(vp.width); c.height=Math.round(vp.height); const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); await pg.render({canvasContext:g,viewport:vp}).promise; out.push(c);}
@@ -6349,7 +6353,7 @@ $('#anChords').onclick=e=>{const b=e.target.closest('button'); if(!b)return; if(
 
 /* ---------- PDF « texte » (ex. Ultimate Guitar) : on relit les lignes pour retrouver accords + paroles ---------- */
 async function pdfText(f){
-  await loadScript('pdf.min.js'); const L=window.pdfjsLib; L.GlobalWorkerOptions.workerSrc='pdf.worker.min.js';
+  const L=await loadPdfJs();
   const doc=await L.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise, out=[];
   for(let n=1;n<=doc.numPages;n++){
     const pg=await doc.getPage(n), tc=await pg.getTextContent(), st=tc.styles||{};
@@ -6383,7 +6387,7 @@ async function pdfText(f){
   return {text,title,artist,ok:text.length>120&&(nc>=3&&nl>=2||nx>=6),nc,nl,nx,what,pages:doc.numPages};
 }
 async function pdfToPages(f,onPage,info){
-  await loadScript('pdf.min.js'); const L=window.pdfjsLib; L.GlobalWorkerOptions.workerSrc='pdf.worker.min.js';
+  const L=await loadPdfJs();
   const doc=await L.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise;
   for(let n=1;n<=doc.numPages;n++){info&&info(n,doc.numPages);
     const pg=await doc.getPage(n), v0=pg.getViewport({scale:1}), vp=pg.getViewport({scale:Math.min(3,1600/Math.max(v0.width,v0.height))});
