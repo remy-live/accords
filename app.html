@@ -601,7 +601,20 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 #bgMain .bgc{touch-action:pan-y}
 @media (max-width:560px){#bgPad .bgph .bgrs{display:none}}
 #bgPad{border-left:1px solid #26262b;background:var(--s1,#121215);padding:10px 12px;display:flex;flex-direction:column;gap:8px;overflow-y:auto}
-#bgPad h4{margin:4px 0 0;font-size:11px;color:#a1a1aa;letter-spacing:.6px;text-transform:uppercase}
+#bgPad h4{margin:4px 0 0;font-size:11px;color:#a1a1aa;letter-spacing:.6px;text-transform:uppercase}#bgPad h4 small{text-transform:none;letter-spacing:0;font-weight:500;opacity:.8}
+#bgPad .bgph{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}#bgPad .bgph b{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#bgPad .bgic{width:38px;height:34px;padding:0;font-size:17px;flex:0 0 auto}#bgPad .bgic:disabled{opacity:.35}#bgHelpTxt{font-size:12px;line-height:1.45}
+#bgTabs{display:flex;padding:3px;border-radius:12px;background:#17181d;border:1px solid #3a3d46;gap:2px}#bgTabs button{flex:1;height:34px;border:0;background:transparent;font-weight:700;font-size:13px;border-radius:9px}
+#bgTabs button[aria-pressed=true]{background:#6ea8fe;color:#0b1220;outline:0!important;box-shadow:none!important}
+.bghead .bgur{display:none}
+#bgPad .bgtp{display:none;flex-direction:column;gap:6px}#bgPad[data-tab=mes] .bgtp[data-t=mes],#bgPad[data-tab=sig] .bgtp[data-t=sig],#bgPad[data-tab=sec] .bgtp[data-t=sec]{display:flex}
+#bgPad.rngmode>*:not(#bgRngPad){display:none!important}
+#bgPad .bgmrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) 40px;gap:5px}#bgPad .bgmrow button{padding:0 2px;font-size:12.5px;min-height:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+#bgPad .bgopt{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px}
+.bgfold{display:flex;width:100%;align-items:center;justify-content:space-between;background:none!important;border:0!important;padding:2px 0!important;min-height:0!important;height:auto!important;font:700 11px Inter,system-ui!important;letter-spacing:.6px;text-transform:uppercase;color:#a1a1aa!important}
+.bgfold i{font-style:normal;transition:transform .15s}#bgChipsBox.shut .bgfold i{transform:rotate(-90deg)}#bgChipsBox.shut #bgChips{display:none}
+#bgKeys .bgbub button.wide{grid-column:span 4}
+.bgrej{font-size:12px}
 .bgph{font-size:13px;color:#a1a1aa}.bgph b{color:#ececf0}
 .bggrid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
 #bgSplit button{height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-size:11px;padding:0}
@@ -1524,7 +1537,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.0.2</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.0.3</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes">
       <section data-cat="moi"><h3>Moi</h3>
@@ -2191,9 +2204,6 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <button id="bgBack" aria-label="Retour">‹</button>
       <div class="bgt"><span>GRILLE</span><b id="bgTitle"></b></div><span class="bgsw"><button id="bgToTxt">✎ Paroles</button><button class="on">▦ Grille</button></span><button id="bgModeBtn" class="bgmd">🔗</button>
       <span class="grow"></span>
-      <span class="lab">Cases par ligne</span>
-      <span class="bgseg" id="bgPer"><button data-v="2">2</button><button data-v="4">4</button><button data-v="6">6</button><button data-v="8">8</button></span>
-      <span class="bgseg" id="bgMeter"><button data-v="4">4/4</button><button data-v="3">3/4</button></span>
       <button id="bgInBtn" title="Façon de saisir les accords" aria-label="Saisie">⚙</button><button id="bgRegen" title="Recréer la grille depuis les paroles" aria-label="Recréer depuis les paroles">↻</button>
       <span class="bgur"><button id="bgUndo" title="Annuler (⌘Z)" aria-label="Annuler" disabled>↶</button><button id="bgRedo" title="Rétablir (⇧⌘Z)" aria-label="Rétablir" disabled>↷</button></span>
       <button id="bgSave" class="bgok">Enregistrer</button>
@@ -2209,24 +2219,33 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
           <h4>Section</h4><button id="bgRSec" class="bgblue">+ En faire une section…</button>
           <button id="bgRNone">✕ Annuler la sélection</button>
         </div>
-        <div class="bgph"><b id="bgWhere"></b><span class="bgrs"> · glisse sur les mesures = sélection · appui long sur un accord du morceau = pinceau</span></div>
+        <div class="bgph"><b id="bgWhere"></b><button id="bgUndo2" class="bgic" aria-label="Annuler" title="Annuler (⌘Z)">↶</button><button id="bgRedo2" class="bgic" aria-label="Rétablir" title="Rétablir (⇧⌘Z)">↷</button><button id="bgHelp" class="bgic" aria-label="Aide" title="Aide">ⓘ</button></div>
+        <div id="bgHelpTxt" class="bgrs" hidden>Glisse sur les mesures = sélection · appui long sur une case = roue · appui long sur un accord du morceau = pinceau · glisse un accord sur une case pour l’y poser · « Temps » : glisse ↕ pour changer, appui long = roue.</div>
         <div id="bgClip" hidden><span class="bgck">EN MÉMOIRE</span><b id="bgClipTxt"></b><span class="bgrs" id="bgClipFrom"></span>
           <div class="bggrid2"><button id="bgPaste" class="bgok">Coller après</button><button id="bgPasteRep">Remplacer</button></div><button id="bgClipX" class="bgcx" aria-label="Oublier la copie">✕</button></div>
-        <h4>Découpage</h4><div class="bggrid4" id="bgSplit"></div>
-        <h4>Temps</h4><div class="bgslots" id="bgSlots"></div>
-        <h4>Signes de la mesure</h4><div class="bggrid4 bgmeas" id="bgMeas"></div>
-        <h4>Accords du morceau</h4><div class="bgchips" id="bgChips"></div>
-        <div class="bggrid2"><button id="bgOther">Autre accord…</button><button id="bgPct">% même mesure</button></div>
-        <h4>Mesures</h4>
-        <div id="bgRowList" hidden></div>
-        <div class="bggrid2"><button id="bgIns">+ Avant</button><button id="bgApp">+ Après</button><button id="bgDupRow">Dupliquer la ligne</button><button id="bgRowFrom">⧉ Ligne = une autre…</button><button id="bgDel" class="bgdanger">Supprimer</button></div>
-        <h4>Section</h4>
-        <div class="bggrid2"><button id="bgSecAdd" class="bgblue">+ Section</button><button id="bgSecCut" class="bgblue">✂ Couper ici</button><button id="bgSecGlue" class="bgblue">⤒ Recoller</button><button id="bgSecRen">Renommer</button><button id="bgSec34" class="bgteal">Section en 3/4</button><button id="bgSecDel" class="bgdanger">Supprimer la section</button></div>
+        <div id="bgChipsBox"><button id="bgChipsT" class="bgfold"><span>Accords du morceau</span><i>▾</i></button><div class="bgchips" id="bgChips"></div></div>
+        <div class="bgtabs" id="bgTabs"><button data-t="mes">Mesure</button><button data-t="sig">Signes</button><button data-t="sec">Section</button></div>
+        <div class="bgtp" data-t="mes">
+          <h4>Découpage</h4><div class="bggrid4" id="bgSplit"></div>
+          <h4>Temps <small>· glisse ↕ pour changer, appui long = roue</small></h4><div class="bgslots" id="bgSlots"></div>
+          <h4>Mesures</h4>
+          <div id="bgRowList" hidden></div>
+          <div class="bgmrow"><button id="bgIns">＋ avant</button><button id="bgApp">＋ après</button><button id="bgDupRow" title="Dupliquer la ligne">⧉ ligne</button><button id="bgRowFrom" title="Recopier une autre ligne ici">⧉ ligne = …</button><button id="bgDel" class="bgdanger" title="Supprimer la mesure" aria-label="Supprimer la mesure">🗑</button></div>
+        </div>
+        <div class="bgtp" data-t="sig"><h4>Signes de la mesure</h4><div class="bggrid4 bgmeas" id="bgMeas"></div></div>
+        <div class="bgtp" data-t="sec">
+          <h4>Section</h4>
+        <div class="bggrid2"><button id="bgSecAdd" class="bgblue">+ Nouvelle section</button><button id="bgSecCut" class="bgblue">✂ Couper ici</button><button id="bgSecGlue" class="bgblue">⤒ Recoller</button><button id="bgSecRen">Renommer</button><button id="bgSec34" class="bgteal">Section en 3/4</button><button id="bgSecDel" class="bgdanger">Supprimer la section</button></div>
+          <h4>Tout le morceau</h4>
+          <div class="opt bgopt"><span>Mesure</span><span class="bgseg" id="bgMeter"><button data-v="4">4/4</button><button data-v="3">3/4</button></span></div>
+          <div class="opt bgopt"><span>Cases par ligne</span><span class="bgseg" id="bgPer"><button data-v="2">2</button><button data-v="4">4</button><button data-v="6">6</button><button data-v="8">8</button></span></div>
+        </div>
+        <div class="bggrid2" style="display:none"><button id="bgOther">Autre accord…</button><button id="bgPct">% même mesure</button></div>
       </aside>
     </div>
     <div class="bgformed">
       <b>Structure</b><div id="bgForm"></div>
-      <span class="grow"></span><span id="bgAddForm"></span>
+      <span class="grow"></span><span class="lab bgrej">Rejouer :</span><span id="bgAddForm"></span>
       <button id="bgFL" aria-label="Avancer">◀</button><button id="bgFR" aria-label="Reculer">▶</button><button id="bgFX" class="bgdanger" aria-label="Retirer">✕</button>
     </div>
   </div>
@@ -7967,7 +7986,7 @@ function bgSnap(){const j=JSON.stringify({g:BG.g,m:BG.mode}), h=BG.hist||(BG.his
   h.push(j); if(h.length>150)h.shift(); BG.fut=[]; BG.hT=now; BG.hTag=BG.gest||0;}
 function bgUR(back){const from=back?BG.hist:BG.fut, to=back?BG.fut:BG.hist; if(!from||!from.length)return; to.push(JSON.stringify({g:BG.g,m:BG.mode})); const o=JSON.parse(from.pop()); BG.g=o.g; BG.mode=o.m; BG.dirty=true; BG.hT=0;
   const c=BG.sel; c.si=Math.min(c.si,BG.g.secs.length-1); c.bi=Math.min(c.bi,BG.g.secs[c.si].bars.length-1); c.k=0; BG.rng=null; bgDraw(); toast(back?'↶ Annulé':'↷ Rétabli',900);}
-function bgURBtns(){const u=$('#bgUndo'), r=$('#bgRedo'); if(u)u.disabled=!(BG.hist&&BG.hist.length); if(r)r.disabled=!(BG.fut&&BG.fut.length);}
+function bgURBtns(){const u=!(BG.hist&&BG.hist.length), r=!(BG.fut&&BG.fut.length); ['#bgUndo','#bgUndo2'].forEach(x=>{const e=$(x); if(e)e.disabled=u;}); ['#bgRedo','#bgRedo2'].forEach(x=>{const e=$(x); if(e)e.disabled=r;});}
 function bgStateDraw(main){bgURBtns();const md=BG.mode, b=$('#bgModeBtn'); if(b){b.textContent={link:'🔗 suit les paroles ▾',mix:'⇄ mixte ▾',lock:'🔒 grille figée ▾'}[md]; b.className='bgmd '+md;}
   if(md==='link'){const d=document.createElement('div'); d.className='bgln'; d.innerHTML='<span>🔗 Cette grille <b>suit les paroles</b> : elle change quand tu modifies les accords des paroles.</span><button data-md="ask">Retoucher…</button>'; main.prepend(d); return;}
   if(md!=='mix')return;
@@ -8025,7 +8044,7 @@ function bgNext(){const g=BG.g, c=BG.sel; if(c.k<bgSlotsOf(bgBar(),bgMeter(c.si)
   if(c.si<g.secs.length-1){c.si++; c.bi=0; return;}
   bgSnap(); bgSplice(g.secs[c.si],g.secs[c.si].bars.length,0,['']); c.bi++;}
 /* ----- saisie des accords : ligne de notes (doigt), clavier de l'ordi, ou roue — selon l'appareil ----- */
-const bgIn=()=>{if(S.bgIn&&!S.bgIn.v10){S.bgIn={mode:'auto',big:!!S.bgIn.big,v10:1};} return Object.assign({mode:'auto',big:false},S.bgIn||{});};
+const bgIn=()=>{if(S.bgIn&&!S.bgIn.v10){S.bgIn={mode:'auto',big:!!S.bgIn.big,v10:1};} return Object.assign({mode:'auto',big:false,v10:1},S.bgIn||{});};
 const bgTouch=()=>{try{return matchMedia('(pointer:coarse)').matches;}catch(_){return false;}};
 const bgInMode=()=>bgIn().mode;
 const bgWheelOn=()=>['auto','roue'].includes(bgIn().mode);
@@ -8041,7 +8060,7 @@ function bgTgTap(k){const t=BG.tg, now=Date.now(), prev=BG.tgLast, dbl=prev&&pre
   BG.tgLast={k,t:now}; t[k]=dbl?2:(t[k]?0:1); bgKeysDraw(null,BG.chips||[]);}
 function bgTgUse(){let ch=false; ['acc','m'].forEach(k=>{if(BG.tg[k]===1){BG.tg[k]=0; ch=true;}}); return ch;}
 function bgKeysDraw(main,chips){BG.chips=chips; const w0=$('#bgKeysW'); if(w0)w0.remove(); const side=bgSide(); main=document.createElement('div'); main.id='bgKeysW'; main.className=side?'inpad':'';
-  if(side){const ph=$('#bgPad .bgph'); ph.after(main);} else $('#bgEd .bgformed').before(main); $('#bgEd').classList.toggle('haskeys',!side);
+  if(side){$('#bgHelpTxt').after(main);} else $('#bgEd .bgformed').before(main); $('#bgEd').classList.toggle('haskeys',!side);
   if(bgInMode()==='clavier'&&!BG.paint){const t=document.createElement('div'); t.id='bgKeys'; t.className='kb'; t.innerHTML='<span class="bgkh">⌨ Tape l’accord (em7, f#m, bb…) · Entrée ou Espace = case suivante · ← → ↑ ↓ · ⌫ efface · % même mesure</span>'; main.appendChild(t); return;}
   if(bgInMode()==='roue'&&!BG.paint){main.remove(); $('#bgEd').classList.remove('haskeys'); return;}
   const cn=BG.r.cn, big=bgIn().big, k=document.createElement('div'); k.id='bgKeys';
@@ -8053,7 +8072,7 @@ function bgKeysDraw(main,chips){BG.chips=chips; const w0=$('#bgKeysW'); if(w0)w0
   h+=`<div class="bgkr bgkN">${nat.map((n,i)=>{const L=lab(n,i); return L?`<button data-kc="${esc(L)}">${esc(L.replace('#','♯').replace(/(.)b/,'$1♭'))}</button>`:`<button class="off" disabled>·</button>`;}).join('')}</div>`;
   const bub=!!BG.bub;
   h+=`<div class="bgkr bgkT"><button data-kx="prev" title="Case précédente">←</button>${tgb('acc',AS,'1 toucher = prochain accord · double toucher = verrouillé')}${tgb('m','m','1 toucher = prochain accord · double toucher = verrouillé')}<button data-km="7" class="tg7">7</button><button data-kx="more" class="${bub?'on':''}" title="Plus : M7, sus4, %…">${bub?(side?'▴':'▾'):'⋯'}</button><button data-kx="next" class="nx" title="Case suivante">→</button></div>`;
-  if(bub)h+=`<div class="bgbub ${side?'dn':'up'}"><div>${['maj7','sus4','dim','6','9','add9'].map(q=>`<button data-kq="${q}">${esc(cwMj(q))}</button>`).join('')}<button data-kx="%">%</button><button data-kx="vide">vide</button></div></div>`;
+  if(bub)h+=`<div class="bgbub ${side?'dn':'up'}"><div>${['maj7','sus4','dim','6','9','add9'].map(q=>`<button data-kq="${q}">${esc(cwMj(q))}</button>`).join('')}<button data-kx="%">%</button><button data-kx="vide">vide</button><button data-kx="other" class="wide">Autre accord…</button></div></div>`;
   k.innerHTML=h; main.appendChild(k);}
 function bgPrev(){if(BG.sel.k>0){BG.sel.k--; bgDraw();} else {bgMoveBy(-1); const b=bgBar(); BG.sel.k=b[0]==='%'?0:bgSlotsOf(b,bgMeter(BG.sel.si)).length-1; bgDraw();}}
 const bgKey=()=>BG.sel.si+'/'+BG.sel.bi+'/'+BG.sel.k;
@@ -8074,6 +8093,7 @@ $('#bgEd').addEventListener('pointerdown',ev=>{const b=ev.target.closest('#bgKey
   else if(d.kp!=null)bgPaint(null);
   else if(d.kx==='more'){BG.bub=!BG.bub; bgKeysDraw(null,BG.chips||[]);}
   else if(d.kx==='prev'){bgPrev(); BG.last=null;}
+  else if(d.kx==='other'){$('#bgOther').click();}
   else if(d.kx==='%'){$('#bgPct').click(); BG.last=null;} else if(d.kx==='vide'){bgWriteCur(''); BG.last=null;} else if(d.kx==='next'){bgNext(); BG.last=null; bgDraw();}},true);
 // clavier de l'ordi : on tape l'accord dans la case choisie
 const BGT={buf:''};
@@ -8361,7 +8381,12 @@ $('#bgRegen').onclick=()=>{if(!confirm('Recréer la grille à partir des accords
 function bgClose(){BGT.buf=''; bgTypeShow(); const ip=$('#bgInPop'); if(ip)ip.remove(); $('#bgEd').hidden=true; V.lastKey=null; vRender();}
 function bgDoSave(quiet){const s=BG.s; s.bgMode=BG.mode; if(BG.mode==='link')s.bgrid=null; else s.bgrid=JSON.parse(JSON.stringify(BG.g)); delete s._r; if((s.view||'grille')!=='accords')s.view='accords'; touch(s); save(); if(s._el)update(s); else if($('#viewer').hidden)renderAll(); BG.dirty=false; bgClose(); if(!quiet)toast('Grille enregistrée');}
 $('#bgSave').onclick=()=>bgDoSave();
-$('#bgUndo').onclick=()=>bgUR(true); $('#bgRedo').onclick=()=>bgUR(false);
+$('#bgUndo').onclick=$('#bgUndo2').onclick=()=>bgUR(true); $('#bgRedo').onclick=$('#bgRedo2').onclick=()=>bgUR(false);
+$('#bgHelp').onclick=()=>{$('#bgHelpTxt').hidden=!$('#bgHelpTxt').hidden;};
+function bgTabSet(t){BG.tab=t||BG.tab||'mes'; $('#bgPad').dataset.tab=BG.tab; $$('#bgTabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===BG.tab));}
+$('#bgTabs').onclick=e=>{const b=e.target.closest('[data-t]'); if(b)bgTabSet(b.dataset.t);}; bgTabSet('mes');
+function bgFoldSet(){const open=bgIn().chips!==false; $('#bgChipsBox').classList.toggle('shut',!open);}
+$('#bgChipsT').onclick=()=>{S.bgIn=Object.assign(bgIn(),{chips:bgIn().chips===false}); save(); bgFoldSet();}; bgFoldSet();
 $('#shareAppBtn').onclick=shareApp; try{if(APP&&window.Android.appVersion)$('#appVer').textContent=window.Android.appVersion();}catch(_){}
 $('#bgModeBtn').onclick=ev=>{let p=$('#bgInPop'); if(p){p.remove(); if(p.dataset.k==='md')return;} p=document.createElement('div'); p.id='bgInPop'; p.dataset.k='md'; const m=BG.mode;
   const opt=(v,t,sub)=>`<button data-mm="${v}" aria-pressed="${m===v}"><b>${t}</b><span>${sub}</span></button>`;
