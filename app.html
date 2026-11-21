@@ -1328,6 +1328,22 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #ocrBox{position:fixed;inset:0;z-index:96;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center}
 #ocrBox .ob{width:min(380px,90vw);background:var(--card);color:var(--ink);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:10px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
 #ocrBox i{height:8px;border-radius:4px;background:var(--line);overflow:hidden}#ocrBox u{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}#ocrBox small{color:var(--mute)}
+#bgo{position:fixed;inset:0;z-index:90;background:var(--bg);color:var(--ink);display:flex;flex-direction:column}#bgo[hidden]{display:none}
+.bgoh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--card)}.bgoh b{font-size:17px;margin-right:6px}.bgoh input{height:36px;border-radius:9px}#bgoT{width:220px}.bgoh label{display:inline-flex;align-items:center;gap:4px;font-size:13px;color:var(--mute)}
+.bgoi{padding:6px 14px}#bgoG{flex:1;overflow:auto;padding:4px 14px 30px;display:flex;flex-direction:column;gap:6px}
+.bgor{display:grid;grid-template-columns:minmax(70px,.8fr) repeat(8,minmax(60px,1fr));gap:3px}.bgor.k-vide{opacity:.35}.bgor.k-ign{opacity:.4}.bgor.k-ign .bgoc{pointer-events:none}
+.bgol,.bgoc{position:relative;border:1px solid var(--line);border-radius:7px;background:#fff;overflow:hidden;cursor:pointer}
+.bgoim{display:block}.bgoim canvas{width:100%;height:auto;display:block;opacity:.85}
+.bgol em{position:absolute;left:0;right:0;bottom:0;background:var(--acc);color:#fff;font:700 11.5px Inter,system-ui,sans-serif;font-style:normal;text-align:center;padding:1px 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.k-suite .bgol em,.k-ign .bgol em{background:#9ca3af}.k-vide .bgol em{display:none}
+.bgv{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:center;gap:6px;pointer-events:none}.bgv b{background:rgba(255,255,255,.92);color:#0f766e;font:800 15px ui-monospace,monospace;padding:0 5px;border-radius:5px;border:1px solid #99f6e4}
+.bgoc.split .bgv{justify-content:space-between;padding:0 3px}.bgoc.empty{background:#f8f8f8;opacity:.55}.bgoc.chk{outline:2px solid #f59e0b;outline-offset:-2px}.bgoc.chk .bgv b{color:#b45309;border-color:#fcd34d}
+#bgoPop{position:fixed;z-index:97;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 34px rgba(0,0,0,.28);padding:8px;width:min(330px,92vw);display:flex;flex-direction:column;gap:6px}
+.bgpp{display:flex;gap:6px;align-items:center}.bgpp input{flex:1;min-width:0;height:40px;font:700 18px ui-monospace,monospace;border-radius:9px}.bgpp .pri{height:40px;padding:0 14px;border-radius:9px}
+.bgpc{display:flex;flex-wrap:wrap;gap:4px}.bgpc button{height:32px;padding:0 10px;border-radius:8px;font-size:13px;font-weight:600}
+@media (max-width:699px){.bgor{grid-template-columns:52px repeat(8,minmax(38px,1fr));gap:2px}.bgv b{font-size:12px;padding:0 2px}#bgoT{width:140px}}
+.bgoc.guess .bgv b{font-style:italic;opacity:.85}
+.bgv b.ref{color:#1d4ed8;border-color:#bfdbfe;font-size:12.5px}.k-ord .bgol em{background:#1d4ed8}
+.bgseq{font:700 15px Inter,system-ui,sans-serif;padding:4px 2px}.bgseq b{color:#1d4ed8}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -1731,6 +1747,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
     <button data-new="grid"><b>▦ Grille</b><span>Grille en cases pour le bassiste</span></button>
     <button data-new="blank"><b>▢ Page blanche</b><span>À écrire au doigt ou au stylet, avec tampons</span></button>
     <button data-new="ocr"><b>🔤 Photo → texte</b><span>Photographier une page de paroles et accords : elle devient du texte éditable</span></button>
+    <button data-new="bgocr"><b>▦ Photo → grille de basse</b><span>Une grille remplie à la main (photo ou PDF scanné) devient une grille éditable</span></button>
     <button data-new="sheet"><b>📄 Photo / PDF</b><span>Une partition existante à importer (image)</span></button>
     <button data-new="ug" class="nug"><b>🌐 Ultimate Guitar</b><span>Chercher le titre et importer la grille</span></button>
     <button data-new="paste"><b>📋 Coller</b><span>Une grille copiée ailleurs (UG, ChordPro…)</span></button>
@@ -1768,6 +1785,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 </div></div>
 <!-- ===== Import Guitar Pro / MusicXML ===== -->
 <input type="file" id="ocrFile" accept="image/*" multiple hidden>
+<input type="file" id="bgoFile" accept="image/*,application/pdf,.pdf" hidden>
 <input type="file" id="gpFile" accept=".gp,.gp3,.gp4,.gp5,.gpx,.gp7,.xml,.musicxml,.mxl,application/vnd.recordare.musicxml+xml,application/vnd.recordare.musicxml" hidden>
 <div id="gpBox" class="modal" hidden><div class="box gpbox">
   <h2><span>Importer <span id="gpFmt"></span></span> <button class="close">✕</button></h2>
@@ -5749,6 +5767,7 @@ $$('#newBox [data-new]').forEach(b=>b.onclick=async()=>{const k=b.dataset.new;
   modal('#newBox',false);
   if(k==='gp'){const f=$('#gpFile'); f.value=''; f.click(); return;}
   if(k==='ocr'){const f=$('#ocrFile'); f.value=''; f.click(); return;}
+  if(k==='bgocr'){const f=$('#bgoFile'); f.value=''; f.click(); return;}
   if(k==='bulk'){modal('#newBox',false); bulkOpen([]); return;}
   if(k==='sheet'){openSheetImport(null); $('#shiTitle').value=$('#newTitle').value.trim(); return;}
   if(k==='text'){const s=newSong(); openEditor(s,null); if(!$('#vtTitre').value)setTimeout(()=>$('#vtTitre').focus(),60); return;}
@@ -5765,6 +5784,8 @@ function ocrLib(){if(ocrP)return ocrP; const loc=/android_asset/.test(location.h
   ocrP=(loc?loadScript(base+'tesseract.min.js'):loadScriptAny(['tess/tesseract.min.js','https://cdn.jsdelivr.net/npm/tesseract.js@6.0.1/dist/tesseract.min.js']))
     .then(()=>({T:window.Tesseract,opt:loc?{workerPath:base+'worker.min.js',corePath:base,langPath:base}:{}})).catch(e=>{ocrP=null; throw e;});
   return ocrP;}
+async function ocrWorker(langs,logger){const {T,opt}=await ocrLib(); const mk=o=>T.createWorker(langs,1,Object.assign(logger?{logger}:{},o));
+  try{return await mk(opt);}catch(e){if(!opt.workerPath)throw e; console.warn('OCR local indisponible, essai en ligne',e); return await mk({});}}
 function ocrUI(msg,pc){let el=$('#ocrBox'); if(msg==null){if(el)el.remove(); return;}
   if(!el){el=document.createElement('div'); el.id='ocrBox'; el.innerHTML='<div class="ob"><b>🔤 Lecture de la photo</b><span></span><i><u></u></i><small>La première fois, le lecteur se prépare (quelques secondes).</small></div>'; document.body.appendChild(el);}
   el.querySelector('span').textContent=msg; el.querySelector('u').style.width=Math.round((pc||0)*100)+'%';}
@@ -5787,14 +5808,135 @@ function ocrToText(data){const lines=[]; (data.blocks||[]).forEach(b=>(b.paragra
     else out.push(l.w.map(w=>w.text).join(' '));});
   return out.join('\n').replace(/\n{3,}/g,'\n\n').trim();}
 $('#ocrFile').onchange=async e=>{const files=[...e.target.files]; if(!files.length)return; let worker=null;
-  try{ocrUI('Préparation du lecteur…',0.02); const {T,opt}=await ocrLib();
-    worker=await T.createWorker(['fra','eng'],1,Object.assign({logger:m=>{if(m.status==='recognizing text')ocrUI('Lecture'+(files.length>1?` de la page ${worker&&worker._pg||1}/${files.length}`:'')+'…',m.progress); else if(/load|init/.test(m.status||''))ocrUI('Préparation du lecteur…',Math.min(.3,(m.progress||0)*.3));}},opt));
+  try{ocrUI('Préparation du lecteur…',0.02);
+    worker=await ocrWorker(['fra','eng'],m=>{if(m.status==='recognizing text')ocrUI('Lecture'+(files.length>1?` de la page ${worker&&worker._pg||1}/${files.length}`:'')+'…',m.progress); else if(/load|init/.test(m.status||''))ocrUI('Préparation du lecteur…',Math.min(.3,(m.progress||0)*.3));});
     await worker.setParameters({preserve_interword_spaces:'1'});
     const parts=[]; for(let i=0;i<files.length;i++){worker._pg=i+1; const c=await ocrPrep(files[i]); const {data}=await worker.recognize(c,{},{blocks:true,text:true}); parts.push(ocrToText(data)||data.text||'');}
     ocrUI(null); const text=parts.join('\n\n').trim(); if(!text){toast('Aucun texte trouvé sur la photo'); return;}
     const s=newSong({text}); openEditor(s,null); toast('Texte lu : vérifie les accords et les fautes, puis Enregistrer',4500);}
   catch(err){ocrUI(null); console.error(err); toast('Lecture impossible'+(navigator.onLine?'':' : il faut une connexion la première fois')+'.',4000);}
   finally{try{worker&&worker.terminate();}catch(_){}}};
+
+/* ======================================================================
+   Photo → grille du bassiste : repérage du quadrillage (traits du modèle), cases vides / pleines / coupées,
+   première lecture par Tesseract, puis vérification rapide case par case (taper, ou appui long = roue).
+   ====================================================================== */
+const BGO={};
+async function bgoLoad(f){
+  if(/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name)){await loadScript('pdf.min.js'); const L=window.pdfjsLib; L.GlobalWorkerOptions.workerSrc='pdf.worker.min.js';
+    const doc=await L.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise, pg=await doc.getPage(1), v0=pg.getViewport({scale:1}), vp=pg.getViewport({scale:1240/v0.width});
+    const c=document.createElement('canvas'); c.width=Math.round(vp.width); c.height=Math.round(vp.height); const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); await pg.render({canvasContext:g,viewport:vp}).promise; return c;}
+  const url=URL.createObjectURL(f); try{const im=await new Promise((ok,ko)=>{const i=new Image(); i.onload=()=>ok(i); i.onerror=ko; i.src=url;});
+    const sc=1240/im.width, c=document.createElement('canvas'); c.width=1240; c.height=Math.round(im.height*sc); const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height); return c;}
+  finally{URL.revokeObjectURL(url);}}
+function bgoDetect(c){const W=c.width, H=c.height, d=c.getContext('2d').getImageData(0,0,W,H).data, dk=new Uint8Array(W*H);
+  let sum=0; for(let i=0;i<W*H;i++){const v=(d[i*4]*.3+d[i*4+1]*.59+d[i*4+2]*.11); sum+=v;} const thr=Math.min(150,sum/(W*H)*.6);
+  for(let i=0;i<W*H;i++)dk[i]=(d[i*4]*.3+d[i*4+1]*.59+d[i*4+2]*.11)<thr?1:0;
+  const grp=(arr,gap)=>{const g=[]; arr.forEach(x=>{if(g.length&&x-g[g.length-1][g[g.length-1].length-1]<=gap)g[g.length-1].push(x); else g.push([x]);}); return g.map(z=>Math.round(z.reduce((a,b)=>a+b,0)/z.length));};
+  const hy=[]; for(let y=0;y<H;y++){let n=0; for(let x=0;x<W;x++)n+=dk[y*W+x]; if(n>W*.45)hy.push(y);} const hl=grp(hy,3);
+  const boxes=[]; for(let i=0;i<hl.length-1;){const h=hl[i+1]-hl[i]; if(h>50&&h<170){boxes.push({y0:hl[i],y1:hl[i+1]}); i+=2;} else i++;}
+  const vlines=b=>{const xs=[], h=b.y1-b.y0-10; for(let x=0;x<W;x++){let n=0; for(let y=b.y0+5;y<b.y1-5;y++)n+=dk[y*W+x]; if(n>h*.8)xs.push(x);} return grp(xs,3);};
+  boxes.forEach(b=>b.v=vlines(b)); const gb=boxes.filter(b=>b.v.length>=9); if(!gb.length)return null;
+  // traits du modèle = présents sur presque toutes les lignes (les barres de reprise ||: n'y sont que par endroits)
+  const all=[]; gb.forEach(b=>b.v.forEach(x=>all.push(x))); all.sort((a,b)=>a-b); const cl=[]; all.forEach(x=>{const k=cl.find(c=>Math.abs(c.x-x)<=6); if(k){k.n++; k.x=(k.x*(k.n-1)+x)/k.n;} else cl.push({x,n:1});});
+  let V=cl.filter(c=>c.n>=gb.length*.6).map(c=>Math.round(c.x)).sort((a,b)=>a-b); if(V.length<9)return null; if(V.length>10)V=V.slice(-10);
+  const ink=(x0,y0,x1,y1)=>{let n=0,t=0; for(let y=y0;y<y1;y++)for(let x=x0;x<x1;x++){n+=dk[y*W+x]; t++;} return t?n/t:0;};
+  const diag=(x0,y0,x1,y1)=>{let hit=0,N=40; for(let k=0;k<=N;k++){const x=Math.round(x0+(x1-x0)*k/N), y=Math.round(y1-(y1-y0)*k/N); let f=0; for(let dy=-3;dy<=3&&!f;dy++)for(let dx=-3;dx<=3;dx++)if(dk[(y+dy)*W+x+dx]){f=1; break;} hit+=f;} return hit/(N+1);};
+  const rows=[]; boxes.forEach(b=>{if(b.v.length<6)return; const cells=[]; for(let i=0;i<V.length-1;i++){const x0=V[i],x1=V[i+1], m=Math.round((x1-x0)*.1), mh=Math.round((b.y1-b.y0)*.12);
+      const k=ink(x0+m,b.y0+mh,x1-m,b.y1-mh), dg=diag(x0+6,b.y0+6,x1-6,b.y1-6); let split=k>.02&&dg>.72, rep=false;
+      if(split){// encre hors de la diagonale : presque rien → c'est un signe de répétition (%), pas deux accords
+        let n=0,t=0; const X0=x0+m,Y0=b.y0+mh,X1=x1-m,Y1=b.y1-mh, L=Math.hypot(x1-x0,b.y1-b.y0); for(let y=Y0;y<Y1;y++)for(let x=X0;x<X1;x++){const dd=Math.abs((b.y1-6-y)*(x1-x0-12)-(x-x0-6)*(b.y1-b.y0-12))/L; if(dd>9){n+=dk[y*W+x]; t++;}}
+        if(t&&n/t<.012){split=false; rep=true;}}
+      cells.push({x0,x1,y0:b.y0,y1:b.y1,ink:k,split,v:rep?'%':undefined});}
+    rows.push({y0:b.y0,y1:b.y1,label:cells[0],cells:cells.slice(1)});});
+  return {rows,W,H};}
+const BGO_SEC=[['IN','Intro'],['VS','Couplet'],['CH','Refrain'],['BG','Pont'],['IT','Interlude'],['SO','Solo'],['OUT','Outro']];
+function bgoNorm(t){t=String(t||'').trim().replace(/\s+/g,'').replace(/^[|:]+|[|:]+$/g,''); if(!t)return ''; if(/^[%/x×7.]{1,2}$/i.test(t)&&/[%/]/.test(t))return '%';
+  t=t.replace(/^([A-G][#b]?)-/,'$1m').replace(/^([a-g])/,m=>m.toUpperCase()); return CHORD_RE.test(t)?t:'';}
+async function bgoOCR(){const w=await ocrWorker('eng'); await w.setParameters({tessedit_pageseg_mode:'8',tessedit_char_whitelist:'ABCDEFGabcdefgm#-%/7+96sudi'});
+  const all=[]; BGO.rows.forEach((r,ri)=>r.cells.forEach((c,ci)=>{if(c.ink>.02&&c.v!=='%')all.push([ri,ci]);}));
+  const part=(c,fx0,fy0,fx1,fy1)=>bgoCrop({x0:c.x0+(c.x1-c.x0)*fx0,x1:c.x0+(c.x1-c.x0)*fx1,y0:c.y0+(c.y1-c.y0)*fy0,y1:c.y0+(c.y1-c.y0)*fy1},.04);
+  const rd=async cv=>{const {data}=await w.recognize(cv); const v=bgoNorm(data.text); return {v,conf:v?data.confidence:0};};
+  let n=0; for(const [ri,ci] of all){if(!BGO.on)break; const c=BGO.rows[ri].cells[ci];
+    try{if(c.split){const A=await rd(part(c,0,0,.6,.58)), B=await rd(part(c,.4,.42,1,1)); if(!c.a||c.auto){c.a=A.v||'?'; c.b=B.v||'?'; c.auto=1; c.conf=Math.min(A.conf,B.conf);}}
+      else {const r=await rd(bgoCrop(c,.1)); if(!c.v||c.auto){c.v=r.v||'?'; c.auto=1; c.conf=r.conf;}}}catch(e){}
+    n++; $('#bgoProg').textContent=`Lecture… ${n}/${all.length}`; bgoCell(ri,ci);}
+  $('#bgoProg').textContent='Première lecture faite : vérifie chaque case orange (ce ne sont que des suppositions)'; await w.terminate();}
+function bgoCrop(c,m,maxW){const cw=c.x1-c.x0, ch=c.y1-c.y0, mx=Math.round(cw*(m||0)), my=Math.round(ch*(m||0)), sc=maxW?Math.min(1,maxW/(cw-2*mx)):1, o=document.createElement('canvas');
+  o.width=Math.round((cw-2*mx)*sc); o.height=Math.round((ch-2*my)*sc); o.getContext('2d').drawImage(BGO.c,c.x0+mx,c.y0+my,cw-2*mx,ch-2*my,0,0,o.width,o.height); return o;}
+function bgoCell(ri,ci){const el=$(`#bgoG [data-r="${ri}"][data-c="${ci}"] .bgv`); if(!el)return; const c=BGO.rows[ri].cells[ci];
+  if(BGO.rows[ri].kind==='ord'){el.innerHTML=''; el.parentElement.classList.toggle('chk',c.ink>.02&&!(BGO.rows[ri].refs||[]).length); el.parentElement.classList.remove('guess'); return;}
+  el.innerHTML=c.split?`<b>${esc(cwShow(c.a||'?'))}</b><b>${esc(cwShow(c.b||'?'))}</b>`:(c.v?`<b>${esc(cwShow(c.v))}</b>`:'');
+  el.parentElement.classList.toggle('chk',!!(c.ink>.02&&(c.auto||(c.split&&(!c.a||!c.b||c.a==='?'||c.b==='?'))||(!c.split&&(!c.v||c.v==='?'))))); el.parentElement.classList.toggle('guess',!!(c.auto&&(c.split?(c.a!=='?'||c.b!=='?'):c.v!=='?')));}
+async function bgoOpen(f){ocrUI('Recherche du quadrillage…',.2); let c;
+  try{c=await bgoLoad(f);}catch(e){ocrUI(null); toast('Impossible de lire ce fichier'); return;}
+  const g=bgoDetect(c); ocrUI(null); if(!g||!g.rows.length){toast('Quadrillage non trouvé : essaie une photo bien droite et nette'); return;}
+  Object.assign(BGO,{c,rows:g.rows,on:true}); let sec=0;
+  BGO.rows.forEach((r,i)=>{const any=r.cells.some(x=>x.ink>.02); r.kind=r.label.ink>.02?'sec':(any?'suite':'vide'); if(r.kind==='sec')r.name=sec++===0?'Intro':'Section '+sec;});
+  let el=$('#bgo'); if(!el){el=document.createElement('div'); el.id='bgo'; document.body.appendChild(el);}
+  el.innerHTML=`<div class="bgoh"><b>▦ Grille depuis la photo</b><input id="bgoT" placeholder="Artiste - Titre" value="${esc($('#newTitle').value.trim())}"><label>Tonalité <input id="bgoK" placeholder="Em" size="4"></label><label>♩ <input id="bgoBpm" placeholder="120" size="3" inputmode="numeric"></label><span id="bgoProg" class="lab"></span><span class="grow"></span><button id="bgoX">Annuler</button><button id="bgoOk" class="pri">Créer la grille</button></div>
+    <div class="bgoi lab">Touche une case pour corriger (Entrée = case suivante) · appui long = roue d’accords · touche le nom à gauche pour nommer la section ou ignorer la ligne.</div><div id="bgoG"></div>`;
+  const G=$('#bgoG'); G.innerHTML=BGO.rows.map((r,ri)=>`<div class="bgor k-${r.kind}" data-row="${ri}"><div class="bgol" data-lab="${ri}"><span class="bgoim"></span><em>${r.kind==='sec'?esc(r.name):r.kind==='suite'?'↳ suite':r.kind==='ign'?'⊘ ignorée':''}</em></div>${r.cells.map((c,ci)=>`<div class="bgoc${c.ink>.02?'':' empty'}${c.split?' split':''}" data-r="${ri}" data-c="${ci}"><span class="bgoim"></span><span class="bgv"></span></div>`).join('')}</div>`).join('');
+  BGO.rows.forEach((r,ri)=>{G.querySelector(`[data-lab="${ri}"] .bgoim`).appendChild(bgoCrop(r.label,.04,90)); r.cells.forEach((c,ci)=>{G.querySelector(`[data-r="${ri}"][data-c="${ci}"] .bgoim`).appendChild(bgoCrop(c,.04,110)); bgoCell(ri,ci);});});
+  el.hidden=false; $('#bgoX').onclick=()=>{BGO.on=false; el.hidden=true;}; $('#bgoOk').onclick=bgoBuild;
+  // toucher = petite fenêtre de saisie ; appui long = roue
+  let lp=null;
+  G.onpointerdown=e=>{const ce=e.target.closest('.bgoc'); if(!ce||ce.classList.contains('empty')&&!e.shiftKey)return; clearTimeout(lp); const x0=e.clientX,y0=e.clientY;
+    lp=setTimeout(()=>{lp='done'; const ri=+ce.dataset.r, ci=+ce.dataset.c, c=BGO.rows[ri].cells[ci], half=c.split&&(e.offsetX/ce.clientWidth+e.offsetY/ce.clientHeight)>1?'b':'a';
+      cwPick(ce,n=>{if(c.split)c[half]=n; else c.v=n; c.auto=0; bgoCell(ri,ci);},bgoUsed());},420);
+    const mv=ev=>{if(Math.hypot(ev.clientX-x0,ev.clientY-y0)>10){clearTimeout(lp); removeEventListener('pointermove',mv);}}; addEventListener('pointermove',mv);};
+  G.onclick=e=>{if(lp==='done'){lp=null; return;} clearTimeout(lp); const la=e.target.closest('[data-lab]'); if(la){bgoLabPop(+la.dataset.lab,la); return;}
+    const ce=e.target.closest('.bgoc'); if(!ce)return; bgoPop(+ce.dataset.r,+ce.dataset.c,ce,e);};
+  bgoOCR().catch(e=>{$('#bgoProg').textContent='Lecture automatique indisponible : remplis les cases';});}
+const bgoUsed=()=>{const s=new Set(); BGO.rows.forEach(r=>r.cells.forEach(c=>[c.v,c.a,c.b].forEach(v=>{if(v&&v!=='?'&&v!=='%')s.add(v);}))); return [...s].slice(0,8);};
+function bgoNext(ri,ci){for(let r=ri;r<BGO.rows.length;r++){if(BGO.rows[r].kind==='ign'||BGO.rows[r].kind==='vide')continue; for(let c=(r===ri?ci+1:0);c<8;c++)if(BGO.rows[r].cells[c]&&BGO.rows[r].cells[c].ink>.02)return [r,c];} return null;}
+const bgoSecs=()=>BGO.rows.filter(r=>r.kind==='sec').map(r=>r.name);
+function bgoRefPop(ri,ci,ce){const r=BGO.rows[ri]; r.refs=r.refs||[]; const p=document.createElement('div'); p.id='bgoPop';
+  const draw=()=>{const nm=bgoSecs(); p.innerHTML=`<div class="lab">Ordre écrit sur cette ligne : touche les sections dans l’ordre</div>
+    <div class="bgseq">${r.refs.length?r.refs.map(i=>`<b>${esc(nm[i]||'?')}</b>`).join(' → '):'<span class="lab">rien encore</span>'}</div>
+    <div class="bgpc">${nm.map((n,i)=>`<button data-ref="${i}">＋ ${esc(n)}</button>`).join('')||'<span class="lab">Nomme d’abord les sections (case de gauche)</span>'}</div>
+    <div class="bgpc"><button data-undo>↶ Retirer la dernière</button><button data-ok class="pri">OK</button></div>`;
+    const row=$(`#bgoG [data-row="${ri}"]`); row.querySelector('em').textContent='⇒ '+(r.refs.map(i=>nm[i]).join(' → ')||'enchaînement');};
+  draw(); document.body.appendChild(p); const b=ce.getBoundingClientRect(); p.style.left=Math.max(8,Math.min(innerWidth-p.offsetWidth-8,b.left))+'px'; p.style.top=(b.bottom+p.offsetHeight+8<innerHeight?b.bottom+6:Math.max(8,b.top-p.offsetHeight-6))+'px';
+  p.onclick=e=>{const x=e.target.closest('button'); if(!x)return; if(x.dataset.ref!=null){r.refs.push(+x.dataset.ref); draw();} else if(x.dataset.undo!=null){r.refs.pop(); draw();} else if(x.dataset.ok!=null)p.remove(); r.cells.forEach((c,cj)=>bgoCell(ri,cj));};
+  setTimeout(()=>{const off=e=>{if(!p.contains(e.target)){p.remove(); removeEventListener('pointerdown',off,true);}}; addEventListener('pointerdown',off,true);},0);}
+function bgoPop(ri,ci,ce,ev){$('#bgoPop')&&$('#bgoPop').remove(); if(BGO.rows[ri].kind==='ord'){bgoRefPop(ri,ci,ce); return;} const c=BGO.rows[ri].cells[ci]; const p=document.createElement('div'); p.id='bgoPop';
+  const half=c.split?((ev&&ev.offsetX/ce.clientWidth+ev.offsetY/ce.clientHeight)>1?'b':'a'):null;
+  p.innerHTML=`<div class="bgpp">${c.split?`<input data-h="a" value="${esc(c.a&&c.a!=='?'?c.a:'')}" placeholder="1er"><span>/</span><input data-h="b" value="${esc(c.b&&c.b!=='?'?c.b:'')}" placeholder="2e">`:`<input data-h="v" value="${esc(c.v&&c.v!=='?'?c.v:'')}" placeholder="Accord">`}<button class="pri" data-ok>OK</button></div>
+    <div class="bgpc">${['%',...bgoUsed()].map(x=>`<button data-q="${esc(x)}">${esc(cwShow(x))}</button>`).join('')}<button data-sp>${c.split?'▢ un seul':'◩ coupée'}</button><button data-em>vide</button></div>`;
+  document.body.appendChild(p); const r=ce.getBoundingClientRect(); p.style.left=Math.max(8,Math.min(innerWidth-p.offsetWidth-8,r.left))+'px'; p.style.top=(r.bottom+p.offsetHeight+8<innerHeight?r.bottom+6:Math.max(8,r.top-p.offsetHeight-6))+'px';
+  const ins=[...p.querySelectorAll('input')], fx=v=>bgoNorm(v)||v.trim(); let foc=half==='b'?ins[1]:ins[0]; setTimeout(()=>{foc.focus(); foc.select();},30);
+  ins.forEach(i=>i.onfocus=()=>foc=i);
+  const save=()=>{ins.forEach(i=>{const v=fx(i.value); if(i.dataset.h==='v')c.v=v; else c[i.dataset.h]=v;}); c.auto=0; bgoCell(ri,ci);};
+  const go=()=>{save(); p.remove(); const n=bgoNext(ri,ci); if(n){const e2=$(`#bgoG [data-r="${n[0]}"][data-c="${n[1]}"]`); e2.scrollIntoView({block:'nearest'}); bgoPop(n[0],n[1],e2);}};
+  p.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault(); if(c.split&&foc===ins[0]){ins[1].focus(); return;} go();} if(e.key==='Escape')p.remove();};
+  p.onclick=e=>{const b=e.target.closest('button'); if(!b)return; if(b.dataset.ok!=null){go(); return;}
+    if(b.dataset.q){foc.value=b.dataset.q; if(c.split&&foc===ins[0]){ins[1].focus(); return;} go(); return;}
+    if(b.dataset.sp!=null){save(); c.split=!c.split; if(c.split){c.a=c.a||c.v||''; c.b=c.b||'';} else c.v=c.v||c.a||''; $(`#bgoG [data-r="${ri}"][data-c="${ci}"]`).classList.toggle('split',c.split); bgoCell(ri,ci); p.remove(); bgoPop(ri,ci,ce); return;}
+    if(b.dataset.em!=null){c.v=''; c.a=c.b=''; c.split=false; c.ink=0; ce.classList.add('empty'); ce.classList.remove('split'); bgoCell(ri,ci); p.remove();}};
+  setTimeout(()=>{const off=e=>{if(!p.contains(e.target)){save(); p.remove(); removeEventListener('pointerdown',off,true);}}; addEventListener('pointerdown',off,true);},0);}
+function bgoLabPop(ri,el){$('#bgoPop')&&$('#bgoPop').remove(); const r=BGO.rows[ri], p=document.createElement('div'); p.id='bgoPop';
+  p.innerHTML=`<div class="bgpp"><input value="${esc(r.kind==='sec'?r.name:'')}" placeholder="Nom de la section"><button class="pri" data-ok>OK</button></div><div class="bgpc">${BGO_SEC.map(([,n])=>`<button data-n="${n}">${n}</button>`).join('')}</div>
+    <div class="bgpc"><button data-k="suite">↳ Suite de la section d’avant</button><button data-k="ord">⇒ Enchaînement (=D VS2 =D CH2)</button><button data-k="ign">⊘ Ignorer la ligne</button></div>`;
+  document.body.appendChild(p); const b=el.getBoundingClientRect(); p.style.left=Math.max(8,b.left)+'px'; p.style.top=(b.bottom+p.offsetHeight+8<innerHeight?b.bottom+6:Math.max(8,b.top-p.offsetHeight-6))+'px';
+  const inp=p.querySelector('input'); setTimeout(()=>inp.focus(),30);
+  const set=(k,n)=>{r.kind=k; if(n!=null)r.name=n; const row=$(`#bgoG [data-row="${ri}"]`); row.className='bgor k-'+k; row.querySelector('em').textContent=k==='sec'?r.name:k==='suite'?'↳ suite':k==='ord'?'⇒ enchaînement':'⊘ ignorée'; p.remove(); r.cells.forEach((c,ci)=>bgoCell(ri,ci)); if(k==='ord'){const ce=row.querySelector('.bgoc:not(.empty)')||row.querySelector('.bgoc'); bgoRefPop(ri,0,ce);}};
+  p.onkeydown=e=>{if(e.key==='Enter'&&inp.value.trim())set('sec',inp.value.trim()); if(e.key==='Escape')p.remove();};
+  p.onclick=e=>{const x=e.target.closest('button'); if(!x)return; if(x.dataset.ok!=null){if(inp.value.trim())set('sec',inp.value.trim()); else p.remove(); return;} if(x.dataset.n)set('sec',x.dataset.n); if(x.dataset.k)set(x.dataset.k);};
+  setTimeout(()=>{const off=e=>{if(!p.contains(e.target)){p.remove(); removeEventListener('pointerdown',off,true);}}; addEventListener('pointerdown',off,true);},0);}
+function bgoBuild(){const secs=[]; let cur=null; const form=[], secIx={}; let nsec=0;
+  BGO.rows.forEach(r=>{if(r.kind==='ign'||r.kind==='vide')return;
+    if(r.kind==='ord'){(r.refs||[]).forEach(i=>{if(secIx[i]!=null)form.push(secIx[i]);}); cur=null; return;}
+    if(r.kind==='sec'){secIx[nsec++]=secs.length;}
+    if(r.kind==='sec'||!cur)form.push(secs.length); if(r.kind==='sec'||!cur){cur={n:r.kind==='sec'?r.name:'Section',bars:[]}; secs.push(cur);}
+    let last=-1; r.cells.forEach((c,i)=>{if(c.ink>.02||c.v||c.a)last=i;});
+    for(let i=0;i<=last;i++){const c=r.cells[i], q=v=>v&&v!=='?'?v:''; cur.bars.push(c.split?[q(c.a),q(c.b)]:[q(c.v)==='%'?'%':q(c.v)]);}});
+  const keep=secs.map(s=>s.bars.length>0), remap=[]; let q=0; keep.forEach((k,i)=>{remap[i]=k?q++:-1;}); const sx=secs.filter((_,i)=>keep[i]); if(!sx.length){toast('Grille vide'); return;}
+  const fx=form.map(i=>remap[i]).filter(i=>i>=0);
+  const t=$('#bgoT').value.trim(); if(t)$('#newTitle').value=t;
+  const s=newSong({view:'accords',bgrid:{per:8,meter:4,secs:sx,form:fx.length?fx:sx.map((_,i)=>i)}}); const bpm=+$('#bgoBpm').value; if(bpm)s.tempo=bpm; const k=$('#bgoK').value.trim(); if(k)s.notes=((s.notes||'')+' Tonalité '+k).trim();
+  BGO.on=false; $('#bgo').hidden=true; save(); openBG(entryOf(s),0,0); toast('Grille créée'+(fx.length>sx.length?' avec l’ordre des sections (enchaînements)':'')+' : tout se retouche dans la grille',4000);}
+$('#bgoFile').onchange=e=>{const f=e.target.files[0]; if(f)bgoOpen(f);};
 
 /* ======================================================================
    Import Guitar Pro (.gp3 à .gp7, .gpx) et MusicXML, lus par alphaTab (chargé seulement à ce moment)
