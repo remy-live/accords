@@ -1287,6 +1287,27 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 @media (max-width:699px){.lcard.open{grid-column:auto}.lcards{grid-template-columns:1fr 1fr;gap:8px}.lcard{padding:10px}}
 .lcf{flex-wrap:nowrap}.lcf .tgw{flex:1;min-width:0;display:flex;gap:4px;overflow:hidden}.lcf .lcfo{flex:none;white-space:nowrap}.lcf>button{flex:none}.lcard{justify-content:space-between}
 @media (max-width:699px){.lcf .lcfo{display:none}}
+
+/* fiche mini */
+#fiche.mini{max-height:none;padding:10px 18px 12px}#fiche.mini .fhead,#fiche.mini #fSub,#fiche.mini .fbtns{display:none!important}
+#fiche.mini.plus{max-height:min(60vh,520px)}
+.fmini{display:flex;align-items:center;gap:8px;flex-wrap:wrap;min-height:46px}
+.fmt{display:flex;align-items:baseline;gap:8px;min-width:0;max-width:34%}.fmt .fname{font:800 18px Inter,system-ui,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}.fmt small{color:var(--mute);font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.fmk{display:inline-flex;align-items:center;height:36px;border:1px solid var(--line);border-radius:10px;overflow:hidden;flex:none}
+.fmk button{height:34px;min-width:0;padding:0 9px;border:0!important;background:transparent!important;color:var(--mute)!important;font-weight:600;border-radius:0;box-shadow:none}
+.fmk b{font:800 16px ui-monospace,'JetBrains Mono',monospace;color:var(--acc2,var(--acc));padding:0 4px}.fmk .fmo{color:var(--acc)!important}
+.fmcap,.fmadd,.fmed,.fmx,.fmplus{flex:none;height:36px;padding:0 11px;border-radius:10px;border:1px solid var(--line)!important;background:var(--card)!important;color:var(--ink)!important;font-size:13.5px;font-weight:600;box-shadow:none}
+.fmcap.on{border-color:var(--acc)!important;color:var(--acc)!important}.fmx{width:36px;padding:0}.fmplus{color:var(--acc)!important;border-color:transparent!important}
+.fmtags{display:inline-flex;align-items:center;gap:5px;flex-wrap:wrap}.fmtags .ftag{height:28px;display:inline-flex;align-items:center}.fmadd{width:32px;height:30px;padding:0;border-radius:999px}
+.fmmu{flex:none;height:36px;padding:0 12px;border-radius:10px;border:0!important;background:var(--c)!important;color:var(--f,#fff)!important;font-weight:700;font-size:13.5px}
+.fmsc{flex:none;height:38px;padding:0 16px;border-radius:10px;font-size:15px}
+.fplusbox{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+@media (max-width:699px){.fmt{max-width:none;flex:1 1 60%}.fmini .grow{display:none}.fmsc{flex:1}.fmplus{order:2}}
+.fmini{flex-wrap:nowrap}.fmr{margin-left:auto;display:flex;align-items:center;gap:8px;flex:none}.fmtags{flex-wrap:nowrap;min-width:0;overflow:hidden}
+@media (max-width:899px){.fmini{flex-wrap:wrap}.fmt{order:0;flex:1 1 60%;max-width:none}.fmclose{order:1}.fmk{order:2}.fmcap{order:3}.fmtags{order:4;flex-wrap:wrap}.fmr{order:5;width:100%;margin-left:0}.fmr .fmsc{flex:1}}
+#fiche.mini #fCard{display:block}#fiche.mini .fplusbox[hidden]{display:none}
+@media (min-width:761px){#fiche.mini .fplusbox{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:0 28px;align-items:start}#fiche.mini .fplusbox>.fq{grid-column:2;grid-row:1/span 6}#fiche.mini .fplusbox>#fAll{grid-column:1/-1}}
+#ddPop .ddh{font:700 11px Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);padding:8px 12px 4px}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -4340,19 +4361,39 @@ function ficheDraw(s){
   const prev=s.kind==='sheet'?`<p class="lab">📄 Partition · ${(s.pages||[]).length} page(s)</p>`:!(s.text||'').trim()&&validGrid(s.bgrid)?`<p class="lab">▦ Grille du bassiste</p>`:!(s.text||'').trim()?`<p class="lab">Morceau vide : ⋯ › Trouver la grille, ou ✎ Éditer pour l'écrire.</p>`:ficheSum(r);
   const d=r.key?((r.target-r.orig)%12+12)%12:0;
   const caps=[0,1,2,3,4,5,7].map(c=>`<button data-cap="${c}" aria-pressed="${(+s.capoInfo||0)===c}">${c}</button>`).join('');
-  $('#fCard').innerHTML=prev+`<div class="fq">
-    ${r.key?`<div class="fqr"><span>Tonalité</span><button data-k="-1">−½</button><b class="fkey">${esc(keyName(r.target,r.key.minor))}</b><button data-k="1">+½</button><small class="lab">${d?'origine '+esc(keyName(r.orig,r.key.minor)):'origine'}</small>${d?'<button data-k="0" class="sm">Origine</button>':''}</div>`:''}
-    <div class="fqr"><span>Capo</span>${caps}</div>
-    <div class="fqr"><span>Étiquettes</span>${tagsOf(s).map(t=>`<span class="ftag${t===WORK?' work':''}">${esc(t)}<button data-untag="${esc(t)}" aria-label="Retirer">✕</button></span>`).join('')}<button data-tag="1" class="sm">+</button></div>
-    <div class="fqr"><span>Écouter</span>${muLinks(s).map(k=>`<button class="fmu" data-mu="${k}" style="--c:${MU[k].c};--f:${MU[k].f}">▶ ${MU[k].n}</button>`).join('')}<button class="sm" data-muadd="1">${muLinks(s).length?'Liens…':'+ Lien'}</button></div>
-    <div class="fqr"><span>Mémos</span><button class="sm" data-memo="1">🎙 ${(s.memos||[]).length?(s.memos.length+' mémo'+(s.memos.length>1?'s':'')+' · écouter / ajouter'):'Enregistrer une idée'}</button></div>
-    ${(()=>{const h=histOf(s.id); if(!h.length)return ''; const last=h[h.length-1]; return `<div class="fqr"><span>Joué</span><span class="ficheinfo">${h.length} fois · dernière fois le ${fmtDay(last.d)}${last.ln?' ('+esc(last.ln)+(last.pl?', '+esc(last.pl):'')+')':''}</span></div>`;})()}
-    <div class="fqr"><span>Playlists</span>${lists.map(l=>`<button class="ftag" data-open="${l.id}">${esc(l.name)}</button>`).join('')}<button data-addl="1" class="sm">+ Ajouter</button></div>
-  </div><details id="fAll"><summary>Tous les réglages</summary><div id="fAllBox"></div></details>`;
+  // fiche mini : une bande avec l'essentiel ; « Plus » déplie le reste
+  const mu=muLinks(s), plus=!!S.fichePlus, F=Object.assign({key:1,capo:1,tags:1,mu:1,ed:1,sum:1,listen:1,memo:1,pl:1,hist:1},S.ficheShow||{});
+  const mini=`<div class="fmini"><div class="fmt"><span class="fname" data-nm="t" title="Toucher pour renommer">${esc(sp.titre||s.q)}</span><small class="fname${sp.artiste?'':' empty'}" data-nm="a">${sp.artiste?esc(sp.artiste):'+ artiste'}</small></div>
+    ${r.key&&F.key?`<span class="fmk"><button data-k="-1" aria-label="Baisser d'un demi-ton">−½</button><b title="${d?'origine '+esc(keyName(r.orig,r.key.minor)):'tonalité d’origine'}">${esc(keyName(r.target,r.key.minor))}</b><button data-k="1" aria-label="Monter d'un demi-ton">+½</button>${d?'<button data-k="0" class="fmo" title="Revenir à la tonalité d’origine">↺</button>':''}</span>`:''}
+    ${F.capo?`<button class="fmcap${+s.capoInfo?' on':''}" data-pc="${s.id}">Capo ${+s.capoInfo||0} ▾</button>`:''}
+    ${F.tags?`<span class="fmtags">${tagsOf(s).map(t=>`<span class="ftag${t===WORK?' work':''}">${esc(t)}<button data-untag="${esc(t)}" aria-label="Retirer">✕</button></span>`).join('')}<button class="fmadd" data-pt="${s.id}" aria-label="Étiquettes">＋</button></span>`:''}
+    <span class="fmr">${mu.length&&F.mu?`<button class="fmmu" data-mu="${mu[0]}" style="--c:${MU[mu[0]].c};--f:${MU[mu[0]].f}">▶ ${MU[mu[0]].n}</button>`:''}
+    ${F.ed?'<button class="fmed" data-fed="1" aria-label="Éditer" title="Éditer">✎</button>':''}<button class="pri fmsc" data-fsc="1">▶ Scène</button>
+    <button class="fmplus" data-fplus="1">${plus?'Moins ▴':'Plus ▾'}</button><button class="fmx" data-fset="1" aria-label="Choisir ce qui s’affiche" title="Choisir ce qui s’affiche">⚙</button><button class="fmx" data-fmore="1" aria-label="Plus d’actions">⋯</button></span><button class="fmx fmclose" data-fclose="1" aria-label="Fermer">✕</button></div>`;
+  $('#fCard').innerHTML=mini+`<div class="fplusbox"${plus?'':' hidden'}>`+(F.sum?prev:'')+`<div class="fq">
+    ${r.key&&!$('#fiche').classList.contains('mini')&&false?`<div class="fqr"><span>Tonalité</span><button data-k="-1">−½</button><b class="fkey">${esc(keyName(r.target,r.key.minor))}</b><button data-k="1">+½</button><small class="lab">${d?'origine '+esc(keyName(r.orig,r.key.minor)):'origine'}</small>${d?'<button data-k="0" class="sm">Origine</button>':''}</div>`:''}
+    ${F.listen?'':'<!--'}<div class="fqr"><span>Écouter</span>${muLinks(s).map(k=>`<button class="fmu" data-mu="${k}" style="--c:${MU[k].c};--f:${MU[k].f}">▶ ${MU[k].n}</button>`).join('')}<button class="sm" data-muadd="1">${muLinks(s).length?'Liens…':'+ Lien'}</button></div>${F.listen?'':'-->'}
+    ${F.memo?'':'<!--'}<div class="fqr"><span>Mémos</span><button class="sm" data-memo="1">🎙 ${(s.memos||[]).length?(s.memos.length+' mémo'+(s.memos.length>1?'s':'')+' · écouter / ajouter'):'Enregistrer une idée'}</button></div>${F.memo?'':'-->'}
+    ${(()=>{const h=histOf(s.id); if(!h.length||!F.hist)return ''; const last=h[h.length-1]; return `<div class="fqr"><span>Joué</span><span class="ficheinfo">${h.length} fois · dernière fois le ${fmtDay(last.d)}${last.ln?' ('+esc(last.ln)+(last.pl?', '+esc(last.pl):'')+')':''}</span></div>`;})()}
+    ${F.pl?'':'<!--'}<div class="fqr"><span>Playlists</span>${lists.map(l=>`<button class="ftag" data-open="${l.id}">${esc(l.name)}</button>`).join('')}<button data-addl="1" class="sm">+ Ajouter</button></div>${F.pl?'':'-->'}
+  </div><details id="fAll"><summary>Tous les réglages</summary><div id="fAllBox"></div></details></div>`;
+  $('#fiche').classList.add('mini'); $('#fiche').classList.toggle('plus',plus);
   $('#fAll').ontoggle=()=>{if($('#fAll').open&&!$('#fAllBox').firstChild){s.open=true; const c=buildCard(s); $('#fAllBox').appendChild(c); update(s);}};
 }
+function ficheSetPop(btn){let m=$('#ddPop'); if(m){m.remove(); if(m.dataset.for==='fset')return;}
+  const F=Object.assign({key:1,capo:1,tags:1,mu:1,ed:1,sum:1,listen:1,memo:1,pl:1,hist:1},S.ficheShow||{});
+  const it=(k,t)=>`<button type="button" data-fk="${k}" aria-selected="${!!F[k]}"><span>${t}</span><i>${F[k]?'✓':''}</i></button>`;
+  m=document.createElement('div'); m.id='ddPop'; m.dataset.for='fset';
+  m.innerHTML=`<div class="ddh">Sur la bande</div>${it('key','Tonalité −½ +½')}${it('capo','Capo')}${it('tags','Étiquettes')}${it('mu','Écouter (Spotify…)')}${it('ed','✎ Éditer')}<div class="ddh">Dans « Plus »</div>${it('sum','Structure et accords')}${it('listen','Liens d’écoute')}${it('memo','Mémos')}${it('pl','Playlists')}${it('hist','Joué (historique)')}`;
+  document.body.appendChild(m); const r=btn.getBoundingClientRect(); m.style.cssText=`left:${Math.max(8,Math.min(r.right-240,innerWidth-248))}px;min-width:240px`; const h=m.offsetHeight; m.style.top=Math.max(8,r.top-h-6)+'px';
+  m.onclick=e=>{const b=e.target.closest('[data-fk]'); if(!b)return; e.stopPropagation(); const c=Object.assign({},F); c[b.dataset.fk]=c[b.dataset.fk]?0:1; S.ficheShow=c; save(); const so=songById(FICHE); if(so)ficheDraw(so); m.remove(); ficheSetPop($('#fCard [data-fset]'));};
+  setTimeout(()=>{const off=e=>{if(!m.contains(e.target)&&!e.target.closest('[data-fset]')){m.remove(); removeEventListener('pointerdown',off,true);}}; addEventListener('pointerdown',off,true);},0);}
 function openFiche(id){const s=songById(id); if(!s)return; FICHE=id; ficheDraw(s); $('#fiche').hidden=false; document.body.classList.add('fiche-on');}
 $('#fCard').onclick=async e=>{const s=songById(FICHE); if(!s)return; const b=e.target.closest('button'); if(!b)return;
+  if(b.dataset.fplus){S.fichePlus=!S.fichePlus; save(); ficheDraw(s); return;}
+  if(b.dataset.fset){e.stopPropagation(); ficheSetPop(b); return;}
+  if(b.dataset.fsc){$('#fScene').click(); return;} if(b.dataset.fed){$('#fEdit').click(); return;} if(b.dataset.fmore){$('#fMore').click(); return;} if(b.dataset.fclose){$('#fClose').click(); return;}
+  if(b.dataset.pc||b.dataset.pt){e.stopPropagation(); lpOpen(b); return;}
   if(b.dataset.k!=null){const k=+b.dataset.k; if(k===0){s.target=null;} else bumpKey(s,k); touch(s); save(); ficheDraw(s); if(s._el)update(s); return;}
   if(b.dataset.cap!=null){const c=+b.dataset.cap; if(c)s.capoInfo=c; else delete s.capoInfo; touch(s); save(); ficheDraw(s); renderLibLight(); return;}
   if(b.dataset.untag){setTag(s,b.dataset.untag,false); touch(s); save(); ficheDraw(s); renderLibLight(); return;}
@@ -4365,7 +4406,7 @@ $('#fCard').onclick=async e=>{const s=songById(FICHE); if(!s)return; const b=e.t
   if(b.dataset.spc){if(!S.spot){spPasteLink(s); return;} SP.openLink(s); return;}
   if(b.dataset.open){const l=listById(b.dataset.open); if(l)openList(l);}
 };
-function renderLibLight(){const keep=FICHE; renderAll(); if(keep&&!$('#fiche').hidden)FICHE=keep;}
+function renderLibLight(){const keep=FICHE; renderAll(); if(keep&&!$('#fiche').hidden){FICHE=keep; const so=songById(keep); if(so)ficheDraw(so);}}
 $('#fEdit').onclick=()=>{const s=songById(FICHE); if(s)editSong(s);};
 // toucher le titre ou l'artiste dans la fiche : on le modifie sur place
 function ficheName(which){const s=songById(FICHE); if(!s)return; const sp=split(s.q), el=$(`#fiche [data-nm="${which}"]`); if(!el)return;
