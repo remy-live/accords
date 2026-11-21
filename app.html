@@ -554,7 +554,9 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 #vtBgNote{padding:8px 14px;background:#16233a;color:#dbeafe;font:500 13px Inter,system-ui;border-bottom:1px solid #2c4a7a;display:flex;align-items:center;gap:10px;flex-wrap:wrap}#vtBgNote button{height:30px;padding:0 10px;border-radius:8px;border:1px solid #2c4a7a;background:#0b1220;color:#dbeafe;font:700 12.5px Inter,system-ui}
 @media (max-width:700px){.bgsw{margin-left:0}.bgmd{max-width:150px;overflow:hidden;text-overflow:ellipsis}}
 
-#bgKeysW{flex:0 0 auto}#bgKeys{display:flex;flex-direction:column;gap:6px;padding:8px 10px;background:var(--s1,#121215);border-top:1px solid #26262b}
+#bgKeysW{flex:0 0 auto;display:flex;justify-content:center;border-top:1px solid #26262b;background:var(--s1,#121215)}#bgKeysW>#bgKeys{width:100%;max-width:560px;border-top:0}#bgKeysW.inpad{border:0;background:none;display:block}#bgKeysW.inpad>#bgKeys{padding:0;max-width:none;background:none}
+#bgKeys .tg{font-size:20px}#bgKeys .tg.on{background:#6ea8fe!important;color:#0b1220!important;border-color:#6ea8fe!important}#bgKeys .tg.lk{box-shadow:0 0 0 3px rgba(110,168,254,.35)}#bgKeys .tg small{font-size:10px;margin:2px 0 0}#bgKeys button.off{opacity:.25}
+#bgKeys .bgkN button{background:#1b2333}#bgKeys .bgkT button{flex:1 1 0}#bgKeys{display:flex;flex-direction:column;gap:6px;padding:8px 10px;background:var(--s1,#121215);border-top:1px solid #26262b}
 #bgKeys .bgkr{display:flex;gap:6px;align-items:center}#bgKeys .bgkn,#bgKeys .bgkm{display:flex;gap:6px;flex:7 1 0}#bgKeys .bgkm{flex:4.6 1 0;padding-left:8px}#bgKeys .bgkr>i{width:6px;flex:0 0 6px}
 #bgKeys button{flex:1 1 0;min-width:0;height:44px;padding:0 1px;font:800 18px ui-monospace,Menlo,monospace;border-radius:11px;color:var(--tx,#f4f4f5);background:#1b2333;border:1px solid #34405a;user-select:none;-webkit-user-select:none;touch-action:none;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
 #bgKeys .bgkM button.acc,#bgKeys .bgkm2 button.acc{background:#141a26}#bgKeys .bgkm2 button{background:#1d1830;border-color:#3b3360}#bgKeys .bgkm2 button.acc{background:#171428}
@@ -577,7 +579,7 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 #bgMain .bgc{cursor:pointer;user-select:none;-webkit-user-select:none}#bgChips button{user-select:none;-webkit-user-select:none;touch-action:pan-y}
 #bgMain .bgc.dropon{outline:3px dashed var(--hl,#fb923c);outline-offset:-4px;z-index:3}
 #bgMain .bgc.dropl{box-shadow:inset 6px 0 0 var(--hl,#fb923c);z-index:3}#bgMain .bgc.dropr{box-shadow:inset -6px 0 0 var(--hl,#fb923c);z-index:3}
-.bgghost{position:fixed;z-index:80;transform:translate(-50%,-120%);pointer-events:none;padding:8px 14px;border-radius:12px;background:var(--hl,#fb923c);color:var(--onhl,#111);font:800 22px ui-monospace,Menlo,monospace;box-shadow:0 8px 24px rgba(0,0,0,.5)}
+.bgghost{position:fixed;z-index:80;transform:translate(-50%,-190%);opacity:.92;pointer-events:none;padding:8px 14px;border-radius:12px;background:var(--hl,#fb923c);color:var(--onhl,#111);font:800 22px ui-monospace,Menlo,monospace;box-shadow:0 8px 24px rgba(0,0,0,.5)}
 .bgghost.del{background:#b91c1c;color:#fff}
 .bgnamein{font:700 15px system-ui;padding:4px 8px;border-radius:6px;border:2px solid #93c5fd;background:var(--s0,#0e0e10);color:#ececf0;width:200px}#bgMain .bgsec{cursor:pointer}
 #bgMain .bgc.bgghostc{border:2px dashed #2dd4bf;background:rgba(45,212,191,.08);opacity:.75;pointer-events:none}#bgMain .bgc.bgghostc text{fill:#5eead4}
@@ -7989,14 +7991,26 @@ const bgTouch=()=>{try{return matchMedia('(pointer:coarse)').matches;}catch(_){r
 const bgInMode=()=>{const m=bgIn().mode; return m==='auto'?(bgTouch()?'ligne':'clavier'):m;};
 const BG_NOTES=()=>S.fr?['Do','Ré','Mi','Fa','Sol','La','Si']:['C','D','E','F','G','A','B'];
 const BG_NSUB={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
-function bgKeysDraw(main,chips){const old=$('#bgKeys'); if(old)old.remove(); main=document.createElement('div'); main.id='bgKeysW'; const w0=$('#bgKeysW'); if(w0)w0.remove(); $('#bgEd .bgformed').before(main); $('#bgEd').classList.toggle('haskeys',true);if(bgInMode()==='clavier'&&!BG.paint){const t=document.createElement('div'); t.id='bgKeys'; t.className='kb'; t.innerHTML='<span class="bgkh">⌨ Tape l’accord (em7, f#m, bb…) · Entrée ou Espace = case suivante · ← → ↑ ↓ · ⌫ efface · % même mesure</span>'; main.appendChild(t); return;}
+// tablette/ordi en paysage : la ligne va dans le panneau de droite ; téléphone/portrait : sous la grille
+const bgSide=()=>{try{return matchMedia('(orientation:landscape) and (min-width:701px)').matches;}catch(_){return false;}};
+// ♯/♭ et m : comme la touche Maj d'un téléphone — 1 toucher = pour le prochain accord, double toucher = verrouillé
+BG.tg={acc:0,m:0};
+function bgTgTap(k){const t=BG.tg, now=Date.now(), dbl=BG.tgLast&&BG.tgLast.k===k&&now-BG.tgLast.t<380; BG.tgLast={k,t:now};
+  t[k]=dbl?2:(t[k]?0:1); bgKeysDraw(null,BG.chips||[]);}
+function bgTgUse(){let ch=false; ['acc','m'].forEach(k=>{if(BG.tg[k]===1){BG.tg[k]=0; ch=true;}}); return ch;}
+function bgKeysDraw(main,chips){BG.chips=chips; const w0=$('#bgKeysW'); if(w0)w0.remove(); const side=bgSide(); main=document.createElement('div'); main.id='bgKeysW'; main.className=side?'inpad':'';
+  if(side){const ph=$('#bgPad .bgph'); ph.after(main);} else $('#bgEd .bgformed').before(main); $('#bgEd').classList.toggle('haskeys',!side);
+  if(bgInMode()==='clavier'&&!BG.paint){const t=document.createElement('div'); t.id='bgKeys'; t.className='kb'; t.innerHTML='<span class="bgkh">⌨ Tape l’accord (em7, f#m, bb…) · Entrée ou Espace = case suivante · ← → ↑ ↓ · ⌫ efface · % même mesure</span>'; main.appendChild(t); return;}
   if(bgInMode()==='roue'&&!BG.paint){main.remove(); $('#bgEd').classList.remove('haskeys'); return;}
   const cn=BG.r.cn, big=bgIn().big, k=document.createElement('div'); k.id='bgKeys';
-  const fl=!!(BG.r&&BG.r.flats), roots=[...Array(12)].map((_,i)=>noteName(i,fl,S.fr));
-  let h=BG.paint?`<div class="bgkr"><span class="bgqp">🖌 ${esc(BG.paint==='%'?'%':bgName(BG.paint,cn))} : touche ou glisse sur les mesures</span><button data-kp="" class="bgok">✓ Fini</button></div>`:'';
-  h+=`<div class="bgkr bgkM">${roots.map(n=>`<button data-kc="${esc(n)}" class="${n.length>1&&/[#b]$/.test(n)?'acc':''}">${esc(n)}</button>`).join('')}<button data-kx="more" aria-pressed="${big}" title="Plus">${big?'▾':'⋯'}</button></div>`;
-  h+=`<div class="bgkr bgkm2">${roots.map(n=>`<button data-kc="${esc(n)}m" class="mi${n.length>1&&/[#b]$/.test(n)?' acc':''}">${esc(n)}m</button>`).join('')}<button data-kx="next" title="Case suivante">→</button></div>`;
-  if(big)h+=`<div class="bgkr bgk2"><button data-km="7">7</button>${['maj7','sus4','dim','6','9','add9'].map(q=>`<button data-kq="${q}">${esc(cwMj(q))}</button>`).join('')}<i></i><button data-kx="%">%</button><button data-kx="vide">vide</button><i></i>${chips.slice(0,8).map(x=>`<button data-kc="${esc(x)}" class="bgkc">${esc(x)}</button>`).join('')}</div>`;
+  const fl=!!(BG.r&&BG.r.flats), A=fl?'b':'#', AS=fl?'♭':'♯', tg=BG.tg, mm=tg.m?'m':'';
+  const nat=S.fr?['Do','Ré','Mi','Fa','Sol','La','Si']:['C','D','E','F','G','A','B'], bad=fl?[0,3]:[2,6];
+  const lab=(n,i)=>tg.acc&&bad.includes(i)?null:n+(tg.acc?A:'')+mm;
+  const tgb=(key,txt,ttl)=>`<button data-kt="${key}" class="tg${tg[key]?' on':''}${tg[key]===2?' lk':''}" title="${ttl}">${txt}${tg[key]===2?'<small>🔒</small>':''}</button>`;
+  let h=BG.paint?`<div class="bgkr"><span class="bgqp">🖌 ${esc(BG.paint==='%'?'%':bgName(BG.paint,cn))} : touche ou glisse</span><button data-kp="" class="bgok">✓ Fini</button></div>`:'';
+  h+=`<div class="bgkr bgkN">${nat.map((n,i)=>{const L=lab(n,i); return L?`<button data-kc="${esc(L)}">${esc(L.replace('#','♯').replace(/(.)b/,'$1♭'))}</button>`:`<button class="off" disabled>·</button>`;}).join('')}</div>`;
+  h+=`<div class="bgkr bgkT">${tgb('acc',AS,'1 toucher = prochain accord · double toucher = verrouillé')}${tgb('m','m','1 toucher = prochain accord · double toucher = verrouillé')}<button data-kx="more" aria-pressed="${big}" title="Plus : 7, maj7, %…">${big?'▾':'⋯'}</button><button data-kx="next" title="Case suivante">→</button></div>`;
+  if(big)h+=`<div class="bgkr bgk2"><button data-km="7">7</button>${['maj7','sus4','dim','6','9','add9'].map(q=>`<button data-kq="${q}">${esc(cwMj(q))}</button>`).join('')}<button data-kx="%">%</button><button data-kx="vide">vide</button></div>`;
   k.innerHTML=h; main.appendChild(k);}
 const bgKey=()=>BG.sel.si+'/'+BG.sel.bi+'/'+BG.sel.k;
 function bgCurSrc(){const b=bgBar(), sl=bgSlotsOf(b,bgMeter(BG.sel.si)); if(b[0]==='%')return ''; return b[sl[Math.min(BG.sel.k,sl.length-1)][0]]||'';}
@@ -8010,6 +8024,7 @@ function bgMod(md){const src=bgCurSrc(); if(!src){toast('Touche d’abord la not
   else {const mn=/^m(?!aj)/.test(q)&&md!=='dim'?'m':''; const cur=q.replace(/^m(?!aj)/,''); q=cur===md||cur===cwMj(md)?mn:mn+(md==='maj7'?cwMj('maj7'):md); if(md==='dim')q=q==='m'?'':q;}
   bgWriteCur(rt+ac+q+bass); BG.last=bgKey();}
 $('#bgEd').addEventListener('pointerdown',ev=>{const b=ev.target.closest('#bgKeys button'); if(!b)return; ev.stopPropagation(); ev.preventDefault(); BG.noClick=Date.now(); const d=b.dataset;
+  if(d.kt){bgTgTap(d.kt); return;}
   if(d.kn)bgNote(d.kn); else if(d.km)bgMod(d.km); else if(d.kq)bgMod(d.kq); else if(d.kc){if(BG.paint){const v=toSource(BG.r,d.kc)||d.kc; bgPaint(BG.paint===v?null:v); return;} BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord:(!BG.r.shift&&!S.fr&&parseChord(d.kc)?d.kc:(toSource(BG.r,d.kc)||d.kc)),from:null,on:false,kb:d.kc,any:1,timer:0}; return;}
   else if(d.kp!=null)bgPaint(null);
   else if(d.kx==='more'){S.bgIn=Object.assign(bgIn(),{big:!bgIn().big}); save(); bgDraw();}
@@ -8132,7 +8147,7 @@ function bgDragMove(x,y){
 function bgDragEnd(cancel){
   const d=BGD; BGD=null; if(!d)return; clearTimeout(d.timer); if(!d.on)return;
   d.ghost.remove(); {const o=$('#bgDropG'); if(o)o.remove();} $$('#bgMain .dropon,#bgMain .dropl,#bgMain .dropr').forEach(e=>e.classList.remove('dropon','dropl','dropr')); BG.noClick=Date.now();
-  if(cancel)return; const t=d.t||{none:1}; if(t.none||(t.void&&!d.from))return;
+  if(cancel)return; const t=d.t||{none:1}; if(t.none||(t.void&&!d.from))return; if(d.kb&&bgTgUse())setTimeout(()=>bgKeysDraw(null,BG.chips||[]),0);
   const f=d.from, X=d.chord;
   if(f&&t.bi===f.bi&&t.si===f.si&&t.k===f.k)return;
   bgSet(()=>{
@@ -8168,7 +8183,7 @@ document.addEventListener('pointermove',ev=>{if(!BGD)return; const dx=ev.clientX
   if(BGD.wheel){if(Math.hypot(dx,dy)>10){clearTimeout(BGD.timer); BGD=null;} return;}
   if(!BGD.on){if(Math.hypot(dx,dy)>10){if(!BGD.from&&(BGD.any||Math.abs(dx)>Math.abs(dy)||ev.pointerType==='mouse'))bgDragOn(); else {clearTimeout(BGD.timer); BGD=null; return;}}}
   bgDragMove(ev.clientX,ev.clientY);});
-document.addEventListener('pointerup',()=>{if(BGD&&BGD.wheel){clearTimeout(BGD.timer); BGD=null; return;} if(BGD&&BGD.kb&&!BGD.on){const v=BGD.kb; BGD=null; bgNote(v); return;} bgDragEnd(false);}); document.addEventListener('pointercancel',()=>{if(BGD&&!BGD.on)bgDragEnd(true);});
+document.addEventListener('pointerup',()=>{if(BGD&&BGD.wheel){clearTimeout(BGD.timer); BGD=null; return;} if(BGD&&BGD.kb&&!BGD.on){const v=BGD.kb; BGD=null; bgTgUse(); bgNote(v); return;} bgDragEnd(false);}); document.addEventListener('pointercancel',()=>{if(BGD&&!BGD.on)bgDragEnd(true);});
 document.addEventListener('touchmove',ev=>{if(!BGD)return; const t=ev.touches[0]; if(!t)return; BGD.cx=t.clientX; BGD.cy=t.clientY;
   if(BGD.wheel){if(Math.hypot(t.clientX-BGD.x,t.clientY-BGD.y)>10){clearTimeout(BGD.timer); BGD=null;} return;}
   if(!BGD.on){const dx=t.clientX-BGD.x, dy=t.clientY-BGD.y; if(Math.hypot(dx,dy)>10&&(BGD.any||Math.abs(dx)>Math.abs(dy))&&!BGD.from)bgDragOn();}
