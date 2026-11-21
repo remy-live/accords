@@ -1308,6 +1308,19 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #fiche.mini #fCard{display:block}#fiche.mini .fplusbox[hidden]{display:none}
 @media (min-width:761px){#fiche.mini .fplusbox{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:0 28px;align-items:start}#fiche.mini .fplusbox>.fq{grid-column:2;grid-row:1/span 6}#fiche.mini .fplusbox>#fAll{grid-column:1/-1}}
 #ddPop .ddh{font:700 11px Inter,system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);padding:8px 12px 4px}
+
+/* compact en grille : la ligne touchée se déplie en dessous */
+.lcomp{columns:auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));column-gap:14px;row-gap:2px}
+.lci{gap:6px}.lci .lic{width:30px;height:28px;font-size:12px;flex:none;opacity:.85}.lci:hover .lic{opacity:1}.lci .lplay{color:var(--acc)}
+.lci.open{background:color-mix(in srgb,var(--acc) 14%,transparent)}
+.lcprev{grid-column:1/-1;margin:4px 0 8px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--ink) 3%,var(--card));padding:10px 12px}
+.lcard .lcprev{padding:6px 0 0;border:0;background:none;margin:0}.lcard.open{grid-column:1/-1}
+.lpw{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}.lpv pre{margin:0;font-size:14.5px;line-height:1.38;max-height:300px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 80%,transparent)}
+.lpr{display:flex;flex-direction:column;gap:10px}.lpq{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.lpb{display:flex;gap:6px;flex-wrap:wrap}.lpb .pri{flex:1;min-width:120px}
+@media (max-width:699px){.lpw{grid-template-columns:1fr}.lpv pre{max-height:220px;font-size:13.5px}}
+.lpw{grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr)}.lpb{flex-wrap:nowrap}.lpb button{white-space:nowrap}.lpb .pri{min-width:0}
+@media (max-width:699px){.lpw{grid-template-columns:1fr}}
+.lpb>button{flex:none!important}.lpb .pri{flex:1 0 auto!important;padding:0 18px!important;min-width:110px!important}
 </style>
 <link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#c2410c"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes">
 </head>
@@ -3308,6 +3321,7 @@ function libItemClick(e,box){
   const ed=e.target.closest('[data-ed]'); if(ed){const so=songById(ed.dataset.ed); if(so)editSong(so); return true;}
   const sc=e.target.closest('[data-scene]'); if(sc){const so=songById(sc.dataset.scene); if(so&&hasBody(so))openViewer([entryOf(so)],0); else toast('Ce morceau est encore vide : ✎ pour l\'écrire'); return true;}
   const pc=e.target.closest('[data-pk],[data-pc],[data-pt]'); if(pc&&!selMode&&!SEL.size){e.stopPropagation(); lpOpen(pc); return true;}
+  const ey=e.target.closest('[data-eye]'); if(ey){openFiche(ey.dataset.eye); return true;}
   const it=e.target.closest('[data-id]'); if(it&&tableSelectClick(e,it.dataset.id))return true; return false;}
 const libKey=(s,r)=>r.key?esc(keyName(r.target,r.key.minor)):'';
 function libPreviewHTML(s,max){const r=s._r||compute(s); let lines=[], k=0; for(const L of r.grid){if(L.t==='b'&&!lines.length)continue; if(L.t==='x')continue; lines.push(L); if(L.t!=='b'&&++k>=max)break;}
@@ -3316,15 +3330,16 @@ function renderLibCards(box,list){const g=document.createElement('div'); g.class
   g.innerHTML=list.map(s=>{const r=s._r||compute(s), sp=split(s.q), mk=muPref(s), op=LIBOPEN===s.id;
     return `<div class="lcard${SEL.has(s.id)?' picked':''}${op?' open':''}" data-id="${s.id}">
       <div class="lch"><div class="lct"><b>${esc(sp.titre)}</b><small>${esc(sp.artiste||'')}</small></div>${r.key?`<button class="lcell lk" data-pk="${s.id}" title="Changer la tonalité">${libKey(s,r)}</button>`:''}</div>
-      ${op?`<pre class="lcpv">${libPreviewHTML(s,6)}</pre>`:`<div class="lcchips">${(()=>{try{return (analyzeText(s.text||'').chords||[]).slice(0,7).map(c=>`<span>${esc(c)}</span>`).join('');}catch(_){return '';}})()}</div>`}
+      ${op?`<div class="lcprev">${libPrevInner(s)}</div>`:`<div class="lcchips">${(()=>{try{return (analyzeText(s.text||'').chords||[]).slice(0,7).map(c=>`<span>${esc(c)}</span>`).join('');}catch(_){return '';}})()}</div>`}
       <div class="lcf"><span class="tgw">${tagsOf(s).map(t=>`<span class="tpill${t===WORK?' work':''}" data-pt="${s.id}">${esc(t)}</span>`).join('')}</span>${s.folder?`<span class="lcfo">📁 ${esc(s.folder)}</span>`:''}
       ${mk?`<button class="spmu" data-sp="${s.id}" style="color:${MU[mk].c}" title="Écouter sur ${MU[mk].n}">♫</button>`:''}<button class="lic lplay" data-scene="${s.id}" aria-label="Jouer en scène">▶</button><button class="lic" data-ed="${s.id}" aria-label="Éditer">✎</button></div></div>`;}).join('');
   g.onclick=e=>{if(libItemClick(e,g))return; const c=e.target.closest('.lcard'); if(!c)return; LIBPICK=c.dataset.id; LIBOPEN=LIBOPEN===c.dataset.id?null:c.dataset.id; renderAll();};
   box.appendChild(g);}
 function renderLibCompact(box,list){const g=document.createElement('div'); g.className='lcomp'+(selMode||SEL.size?' sel':'');
   g.innerHTML=list.map(s=>{const r=s._r||compute(s), sp=split(s.q);
-    return `<div class="lci${SEL.has(s.id)?' picked':''}" data-id="${s.id}"><button class="lic lplay" data-scene="${s.id}" aria-label="Jouer en scène">▶</button><span class="lcn"><b>${esc(sp.titre)}</b>${sp.artiste?` <small>${esc(sp.artiste)}</small>`:''}</span><span class="lck">${libKey(s,r)}</span></div>`;}).join('');
-  g.onclick=e=>{if(libItemClick(e,g))return; const c=e.target.closest('.lci'); if(c)openFiche(c.dataset.id);};
+    const op=LIBOPEN===s.id;
+    return `<div class="lci${SEL.has(s.id)?' picked':''}${op?' open':''}" data-id="${s.id}"><span class="lcn"><b>${esc(sp.titre)}</b>${sp.artiste?` <small>${esc(sp.artiste)}</small>`:''}</span><span class="lck">${libKey(s,r)}</span><button class="lic" data-ed="${s.id}" aria-label="Éditer" title="Éditer">✎</button><button class="lic lplay" data-scene="${s.id}" aria-label="Jouer en scène" title="Scène">▶</button></div>${op?`<div class="lcprev">${libPrevInner(s)}</div>`:''}`;}).join('');
+  g.onclick=e=>{if(libItemClick(e,g))return; const c=e.target.closest('.lci'); if(c){LIBPICK=c.dataset.id; LIBOPEN=LIBOPEN===c.dataset.id?null:c.dataset.id; renderAll();}};
   box.appendChild(g);}
 function renderLibSide(box,list){if(!LIBPICK||!list.some(x=>x.id===LIBPICK))LIBPICK=list[0].id;
   const w=document.createElement('div'); w.className='lside';
@@ -3339,12 +3354,15 @@ function renderLibSide(box,list){if(!LIBPICK||!list.some(x=>x.id===LIBPICK))LIBP
   w.onclick=e=>{if(libItemClick(e,w))return; const it=e.target.closest('.lsi'); if(!it)return; LIBPICK=it.dataset.id; renderAll(); const n=$('#songs .lsi.on'); if(n)n.scrollIntoView({block:'nearest'});};
   box.appendChild(w);}
 // aperçu sous la ligne
-function libPrevRow(s,n){const r=s._r||compute(s), tr=document.createElement('tr'); tr.className='lprev'; tr.dataset.id=s.id;
-  let lines=[], k=0; for(const L of r.grid){if(L.t==='b'&&!lines.length)continue; if(L.t==='x')continue; lines.push(L); if(L.t!=='b'&&++k>=9)break;}
+function libPrevInner(s){const r=s._r||compute(s);
+  let lines=[], k=0; for(const L of r.grid){if(L.t==='b'&&!lines.length)continue; if(L.t==='x')continue; lines.push(L); if(L.t!=='b'&&++k>=12)break;}
   const body=lines.length?lines.map(lineHTML).join('\n'):'<span class="lab">Morceau encore vide : ✎ pour l\'écrire.</span>';
-  const tmp=+s.tempo?`♩ ${+s.tempo}`:'';
-  tr.innerHTML=`<td colspan="${n}"><div class="lpw"><div class="lpv"><pre>${body}</pre></div><div class="lpr">${ficheSum(r)||''}<div class="lpm">${tmp?`<span>${tmp}</span>`:''}${s.note?`<span>📝 ${esc(String(s.note).slice(0,60))}</span>`:''}</div><div class="lpb"><button class="pri" data-scene="${s.id}">▶ Scène</button><button data-ed="${s.id}">✎ Éditer</button><button data-eye="${s.id}">👁 Fiche</button></div></div></div></td>`;
-  return tr;}
+  const tmp=+s.tempo?`♩ ${+s.tempo}`:'', mk=muPref(s);
+  return `<div class="lpw"><div class="lpv"><pre>${body}</pre></div><div class="lpr">
+    <div class="lpq">${r.key?`<button class="lcell lk" data-pk="${s.id}" title="Tonalité">${esc(keyName(r.target,r.key.minor))} ▾</button>`:''}<button class="lcell lc${+s.capoInfo?'':' none'}" data-pc="${s.id}">Capo ${+s.capoInfo||0} ▾</button>${tagsOf(s).map(t=>`<span class="tpill${t===WORK?' work':''}" data-pt="${s.id}">${esc(t)}</span>`).join('')}<button class="lcell lt" data-pt="${s.id}" aria-label="Étiquettes">＋</button>${mk?`<button class="spmu" data-sp="${s.id}" style="color:${MU[mk].c}" title="Écouter sur ${MU[mk].n}">♫ ${MU[mk].n}</button>`:''}</div>
+    <div class="lpm">${tmp?`<span>${tmp}</span>`:''}${s.note?`<span>📝 ${esc(String(s.note).slice(0,60))}</span>`:''}</div>
+    <div class="lpb"><button class="pri" data-scene="${s.id}">▶ Scène</button><button data-ed="${s.id}">✎ Éditer</button><button data-eye="${s.id}" title="Tout : structure, liens, mémos, playlists…">👁 Détails</button></div></div></div>`;}
+function libPrevRow(s,n){const tr=document.createElement('tr'); tr.className='lprev'; tr.dataset.id=s.id; tr.innerHTML=`<td colspan="${n}">${libPrevInner(s)}</td>`; return tr;}
 // bulles : ton, capo, étiquettes, réglés sur place
 function lpClose(){const p=$('#lpop'); if(p)p.remove();}
 function lpOpen(btn){lpClose(); const kind=btn.dataset.pk?'k':btn.dataset.pc?'c':'t', id=btn.dataset.pk||btn.dataset.pc||btn.dataset.pt, s=songById(id); if(!s)return;
