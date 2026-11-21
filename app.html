@@ -1784,7 +1784,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
   <div class="row"><span class="grow"></span><button class="pri" id="bulkGo">Importer</button></div>
 </div></div>
 <!-- ===== Import Guitar Pro / MusicXML ===== -->
-<input type="file" id="ocrFile" accept="image/*" multiple hidden>
+<input type="file" id="ocrFile" accept="image/*,application/pdf,.pdf" multiple hidden>
 <input type="file" id="bgoFile" accept="image/*,application/pdf,.pdf" hidden>
 <input type="file" id="gpFile" accept=".gp,.gp3,.gp4,.gp5,.gpx,.gp7,.xml,.musicxml,.mxl,application/vnd.recordare.musicxml+xml,application/vnd.recordare.musicxml" hidden>
 <div id="gpBox" class="modal" hidden><div class="box gpbox">
@@ -5809,9 +5809,10 @@ function ocrToText(data){const lines=[]; (data.blocks||[]).forEach(b=>(b.paragra
   return out.join('\n').replace(/\n{3,}/g,'\n\n').trim();}
 $('#ocrFile').onchange=async e=>{const files=[...e.target.files]; if(!files.length)return; let worker=null;
   try{ocrUI('Préparation du lecteur…',0.02);
-    worker=await ocrWorker(['fra','eng'],m=>{if(m.status==='recognizing text')ocrUI('Lecture'+(files.length>1?` de la page ${worker&&worker._pg||1}/${files.length}`:'')+'…',m.progress); else if(/load|init/.test(m.status||''))ocrUI('Préparation du lecteur…',Math.min(.3,(m.progress||0)*.3));});
-    await worker.setParameters({preserve_interword_spaces:'1'});
-    const parts=[]; for(let i=0;i<files.length;i++){worker._pg=i+1; const c=await ocrPrep(files[i]); const {data}=await worker.recognize(c,{},{blocks:true,text:true}); parts.push(ocrToText(data)||data.text||'');}
+    worker=await ocrWorker(['fra','eng'],m=>{if(m.status==='recognizing text')ocrUI('Lecture'+(worker&&worker._n>1?` de la page ${worker._pg||1}/${worker._n}`:'')+'…',m.progress); else if(/load|init/.test(m.status||''))ocrUI('Préparation du lecteur…',Math.min(.3,(m.progress||0)*.3));});
+    await worker.setParameters({preserve_interword_spaces:'1'}); worker._n=files.length;
+    const pages=[]; for(const f of files){if(isPdf(f)){ocrUI('Ouverture du PDF…',.05); (await pdfPages(f,2000)).forEach(c=>pages.push(c));} else pages.push(f);}
+    worker._n=pages.length; const parts=[]; for(let i=0;i<pages.length;i++){worker._pg=i+1; const c=pages[i] instanceof HTMLCanvasElement?pages[i]:await ocrPrep(pages[i]); const {data}=await worker.recognize(c,{},{blocks:true,text:true}); parts.push(ocrToText(data)||data.text||'');}
     ocrUI(null); const text=parts.join('\n\n').trim(); if(!text){toast('Aucun texte trouvé sur la photo'); return;}
     const s=newSong({text}); openEditor(s,null); toast('Texte lu : vérifie les accords et les fautes, puis Enregistrer',4500);}
   catch(err){ocrUI(null); console.error(err); toast('Lecture impossible'+(navigator.onLine?'':' : il faut une connexion la première fois')+'.',4000);}
@@ -5822,10 +5823,15 @@ $('#ocrFile').onchange=async e=>{const files=[...e.target.files]; if(!files.leng
    première lecture par Tesseract, puis vérification rapide case par case (taper, ou appui long = roue).
    ====================================================================== */
 const BGO={};
+// toutes les pages d'un PDF (scanné ou non) en images, largeur ~ w px
+async function pdfPages(f,w){await loadScript('pdf.min.js'); const L=window.pdfjsLib; L.GlobalWorkerOptions.workerSrc='pdf.worker.min.js';
+  const doc=await L.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise, out=[];
+  for(let n=1;n<=Math.min(doc.numPages,20);n++){const pg=await doc.getPage(n), v0=pg.getViewport({scale:1}), vp=pg.getViewport({scale:w/v0.width});
+    const c=document.createElement('canvas'); c.width=Math.round(vp.width); c.height=Math.round(vp.height); const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); await pg.render({canvasContext:g,viewport:vp}).promise; out.push(c);}
+  return out;}
+const isPdf=f=>/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name);
 async function bgoLoad(f){
-  if(/pdf$/i.test(f.type)||/\.pdf$/i.test(f.name)){await loadScript('pdf.min.js'); const L=window.pdfjsLib; L.GlobalWorkerOptions.workerSrc='pdf.worker.min.js';
-    const doc=await L.getDocument({data:new Uint8Array(await f.arrayBuffer())}).promise, pg=await doc.getPage(1), v0=pg.getViewport({scale:1}), vp=pg.getViewport({scale:1240/v0.width});
-    const c=document.createElement('canvas'); c.width=Math.round(vp.width); c.height=Math.round(vp.height); const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); await pg.render({canvasContext:g,viewport:vp}).promise; return c;}
+  if(isPdf(f)){const pg=await pdfPages(f,1240); if(pg.length>1)toast(`PDF de ${pg.length} pages : je lis la 1re`,3500); return pg[0];}
   const url=URL.createObjectURL(f); try{const im=await new Promise((ok,ko)=>{const i=new Image(); i.onload=()=>ok(i); i.onerror=ko; i.src=url;});
     const sc=1240/im.width, c=document.createElement('canvas'); c.width=1240; c.height=Math.round(im.height*sc); const g=c.getContext('2d'); g.fillStyle='#fff'; g.fillRect(0,0,c.width,c.height); g.drawImage(im,0,0,c.width,c.height); return c;}
   finally{URL.revokeObjectURL(url);}}
