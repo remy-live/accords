@@ -546,7 +546,7 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 .bgwarn{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0 4px;padding:8px 12px;border-radius:12px;background:#3a2a06;border:1px solid #7a5c0a;color:#fef9c3;font:500 13px Inter,system-ui}.bgwarn span{flex:1;min-width:200px}
 .bgwarn button,.bgsact button,.bgln button{height:34px;padding:0 12px;border-radius:10px;background:#1b2333;border:1px solid #34405a;color:#f4f4f5;font:700 12.5px Inter,system-ui}
 .bgsact{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 4px}.bgsact button.off{opacity:.45}.bgsact button.lk{background:#2a1d10;border-color:#7c4a1c;color:#fdba74}
-.bgln{margin:0 0 10px;padding:10px 12px;border-radius:12px;background:#13261b;border:1px solid #245c39;color:#bbf7d0;font:500 13px Inter,system-ui;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.bgln span{flex:1;min-width:180px}.bgln{margin:0 0 10px;padding:8px 12px;border-radius:12px;background:#13261b;border:1px solid #245c39;color:#bbf7d0;font:500 13px Inter,system-ui;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 #bgAsk{position:absolute;inset:0;z-index:80;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px}
 #bgAsk .bgak{width:min(420px,100%);padding:16px;border-radius:16px;background:#17181d;border:1px solid #3a3d46;color:#f4f4f5;font:500 14px/1.45 Inter,system-ui}#bgAsk .bgak>b{font-size:17px}#bgAsk p{margin:6px 0 12px;color:#a1a1aa}
 #bgAsk .bgab{display:flex;flex-direction:column;gap:8px}#bgAsk .bgab button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 12px;border-radius:12px;background:#1f2026;border:1px solid #3a3d46;color:inherit;font:700 15px Inter,system-ui;text-align:left;height:auto}
@@ -556,14 +556,16 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 
 #bgKeysW{flex:0 0 auto}#bgKeys{display:flex;flex-direction:column;gap:6px;padding:8px 10px;background:var(--s1,#121215);border-top:1px solid #26262b}
 #bgKeys .bgkr{display:flex;gap:6px;align-items:center}#bgKeys .bgkn,#bgKeys .bgkm{display:flex;gap:6px;flex:7 1 0}#bgKeys .bgkm{flex:4.6 1 0;padding-left:8px}#bgKeys .bgkr>i{width:6px;flex:0 0 6px}
-#bgKeys button{flex:1 1 0;min-width:0;height:54px;padding:0 2px;font:800 21px ui-monospace,Menlo,monospace;border-radius:11px;color:var(--tx,#f4f4f5);background:#1b2333;border:1px solid #34405a;user-select:none;-webkit-user-select:none;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+#bgKeys button{flex:1 1 0;min-width:0;height:44px;padding:0 1px;font:800 18px ui-monospace,Menlo,monospace;border-radius:11px;color:var(--tx,#f4f4f5);background:#1b2333;border:1px solid #34405a;user-select:none;-webkit-user-select:none;touch-action:none;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+#bgKeys .bgkM button.acc,#bgKeys .bgkm2 button.acc{background:#141a26}#bgKeys .bgkm2 button{background:#1d1830;border-color:#3b3360}#bgKeys .bgkm2 button.acc{background:#171428}
+#bgDropG{position:fixed;z-index:70;pointer-events:none}#bgDropG svg{display:block}
 #bgKeys button small{font:600 10px Inter,system-ui;opacity:.6;margin-top:3px}
 #bgKeys [data-km],#bgKeys [data-kq],#bgKeys [data-kx]{background:#17181d;border-color:#3a3d46;font-size:19px}
 #bgKeys [data-kx="more"]{flex:0 0 46px}#bgKeys .bgk2 button{height:44px;font-size:15px}#bgKeys .bgkc{color:var(--hl,#fb923c);background:#2a1a0e;border-color:#5b3a12}
 #bgKeys button.bgok{color:#fff;background:#2563eb;border-color:#2563eb}#bgKeys button:active{filter:brightness(1.4)}
 #bgKeys .bgqp{flex:1;font-size:12px;color:#a1a1aa}#bgKeys.kb{padding:8px 12px}#bgKeys .bgkh{font:500 12.5px Inter,system-ui;color:#a1a1aa}
 @media (max-width:700px){#bgKeys .bgk1{flex-direction:column;align-items:stretch}#bgKeys .bgkn,#bgKeys .bgkm{flex:1 1 auto;padding:0}#bgEd.haskeys #bgPad{max-height:30vh!important}}
-@media (max-width:560px){#bgKeys .bgk2{flex-wrap:wrap}#bgKeys .bgk2 button{flex:1 0 22%}#bgKeys button{height:50px;font-size:18px}#bgKeys .bgkr>i{display:none}#bgKeys [data-kx="more"]{flex:0 0 34px}}
+@media (max-width:560px){#bgKeys .bgk2{flex-wrap:wrap}#bgKeys .bgk2 button{flex:1 0 22%}#bgKeys button{height:40px;font-size:12.5px;letter-spacing:-.5px;border-radius:8px}#bgKeys .bgkr{gap:3px}#bgKeys{padding:6px 4px}#bgKeys .bgkr>i{display:none}#bgKeys [data-kx="more"]{flex:0 0 34px}}
 #bgType{position:fixed;z-index:60;box-sizing:border-box;border:3px solid #6ea8fe;background:#0b1220;color:#fff;display:flex;align-items:center;justify-content:center;font:800 30px ui-monospace,Menlo,monospace;pointer-events:none}
 #bgInPop{position:fixed;z-index:70;width:320px;padding:10px;border-radius:14px;background:#17181d;border:1px solid #3a3d46;box-shadow:0 14px 34px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:6px;color:#f4f4f5;font:500 13px Inter,system-ui}
 #bgInPop .bgih{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#a1a1aa;padding:2px 4px}
@@ -2164,7 +2166,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
       <span class="lab">Cases par ligne</span>
       <span class="bgseg" id="bgPer"><button data-v="2">2</button><button data-v="4">4</button><button data-v="6">6</button><button data-v="8">8</button></span>
       <span class="bgseg" id="bgMeter"><button data-v="4">4/4</button><button data-v="3">3/4</button></span>
-      <button id="bgInBtn" title="Façon de saisir les accords">⚙ Saisie</button><button id="bgRegen" title="Recréer la grille depuis les paroles">↻ Recréer</button>
+      <button id="bgInBtn" title="Façon de saisir les accords" aria-label="Saisie">⚙</button><button id="bgRegen" title="Recréer la grille depuis les paroles" aria-label="Recréer depuis les paroles">↻</button>
       <button id="bgSave" class="bgok">Enregistrer</button>
     </header>
     <div class="bgbody">
@@ -7391,7 +7393,7 @@ function cwMove(x,y){if(!CW.on)return; let h=cwHit(x,y);
     if(h&&h.t==='n'&&CW.phase==='notes'&&h.i!==CW.noDwell)CW.t=setTimeout(cwDwell,CWS().dwell);
     if(h&&h.t!=='n')cwBuzz(); cwDraw();}}
 function cwEnd(){if(!CW.on)return; clearTimeout(CW.t); const ch=cwChord(), h=CW.hov, del=h&&h.t==='del'&&CW.existing; CW.on=false; if(CW.el)CW.el.remove(); CW.el=null;
-  if(CW.pick){const f=CW.pick, tp=CW.onTap; CW.pick=null; CW.onTap=null; if(h&&h.t==='set'){cwSettings(); return;} if(ch)f(ch); else if(tp&&!h&&Date.now()-CW.start<600)tp(); else {toast('Annulé'); cwBuzz();} return;}
+  if(CW.pick){const f=CW.pick, tp=CW.onTap; CW.pick=null; CW.onTap=null; if(del){CW.existing.del(); cwBuzz(); return;} if(h&&h.t==='set'){cwSettings(); return;} if(ch)f(ch); else if(tp&&!h&&Date.now()-CW.start<600)tp(); else {toast('Annulé'); cwBuzz();} return;}
   if(del){wpClose(); CW.existing.del(); toast('Accord supprimé'); cwBuzz(); return;}
   if(h&&h.t==='set'){wpClose(); cwSettings(); return;}
   if(ch){wpApply(ch);} else {wpClose(); toast('Annulé'); cwBuzz();}}
@@ -7927,7 +7929,7 @@ function bgDraw(){
   ['#bgFL','#bgFR','#bgFX'].forEach(x=>$(x).disabled=BG.f==null);
 }
 function bgStateDraw(main){const md=BG.mode, b=$('#bgModeBtn'); if(b){b.textContent={link:'🔗 suit les paroles ▾',mix:'⇄ mixte ▾',lock:'🔒 grille figée ▾'}[md]; b.className='bgmd '+md;}
-  if(md==='link'){const d=document.createElement('div'); d.className='bgln'; d.innerHTML='🔗 Cette grille <b>suit les paroles</b> : elle change quand tu modifies les accords des paroles. <button data-md="ask">Retoucher…</button>'; main.prepend(d); return;}
+  if(md==='link'){const d=document.createElement('div'); d.className='bgln'; d.innerHTML='<span>🔗 Cette grille <b>suit les paroles</b> : elle change quand tu modifies les accords des paroles.</span><button data-md="ask">Retoucher…</button>'; main.prepend(d); return;}
   if(md!=='mix')return;
   const lab={link:['🔗 suit les paroles','link'],hand:['✎ retouchée','hand'],warn:['⚠ paroles changées','warn'],lock:['🔒 figée','lock']};
   BG.g.secs.forEach((sc,si)=>{const st=bgSecState(sc), h=main.querySelector(`.bgsec[data-si="${si}"]`), row=main.querySelector(`.bgrow[data-si="${si}"]`); if(!h||!row)return;
@@ -7990,10 +7992,11 @@ const BG_NSUB={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
 function bgKeysDraw(main,chips){const old=$('#bgKeys'); if(old)old.remove(); main=document.createElement('div'); main.id='bgKeysW'; const w0=$('#bgKeysW'); if(w0)w0.remove(); $('#bgEd .bgformed').before(main); $('#bgEd').classList.toggle('haskeys',true);if(bgInMode()==='clavier'&&!BG.paint){const t=document.createElement('div'); t.id='bgKeys'; t.className='kb'; t.innerHTML='<span class="bgkh">⌨ Tape l’accord (em7, f#m, bb…) · Entrée ou Espace = case suivante · ← → ↑ ↓ · ⌫ efface · % même mesure</span>'; main.appendChild(t); return;}
   if(bgInMode()==='roue'&&!BG.paint){main.remove(); $('#bgEd').classList.remove('haskeys'); return;}
   const cn=BG.r.cn, big=bgIn().big, k=document.createElement('div'); k.id='bgKeys';
-  const nb=n=>`<button data-kn="${esc(n)}">${esc(n)}${S.fr?'':`<small>${BG_NSUB[n]}</small>`}</button>`;
+  const fl=!!(BG.r&&BG.r.flats), roots=[...Array(12)].map((_,i)=>noteName(i,fl,S.fr));
   let h=BG.paint?`<div class="bgkr"><span class="bgqp">🖌 ${esc(BG.paint==='%'?'%':bgName(BG.paint,cn))} : touche ou glisse sur les mesures</span><button data-kp="" class="bgok">✓ Fini</button></div>`:'';
-  h+=`<div class="bgkr bgk1"><span class="bgkn">${BG_NOTES().map(nb).join('')}</span><span class="bgkm"><button data-km="b">♭</button><button data-km="#">♯</button><button data-km="m">m</button><button data-km="7">7</button><button data-kx="more" aria-pressed="${big}" title="Plus">${big?'▾':'⋯'}</button></span></div>`;
-  if(big)h+=`<div class="bgkr bgk2">${['maj7','sus4','dim','6','9','add9'].map(q=>`<button data-kq="${q}">${esc(cwMj(q))}</button>`).join('')}<i></i><button data-kx="%">%</button><button data-kx="vide">vide</button><button data-kx="next" class="bgok">→</button><i></i>${chips.slice(0,8).map(x=>`<button data-kc="${esc(x)}" class="bgkc">${esc(x)}</button>`).join('')}</div>`;
+  h+=`<div class="bgkr bgkM">${roots.map(n=>`<button data-kc="${esc(n)}" class="${n.length>1&&/[#b]$/.test(n)?'acc':''}">${esc(n)}</button>`).join('')}<button data-kx="more" aria-pressed="${big}" title="Plus">${big?'▾':'⋯'}</button></div>`;
+  h+=`<div class="bgkr bgkm2">${roots.map(n=>`<button data-kc="${esc(n)}m" class="mi${n.length>1&&/[#b]$/.test(n)?' acc':''}">${esc(n)}m</button>`).join('')}<button data-kx="next" title="Case suivante">→</button></div>`;
+  if(big)h+=`<div class="bgkr bgk2"><button data-km="7">7</button>${['maj7','sus4','dim','6','9','add9'].map(q=>`<button data-kq="${q}">${esc(cwMj(q))}</button>`).join('')}<i></i><button data-kx="%">%</button><button data-kx="vide">vide</button><i></i>${chips.slice(0,8).map(x=>`<button data-kc="${esc(x)}" class="bgkc">${esc(x)}</button>`).join('')}</div>`;
   k.innerHTML=h; main.appendChild(k);}
 const bgKey=()=>BG.sel.si+'/'+BG.sel.bi+'/'+BG.sel.k;
 function bgCurSrc(){const b=bgBar(), sl=bgSlotsOf(b,bgMeter(BG.sel.si)); if(b[0]==='%')return ''; return b[sl[Math.min(BG.sel.k,sl.length-1)][0]]||'';}
@@ -8007,7 +8010,7 @@ function bgMod(md){const src=bgCurSrc(); if(!src){toast('Touche d’abord la not
   else {const mn=/^m(?!aj)/.test(q)&&md!=='dim'?'m':''; const cur=q.replace(/^m(?!aj)/,''); q=cur===md||cur===cwMj(md)?mn:mn+(md==='maj7'?cwMj('maj7'):md); if(md==='dim')q=q==='m'?'':q;}
   bgWriteCur(rt+ac+q+bass); BG.last=bgKey();}
 $('#bgEd').addEventListener('pointerdown',ev=>{const b=ev.target.closest('#bgKeys button'); if(!b)return; ev.stopPropagation(); ev.preventDefault(); BG.noClick=Date.now(); const d=b.dataset;
-  if(d.kn)bgNote(d.kn); else if(d.km)bgMod(d.km); else if(d.kq)bgMod(d.kq); else if(d.kc){if(BG.paint){const v=toSource(BG.r,d.kc)||d.kc; bgPaint(BG.paint===v?null:v); return;} bgPut(d.kc); BG.last=null;}
+  if(d.kn)bgNote(d.kn); else if(d.km)bgMod(d.km); else if(d.kq)bgMod(d.kq); else if(d.kc){if(BG.paint){const v=toSource(BG.r,d.kc)||d.kc; bgPaint(BG.paint===v?null:v); return;} BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord:(!BG.r.shift&&!S.fr&&parseChord(d.kc)?d.kc:(toSource(BG.r,d.kc)||d.kc)),from:null,on:false,kb:d.kc,any:1,timer:0}; return;}
   else if(d.kp!=null)bgPaint(null);
   else if(d.kx==='more'){S.bgIn=Object.assign(bgIn(),{big:!bgIn().big}); save(); bgDraw();}
   else if(d.kx==='%'){$('#bgPct').click(); BG.last=null;} else if(d.kx==='vide'){bgWriteCur(''); BG.last=null;} else if(d.kx==='next'){bgNext(); BG.last=null; bgDraw();}},true);
@@ -8046,11 +8049,15 @@ function bgHit(x,y){const el=document.elementFromPoint(x,y), c=el&&el.closest('#
   return {si,bi,k:bgPartAt(bar[0]==='%'?1:bar.length,(x-rc.left)/rc.width,(y-rc.top)/rc.height,bgMeter(si)),el:c};}
 function bgPaint(v){BG.paint=v||null; bgDraw(); if(v)toast('🖌 '+(v==='%'?'%':bgName(v,BG.r.cn))+' : touche ou glisse sur les mesures',2200);}
 function bgWheel(si,bi,k,el){if(BGD){clearTimeout(BGD.timer); if(BGD.ghost)BGD.ghost.remove(); BGD=null;} BGR=null; BG.noClick=Date.now()+400;
-  $$('#bgMain .dropon,#bgMain .dropl,#bgMain .dropr').forEach(e=>e.classList.remove('dropon','dropl','dropr'));
-  const bar=BG.g.secs[si].bars[bi], sl=bgSlotsOf(bar,bgMeter(si)); let ks=sl.findIndex(ix=>ix.includes(bar[k]==='='?2:k)); BG.sel={si,bi,k:Math.max(0,ks)};
+  $$('#bgMain .dropon,#bgMain .dropl,#bgMain .dropr').forEach(e=>e.classList.remove('dropon','dropl','dropr')); {const o=$('#bgDropG'); if(o)o.remove();}
+  const bar=BG.g.secs[si].bars[bi], m=bgMeter(si), sl=bgSlotsOf(bar,m), kk=bar[k]==='='?2:k; let ks=sl.findIndex(ix=>ix.includes(kk)); BG.sel={si,bi,k:Math.max(0,ks)};
   $$('#bgMain .bgc.on').forEach(e=>e.classList.remove('on')); el.classList.add('on');
-  const chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].slice(0,8); try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}
-  const rc=el.getBoundingClientRect(), cx=rc.left+rc.width/2; cwPick({getBoundingClientRect:()=>({left:cx-60,top:rc.top,width:120,height:rc.height})},n=>bgPut(n),chips,{circ:1});}
+  const rc=el.getBoundingClientRect(), split=bar[0]!=='%'&&bar.length>1, pts=bgPartPoly(split?bar:[''],m,k), ux=pts.reduce((s,q)=>s+q[0],0)/pts.length, uy=pts.reduce((s,q)=>s+q[1],0)/pts.length;
+  const cx=rc.left+ux*rc.width, cy=rc.top+uy*rc.height, w=Math.min(split?rc.width*.45:rc.width*.8,120), h=split?rc.height*.45:rc.height*.7;
+  const cur=bar[0]==='%'?'':bar[kk]||'', name=cur?bgName(cur,BG.r.cn):'';
+  let chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].filter(Boolean).slice(0,8); try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}
+  cwStart({left:cx-w/2,top:cy-h/2,width:w,height:h},cur?{del:()=>{bgSet(()=>bgFillAt(si,bi,kk,'')); toast('Accord supprimé');},name}:null,chips,false,name?cwShow(name):'');
+  CW.pick=n=>{BG.sel={si,bi,k:Math.max(0,ks)}; bgPut(n);}; CW.onTap=null;}
 function bgPut(name){const src=toSource(BG.r,name)||name; bgSet(()=>{const b=bgBar(); if(b[0]==='%'){b.splice(0,b.length,'');} bgSlotsOf(b,bgMeter(BG.sel.si))[Math.min(BG.sel.k,bgSlotsOf(b,bgMeter(BG.sel.si)).length-1)].forEach(i=>b[i]=src); bgNext();});}
 $('#bgMain').onclick=ev=>{const sa=ev.target.closest('[data-sa]'); if(sa){bgSecAct(+sa.dataset.si,sa.dataset.sa); return;} if(ev.target.closest('[data-md="ask"]')){bgAskMode(null); return;} if(ev.target.closest('.bgwarn,.bgsact,.bgln'))return; if(Date.now()-(BG.noClick||0)<400)return; const nm=ev.target.closest('.bgname'); if(nm){bgRenameInline(nm); return;}
   const t=ev.target.closest('.bgc,.bgsec'); if(!t)return; const si=+t.dataset.si;
@@ -8110,15 +8117,21 @@ function bgTarget(x,y){
   return {void:1};
 }
 function bgDragOn(){if(!BGD||BGD.on)return; BGD.on=true; const g=document.createElement('div'); g.className='bgghost'; g.textContent=bgName(BGD.chord,BG.r.cn); document.body.appendChild(g); BGD.ghost=g; bgDragMove(BGD.cx,BGD.cy); try{navigator.vibrate&&navigator.vibrate(12);}catch(e){}}
+function bgPartPoly(bar,m,k){const n=bar[0]==='%'?1:bar.length, C=[.5,.5], UL=[[0,0],[1,0],[0,1]], LR=[[1,0],[1,1],[0,1]], L=[[0,0],[0,1],C], T=[[0,0],[1,0],C], B=[[0,1],[1,1],C], R=[[1,0],[1,1],C];
+  if(n<=1)return [[0,0],[1,0],[1,1],[0,1]]; if(n===2)return k?LR:UL; if(n===3)return (m===3?[L,T,LR]:[UL,B,R])[k]||UL; if(bar[3]==='=')return [L,T,LR,LR][k]; return [L,T,B,R][k];}
+function bgDropGhost(t,chord){let o=$('#bgDropG'); if(t.bi==null||!t.el){if(o)o.remove(); return;} const bar=BG.g.secs[t.si].bars[t.bi], m=bgMeter(t.si), full=bar[0]==='%'||bar.every(x=>!x), pts=full?bgPartPoly([''],m,0):bgPartPoly(bar,m,t.k), rc=t.el.getBoundingClientRect();
+  if(!o){o=document.createElement('div'); o.id='bgDropG'; document.body.appendChild(o);} const W=rc.width, H=rc.height, P=pts.map(([a,b])=>[a*W,b*H]), cx=P.reduce((s,q)=>s+q[0],0)/P.length, cy=P.reduce((s,q)=>s+q[1],0)/P.length, fs=Math.round(Math.min(H*(full?.42:.3),W*.16));
+  Object.assign(o.style,{left:rc.left+'px',top:rc.top+'px',width:W+'px',height:H+'px'});
+  o.innerHTML=`<svg width="${W}" height="${H}"><polygon points="${P.map(q=>q.join(',')).join(' ')}" fill="rgba(110,168,254,.42)" stroke="#6ea8fe" stroke-width="3" stroke-linejoin="round"/><text x="${cx}" y="${cy+fs*.36}" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-weight="800" font-size="${fs}" fill="#fff" stroke="#0b1220" stroke-width="3" paint-order="stroke">${esc(bgName(chord,BG.r.cn))}</text></svg>`;}
 function bgDragMove(x,y){
   const d=BGD; d.cx=x; d.cy=y; if(!d.on)return; d.ghost.style.left=x+'px'; d.ghost.style.top=y+'px';
   $$('#bgMain .dropon,#bgMain .dropl,#bgMain .dropr').forEach(e=>e.classList.remove('dropon','dropl','dropr'));
-  const t=bgTarget(x,y); d.t=t; if(t.el)t.el.classList.add(t.cls);
+  const t=bgTarget(x,y); d.t=t; if(t.el&&t.bi==null)t.el.classList.add(t.cls); bgDropGhost(t,d.chord);
   d.ghost.classList.toggle('del',!!(t.void&&d.from)); d.ghost.textContent=(t.void&&d.from?'🗑 ':'')+bgName(d.chord,BG.r.cn);
 }
 function bgDragEnd(cancel){
   const d=BGD; BGD=null; if(!d)return; clearTimeout(d.timer); if(!d.on)return;
-  d.ghost.remove(); $$('#bgMain .dropon,#bgMain .dropl,#bgMain .dropr').forEach(e=>e.classList.remove('dropon','dropl','dropr')); BG.noClick=Date.now();
+  d.ghost.remove(); {const o=$('#bgDropG'); if(o)o.remove();} $$('#bgMain .dropon,#bgMain .dropl,#bgMain .dropr').forEach(e=>e.classList.remove('dropon','dropl','dropr')); BG.noClick=Date.now();
   if(cancel)return; const t=d.t||{none:1}; if(t.none||(t.void&&!d.from))return;
   const f=d.from, X=d.chord;
   if(f&&t.bi===f.bi&&t.si===f.si&&t.k===f.k)return;
@@ -8128,13 +8141,7 @@ function bgDragEnd(cancel){
     else if(t.bi!=null){
       const bar=g.secs[t.si].bars[t.bi], m=bgMeter(t.si);
       if(bar[0]==='%'||bar.every(x=>!x))bar.splice(0,bar.length,X);
-      else {const R=(BG_R[m]||BG_R[4])[bar.length]||[1,1,1,1], b=bgToBeats(bar,m); let s0=0; for(let i=0;i<t.k;i++)s0+=R[i]||1; const L=R[t.k]||1;
-        if(b[s0]!==X){
-          if(b[s0]===BGS||!b[s0]){for(let i=s0;i<s0+L;i++)b[i]=X;}
-          else if(L>=3){const h=L===3?(t.first?2:2):2; if(t.first){for(let i=s0;i<s0+h;i++)b[i]=X;} else {for(let i=s0+h;i<s0+L;i++)b[i]=X; if(L===3&&!t.first)b[s0+2]=X;}}
-          else if(L===2)b[s0+1]=X; else b[s0]=X;
-          bar.splice(0,bar.length,...bgFromBeats(b,m));}
-      }
+      else {let k=t.k; if(bar[k]==='=')k=2; if(bar[k]!==BGS)bar[k]=X;}
       BG.sel={si:t.si,bi:t.bi,k:0};
     }
     // l'accord déplacé laisse sa place : sa case se refusionne, ou disparaît s'il était seul
@@ -8159,12 +8166,12 @@ $('#bgEd').addEventListener('pointerdown',ev=>{
 });
 document.addEventListener('pointermove',ev=>{if(!BGD)return; const dx=ev.clientX-BGD.x, dy=ev.clientY-BGD.y; BGD.cx=ev.clientX; BGD.cy=ev.clientY;
   if(BGD.wheel){if(Math.hypot(dx,dy)>10){clearTimeout(BGD.timer); BGD=null;} return;}
-  if(!BGD.on){if(Math.hypot(dx,dy)>10){if(!BGD.from&&(Math.abs(dx)>Math.abs(dy)||ev.pointerType==='mouse'))bgDragOn(); else {clearTimeout(BGD.timer); BGD=null; return;}}}
+  if(!BGD.on){if(Math.hypot(dx,dy)>10){if(!BGD.from&&(BGD.any||Math.abs(dx)>Math.abs(dy)||ev.pointerType==='mouse'))bgDragOn(); else {clearTimeout(BGD.timer); BGD=null; return;}}}
   bgDragMove(ev.clientX,ev.clientY);});
-document.addEventListener('pointerup',()=>{if(BGD&&BGD.wheel){clearTimeout(BGD.timer); BGD=null; return;} bgDragEnd(false);}); document.addEventListener('pointercancel',()=>{if(BGD&&!BGD.on)bgDragEnd(true);});
+document.addEventListener('pointerup',()=>{if(BGD&&BGD.wheel){clearTimeout(BGD.timer); BGD=null; return;} if(BGD&&BGD.kb&&!BGD.on){const v=BGD.kb; BGD=null; bgNote(v); return;} bgDragEnd(false);}); document.addEventListener('pointercancel',()=>{if(BGD&&!BGD.on)bgDragEnd(true);});
 document.addEventListener('touchmove',ev=>{if(!BGD)return; const t=ev.touches[0]; if(!t)return; BGD.cx=t.clientX; BGD.cy=t.clientY;
   if(BGD.wheel){if(Math.hypot(t.clientX-BGD.x,t.clientY-BGD.y)>10){clearTimeout(BGD.timer); BGD=null;} return;}
-  if(!BGD.on){const dx=t.clientX-BGD.x, dy=t.clientY-BGD.y; if(Math.hypot(dx,dy)>10&&Math.abs(dx)>Math.abs(dy)&&!BGD.from)bgDragOn();}
+  if(!BGD.on){const dx=t.clientX-BGD.x, dy=t.clientY-BGD.y; if(Math.hypot(dx,dy)>10&&(BGD.any||Math.abs(dx)>Math.abs(dy))&&!BGD.from)bgDragOn();}
   if(BGD&&BGD.on){ev.preventDefault(); bgDragMove(t.clientX,t.clientY);}},{passive:false});
 document.addEventListener('touchend',ev=>{if(BGD&&BGD.on){const t=ev.changedTouches[0]; if(t)bgDragMove(t.clientX,t.clientY); bgDragEnd(false);}});
 
