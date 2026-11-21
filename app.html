@@ -536,12 +536,22 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 .bgseg{display:inline-flex;gap:3px;padding:3px;background:#1b1b20;border-radius:12px}.bgseg button{height:38px!important;min-width:42px;border:0!important}
 #bgEd .bgok{background:var(--hl,#fb923c);color:var(--onhl,#111);border:0;font-weight:800}
 .bgchips button.on{outline:3px solid var(--hl,#fb923c);outline-offset:1px}
-#bgQuick{position:sticky;bottom:0;z-index:3;display:none;flex-wrap:wrap;gap:6px;padding:8px 6px;margin-top:8px;background:var(--s1,#121215);border-top:1px solid #26262b}
-#bgQuick button{min-width:46px;height:40px;padding:0 8px;font:700 15px ui-monospace,Menlo,monospace;border-radius:9px;color:var(--hl,#fb923c);background:#2a1a0e;border:1px solid #5b3a12;user-select:none;-webkit-user-select:none;touch-action:none}
-#bgQuick button.on{background:var(--hl,#fb923c);color:#111}#bgQuick button.bgok{color:#fff;background:#2563eb;border-color:#2563eb}
-#bgQuick .bgqp{width:100%;font-size:12px;color:#a1a1aa}
-#bgMain.painting #bgQuick{display:flex}#bgMain.painting,#bgMain.painting .bgc{touch-action:none}
-@media (orientation:portrait),(max-width:700px){#bgQuick{display:flex}}
+#bgMain.painting,#bgMain.painting .bgc{touch-action:none}
+#bgKeysW{flex:0 0 auto}#bgKeys{display:flex;flex-direction:column;gap:6px;padding:8px 10px;background:var(--s1,#121215);border-top:1px solid #26262b}
+#bgKeys .bgkr{display:flex;gap:6px;align-items:center}#bgKeys .bgkn,#bgKeys .bgkm{display:flex;gap:6px;flex:7 1 0}#bgKeys .bgkm{flex:4.6 1 0;padding-left:8px}#bgKeys .bgkr>i{width:6px;flex:0 0 6px}
+#bgKeys button{flex:1 1 0;min-width:0;height:54px;padding:0 2px;font:800 21px ui-monospace,Menlo,monospace;border-radius:11px;color:var(--tx,#f4f4f5);background:#1b2333;border:1px solid #34405a;user-select:none;-webkit-user-select:none;touch-action:manipulation;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+#bgKeys button small{font:600 10px Inter,system-ui;opacity:.6;margin-top:3px}
+#bgKeys [data-km],#bgKeys [data-kq],#bgKeys [data-kx]{background:#17181d;border-color:#3a3d46;font-size:19px}
+#bgKeys [data-kx="more"]{flex:0 0 46px}#bgKeys .bgk2 button{height:44px;font-size:15px}#bgKeys .bgkc{color:var(--hl,#fb923c);background:#2a1a0e;border-color:#5b3a12}
+#bgKeys button.bgok{color:#fff;background:#2563eb;border-color:#2563eb}#bgKeys button:active{filter:brightness(1.4)}
+#bgKeys .bgqp{flex:1;font-size:12px;color:#a1a1aa}#bgKeys.kb{padding:8px 12px}#bgKeys .bgkh{font:500 12.5px Inter,system-ui;color:#a1a1aa}
+@media (max-width:700px){#bgKeys .bgk1{flex-direction:column;align-items:stretch}#bgKeys .bgkn,#bgKeys .bgkm{flex:1 1 auto;padding:0}#bgEd.haskeys #bgPad{max-height:30vh!important}}
+@media (max-width:560px){#bgKeys .bgk2{flex-wrap:wrap}#bgKeys .bgk2 button{flex:1 0 22%}#bgKeys button{height:50px;font-size:18px}#bgKeys .bgkr>i{display:none}#bgKeys [data-kx="more"]{flex:0 0 34px}}
+#bgType{position:fixed;z-index:60;box-sizing:border-box;border:3px solid #6ea8fe;background:#0b1220;color:#fff;display:flex;align-items:center;justify-content:center;font:800 30px ui-monospace,Menlo,monospace;pointer-events:none}
+#bgInPop{position:fixed;z-index:70;width:320px;padding:10px;border-radius:14px;background:#17181d;border:1px solid #3a3d46;box-shadow:0 14px 34px rgba(0,0,0,.5);display:flex;flex-direction:column;gap:6px;color:#f4f4f5;font:500 13px Inter,system-ui}
+#bgInPop .bgih{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#a1a1aa;padding:2px 4px}
+#bgInPop button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:9px 11px;border-radius:10px;background:#1f2026;border:1px solid #3a3d46;color:inherit;text-align:left;height:auto}#bgInPop button span{color:#a1a1aa;font-size:12px}
+#bgInPop button[aria-pressed="true"]{border-color:#6ea8fe;background:#16233a}#bgInPop .bgib{display:flex;gap:8px;align-items:center;padding:6px 4px}#bgInPop .bgis{font-size:11.5px;color:#a1a1aa;padding:0 4px}
 #bgRowList{display:flex;flex-direction:column;gap:4px;max-height:220px;overflow:auto}#bgRowList button{text-align:left;height:auto!important;padding:6px 8px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#bgRowList button span{font-family:ui-monospace,Menlo,monospace;color:var(--hl,#fb923c)}
 .bgbody{flex:1;display:grid;grid-template-columns:1fr 340px;min-height:0}
 #bgEd #bgMain{overflow-y:auto;padding:10px 18px;max-width:none;margin:0;width:auto;min-width:0}
@@ -2137,7 +2147,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
       <span class="lab">Cases par ligne</span>
       <span class="bgseg" id="bgPer"><button data-v="2">2</button><button data-v="4">4</button><button data-v="6">6</button><button data-v="8">8</button></span>
       <span class="bgseg" id="bgMeter"><button data-v="4">4/4</button><button data-v="3">3/4</button></span>
-      <button id="bgRegen">↻ Recréer depuis les paroles</button>
+      <button id="bgInBtn" title="Façon de saisir les accords">⚙ Saisie</button><button id="bgRegen">↻ Recréer depuis les paroles</button>
       <button id="bgSave" class="bgok">Enregistrer</button>
     </header>
     <div class="bgbody">
@@ -2151,7 +2161,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
           <h4>Section</h4><button id="bgRSec" class="bgblue">+ En faire une section…</button>
           <button id="bgRNone">✕ Annuler la sélection</button>
         </div>
-        <div class="bgph"><b id="bgWhere"></b><span class="bgrs"> · glisse sur les mesures = sélection · appui sur une case vide = roue (sur un accord : appui long) · appui long sur un accord du morceau = pinceau</span></div>
+        <div class="bgph"><b id="bgWhere"></b><span class="bgrs"> · glisse sur les mesures = sélection · appui long sur un accord du morceau = pinceau</span></div>
         <div id="bgClip" hidden><span class="bgck">EN MÉMOIRE</span><b id="bgClipTxt"></b><span class="bgrs" id="bgClipFrom"></span>
           <div class="bggrid2"><button id="bgPaste" class="bgok">Coller après</button><button id="bgPasteRep">Remplacer</button></div><button id="bgClipX" class="bgcx" aria-label="Oublier la copie">✕</button></div>
         <h4>Découpage</h4><div class="bggrid4" id="bgSplit"></div>
@@ -7288,7 +7298,7 @@ function cwOpen(ctx,span,pt){
   const hl=document.createElement('div'); hl.className='wphl'; hl.style.cssText=`left:${rc.left-2}px;top:${rc.top-1}px;width:${Math.max(cw,rc.width)+4}px;height:${rc.height+2}px`; document.body.appendChild(hl); WP.hl=hl;
   cwStart(rc,null,cwSongChords(span),false,isC?'':txt.slice(col,Math.max(end,col+1)).trim()); return true;}
 function cwStart(rc,existing,list,noRot,label){
-  const st=CWS(), mul={S:.85,M:1,L:1.15}[st.size]||1, pick=!!noRot, circ=st.form==='cercle'&&!pick;
+  const st=CWS(), mul={S:.85,M:1,L:1.15}[st.size]||1, pick=!!noRot, circ=(st.form==='cercle'&&!pick)||!!CW.fc;
   // le trou du centre s'adapte au mot (56 à 76) ; tous les anneaux s'écartent d'autant
   const dr=pick?0:Math.max(56,Math.min(76,Math.min(rc.width,132)/2/mul+12))-46; for(const q in CW_G0)CW_G[q]=CW_G0[q]+dr; CW.circ=circ;
   const R0=CW_G.x2+8, wx=rc.left+Math.min(Math.max(8,rc.width),132)/2, wy=rc.top+rc.height/2;
@@ -7423,7 +7433,7 @@ function cwTestLine(){const tl=$('#cwTl'); if(!tl)return; const W=['Twisting','m
       cwStart(rc,null,['Am','Em','G'],false,W[i]); CW.pick=n=>{(cwTestLine.got=cwTestLine.got||{})[i]=n; cwTestLine(); cwBuzz(10);}; CW.gh=null;},380);
     const up=()=>{clearTimeout(t); removeEventListener('pointerup',up,true); removeEventListener('pointercancel',up,true);}; addEventListener('pointerup',up,true); addEventListener('pointercancel',up,true);};}
 // roue ouverte depuis un bouton (＋) : on maintient, on glisse, on relâche → cb(accord)
-function cwPick(btn,cb,list,o){wpClose(); const rc=btn.getBoundingClientRect(); cwStart({left:rc.left,top:rc.top,width:rc.width,height:0},null,list,true); CW.pick=cb; CW.onTap=o&&o.tap||null;}
+function cwPick(btn,cb,list,o){wpClose(); const rc=btn.getBoundingClientRect(); CW.fc=!!(o&&o.circ); cwStart({left:rc.left,top:rc.top,width:rc.width,height:CW.fc?rc.height:0},null,list,true); CW.fc=false; CW.pick=cb; CW.onTap=o&&o.tap||null;}
 /* ----- mode peinture : toucher un accord de la palette, puis tous les mots qui l'ont ----- */
 const PAINT={ch:null};
 function paintSet(ch){PAINT.ch=ch; let el=$('#paintPill'); $$('#vtChips button').forEach(b=>b.setAttribute('aria-pressed',String(!!ch&&b.textContent===ch)));
@@ -7876,9 +7886,9 @@ function bgDraw(){
   $('#bgSlots').innerHTML=bar[0]==='%'?'<span class="lab">% : on rejoue la mesure d\'avant.</span>':slots.map((ix,i)=>`<button data-k="${i}" aria-pressed="${i===c.k}"><span>${lab[i]||''}</span><b>${esc(bgName(bar[ix[0]],cn)||'—')}</b></button>`).join('');
   const mt=bgMtOf(sc,c.bi)||{};
   $('#bgMeas').innerHTML=`<button data-mm="rs" aria-pressed="${!!mt.rs}">‖: Début</button><button data-mm="re" aria-pressed="${!!mt.re}">:‖ Fin${mt.re>2?' ×'+mt.re:''}</button><button data-mm="v" aria-pressed="${!!mt.v}">${mt.v?mt.v+'. fois':'1. / 2.'}</button><button data-mm="n" aria-pressed="${!!mt.n}">✎ ${mt.n?esc(mt.n):'Note'}</button>`;
-  const chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].slice(0,15);
+  let chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].filter(Boolean).slice(0,15); if(!chips.length)chips=(S.fr?['Do','Sol','Lam','Fa','Mim','Rém','Ré','La','Mi']:['C','G','Am','F','Em','Dm','D','A','E']);
   $('#bgChips').innerHTML=chips.map(x=>`<button${BG.paint&&(toSource(BG.r,x)||x)===BG.paint?' class="on"':''}>${esc(x)}</button>`).join('');
-  const q=document.createElement('div'); q.id='bgQuick'; q.innerHTML=(BG.paint?`<span class="bgqp">🖌 ${esc(BG.paint==='%'?'%':bgName(BG.paint,cn))} : touche ou glisse</span>`:'')+chips.map(x=>`<button data-q="${esc(x)}"${BG.paint&&(toSource(BG.r,x)||x)===BG.paint?' class="on"':''}>${esc(x)}</button>`).join('')+`<button data-q="%"${BG.paint==='%'?' class="on"':''}>%</button>`+(BG.paint?'<button data-q="" class="bgok">✓ Fini</button>':''); main.appendChild(q);
+  bgKeysDraw(main,chips);
   main.classList.toggle('painting',!!BG.paint); $('#bgEd').classList.toggle('painting',!!BG.paint);
   $('#bgSec34').textContent=m===3&&+g.meter!==3?'Section en 4/4':+g.meter===3?(m===3?'Section en 4/4':'Section en 3/4'):'Section en 3/4';
   // structure
@@ -7891,6 +7901,64 @@ function bgNext(){const g=BG.g, c=BG.sel; if(c.k<bgSlotsOf(bgBar(),bgMeter(c.si)
   c.k=0; if(c.bi<g.secs[c.si].bars.length-1){c.bi++; return;}
   if(c.si<g.secs.length-1){c.si++; c.bi=0; return;}
   bgSplice(g.secs[c.si],g.secs[c.si].bars.length,0,['']); c.bi++;}
+/* ----- saisie des accords : ligne de notes (doigt), clavier de l'ordi, ou roue — selon l'appareil ----- */
+const bgIn=()=>Object.assign({mode:'auto',big:false},S.bgIn||{});
+const bgTouch=()=>{try{return matchMedia('(pointer:coarse)').matches;}catch(_){return false;}};
+const bgInMode=()=>{const m=bgIn().mode; return m==='auto'?(bgTouch()?'ligne':'clavier'):m;};
+const BG_NOTES=()=>S.fr?['Do','Ré','Mi','Fa','Sol','La','Si']:['C','D','E','F','G','A','B'];
+const BG_NSUB={C:'Do',D:'Ré',E:'Mi',F:'Fa',G:'Sol',A:'La',B:'Si'};
+function bgKeysDraw(main,chips){const old=$('#bgKeys'); if(old)old.remove(); main=document.createElement('div'); main.id='bgKeysW'; const w0=$('#bgKeysW'); if(w0)w0.remove(); $('#bgEd .bgformed').before(main); $('#bgEd').classList.toggle('haskeys',true);if(bgInMode()==='clavier'&&!BG.paint){const t=document.createElement('div'); t.id='bgKeys'; t.className='kb'; t.innerHTML='<span class="bgkh">⌨ Tape l’accord (em7, f#m, bb…) · Entrée ou Espace = case suivante · ← → ↑ ↓ · ⌫ efface · % même mesure</span>'; main.appendChild(t); return;}
+  if(bgInMode()==='roue'&&!BG.paint){main.remove(); $('#bgEd').classList.remove('haskeys'); return;}
+  const cn=BG.r.cn, big=bgIn().big, k=document.createElement('div'); k.id='bgKeys';
+  const nb=n=>`<button data-kn="${esc(n)}">${esc(n)}${S.fr?'':`<small>${BG_NSUB[n]}</small>`}</button>`;
+  let h=BG.paint?`<div class="bgkr"><span class="bgqp">🖌 ${esc(BG.paint==='%'?'%':bgName(BG.paint,cn))} : touche ou glisse sur les mesures</span><button data-kp="" class="bgok">✓ Fini</button></div>`:'';
+  h+=`<div class="bgkr bgk1"><span class="bgkn">${BG_NOTES().map(nb).join('')}</span><span class="bgkm"><button data-km="b">♭</button><button data-km="#">♯</button><button data-km="m">m</button><button data-km="7">7</button><button data-kx="more" aria-pressed="${big}" title="Plus">${big?'▾':'⋯'}</button></span></div>`;
+  if(big)h+=`<div class="bgkr bgk2">${['maj7','sus4','dim','6','9','add9'].map(q=>`<button data-kq="${q}">${esc(cwMj(q))}</button>`).join('')}<i></i><button data-kx="%">%</button><button data-kx="vide">vide</button><button data-kx="next" class="bgok">→</button><i></i>${chips.slice(0,8).map(x=>`<button data-kc="${esc(x)}" class="bgkc">${esc(x)}</button>`).join('')}</div>`;
+  k.innerHTML=h; main.appendChild(k);}
+const bgKey=()=>BG.sel.si+'/'+BG.sel.bi+'/'+BG.sel.k;
+function bgCurSrc(){const b=bgBar(), sl=bgSlotsOf(b,bgMeter(BG.sel.si)); if(b[0]==='%')return ''; return b[sl[Math.min(BG.sel.k,sl.length-1)][0]]||'';}
+function bgWriteCur(name){const src=name===''?'':(!BG.r.shift&&!S.fr&&parseChord(name)?name:(toSource(BG.r,name)||name)); bgSet(()=>{const b=bgBar(), m=bgMeter(BG.sel.si); if(b[0]==='%')b.splice(0,b.length,''); const sl=bgSlotsOf(b,m); sl[Math.min(BG.sel.k,sl.length-1)].forEach(i=>b[i]=src);});}
+const BG_RT=/^(Do|Ré|Re|Mi|Fa|Sol|La|Si|[A-G])([#b♯♭]?)(.*)$/;
+function bgNote(n){if(BG.last===bgKey()&&bgCurSrc())bgNext(); bgWriteCur(n); BG.last=bgKey();}
+function bgMod(md){const src=bgCurSrc(); if(!src){toast('Touche d’abord la note'); return;} const d=bgName(src,BG.r.cn), mm=d.match(BG_RT); if(!mm)return; let [,rt,ac,q]=mm; ac=ac.replace('♯','#').replace('♭','b'); let bass=''; const sl=q.indexOf('/'); if(sl>=0){bass=q.slice(sl); q=q.slice(0,sl);}
+  if(md==='#'||md==='b')ac=ac===md?'':md;
+  else if(md==='m'){if(/^m(?!aj)/.test(q))q=q.slice(1); else q='m'+q.replace(/^(dim|aug|sus\d?)/,'');}
+  else if(md==='7'){if(q==='7')q=''; else if(q==='m7')q='m'; else if(q==='m')q='m7'; else if(/7/.test(q))q=q.replace(/maj7|M7|7/,''); else q=q+'7';}
+  else {const mn=/^m(?!aj)/.test(q)&&md!=='dim'?'m':''; const cur=q.replace(/^m(?!aj)/,''); q=cur===md||cur===cwMj(md)?mn:mn+(md==='maj7'?cwMj('maj7'):md); if(md==='dim')q=q==='m'?'':q;}
+  bgWriteCur(rt+ac+q+bass); BG.last=bgKey();}
+$('#bgEd').addEventListener('pointerdown',ev=>{const b=ev.target.closest('#bgKeys button'); if(!b)return; ev.stopPropagation(); ev.preventDefault(); BG.noClick=Date.now(); const d=b.dataset;
+  if(d.kn)bgNote(d.kn); else if(d.km)bgMod(d.km); else if(d.kq)bgMod(d.kq); else if(d.kc){if(BG.paint){const v=toSource(BG.r,d.kc)||d.kc; bgPaint(BG.paint===v?null:v); return;} bgPut(d.kc); BG.last=null;}
+  else if(d.kp!=null)bgPaint(null);
+  else if(d.kx==='more'){S.bgIn=Object.assign(bgIn(),{big:!bgIn().big}); save(); bgDraw();}
+  else if(d.kx==='%'){$('#bgPct').click(); BG.last=null;} else if(d.kx==='vide'){bgWriteCur(''); BG.last=null;} else if(d.kx==='next'){bgNext(); BG.last=null; bgDraw();}},true);
+// clavier de l'ordi : on tape l'accord dans la case choisie
+const BGT={buf:''};
+function bgTypeShow(){let o=$('#bgType'); const cell=$('#bgMain .bgc.on'); if(!BGT.buf||!cell){if(o)o.remove(); return;} if(!o){o=document.createElement('div'); o.id='bgType'; document.body.appendChild(o);} const rc=cell.getBoundingClientRect(); Object.assign(o.style,{left:rc.left+'px',top:rc.top+'px',width:rc.width+'px',height:rc.height+'px'}); o.textContent=BGT.buf;}
+function bgTypeCommit(){const t=BGT.buf.trim(); BGT.buf=''; bgTypeShow(); if(!t)return false; let n=t.replace(/^([a-g])/i,c=>c.toUpperCase()).replace(/^(do|ré|re|mi|fa|sol|la|si)/i,c=>c[0].toUpperCase()+c.slice(1).toLowerCase());
+  if(!parseChord(n)){toast('Accord inconnu : '+t); return false;} bgWriteCur(n); return true;}
+function bgMoveBy(d){const g=BG.g, c=BG.sel; let si=c.si, bi=c.bi+d; while(bi<0&&si>0){si--; bi+=g.secs[si].bars.length;} while(si<g.secs.length&&bi>=g.secs[si].bars.length&&si<g.secs.length-1){bi-=g.secs[si].bars.length; si++;} bi=Math.max(0,Math.min(bi,g.secs[si].bars.length-1)); BG.sel={si,bi,k:0}; BG.last=null; bgDraw();}
+document.addEventListener('keydown',e=>{if($('#bgEd').hidden||e.metaKey||e.ctrlKey||e.altKey)return; if(e.target.closest('input,textarea,select,[contenteditable]'))return; if(document.querySelector('#cwheel'))return;
+  const k=e.key;
+  if(BGT.buf){if(k==='Enter'||k===' '||k==='Tab'){e.preventDefault(); if(bgTypeCommit()){bgNext(); bgDraw();} return;} if(k==='Escape'){BGT.buf=''; bgTypeShow(); return;} if(k==='Backspace'){e.preventDefault(); BGT.buf=BGT.buf.slice(0,-1); bgTypeShow(); return;}
+    if(k.length===1&&/[\wéè#♯♭+°ø()\/-]/i.test(k)){e.preventDefault(); BGT.buf+=k; bgTypeShow(); return;}
+    if(k.startsWith('Arrow')){bgTypeCommit();}}
+  if(k.length===1&&(/[a-g]/i.test(k)||S.fr&&/[dmfsl]/i.test(k))){e.preventDefault(); BGT.buf=k; bgTypeShow(); return;}
+  if(k==='%'){e.preventDefault(); $('#bgPct').click(); return;}
+  if(k==='Backspace'||k==='Delete'){e.preventDefault(); bgWriteCur(''); return;}
+  if(k==='Enter'||k===' '||k==='Tab'){e.preventDefault(); bgNext(); bgDraw(); return;}
+  if(k==='ArrowRight'){e.preventDefault(); const b=bgBar(); if(BG.sel.k<bgSlotsOf(b,bgMeter(BG.sel.si)).length-1&&b[0]!=='%'){BG.sel.k++; bgDraw();} else bgMoveBy(1); return;}
+  if(k==='ArrowLeft'){e.preventDefault(); if(BG.sel.k>0){BG.sel.k--; bgDraw();} else {bgMoveBy(-1); const b=bgBar(); BG.sel.k=b[0]==='%'?0:bgSlotsOf(b,bgMeter(BG.sel.si)).length-1; bgDraw();} return;}
+  if(k==='ArrowDown'){e.preventDefault(); bgMoveBy(+BG.g.per||4); return;} if(k==='ArrowUp'){e.preventDefault(); bgMoveBy(-(+BG.g.per||4)); return;}
+  if(k==='Escape'&&BG.paint){bgPaint(null);}});
+// réglage de la saisie
+$('#bgInBtn').onclick=ev=>{let p=$('#bgInPop'); if(p){p.remove(); return;} p=document.createElement('div'); p.id='bgInPop'; const st=bgIn(), auto=bgTouch()?'ligne de notes':'clavier de l’ordi';
+  const opt=(v,t,sub)=>`<button data-im="${v}" aria-pressed="${st.mode===v}"><b>${t}</b><span>${sub}</span></button>`;
+  p.innerHTML=`<b class="bgih">Saisie des accords</b>${opt('auto','Auto','ici : '+auto)}${opt('ligne','Ligne de notes','C D E F G A B · ♭ ♯ m 7 sous la grille')}${opt('clavier','Clavier de l’ordi','on tape « em7 », Entrée = case suivante')}${opt('roue','Roue','appui sur une case : roue centrée')}
+    <label class="bgib"><input type="checkbox" id="bgInBig"${st.big?' checked':''}> Ligne agrandie (maj7, sus4, dim, %, accords du morceau)</label><span class="bgis">Le clavier de l’ordi marche toujours. Une case coupée en 2, 3 ou 4 se remplit temps par temps.</span>`;
+  document.body.appendChild(p); const rc=ev.currentTarget.getBoundingClientRect(); p.style.top=(rc.bottom+6)+'px'; p.style.right=Math.max(8,innerWidth-rc.right)+'px';
+  p.onclick=e=>{const b=e.target.closest('[data-im]'); if(b){S.bgIn=Object.assign(bgIn(),{mode:b.dataset.im}); save(); p.remove(); bgDraw(); toast('Saisie : '+b.querySelector('b').textContent);}};
+  $('#bgInBig').onchange=e=>{S.bgIn=Object.assign(bgIn(),{big:e.target.checked}); save(); bgDraw();};
+  setTimeout(()=>document.addEventListener('pointerdown',function f(e){if(!e.target.closest('#bgInPop,#bgInBtn')){p.remove(); document.removeEventListener('pointerdown',f,true);}},true),0);};
 // remplir une case précise (sans avancer) : case entière si elle n'est pas coupée, sinon le temps touché
 function bgFillAt(si,bi,k,src){const bar=BG.g.secs[si].bars[bi]; if(src==='%'){bar.splice(0,bar.length,'%'); return;}
   if(bar[0]==='%'||bar.length===1){bar.splice(0,bar.length,src); return;} if(bar[k]==='=')k=2; bar[k]=src;}
@@ -7902,11 +7970,12 @@ function bgWheel(si,bi,k,el){if(BGD){clearTimeout(BGD.timer); if(BGD.ghost)BGD.g
   const bar=BG.g.secs[si].bars[bi], sl=bgSlotsOf(bar,bgMeter(si)); let ks=sl.findIndex(ix=>ix.includes(bar[k]==='='?2:k)); BG.sel={si,bi,k:Math.max(0,ks)};
   $$('#bgMain .bgc.on').forEach(e=>e.classList.remove('on')); el.classList.add('on');
   const chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].slice(0,8); try{navigator.vibrate&&navigator.vibrate(10);}catch(_){}
-  cwPick(el,n=>bgPut(n),chips);}
+  const rc=el.getBoundingClientRect(), cx=rc.left+rc.width/2; cwPick({getBoundingClientRect:()=>({left:cx-60,top:rc.top,width:120,height:rc.height})},n=>bgPut(n),chips,{circ:1});}
 function bgPut(name){const src=toSource(BG.r,name)||name; bgSet(()=>{const b=bgBar(); if(b[0]==='%'){b.splice(0,b.length,'');} bgSlotsOf(b,bgMeter(BG.sel.si))[Math.min(BG.sel.k,bgSlotsOf(b,bgMeter(BG.sel.si)).length-1)].forEach(i=>b[i]=src); bgNext();});}
 $('#bgMain').onclick=ev=>{if(Date.now()-(BG.noClick||0)<400)return; const nm=ev.target.closest('.bgname'); if(nm){bgRenameInline(nm); return;}
   const t=ev.target.closest('.bgc,.bgsec'); if(!t)return; const si=+t.dataset.si;
   if(BG.rng){BG.rng=null; if(!t.classList.contains('bgsec')){BG.sel={si,bi:+t.dataset.bi,k:0}; bgDraw(); return;}}
+  BG.last=null; BGT.buf=''; bgTypeShow();
   if(t.classList.contains('bgsec')){BG.sel={si,bi:0,k:0};} else {const bi=+t.dataset.bi; if(BG.sel.si===si&&BG.sel.bi===bi&&bgBar().length>1)BG.sel.k=(BG.sel.k+1)%bgSlotsOf(bgBar(),bgMeter(si)).length; else BG.sel={si,bi,k:0};}
   bgDraw();};
 $('#bgSplit').onclick=ev=>{const b=ev.target.closest('button'); if(!b)return; const n3b=b.dataset.n==='3b', n=n3b?3:+b.dataset.n; bgSet(()=>{const bar=bgBar(); if(bar[0]==='%'){let p=null; const sc=BG.g.secs[BG.sel.si]; for(let i=BG.sel.bi-1;i>=0;i--)if(sc.bars[i][0]!=='%'){p=sc.bars[i];break;} bar.splice(0,1,...(p?[p[p.length-1]]:['']));}
@@ -7919,14 +7988,9 @@ $('#bgMeas').onclick=async ev=>{const b=ev.target.closest('[data-mm]'); if(!b)re
     Object.keys(mt).forEach(k=>{if(!mt[k])delete mt[k];}); sc.mt[bi]=Object.keys(mt).length?mt:null; if(!sc.mt.some(Boolean))delete sc.mt;});};
 $('#bgSlots').onclick=ev=>{const b=ev.target.closest('[data-k]'); if(!b)return; BG.sel.k=+b.dataset.k; bgDraw();};
 $('#bgChips').onclick=ev=>{if(Date.now()-(BG.lp||0)<700||!BG.paint&&Date.now()-(BG.noClick||0)<400)return; const b=ev.target.closest('button'); if(!b)return; if(BG.paint){const v=toSource(BG.r,b.textContent)||b.textContent; bgPaint(BG.paint===v?null:v); return;} bgPut(b.textContent);};
-// barre rapide sous la grille : toucher = case en cours, appui long = pinceau
-$('#bgMain').addEventListener('pointerdown',ev=>{const b=ev.target.closest('#bgQuick [data-q]'); if(!b)return; ev.stopPropagation(); ev.preventDefault(); const q=b.dataset.q, v=q==='%'||q===''?q:(toSource(BG.r,q)||q); let long=false;
-  const t=setTimeout(()=>{long=true; if(v)bgPaint(BG.paint===v?null:v); try{navigator.vibrate&&navigator.vibrate(15);}catch(_){}},450);
-  const up=()=>{document.removeEventListener('pointerup',up); clearTimeout(t); BG.noClick=Date.now(); if(long)return; if(v===''){bgPaint(null); return;} if(BG.paint){bgPaint(BG.paint===v?null:v); return;}
-    if(v==='%')$('#bgPct').click(); else bgPut(q);}; document.addEventListener('pointerup',up);},true);
 // pinceau : chaque mesure touchée ou survolée prend l'accord
 let BGP=null;
-$('#bgEd').addEventListener('pointerdown',ev=>{if(!BG.paint||ev.button>0)return; if(ev.target.closest('#bgQuick'))return; const h=bgHit(ev.clientX,ev.clientY); if(!h)return; ev.stopPropagation(); ev.preventDefault(); BGP={last:''}; try{$('#bgEd').setPointerCapture(ev.pointerId);}catch(_){} bgPaintAt(ev.clientX,ev.clientY);},true);
+$('#bgEd').addEventListener('pointerdown',ev=>{if(!BG.paint||ev.button>0)return; if(ev.target.closest('#bgKeys'))return; const h=bgHit(ev.clientX,ev.clientY); if(!h)return; ev.stopPropagation(); ev.preventDefault(); BGP={last:''}; try{$('#bgEd').setPointerCapture(ev.pointerId);}catch(_){} bgPaintAt(ev.clientX,ev.clientY);},true);
 function bgPaintAt(x,y){const h=bgHit(x,y); if(!h)return; const key=h.si+'/'+h.bi+'/'+h.k; if(BGP.last===key)return; BGP.last=key; BG.noClick=Date.now(); BG.sel={si:h.si,bi:h.bi,k:0}; bgSet(()=>bgFillAt(h.si,h.bi,h.k,BG.paint));}
 document.addEventListener('pointermove',ev=>{if(BGP&&(ev.pointerType!=='mouse'||ev.buttons))bgPaintAt(ev.clientX,ev.clientY);});
 document.addEventListener('touchmove',ev=>{if(!BGP)return; const t=ev.touches[0]; if(t){bgPaintAt(t.clientX,t.clientY); if(ev.cancelable)ev.preventDefault();}},{passive:false});
@@ -8007,9 +8071,9 @@ $('#bgEd').addEventListener('pointerdown',ev=>{
   if(chip)chord=toSource(BG.r,chip.textContent)||chip.textContent;
   else if(cell){const si=+cell.dataset.si, bi=+cell.dataset.bi, bar=BG.g.secs[si].bars[bi], rc=cell.getBoundingClientRect(), k=bgPartAt(bar.length,(ev.clientX-rc.left)/rc.width,(ev.clientY-rc.top)/rc.height,bgMeter(si)); if(bar[k]==='=')k=2; if(bar[k]&&bar[k]!=='%'){chord=bar[k]; from={si,bi,k};}}
   if(BG.paint)return;
-  if(cell&&!chord){const h=bgHit(ev.clientX,ev.clientY); if(!h)return; BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord:null,wheel:1,timer:setTimeout(()=>bgWheel(h.si,h.bi,h.k,cell),300)}; return;}
+  if(cell&&!chord&&bgInMode()==='roue'){const h=bgHit(ev.clientX,ev.clientY); if(!h)return; BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord:null,wheel:1,timer:setTimeout(()=>bgWheel(h.si,h.bi,h.k,cell),300)}; return;}
   if(!chord)return;
-  if(from)setTimeout(()=>{const d=BGD; if(d&&d.from===from&&Math.hypot(d.cx-d.x,d.cy-d.y)<10)bgWheel(from.si,from.bi,from.k,cell);},850);
+  if(from&&bgInMode()==='roue')setTimeout(()=>{const d=BGD; if(d&&d.from===from&&Math.hypot(d.cx-d.x,d.cy-d.y)<10)bgWheel(from.si,from.bi,from.k,cell);},850);
   if(chip){const v=chord; setTimeout(()=>{const d=BGD; if(d&&d.chip&&Math.hypot(d.cx-d.x,d.cy-d.y)<10){clearTimeout(d.timer); if(d.ghost)d.ghost.remove(); BGD=null; BG.noClick=Date.now()+300; BG.lp=Date.now(); bgPaint(BG.paint===v?null:v); try{navigator.vibrate&&navigator.vibrate(15);}catch(_){}}},500);}
   BGD={chip:!!chip,x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord,from,on:false,timer:from?setTimeout(bgDragOn,420):0};
 });
@@ -8126,7 +8190,7 @@ $('#bgFL').onclick=()=>{const j=BG.f; if(j==null||j<1)return; bgSet(()=>{const f
 $('#bgFR').onclick=()=>{const j=BG.f, f=BG.g.form; if(j==null||j>=f.length-1)return; bgSet(()=>{[f[j+1],f[j]]=[f[j],f[j+1]]; BG.f=j+1;});};
 $('#bgFX').onclick=()=>{const j=BG.f; if(j==null)return; bgSet(()=>{BG.g.form.splice(j,1); BG.f=null;});};
 $('#bgRegen').onclick=()=>{if(!confirm('Recréer la grille à partir des accords des paroles ? Tes modifications de la grille seront remplacées.'))return; const a=compute({...BG.s,bgrid:null}).autoGrid; bgSet(()=>{const per=BG.g.per; BG.g=JSON.parse(JSON.stringify(a)); if(per)BG.g.per=per; BG.sel={si:0,bi:0,k:0}; BG.f=null;});};
-function bgClose(){$('#bgEd').hidden=true; V.lastKey=null; vRender();}
+function bgClose(){BGT.buf=''; bgTypeShow(); const ip=$('#bgInPop'); if(ip)ip.remove(); $('#bgEd').hidden=true; V.lastKey=null; vRender();}
 $('#bgSave').onclick=()=>{const s=BG.s; s.bgrid=JSON.parse(JSON.stringify(BG.g)); if((s.view||'grille')!=='accords')s.view='accords'; touch(s); save(); if(s._el)update(s); else if($('#viewer').hidden)renderAll(); BG.dirty=false; bgClose(); toast('Grille enregistrée');};
 $('#bgBack').onclick=()=>{if(BG.dirty&&!confirm('Quitter sans enregistrer la grille ?'))return; bgClose();};
 $('#vbgEdit').onclick=e=>{e.stopPropagation(); const c=V.list[V.i]; if(c)openBG(c,0,0);};
