@@ -394,6 +394,8 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 .vtitem .vtnote{flex:1}
 .vtfoot{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 #vtChips{display:flex;gap:6px;flex-wrap:wrap}
+.vttool{font-size:18px!important;min-width:46px}.vttool[aria-pressed=true]{background:var(--acc)!important;color:#fff!important;border-color:var(--acc)!important}
+#vtPrev.erasing{touch-action:none;cursor:crosshair}#vtPrev.erasing .ch{outline:1px dashed #ef4444;outline-offset:1px}#vtPrev .ch.erz{background:#ef4444!important;color:#fff!important;text-decoration:line-through}
 @media (max-width:560px){.vtfoot>.lab,.vtfoot>.grow{display:none}#vtChips{flex:1 1 calc(100% - 80px);flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}#vtChips button{flex:none}.vtfoot button{height:40px;padding:0 9px;font-size:13px}}
 .vtfoot button{height:46px}
 .vtother{border-style:dashed!important;color:var(--hl,#fb923c)!important}
@@ -611,6 +613,8 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 #bgPad.rngmode>*:not(#bgRngPad){display:none!important}
 #bgPad .bgmrow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) 40px;gap:5px}#bgPad .bgmrow button{padding:0 2px;font-size:12.5px;min-height:40px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 #bgPad .bgopt{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:13px}
+.bgchh{display:flex;align-items:center;gap:6px}.bgchh .bgfold{flex:1}.bgtool{width:40px;height:32px;padding:0!important;font-size:16px!important;flex:0 0 auto}.bgtool[aria-pressed=true]{background:#6ea8fe!important;border-color:#6ea8fe!important}
+#bgMain.erasing .bgc{cursor:crosshair}
 .bgfold{display:flex;width:100%;align-items:center;justify-content:space-between;background:none!important;border:0!important;padding:2px 0!important;min-height:0!important;height:auto!important;font:700 11px Inter,system-ui!important;letter-spacing:.6px;text-transform:uppercase;color:#a1a1aa!important}
 .bgfold i{font-style:normal;transition:transform .15s}#bgChipsBox.shut .bgfold i{transform:rotate(-90deg)}#bgChipsBox.shut #bgChips{display:none}
 #bgKeys .bgbub button.wide{grid-column:span 4}
@@ -1409,6 +1413,22 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 .bgoc.sug .bgv b{color:#1d4ed8;border-color:#93c5fd;font-style:italic}.bgoc.sug{outline:2px dashed #60a5fa;outline-offset:-2px}
 #bgoSure{height:34px;padding:0 12px;border-radius:9px;background:#1d4ed8!important;color:#fff!important;border:0!important;font-weight:700}
 
+
+#undoSnack{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:2100;display:flex;align-items:center;gap:12px;padding:8px 8px 8px 16px;border-radius:14px;background:#1f2026;color:#f4f4f5;border:1px solid #3a3d46;box-shadow:0 12px 30px rgba(0,0,0,.5);font:600 14px Inter,system-ui;max-width:92vw}
+#undoSnack[hidden]{display:none}#undoSnack button{height:34px;padding:0 12px;border-radius:10px;background:var(--acc);color:#fff;border:0;font:700 13px Inter,system-ui;white-space:nowrap}
+#plPick .box{max-width:440px;width:calc(100% - 24px)}#plPick .plwhat{margin:-4px 0 10px}#plPick .plnew{display:flex;gap:8px}#plPick .plnew input{flex:1;min-width:0}
+#plPick .pllist{display:flex;flex-direction:column;gap:6px;margin-top:12px;max-height:55vh;overflow:auto}
+#plPick .pllist button{display:grid;grid-template-columns:28px 1fr;grid-template-rows:auto auto;column-gap:8px;text-align:left;padding:10px 12px;border-radius:12px;height:auto;align-items:center}
+#plPick .pllist button .plck{grid-row:span 2;width:24px;height:24px;border-radius:7px;border:2px solid var(--line,#3a3d46);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff}
+#plPick .pllist button.in .plck{background:var(--acc);border-color:var(--acc)}#plPick .pllist button small{color:var(--mut,#a1a1aa);font-size:12px}
+
+.syncb{display:inline-flex;align-items:center;gap:6px;font-weight:700}.syncb .sbi{font-size:16px}.syncb.ok .sbi{color:#22c55e}.syncb.busy .sbi{color:#60a5fa;animation:spin 1s linear infinite;display:inline-block}.syncb.pend{color:#f59e0b}.syncb.err{color:#ef4444}.syncb.off{opacity:.7}
+@keyframes spin{to{transform:rotate(360deg)}}@media (max-width:700px){.syncb .sbt{display:none}}
+#syncPanel .box{max-width:520px;width:calc(100% - 24px)}#syncPanel .spst{padding:10px 12px;border-radius:12px;background:rgba(128,128,128,.14);font-weight:700;margin-bottom:10px}#syncPanel .spst.ok{background:rgba(34,197,94,.15)}#syncPanel .spst.pend{background:rgba(245,158,11,.16)}#syncPanel .spst.err{background:rgba(239,68,68,.15)}#syncPanel .spst.busy{background:rgba(96,165,250,.16)}
+#syncPanel .sprow{display:grid;grid-template-columns:96px 1fr;gap:10px;padding:9px 0;border-bottom:1px solid var(--line,#2a2e38);font-size:14px;line-height:1.5}#syncPanel .sprow>span{color:var(--mut,#a1a1aa);font-weight:600}
+#syncPanel .sppath{font-family:ui-monospace,Menlo,monospace;font-size:13px;opacity:.85}#syncPanel .spchk{margin:10px 0;padding:10px 12px;border-radius:12px;background:rgba(128,128,128,.12);font-size:14px;line-height:1.5}
+#syncPanel .spbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+#dlgBox .box{max-width:420px;width:calc(100% - 24px)}#dlgBox .dlgmsg{white-space:pre-line;font-size:15px;line-height:1.5;margin:4px 0 14px}#dlgBox input{width:100%;box-sizing:border-box;margin-bottom:12px}#dlgBox .dlgbtns{justify-content:flex-end;gap:8px}#dlgBox .danger{background:#dc2626!important;color:#fff!important;border-color:#dc2626!important}
 /* ===== Accords 10 : un peu de neuf (design « Accords » par défaut, retouches légères pour les autres) ===== */
 :root{--r10:14px}
 button,select,input,textarea{transition:background-color .15s,border-color .15s,box-shadow .15s,transform .08s}
@@ -1437,6 +1457,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
     <h1>🎸 Accords</h1>
     <div class="tabs" style="display:none"><button id="tabLib" aria-pressed="true">Bibliothèque</button><button id="tabLists">Playlists</button></div>
     <label class="hsearch grow"><span aria-hidden="true">🔍</span><input type="search" id="homeQ" placeholder="Chercher un morceau, un artiste…" autocomplete="off"><button type="button" id="qLyr" class="qlyr" aria-pressed="false" title="Chercher aussi dans les paroles"><i></i>Paroles</button></label>
+    <button id="syncBtn" class="hbtn syncb off" title="Synchro : où sont enregistrés tes morceaux"><span class="sbi">☁</span><span class="sbt">Synchro</span></button>
     <button id="myQrBtn" class="hbtn" title="Afficher mon QR pour que les musiciens me suivent"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg><span class="hl"> Mon QR</span></button>
     <button id="shareHome" class="hbtn" title="Envoyer des morceaux et des playlists"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg><span> Partager</span></button>
     <button id="scanBtn" aria-label="Scanner un QR code" title="Scanner un QR code">📷</button>
@@ -1537,7 +1558,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.0.3</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.1.0</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes">
       <section data-cat="moi"><h3>Moi</h3>
@@ -1664,6 +1685,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
 </div></div>
 
 <!-- ===== Question simple ===== -->
+<div id="syncPanel" class="modal" hidden><div class="box"><h2>☁ Synchro <button class="close">✕</button></h2><div class="spbody"></div></div></div>
 <div id="askBox" class="modal" hidden><div class="box">
   <h2><span id="askTitle"></span> <button class="close">✕</button></h2>
   <input type="text" id="askIn" autocomplete="off">
@@ -2223,7 +2245,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
         <div id="bgHelpTxt" class="bgrs" hidden>Glisse sur les mesures = sélection · appui long sur une case = roue · appui long sur un accord du morceau = pinceau · glisse un accord sur une case pour l’y poser · « Temps » : glisse ↕ pour changer, appui long = roue.</div>
         <div id="bgClip" hidden><span class="bgck">EN MÉMOIRE</span><b id="bgClipTxt"></b><span class="bgrs" id="bgClipFrom"></span>
           <div class="bggrid2"><button id="bgPaste" class="bgok">Coller après</button><button id="bgPasteRep">Remplacer</button></div><button id="bgClipX" class="bgcx" aria-label="Oublier la copie">✕</button></div>
-        <div id="bgChipsBox"><button id="bgChipsT" class="bgfold"><span>Accords du morceau</span><i>▾</i></button><div class="bgchips" id="bgChips"></div></div>
+        <div id="bgChipsBox"><div class="bgchh"><button id="bgChipsT" class="bgfold"><span>Accords du morceau</span><i>▾</i></button><button id="bgBrush" class="bgtool" title="Pinceau : choisis un accord, puis touche ou glisse sur les cases" aria-label="Pinceau">🖌</button><button id="bgEraser" class="bgtool" title="Gomme : touche ou glisse sur les cases pour les vider" aria-label="Gomme">🧽</button></div><div class="bgchips" id="bgChips"></div></div>
         <div class="bgtabs" id="bgTabs"><button data-t="mes">Mesure</button><button data-t="sig">Signes</button><button data-t="sec">Section</button></div>
         <div class="bgtp" data-t="mes">
           <h4>Découpage</h4><div class="bggrid4" id="bgSplit"></div>
@@ -2263,7 +2285,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
     <div class="vtwrap"><div id="vtGut" title="Touche un libellé pour changer le type de la ligne"></div><textarea id="vtextArea" spellcheck="false" wrap="off" inputmode="none" placeholder="Colle ou écris le morceau ici : une ligne d'accords au-dessus de chaque ligne de paroles."></textarea><pre id="vtPrev" aria-label="Aperçu" hidden></pre></div>
     <div id="vtWarn"></div>
     <div class="vtfoot">
-      <span class="lab">Accords</span><div id="vtChips"></div><button id="vtPlus" class="vtplus" aria-label="Choisir un accord avec la roue (maintenir et glisser)">＋</button><button id="vtOther" class="vtother">Autre…</button>
+      <span class="lab">Accords</span><div id="vtChips"></div><button id="vtPlus" class="vtplus" aria-label="Choisir un accord avec la roue (maintenir et glisser)">＋</button><button id="vtOther" class="vtother">Autre…</button><button id="vtBrush" class="vttool" title="Pinceau : choisis un accord, puis touche les mots" aria-label="Pinceau">🖌</button><button id="vtEraser" class="vttool" title="Gomme : touche ou glisse sur les accords pour les effacer" aria-label="Gomme">🧽</button>
       <span class="grow"></span>
       <button id="vtSec" class="vtsec">+ Section</button><button id="vtTabEd" class="vttab" hidden>✎ Tablature au pavé</button><button id="vtTabUp" class="vttab" hidden aria-label="Monter la tablature">▲</button><button id="vtTabDn" class="vttab" hidden aria-label="Descendre la tablature">▼</button><button id="vtTab" class="vttab">+ Tablature</button><button id="vtDrum" class="vttab">+ Batterie</button>
       <span id="vtSelBar"><button id="vtDel" class="vtsel" hidden>🗑 Effacer</button><button id="vtCut" class="vtsel" hidden>✂ Couper</button><button id="vtCopy" class="vtsel" hidden>Copier</button><button id="vtBk" class="vtsel" aria-label="Effacer le caractère avant le curseur">⌫</button><button id="vtPaste" class="vtsel">📋 Coller</button></span>
@@ -2802,7 +2824,7 @@ let FOLLOW=/[?&]suivre\b/.test(location.search);
 let syncTimer=null;
 function save(){
   try{localStorage.setItem(KEY,JSON.stringify(S,(k,v)=>k[0]==='_'?undefined:v));}catch(e){}
-  if(Sync.ready){clearTimeout(syncTimer); const go=()=>{if(!$('#viewer').hidden){syncTimer=setTimeout(go,30000);return;} Sync.run(true);}; syncTimer=setTimeout(go,20000);}
+  if(Sync.ready){Sync.pending=true; try{syncUI();}catch(e){} clearTimeout(syncTimer); const go=()=>{if(!$('#viewer').hidden){syncTimer=setTimeout(go,30000);return;} Sync.run(true);}; syncTimer=setTimeout(go,6000);}
 }
 const touch=o=>{o.up=Date.now(); S.up=o.up;};
 // étiquettes (remplacent l'ancien « type ») : plusieurs par morceau ; « à travailler » est une étiquette comme les autres
@@ -2848,6 +2870,35 @@ const LINKS=[
 ];
 function toast(m,ms){let t=$('#toast'); if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 16px;border-radius:10px;z-index:2000;font-size:14px;max-width:90%;pointer-events:none';document.body.appendChild(t);} t.textContent=m; t.style.display='block'; clearTimeout(t._t); t._t=setTimeout(()=>t.style.display='none',ms||2600);}
 function modal(id,show){$(id).hidden=!show;}
+// fenêtres de l'appli à la place de confirm() / prompt() du navigateur
+function dlgBox(msg,o){o=o||{}; return new Promise(res=>{let box=$('#dlgBox'); if(!box){box=document.createElement('div'); box.id='dlgBox'; box.className='modal'; document.body.appendChild(box);}
+  const isP=o.input!==undefined; box.innerHTML=`<div class="box"><p class="dlgmsg">${esc(msg)}</p>${isP?'<input type="text" id="dlgIn" autocomplete="off">':''}<div class="row dlgbtns"><button class="dlgno">${esc(o.cancel||'Annuler')}</button><button class="dlgok ${o.danger?'danger':'pri'}">${esc(o.ok||'OK')}</button></div></div>`;
+  box.hidden=false; const inp=$('#dlgIn'); if(inp){inp.value=o.input||''; setTimeout(()=>{inp.focus(); inp.select();},30);} else setTimeout(()=>box.querySelector('.dlgok').focus(),30);
+  const done=v=>{box.hidden=true; document.removeEventListener('keydown',kd,true); res(v);}, ok=()=>done(isP?inp.value:true), no=()=>done(isP?null:false);
+  const kd=e=>{if(e.key==='Escape'){e.preventDefault(); e.stopPropagation(); no();} else if(e.key==='Enter'&&(isP||document.activeElement===box.querySelector('.dlgok'))){e.preventDefault(); e.stopPropagation(); ok();}};
+  document.addEventListener('keydown',kd,true); box.querySelector('.dlgok').onclick=ok; box.querySelector('.dlgno').onclick=no; box.onclick=e=>{if(e.target===box)no();};});}
+const confirmBox=(msg,o)=>dlgBox(msg,Object.assign({ok:'OK'},o||{}));
+const promptBox=(msg,def,o)=>dlgBox(msg,Object.assign({input:def||'',ok:'OK'},o||{}));
+// bandeau avec « Annuler » (6 s)
+function undoSnack(msg,undo,ms){let el=$('#undoSnack'); if(!el){el=document.createElement('div'); el.id='undoSnack'; document.body.appendChild(el);} clearTimeout(undoSnack.t);
+  el.innerHTML=`<span>${msg}</span>`+(undo?'<button>↶ Annuler</button>':''); el.hidden=false; const b=el.querySelector('button'); if(b)b.onclick=()=>{el.hidden=true; clearTimeout(undoSnack.t); undo();};
+  undoSnack.t=setTimeout(()=>{el.hidden=true;},ms||6000);}
+// choisir une playlist : nouvelle en haut, les existantes dessous (cochées si les morceaux y sont déjà)
+function pickList(ids,title){ids=[...new Set(ids)]; if(!ids.length)return; let box=$('#plPick'); if(!box){box=document.createElement('div'); box.id='plPick'; box.className='modal'; document.body.appendChild(box);}
+  const n=ids.length, lab=n===1?'« '+esc((songById(ids[0])||{}).q||'')+' »':n+' morceaux';
+  box.innerHTML=`<div class="box"><h2>${title||'Ajouter à une playlist'} <button class="close">✕</button></h2><p class="lab plwhat">${lab}</p>
+    <div class="plnew"><input type="text" id="plIn" placeholder="${S.lists.length>8?'Chercher, ou nom d’une nouvelle playlist':'Nom d’une nouvelle playlist'}" autocomplete="off"><button class="pri" id="plCreate">＋ Créer</button></div><div class="pllist" id="plList"></div></div>`;
+  box.hidden=false; box.querySelector('.close').onclick=()=>box.hidden=true; box.onclick=e=>{if(e.target===box)box.hidden=true;};
+  const draw=()=>{const q=$('#plIn').value.trim().toLowerCase(); const ls=[...S.lists].sort((a,b)=>(b.up||0)-(a.up||0)).filter(l=>!q||l.name.toLowerCase().includes(q));
+    $('#plList').innerHTML=ls.map(l=>{const has=ids.filter(id=>l.items.some(it=>it.sid===id)).length, all=has===n; return `<button data-pl="${l.id}" class="${all?'in':''}"><span class="plck">${all?'✓':has?'◐':''}</span><b>${esc(l.name)}</b><small>${l.items.length} morceau${l.items.length>1?'x':''}${has&&!all?' · '+has+' déjà dedans':''}</small></button>`;}).join('')||`<p class="lab">${S.lists.length?'Aucune playlist ne correspond : touche « ＋ Créer ».':'Pas encore de playlist : donne-lui un nom ci-dessus.'}</p>`;
+    $('#plCreate').disabled=!$('#plIn').value.trim();};
+  const apply=l=>{const before=JSON.stringify(l.items), has=ids.filter(id=>l.items.some(it=>it.sid===id)); let msg;
+    if(has.length===n){l.items=l.items.filter(it=>!ids.includes(it.sid)); msg=(n===1?'Retiré de':n+' morceaux retirés de')+' « '+esc(l.name)+' »';}
+    else {ids.filter(id=>!has.includes(id)).forEach(id=>l.items.push({sid:id,target:null,capo:null,notes:'',dur:''})); msg=(n===1?'Ajouté à':(n-has.length)+' morceaux ajoutés à')+' « '+esc(l.name)+' »';}
+    touch(l); save(); renderAll(); draw(); undoSnack(msg,()=>{l.items=JSON.parse(before); touch(l); save(); renderAll(); if(!$('#plPick').hidden)draw();});};
+  $('#plList').onclick=e=>{const b=e.target.closest('[data-pl]'); if(b){apply(listById(b.dataset.pl)); setTimeout(()=>box.hidden=true,250);}};
+  $('#plIn').oninput=draw; const create=()=>{const v=$('#plIn').value.trim(); if(!v)return; let l=S.lists.find(x=>x.name.toLowerCase()===v.toLowerCase()); if(!l){l={id:uid(),name:v,date:'',notes:'',items:[],up:Date.now()}; S.lists.push(l);} apply(l); box.hidden=true;};
+  $('#plCreate').onclick=create; $('#plIn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault(); create();}}; draw(); if(!S.lists.length)setTimeout(()=>$('#plIn').focus(),50);}
 $$('.modal .close').forEach(b=>b.onclick=()=>b.closest('.modal').hidden=true);
 $$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.hidden=true;}));
 
@@ -3042,7 +3093,7 @@ function mergeRest(data,n){
 function importJSON(file){
   const rd=new FileReader(); rd.onload=()=>importData(rd.result,{ask:true}); rd.readAsText(file);
 }
-function importData(text,{ask=true}={}){
+async function importData(text,{ask=true}={}){
   {
     let data; try{data=JSON.parse(text);}catch(e){toast('Fichier JSON illisible.');return;}
     if(data&&data.rev!=null&&Array.isArray(data.songs)&&!data.app) data=liveToPack(data);   // playlist récupérée d'une diffusion
@@ -3050,7 +3101,7 @@ function importData(text,{ask=true}={}){
       data={songs:(data.songs||[]).map(s=>({q:(s.artist?s.artist+' - ':'')+s.title,text:s.text,view:'paroles'}))};
     }
     const list=Array.isArray(data)?data:data.songs; if(!Array.isArray(list)){toast('Aucune chanson dans ce fichier.');return;}
-    const replace=ask&&S.songs.length&&confirm(`${list.length} chanson(s)${data.lists&&data.lists.length?' et '+data.lists.length+' playlist(s)':''} dans le fichier.\n\nOK = remplacer ta bibliothèque\nAnnuler = fusionner`);
+    const replace=ask&&S.songs.length&&await confirmBox(`${list.length} chanson(s)${data.lists&&data.lists.length?' et '+data.lists.length+' playlist(s)':''} dans le fichier.\n\nOK = remplacer ta bibliothèque\nAnnuler = fusionner`);
     if(!replace){openRecv(data,data.from||''); return;}
     const n=mergePack(data,{replace}); toast(n+' chanson(s) importée(s)'+(data.lists&&data.lists.length?' + '+data.lists.length+' playlist(s)':''));
   }
@@ -3159,7 +3210,7 @@ async function qrPayload(t){
   if(/^https?:\/\/[^/]+\/\?suivre/.test(t)){
     stopScan(); const url=t, origin=url.split('/?')[0];
     if(false){
-      try{const r=await ftch(origin+'/lib?t='+Date.now(),20000); if(r.ok){const txt=await r.text(); const d=JSON.parse(txt); if(confirm(`Il partage tout son répertoire : ${d.songs.length} morceau(x), ${(d.lists||[]).length} playlist(s).\n\nOK = tout copier\nAnnuler = seulement la playlist en cours`)){importData(txt,{ask:false}); return true;}}}catch(e){}
+      try{const r=await ftch(origin+'/lib?t='+Date.now(),20000); if(r.ok){const txt=await r.text(); const d=JSON.parse(txt); if(await confirmBox(`Il partage tout son répertoire : ${d.songs.length} morceau(x), ${(d.lists||[]).length} playlist(s).\n\nOK = tout copier\nAnnuler = seulement la playlist en cours`)){importData(txt,{ask:false}); return true;}}}catch(e){}
       try{const set=await (await fetch(origin+'/set',{cache:'no-store'})).json(); importData(JSON.stringify(set),{ask:false});}catch(e){toast('Impossible de joindre la tablette : même Wi-Fi ?');}
     } else {if(APP)startFollowApp(origin); else location.href=url;}
     return true;
@@ -3322,7 +3373,7 @@ function buildCard(song){
   q('.full').onclick=()=>{const es=libEntries(); openViewer(es,es.findIndex(e=>e.s===song));};
   q('.share').onclick=()=>openShare([entryOf(song)],null,song.q);
   q('.copy').onclick=()=>copy(song.view==='paroles'?song._r.lyrics:song.view==='accords'?song._r.barsTxt:song._r.gridTxt,q('.copy'));
-  q('.del').onclick=()=>{if(confirm('Supprimer « '+song.q+' » ?')){S.del.songs[song.id]=Date.now(); S.songs=S.songs.filter(x=>x!==song); S.lists.forEach(l=>l.items=l.items.filter(it=>it.sid!==song.id)); Media.del(song.id); save(); renderAll();}};
+  q('.del').onclick=async()=>{if(await confirmBox('Supprimer « '+song.q+' » ?',{ok:'Supprimer',danger:1})){S.del.songs[song.id]=Date.now(); S.songs=S.songs.filter(x=>x!==song); S.lists.forEach(l=>l.items=l.items.filter(it=>it.sid!==song.id)); Media.del(song.id); save(); renderAll();}};
   q('.grid').onclick=e=>{
     const ch=e.target.closest('.ch'); if(ch){openChordEdit(song,+ch.parentElement.dataset.raw,+ch.dataset.k,ch.textContent); return;}
     const tb=e.target.closest('[data-tab]'); if(tb){openTabEditor(song,+tb.dataset.tab); return;}
@@ -3686,8 +3737,8 @@ function convertInline(song){
   lines.forEach((l,i)=>{const c=p.lines.find(x=>x.i===i&&x.inline); if(c){out.push(c.s); const ly=p.lines.find(x=>x.i===i&&x.t==='l'); if(ly)out.push(ly.s);} else out.push(l);});
   song.text=out.join('\n'); afterEdit(song);
 }
-function askConvert(song){
-  if(confirm('Ce morceau est au format [Am]paroles. Le convertir en accords au-dessus des paroles pour pouvoir l\'éditer ?')){convertInline(song); toast('Converti : touche à nouveau l\'endroit voulu.');}
+async function askConvert(song){
+  if(await confirmBox('Ce morceau est au format [Am]paroles. Le convertir en accords au-dessus des paroles pour pouvoir l\'éditer ?')){convertInline(song); toast('Converti : touche à nouveau l\'endroit voulu.');}
 }
 // fn(indiceLigne, indiceMot, accord) -> nouveau nom, '' pour supprimer, null pour garder
 function replaceTokens(song,fn){
@@ -3923,10 +3974,10 @@ function chordDrag(st,getOps){let D=null;
 chordDrag($('#vstage'),()=>{if(!(V.edit&&V.emode!=='text'||V.lite)||FOLLOW)return null; const cur=V.list[V.i]; if(!cur)return null;
   return {noClick:t=>V.noClick=t, cur:()=>cur, rep:(raw,k,n)=>{beginEdit(cur.s); replaceTokens(cur.s,(li,ti)=>li===raw&&ti===k?n:null); afterEdit(cur.s);}, move:(raw,k,col)=>moveChordTo(cur.s,raw,k,col), del:(raw,k)=>{beginEdit(cur.s); replaceTokens(cur.s,(li,ti)=>li===raw&&ti===k?'':null); afterEdit(cur.s);}};});
 
-function bakeKey(song,r){
+async function bakeKey(song,r){
   r=r||song._r; if(!r||!r.key)return;
   if(hasInline(song)){askConvert(song);return;}
-  if(!confirm(`Réécrire la grille en ${keyName(r.shape,r.key.minor)}${r.capo?' (capo '+r.capo+')':''} ? L'original reste récupérable avec ↶.`))return;
+  if(!await confirmBox(`Réécrire la grille en ${keyName(r.shape,r.key.minor)}${r.capo?' (capo '+r.capo+')':''} ? L'original reste récupérable avec ↶.`))return;
   beginEdit(song);
   const p=parseSheet(song.text), lines=song.text.split('\n');
   p.lines.forEach(L=>{if(L.t==='c'&&!L.inline)lines[L.i]=mapChords(lines[L.i],r.cn);});
@@ -4193,8 +4244,8 @@ $('#tabSave').onclick=()=>{
     if(tabCtx.idx>=0)song.tabs[tabCtx.idx]=tb; else song.tabs.push(tb);}
   afterEdit(song); modal('#tabBox',false);
 };
-$('#tabDelete').onclick=()=>{if(tabCtx.mode==='ta'){if(!confirm('Supprimer cette tablature ?'))return; tabStop(); const ta=$('#vtextArea'), lines=ta.value.split('\n'); lines.splice(tabCtx.a,tabCtx.b-tabCtx.a+1); ta.value=lines.join('\n'); modal('#tabBox',false); vtAnalyze(); vtCaret(); return;}
-  const {song,idx}=tabCtx; if(idx>=0&&confirm('Supprimer cette tablature ?')){tabStop(); beginEdit(song); song.tabs.splice(idx,1); afterEdit(song);} modal('#tabBox',false);};
+$('#tabDelete').onclick=async()=>{if(tabCtx.mode==='ta'){if(!await confirmBox('Supprimer cette tablature ?',{ok:'Supprimer',danger:1}))return; tabStop(); const ta=$('#vtextArea'), lines=ta.value.split('\n'); lines.splice(tabCtx.a,tabCtx.b-tabCtx.a+1); ta.value=lines.join('\n'); modal('#tabBox',false); vtAnalyze(); vtCaret(); return;}
+  const {song,idx}=tabCtx; if(idx>=0&&await confirmBox('Supprimer cette tablature ?',{ok:'Supprimer',danger:1})){tabStop(); beginEdit(song); song.tabs.splice(idx,1); afterEdit(song);} modal('#tabBox',false);};
 $('#tabBox .close').addEventListener('click',()=>tabStop());
 document.addEventListener('keydown',e=>{
   if($('#tabBox').hidden||/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
@@ -4333,8 +4384,8 @@ $('#drSave').onclick=()=>{
   delete tb.tuning; delete tb.custom; if(idx>=0)song.tabs[idx]=tb; else song.tabs.push(tb);
   afterEdit(song); modal('#drumBox',false);
 };
-$('#drDelete').onclick=()=>{if(DR.ta&&DR.ta.mode==='raw'){const t=DR.ta, song=DR.song; if(confirm('Supprimer ce rythme ?')){const lines=song.text.split('\n'); beginEdit(song); lines.splice(t.a,t.b-t.a+1); song.text=lines.join('\n'); afterEdit(song);} drStop(); modal('#drumBox',false); return;}
-  if(DR.ta){const t=DR.ta; if(t.a>=0&&confirm('Supprimer ce rythme ?')){const ta=$('#vtextArea'), lines=ta.value.split('\n'); lines.splice(t.a,t.b-t.a+1); ta.value=lines.join('\n'); vtAnalyze(); vtCaret();} drStop(); modal('#drumBox',false); return;} const {song,idx}=DR; if(idx>=0&&confirm('Supprimer ce rythme ?')){drStop(); beginEdit(song); song.tabs.splice(idx,1); afterEdit(song);} modal('#drumBox',false);};
+$('#drDelete').onclick=async()=>{if(DR.ta&&DR.ta.mode==='raw'){const t=DR.ta, song=DR.song; if(await confirmBox('Supprimer ce rythme ?',{ok:'Supprimer',danger:1})){const lines=song.text.split('\n'); beginEdit(song); lines.splice(t.a,t.b-t.a+1); song.text=lines.join('\n'); afterEdit(song);} drStop(); modal('#drumBox',false); return;}
+  if(DR.ta){const t=DR.ta; if(t.a>=0&&await confirmBox('Supprimer ce rythme ?',{ok:'Supprimer',danger:1})){const ta=$('#vtextArea'), lines=ta.value.split('\n'); lines.splice(t.a,t.b-t.a+1); ta.value=lines.join('\n'); vtAnalyze(); vtCaret();} drStop(); modal('#drumBox',false); return;} const {song,idx}=DR; if(idx>=0&&confirm('Supprimer ce rythme ?')){drStop(); beginEdit(song); song.tabs.splice(idx,1); afterEdit(song);} modal('#drumBox',false);};
 
 /* ======================================================================
    9. Diagrammes d'accords
@@ -4428,15 +4479,16 @@ function longPress(root,sel,cb){
 }
 /* ---------- actions communes sur des morceaux ---------- */
 async function addSongsToList(ids){
-  if(!ids.length)return; $('#dlLists').innerHTML=S.lists.map(l=>`<option value="${esc(l.name)}">`).join('');
-  const v=await ask('Ajouter à une playlist','Nom d\'une playlist (nouvelle si elle n\'existe pas)','dlLists'); if(!v||!v.trim())return;
-  let l=S.lists.find(x=>x.name.toLowerCase()===v.trim().toLowerCase()); if(!l){l={id:uid(),name:v.trim(),date:'',notes:'',items:[],up:Date.now()}; S.lists.push(l);}
-  ids.forEach(id=>l.items.push({sid:id,target:null,capo:null,notes:'',dur:''})); touch(l); save(); renderAll(); toast(ids.length+' morceau(x) ajouté(s) à « '+l.name+' »');
+  if(!ids.length)return; pickList(ids);
 }
 function deleteSongs(ids){
-  if(!ids.length||!confirm(ids.length===1?'Supprimer « '+(songById(ids[0])||{}).q+' » ?':'Supprimer '+ids.length+' morceaux ?'))return;
-  const set=new Set(ids); set.forEach(id=>{S.del.songs[id]=Date.now(); Media.del(id); S.lists.forEach(l=>l.items=l.items.filter(it=>it.sid!==id)); SEL.delete(id);});
+  if(!ids.length)return; const set=new Set(ids), name=ids.length===1?'« '+esc((songById(ids[0])||{}).q||'')+' » supprimé':ids.length+' morceaux supprimés';
+  const snap={songs:S.songs.slice(), items:S.lists.map(l=>[l,l.items.slice()]), del:Object.assign({},S.del.songs)};
+  set.forEach(id=>{S.del.songs[id]=Date.now(); S.lists.forEach(l=>l.items=l.items.filter(it=>it.sid!==id)); SEL.delete(id);});
   S.songs=S.songs.filter(s=>!set.has(s.id)); if(FICHE&&set.has(FICHE))closeFiche(); save(); renderAll();
+  // les fichiers (sons, images) ne partent qu'une fois le bandeau « Annuler » disparu
+  const t=setTimeout(()=>set.forEach(id=>Media.del(id)),6500);
+  undoSnack(name,()=>{clearTimeout(t); S.songs=snap.songs; snap.items.forEach(([l,it])=>l.items=it); S.del.songs=snap.del; S.songs.filter(x=>set.has(x.id)).forEach(x=>touch(x)); S.lists.forEach(l=>touch(l)); save(); renderAll(); toast('Rétabli');});
 }
 function editSong(s){if(s.kind==='sheet')openAnnot(entryOf(s),0); else if(!(s.text||'').trim()&&validGrid(s.bgrid))openBG(entryOf(s),0,0); else openEditor(s,null);}
 function songMenu(s,x,y){
@@ -4614,10 +4666,11 @@ $('#lItems').addEventListener('click',e=>{if(S.lView==='tableau'||e.target.close
 
 /* ---------- onglet Playlists : tuiles, menu, sélection ---------- */
 let LSEL=null;
-function listMenu(l,x,y){ctxMenu(x,y,[{ico:'▶',t:'Lancer la scène',fn:()=>openViewer(listEntries(l),0,l)},{ico:'✎',t:'Renommer',fn:()=>{const n=prompt('Nom de la playlist :',l.name); if(n&&n.trim()){l.name=n.trim(); touch(l); save(); renderLists();}}},
+function listMenu(l,x,y){ctxMenu(x,y,[{ico:'▶',t:'Lancer la scène',fn:()=>openViewer(listEntries(l),0,l)},{ico:'✎',t:'Renommer',fn:async()=>{const n=await promptBox('Nom de la playlist :',l.name); if(n&&n.trim()){l.name=n.trim(); touch(l); save(); renderLists();}}},
   {ico:'⧉',t:'Dupliquer',fn:()=>{const c=JSON.parse(JSON.stringify(l)); c.id=uid(); c.name+=' (copie)'; c.up=Date.now(); S.lists.push(c); save(); renderLists();}},{ico:'⇪',t:'Partager',fn:()=>openShareSel({lists:[l.id],songs:l.items.map(it=>it.sid)})},'-',
   {ico:'🗑',t:'Supprimer',red:1,fn:()=>deleteLists([l.id])}]);}
-function deleteLists(ids){if(!ids.length||!confirm(ids.length===1?'Supprimer la playlist « '+(listById(ids[0])||{}).name+' » ? (les morceaux restent dans la bibliothèque)':'Supprimer '+ids.length+' playlists ? (les morceaux restent dans la bibliothèque)'))return;
+function deleteLists(ids){if(!ids.length)return; const name=ids.length===1?'Playlist « '+esc((listById(ids[0])||{}).name||'')+' » supprimée':ids.length+' playlists supprimées', snapL=S.lists.slice(), snapD=Object.assign({},S.del.lists);
+  setTimeout(()=>undoSnack(name+' (les morceaux restent)',()=>{S.lists=snapL; S.del.lists=snapD; S.lists.forEach(l=>{if(ids.includes(l.id))touch(l);}); save(); renderLists(); if(!$('#home').hidden)renderHome(); toast('Rétablie');}),0);
   const set=new Set(ids); set.forEach(id=>{S.del.lists[id]=Date.now();}); S.lists=S.lists.filter(l=>!set.has(l.id)); if(curList&&set.has(curList.id))curList=null; LSEL=null; save(); renderLists(); if(!$('#home').hidden)renderHome();}
 $('#lSelMode').onclick=()=>{LSEL=LSEL?null:new Set(); renderLists();};
 $('#lSelDel').onclick=()=>{if(LSEL)deleteLists([...LSEL]);};
@@ -4722,7 +4775,7 @@ function renderListDetail(){
     if(q('.rm'))q('.rm').onclick=()=>{l.items.splice(i,1); LOPEN=-1; touch(l); save(); renderListDetail();};
   });
 }
-$('#newList').onclick=()=>{const n=prompt('Nom du concert ou de la playlist :','Concert '+new Date().toLocaleDateString('fr-FR')); if(!n)return; const l={id:uid(),name:n.trim(),date:'',notes:'',items:[],up:Date.now()}; S.lists.push(l); save(); openList(l);};
+$('#newList').onclick=async()=>{const n=await promptBox('Nom du concert ou de la playlist :','Concert '+new Date().toLocaleDateString('fr-FR')); if(!n)return; const l={id:uid(),name:n.trim(),date:'',notes:'',items:[],up:Date.now()}; S.lists.push(l); save(); openList(l);};
 $('#backLists').onclick=()=>{curList=null; LOPEN=-1; renderLists();};
 $('#lName').onchange=e=>{curList.name=e.target.value.trim()||curList.name; touch(curList); save(); renderLists();};
 $('#lTitle').onclick=()=>{$('#lHeadEdit').hidden=!$('#lHeadEdit').hidden;};
@@ -4861,7 +4914,7 @@ $('#lImpFile').onchange=async e=>{
   try{rows=/\.csv$/i.test(f.name)||f.type==='text/csv'?readCsv(await f.text()):await readXlsx(await f.arrayBuffer());}catch(err){toast('Fichier illisible : '+(err.message||err)); return;}
   applySheet(l,rows);
 };
-function applySheet(l,rows){
+async function applySheet(l,rows){
   const norm=x=>String(x??'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim();
   const hi=rows.findIndex(r=>r&&r.some(c=>/^titre/.test(norm(c)))); if(hi<0){toast('Colonne « Titre » introuvable dans le fichier.');return;}
   const H=[...rows[hi]].map(norm), col=re=>H.findIndex(h=>re.test(h||''));
@@ -4885,7 +4938,7 @@ function applySheet(l,rows){
   if(!items.length){toast('Aucun morceau reconnu dans le fichier.');return;}
   const moved=items.some((it,i)=>!l.items[i]||l.items[i].sid!==it.sid);
   const sum=[`${items.length} morceau(x)`+(moved?', nouvel ordre':', ordre inchangé'),added?`${added} ajouté(s)`:'',pool.length?`${pool.length} retiré(s) de la playlist`:'',keys?`${keys} tonalité(s)`:'',capoCh.length?`${capoCh.length} capo(s)`:'',durs?`${durs} durée(s)`:'',notes?`${notes} note(s)`:''].filter(Boolean).join('\n• ');
-  if(!confirm('Importer dans « '+l.name+' » :\n• '+sum+(unknown.length?'\n\nIgnorés (absents de la bibliothèque) : '+unknown.join(', '):'')))return;
+  if(!await confirmBox('Importer dans « '+l.name+' » :\n• '+sum+(unknown.length?'\n\nIgnorés (absents de la bibliothèque) : '+unknown.join(', '):'')))return;
   l.items=items; capoCh.forEach(([s,c])=>{if(c)s.capoInfo=c; else delete s.capoInfo; touch(s);}); touch(l); save(); renderListDetail(); renderLists(); toast('Playlist mise à jour');
 }
 function transposeList(n){
@@ -4897,7 +4950,7 @@ $('#lUp').onclick=()=>transposeList(1); $('#lDn').onclick=()=>transposeList(-1);
 $('#lScene').onclick=()=>openViewer(listEntries(curList),0,curList);
 $('#lShare').onclick=()=>openShare(listEntries(curList),curList,'Playlist « '+curList.name+' » : '+curList.items.length+' morceaux');
 $('#lDup').onclick=()=>{const c=JSON.parse(JSON.stringify(curList)); c.id=uid(); c.name+=' (copie)'; c.up=Date.now(); S.lists.push(c); save(); openList(c);};
-$('#lDel').onclick=()=>{if(curList){deleteLists([curList.id]); return;} if(confirm('Supprimer la playlist « '+curList.name+' » ? (les morceaux restent dans la bibliothèque)')){S.del.lists[curList.id]=Date.now(); S.lists=S.lists.filter(x=>x!==curList); curList=null; save(); renderLists();}};
+$('#lDel').onclick=async()=>{if(curList){deleteLists([curList.id]); return;} if(await confirmBox('Supprimer la playlist « '+curList.name+' » ? (les morceaux restent dans la bibliothèque)')){S.del.lists[curList.id]=Date.now(); S.lists=S.lists.filter(x=>x!==curList); curList=null; save(); renderLists();}};
 $('#lAdd').onclick=()=>{$('#pickSearch').value=''; renderPick(); modal('#pickBox',true);};
 function renderPick(){
   const f=$('#pickSearch').value.trim().toLowerCase(), inList=new Set(curList.items.map(it=>it.sid));
@@ -5382,7 +5435,7 @@ async function renameSong(song){
   const n=await ask('Titre du morceau','Artiste - Titre',null,song.q); if(n==null)return;
   const v=n.trim(); if(!v){toast('Le titre ne peut pas être vide');return;}
   if(v===song.q)return;
-  if(S.songs.some(x=>x!==song&&x.q.toLowerCase()===v.toLowerCase())&&!confirm('Un autre morceau porte déjà ce titre. Renommer quand même ?'))return;
+  if(S.songs.some(x=>x!==song&&x.q.toLowerCase()===v.toLowerCase())&&!await confirmBox('Un autre morceau porte déjà ce titre. Renommer quand même ?',{ok:'Renommer'}))return;
   song.q=v; touch(song); save(); renderAll(); if(!$('#viewer').hidden)vRender(); toast('Renommé : '+v);
 }
 function goToSong(id){const i=V.list.findIndex(x=>x.s.id===id); if(i>=0){V.i=i; V.page=0; vRender();}}
@@ -5510,7 +5563,7 @@ $('#karaCtl').addEventListener('click',async ev=>{const b=ev.target.closest('[da
   else if(w==='setlist'){KP.set=true; await kpSetlist(); await kpCall({op:'screen',kind:'setlist'}); toast('📋 Playlist au mur');}
   else if(w==='pause')kpCall({op:'screen',kind:'pause',min:+k.pauseMin||10});
   else if(w==='merci')kpCall({op:'screen',kind:'merci'});
-  else if(w==='msg'){const t=prompt('Message à afficher au mur :',k.lastMsg||''); if(t&&t.trim()){k.lastMsg=t.trim(); save(); kpCall({op:'screen',kind:'msg',text:t.trim()});}}
+  else if(w==='msg'){const t=await promptBox('Message à afficher au mur :',k.lastMsg||''); if(t&&t.trim()){k.lastMsg=t.trim(); save(); kpCall({op:'screen',kind:'msg',text:t.trim()});}}
   else if(w==='off')kpCall({op:'screen',kind:'off'});
   else if(w==='pprev'||w==='pnext')kpCall({op:'spage',d:w==='pnext'?1:-1});
 });
@@ -5556,7 +5609,7 @@ $('#memoList').addEventListener('click',async e=>{const b=e.target.closest('butt
   if(b.dataset.mp){if(memoAudio){memoAudio.pause(); const was=memoAudio.dataset.id; memoAudio=null; $$('#memoList [data-mp]').forEach(x=>x.textContent='▶'); if(was===b.dataset.mp)return;}
     const blob=await Media.get(b.dataset.mp); if(!blob){toast('Mémo introuvable sur cet appareil'); return;}
     memoAudio=new Audio(URL.createObjectURL(blob)); memoAudio.dataset.id=b.dataset.mp; b.textContent='⏸'; memoAudio.onended=()=>{b.textContent='▶'; memoAudio=null;}; memoAudio.play().catch(()=>toast('Lecture impossible'));}
-  if(b.dataset.md){if(!confirm('Supprimer ce mémo ?'))return; Media.del(b.dataset.md); s.memos=(s.memos||[]).filter(m=>m.id!==b.dataset.md); touch(s); save(); memoDraw(); if(FICHE===s.id)ficheDraw(s);}
+  if(b.dataset.md){if(!await confirmBox('Supprimer ce mémo ?',{ok:'Supprimer',danger:1}))return; Media.del(b.dataset.md); s.memos=(s.memos||[]).filter(m=>m.id!==b.dataset.md); touch(s); save(); memoDraw(); if(FICHE===s.id)ficheDraw(s);}
 });
 $('#memoList').addEventListener('change',e=>{const i=e.target.closest('[data-mn]'); if(!i)return; const m=(MEMO.s.memos||[]).find(x=>x.id===i.dataset.mn); if(m){m.name=i.value.trim(); touch(MEMO.s); save();}});
 $('#memoBox .close').addEventListener('click',()=>{if(MEMO.rec)MEMO.rec.stop(); if(memoAudio){memoAudio.pause(); memoAudio=null;}});
@@ -5623,9 +5676,9 @@ function cleanDraw(){
   $('#cleanBody').innerHTML=html||'<p class="lab" style="padding:20px 0;text-align:center">✓ Tout est propre : aucun doublon, aucun morceau vide, rien à corriger.</p>';
 }
 // garder un doublon : les playlists pointent vers lui, les autres sont supprimés (étiquettes, mémos et liens récupérés)
-function cleanKeep(keepId,ids){
+async function cleanKeep(keepId,ids){
   const k=songById(keepId); if(!k)return; const others=ids.filter(id=>id!==keepId).map(songById).filter(Boolean);
-  if(!confirm(`Garder « ${k.q} » et supprimer ${others.length} doublon${others.length>1?'s':''} ?\nLes playlists utiliseront le morceau gardé.`))return;
+  if(!await confirmBox(`Garder « ${k.q} » et supprimer ${others.length} doublon${others.length>1?'s':''} ?\nLes playlists utiliseront le morceau gardé.`))return;
   others.forEach(o=>{
     S.lists.forEach(l=>{let ch=false; l.items.forEach(it=>{if(it.sid===o.id){it.sid=k.id; ch=true;}}); if(ch){const seen=new Set(); l.items=l.items.filter(it=>seen.has(it.sid)?false:seen.add(it.sid)); touch(l);}});
     tagsOf(o).forEach(t=>setTag(k,t,true)); if(o.memos)k.memos=[...(k.memos||[]),...o.memos]; ['spotify','yt','tempo','dur','notes'].forEach(f=>{if(o[f]&&!k[f])k[f]=o[f];});
@@ -6502,7 +6555,7 @@ $('#anTools').onclick=e=>{const b=e.target.closest('[data-tool]'); if(!b)return;
   if(t==='undo'){anUndo(); return;} if(t==='redo'){anRedo(); return;}
   if(t!=='stamp'&&t!=='move')AN.prevTool=t; if(t==='stamp'&&AN.tool!=='stamp'&&AN.tool!=='move')AN.prevTool=AN.tool;
   AN.back=null; AN.tool=t; if(t!=='move')AN.sel=-1; anDraw();};
-$('#anClear').onclick=()=>{if(!(anCur().ann||[]).length)return; if(!confirm('Effacer toutes les annotations de cette page ?'))return; anSnap(); anCur().ann=[]; AN.sel=-1; AN.dirty=true; anDraw();};
+$('#anClear').onclick=async()=>{if(!(anCur().ann||[]).length)return; if(!await confirmBox('Effacer toutes les annotations de cette page ?',{ok:'Effacer',danger:1}))return; anSnap(); anCur().ann=[]; AN.sel=-1; AN.dirty=true; anDraw();};
 $('#anStylus').onchange=()=>{S.anStylus=$('#anStylus').checked; save();};
 $('#anCols').onclick=e=>{const b=e.target.closest('[data-c]'); if(!b)return; AN.col=+b.dataset.c; if(AN.sel>=0){const o=anCur().ann[AN.sel]; if(o&&o.c!=='#ffffff'){anSnap(); o.c=AN_COL[AN.col]; AN.dirty=true;}} anDraw();};
 $('#anWd').onclick=e=>{const b=e.target.closest('[data-w]'); if(!b)return; AN.wd=+b.dataset.w; anDraw();};
@@ -6615,8 +6668,8 @@ async function anInsert(srcs){let at=AN.pg+1; for(const src of srcs){try{const p
 $('#anAddImgs').onchange=async e=>{const fs=[...e.target.files]; e.target.value=''; const us=fs.map(f=>URL.createObjectURL(f)); await anInsert(us); us.forEach(u=>URL.revokeObjectURL(u));};
 $('#anAddPdf').onchange=async e=>{const f=e.target.files&&e.target.files[0]; e.target.value=''; if(!f)return; const srcs=[]; try{await pdfToPages(f,async d=>{srcs.push(d);},(n,t)=>{$('#anPgNo').textContent='PDF : page '+n+' / '+t+'…';}); await anInsert(srcs);}catch(er){toast('PDF illisible');}};
 $('#anPgSide').onclick=async e=>{const b=e.target.closest('button'); if(!b)return; const p=anCur(), s=AN.s;
-  if(b.id==='anRot'){if((p.ann||[]).length&&!confirm('Tourner la page efface ses annotations. Continuer ?'))return; try{const pg=await makePage(await pageURL(p.pid),90), pid=uid(); await Media.put('pg:'+pid,pg.blob); PGURL.set(pid,pg.url); s.pages[AN.pg]={pid,w:pg.w,h:pg.h,ann:[]}; AN.dirty=true; anDraw(true);}catch(er){toast('Rotation impossible');} return;}
-  if(b.id==='anDelPg'){if(s.pages.length<2){toast('Il faut garder au moins une page'); return;} if(!confirm('Supprimer la page '+(AN.pg+1)+' ?'))return; s.pages.splice(AN.pg,1); s.marks=(s.marks||[]).filter(m=>m.pg!==AN.pg); anShiftMarks(AN.pg+1,-1); AN.pg=Math.min(AN.pg,s.pages.length-1); AN.dirty=true; anDraw(true); return;}
+  if(b.id==='anRot'){if((p.ann||[]).length&&!await confirmBox('Tourner la page efface ses annotations. Continuer ?'))return; try{const pg=await makePage(await pageURL(p.pid),90), pid=uid(); await Media.put('pg:'+pid,pg.blob); PGURL.set(pid,pg.url); s.pages[AN.pg]={pid,w:pg.w,h:pg.h,ann:[]}; AN.dirty=true; anDraw(true);}catch(er){toast('Rotation impossible');} return;}
+  if(b.id==='anDelPg'){if(s.pages.length<2){toast('Il faut garder au moins une page'); return;} if(!await confirmBox('Supprimer la page '+(AN.pg+1)+' ?'))return; s.pages.splice(AN.pg,1); s.marks=(s.marks||[]).filter(m=>m.pg!==AN.pg); anShiftMarks(AN.pg+1,-1); AN.pg=Math.min(AN.pg,s.pages.length-1); AN.dirty=true; anDraw(true); return;}
   if(b.id==='anCropMan'){AN.cropEdit=!AN.cropEdit; if(AN.cropEdit&&!p.crop)p.crop={...cropOf(p)}; AN.dirty=true; anDraw(); return;}
   if(b.id==='anCropAuto'){b.disabled=true; let n=0; for(const pg of s.pages){const c=await autoCrop(pg); if(c){pg.crop=c; n++;}} b.disabled=false; AN.dirty=true; anDraw(); toast(n?n+' page(s) recadrée(s)':'Pas de marge blanche à enlever'); return;}
   if(b.id==='anCropReset'){s.pages.forEach(pg=>delete pg.crop); AN.cropEdit=false; AN.dirty=true; anDraw(); return;}
@@ -6872,8 +6925,8 @@ const Follow={rev:-1,i:-1,view:null,ok:null,busy:false,at:0,miss:0,base:'',app:f
         openRecv({app:'accords-paroles',version:2,from:this.master||'',songs:[{...o,up:o.up||Date.now()}],lists:[]},this.master||''); this.build(); vRender(); this.banner();};
       el.querySelector('#fimp').onclick=async()=>{try{const set=await (await ftch(this.base+'/set',8000)).json(); importData(JSON.stringify(set),{ask:false}); this.build(); vRender(); this.banner();}catch(er){toast('Impossible de joindre la tablette.');}};
       el.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{this.mine=b.dataset.m==='1'; try{localStorage.setItem('accords-suivre-mine',this.mine?'1':'0');}catch(er){} this.build(); vRender(); this.banner();});
-      const n=el.querySelector('#fnew'); if(n)n.onclick=()=>{const cur=V.list[V.i]; if(!cur||!cur.mine)return;
-        if(!confirm('Il a modifié « '+cur.s.q+' ».\n\nOK = prendre sa version (la tienne reste dans « Versions »)\nAnnuler = garder la tienne'))return;
+      const n=el.querySelector('#fnew'); if(n)n.onclick=async()=>{const cur=V.list[V.i]; if(!cur||!cur.mine)return;
+        if(!await confirmBox('Il a modifié « '+cur.s.q+' ».\n\nOK = prendre sa version (la tienne reste dans « Versions »)\nAnnuler = garder la tienne'))return;
         histSnap(cur.s); cur.s.text=cur.remote.text; cur.s.up=Math.max(Date.now(),cur.remote.up||0); save(); if(cur.s._el)update(cur.s); this.build(); vRender(); this.banner(); toast('Sa version est maintenant la tienne');};
       return;}
     el.querySelector('#fget').onclick=async()=>{try{const set=await (await fetch('/set',{cache:'no-store'})).json(); const pk=liveToPack(set);
@@ -7000,7 +7053,7 @@ async function netCheck(){if(!APP)return true; try{const c=new AbortController()
 let followSaved=null;
 async function followLib(){
   let txt; try{const r=await ftch(Follow.base+'/lib?t='+Date.now(),20000); if(r.status===404){toast('Le musicien ne partage pas son répertoire (case à cocher dans sa diffusion).');return;} txt=await r.text(); JSON.parse(txt);}catch(e){toast('Répertoire inaccessible.');return;}
-  if(Follow.app){const d=JSON.parse(txt); if(!confirm(`Copier ${d.songs.length} morceau(x) et ${(d.lists||[]).length} playlist(s) dans ta bibliothèque ?\n(Les morceaux déjà présents sont mis à jour, rien n'est supprimé.)`))return; importData(txt,{ask:false}); return;}
+  if(Follow.app){const d=JSON.parse(txt); if(!await confirmBox(`Copier ${d.songs.length} morceau(x) et ${(d.lists||[]).length} playlist(s) dans ta bibliothèque ?\n(Les morceaux déjà présents sont mis à jour, rien n'est supprimé.)`))return; importData(txt,{ask:false}); return;}
   saveBlob('repertoire.accords.json',new Blob([txt],{type:'application/json'})); toast('Fichier enregistré : ouvre-le avec l\'appli Accords (Importer).');
 }
 function startFollowApp(origin){
@@ -7521,10 +7574,18 @@ function cwTestLine(){const tl=$('#cwTl'); if(!tl)return; const W=['Twisting','m
 function cwPick(btn,cb,list,o){wpClose(); const rc=btn.getBoundingClientRect(); CW.fc=!!(o&&o.circ); cwStart({left:rc.left,top:rc.top,width:rc.width,height:CW.fc?rc.height:0},null,list,true); CW.fc=false; CW.pick=cb; CW.onTap=o&&o.tap||null;}
 /* ----- mode peinture : toucher un accord de la palette, puis tous les mots qui l'ont ----- */
 const PAINT={ch:null};
-function paintSet(ch){PAINT.ch=ch; let el=$('#paintPill'); $$('#vtChips button').forEach(b=>b.setAttribute('aria-pressed',String(!!ch&&b.textContent===ch)));
+function paintPillPos(el){const f=$('#vtext:not([hidden]) .vtfoot'); el.style.bottom=(f?Math.max(16,innerHeight-f.getBoundingClientRect().top+10):16)+'px';}
+function eraseSet(on){PAINT.erase=!!on; if(on&&PAINT.ch)paintSet(null); $('#vtEraser').setAttribute('aria-pressed',String(!!on)); $('#vtPrev').classList.toggle('erasing',!!on); let el=$('#paintPill');
+  if(!on){if(el&&el.dataset.k==='e')el.remove(); return;} vtPrevOn();
+  if(!el){el=document.createElement('div'); el.id='paintPill'; document.body.appendChild(el);} el.dataset.k='e'; el.onclick=e=>{if(e.target.closest('button'))eraseSet(false);};
+  el.innerHTML='<span>🧽 <b>Gomme</b> · touche ou glisse sur les accords</span><button aria-label="Arrêter la gomme">✕ Fini</button>'; paintPillPos(el);}
+// montrer l'aperçu (le pinceau et la gomme travaillent dessus)
+function vtPrevOn(){if($('#vtPrev').hidden||$('#vtPrev').offsetParent===null){const b=$('#vtMode [data-m="prev"]'); if(b)b.click();}}
+function paintSet(ch){if(ch&&PAINT.erase)eraseSet(false); PAINT.ch=ch; if(ch)PAINT.last=ch; $('#vtBrush').setAttribute('aria-pressed',String(!!ch)); let el=$('#paintPill'); $$('#vtChips button').forEach(b=>b.setAttribute('aria-pressed',String(!!ch&&b.textContent===ch)));
   if(!ch){if(el)el.remove(); return;}
   if(!el){el=document.createElement('div'); el.id='paintPill'; document.body.appendChild(el); el.onclick=e=>{if(e.target.closest('button'))paintSet(null);};}
-  el.innerHTML=`<span>🖌 <b>${esc(cwShow(ch))}</b> · touche les mots</span><button aria-label="Arrêter le pinceau">✕ Fini</button>`;}
+  el.dataset.k='p'; el.onclick=e=>{if(e.target.closest('button'))paintSet(null);};
+  el.innerHTML=`<span>🖌 <b>${esc(cwShow(ch))}</b> · touche les mots (un autre accord en bas pour changer)</span><button aria-label="Arrêter le pinceau">✕ Fini</button>`; paintPillPos(el);}
 function paintWord(span,x,y){const ta=$('#vtextArea'), v=ta.value, raw=+span.dataset.raw, txt=span.textContent; if(!(raw>=0))return;
   let col=Math.min(colAt(span,x,y),txt.length); if(txt[col]&&txt[col]!==' '){while(col>0&&txt[col-1]!==' ')col--;} else {while(col<txt.length&&txt[col]===' ')col++;}
   let end=col; while(end<txt.length&&txt[end]!==' ')end++; col+=(+span.dataset.off||0); end+=(+span.dataset.off||0);
@@ -7559,7 +7620,21 @@ $('#vtPlus').addEventListener('pointerdown',e=>{e.preventDefault(); const b=e.cu
   cwPick(b,n=>{const prevOn=!$('#vtPrev').hidden&&$('#vtPrev').offsetParent!==null; if(!prevOn){vtInsertChord(n); return;}
     PAINT.src=(()=>{try{return toSource(vtCur()._r,n);}catch(_){return n;}})(); paintSet(n); toast('Touche les mots qui ont '+cwShow(n));});});
 $('#vtPlus').addEventListener('click',e=>e.preventDefault());
-try{new MutationObserver(()=>{if($('#vtext').hidden&&PAINT.ch)paintSet(null);}).observe($('#vtext'),{attributes:true,attributeFilter:['hidden']});}catch(e){}
+try{new MutationObserver(()=>{if($('#vtext').hidden){if(PAINT.ch)paintSet(null); if(PAINT.erase)eraseSet(false);}}).observe($('#vtext'),{attributes:true,attributeFilter:['hidden']});}catch(e){}
+$('#vtBrush').onclick=()=>{if(PAINT.ch){paintSet(null); return;} vtPrevOn(); const chips=[...$$('#vtChips button')].map(b=>b.textContent), n=PAINT.last&&chips.includes(PAINT.last)?PAINT.last:chips[0];
+  if(!n){toast('Choisis un accord avec ＋ ou « Autre… »'); return;} PAINT.src=(()=>{try{return toSource(vtCur()._r,n);}catch(_){return n;}})(); paintSet(n);};
+$('#vtEraser').onclick=()=>eraseSet(!PAINT.erase);
+// gomme : toucher ou glisser sur les accords de l'aperçu, ils s'effacent au lâcher
+(()=>{let G=null; const pv=$('#vtPrev');
+  pv.addEventListener('pointerdown',e=>{if(!PAINT.erase)return; e.preventDefault(); e.stopPropagation(); G={hit:new Map()}; try{pv.setPointerCapture(e.pointerId);}catch(_){} grab(e.clientX,e.clientY);},true);
+  const grab=(x,y)=>{const el=document.elementFromPoint(x,y), ch=el&&el.closest('#vtPrev .ch'); if(!ch)return; const raw=+ch.parentElement.dataset.raw, k=+ch.dataset.k; if(!(raw>=0))return; ch.classList.add('erz'); G.hit.set(raw+'/'+k,[raw,k]);};
+  pv.addEventListener('pointermove',e=>{if(G)grab(e.clientX,e.clientY);});
+  const end=()=>{if(!G)return; const hits=[...G.hit.values()]; G=null; V.vtNoClick=Date.now(); if(!hits.length)return;
+    const ta=$('#vtextArea'), L=ta.value.split('\n'), by={}; hits.forEach(([r,k])=>(by[r]=by[r]||[]).push(k)); const emptied=[];
+    Object.entries(by).forEach(([r,ks])=>{let line=L[r]||''; const pos=[]; const re=/\S+/g; let m; while((m=re.exec(line)))pos.push([m.index,m[0].length]);
+      ks.sort((a,b)=>b-a).forEach(k=>{const q=pos[k]; if(q)line=line.slice(0,q[0])+' '.repeat(q[1])+line.slice(q[0]+q[1]);}); line=line.replace(/\s+$/,''); L[r]=line; if(!line.trim())emptied.push(+r);});
+    emptied.sort((a,b)=>b-a).forEach(r=>L.splice(r,1)); vtSetText(L.join('\n')); try{navigator.vibrate&&navigator.vibrate(10);}catch(_){} toast('🧽 '+hits.length+' accord'+(hits.length>1?'s':'')+' effacé'+(hits.length>1?'s':'')+' · ↶ pour revenir',1800);};
+  pv.addEventListener('pointerup',end); pv.addEventListener('pointercancel',end);})();
 $('#vtChips').onclick=e=>{const b=e.target.closest('button'); if(!b)return; const prevOn=!$('#vtPrev').hidden&&$('#vtPrev').offsetParent!==null;
   if(!prevOn){vtInsertChord(b.textContent); return;}
   const n=b.textContent; if(PAINT.ch===n){paintSet(null); return;} PAINT.src=(()=>{try{return toSource(vtCur()._r,n);}catch(_){return n;}})(); paintSet(n); toast('Touche les mots qui ont '+n);};
@@ -7974,7 +8049,7 @@ function bgDraw(){
   let chips=[...new Set([...(BG.r.chips||[]),...diatonic(BG.r)])].filter(Boolean).slice(0,15); if(!chips.length)chips=(S.fr?['Do','Sol','Lam','Fa','Mim','Rém','Ré','La','Mi']:['C','G','Am','F','Em','Dm','D','A','E']);
   $('#bgChips').innerHTML=chips.map(x=>`<button${BG.paint&&(toSource(BG.r,x)||x)===BG.paint?' class="on"':''}>${esc(x)}</button>`).join('');
   bgKeysDraw(main,chips); bgStateDraw(main);
-  main.classList.toggle('painting',!!BG.paint); $('#bgEd').classList.toggle('painting',!!BG.paint);
+  main.classList.toggle('painting',!!(BG.paint||BG.erase)); $('#bgEd').classList.toggle('painting',!!(BG.paint||BG.erase)); main.classList.toggle('erasing',!!BG.erase); {const b1=$('#bgBrush'), b2=$('#bgEraser'); if(b1)b1.setAttribute('aria-pressed',String(!!BG.paint)); if(b2)b2.setAttribute('aria-pressed',String(!!BG.erase));}
   $('#bgSec34').textContent=m===3&&+g.meter!==3?'Section en 4/4':+g.meter===3?(m===3?'Section en 4/4':'Section en 3/4'):'Section en 3/4';
   // structure
   $('#bgForm').innerHTML=g.form.map((i,j)=>`<button data-j="${j}" aria-pressed="${j===BG.f}">${esc((g.secs[i]||{}).n||'—')}</button>`).join('')||'<span class="lab">vide</span>';
@@ -8068,7 +8143,7 @@ function bgKeysDraw(main,chips){BG.chips=chips; const w0=$('#bgKeysW'); if(w0)w0
   const nat=S.fr?['Do','Ré','Mi','Fa','Sol','La','Si']:['C','D','E','F','G','A','B'], bad=fl?[0,3]:[2,6];
   const lab=(n,i)=>tg.acc&&bad.includes(i)?null:n+(tg.acc?A:'')+mm;
   const tgb=(key,txt,ttl)=>`<button data-kt="${key}" class="tg${tg[key]?' on':''}${tg[key]===2?' lk':''}" title="${ttl}">${txt}${tg[key]===2?'<small>🔒</small>':''}</button>`;
-  let h=BG.paint?`<div class="bgkr"><span class="bgqp">🖌 ${esc(BG.paint==='%'?'%':bgName(BG.paint,cn))} : touche ou glisse</span><button data-kp="" class="bgok">✓ Fini</button></div>`:'';
+  let h=BG.paint?`<div class="bgkr"><span class="bgqp">🖌 ${esc(BG.paint==='%'?'%':bgName(BG.paint,cn))} : touche ou glisse · une autre note pour changer</span><button data-kp="" class="bgok">✓ Fini</button></div>`:BG.erase?`<div class="bgkr"><span class="bgqp">🧽 Gomme : touche ou glisse sur les cases</span><button data-kp="" class="bgok">✓ Fini</button></div>`:'';
   h+=`<div class="bgkr bgkN">${nat.map((n,i)=>{const L=lab(n,i); return L?`<button data-kc="${esc(L)}">${esc(L.replace('#','♯').replace(/(.)b/,'$1♭'))}</button>`:`<button class="off" disabled>·</button>`;}).join('')}</div>`;
   const bub=!!BG.bub;
   h+=`<div class="bgkr bgkT"><button data-kx="prev" title="Case précédente">←</button>${tgb('acc',AS,'1 toucher = prochain accord · double toucher = verrouillé')}${tgb('m','m','1 toucher = prochain accord · double toucher = verrouillé')}<button data-km="7" class="tg7">7</button><button data-kx="more" class="${bub?'on':''}" title="Plus : M7, sus4, %…">${bub?(side?'▴':'▾'):'⋯'}</button><button data-kx="next" class="nx" title="Case suivante">→</button></div>`;
@@ -8090,7 +8165,7 @@ $('#bgEd').addEventListener('pointerdown',ev=>{const b=ev.target.closest('#bgKey
   if(d.kt){bgTgTap(d.kt); return;}
   if(BG.bub&&b.closest('.bgbub'))BG.bub=false;
   if(d.kn)bgNote(d.kn); else if(d.km)bgMod(d.km); else if(d.kq)bgMod(d.kq); else if(d.kc){if(BG.paint){const v=toSource(BG.r,d.kc)||d.kc; bgPaint(BG.paint===v?null:v); return;} BGD={x:ev.clientX,y:ev.clientY,cx:ev.clientX,cy:ev.clientY,chord:(!BG.r.shift&&!S.fr&&parseChord(d.kc)?d.kc:(toSource(BG.r,d.kc)||d.kc)),from:null,on:false,kb:d.kc,any:1,timer:0,pt:ev.pointerType}; return;}
-  else if(d.kp!=null)bgPaint(null);
+  else if(d.kp!=null){BG.erase=false; bgPaint(null);}
   else if(d.kx==='more'){BG.bub=!BG.bub; bgKeysDraw(null,BG.chips||[]);}
   else if(d.kx==='prev'){bgPrev(); BG.last=null;}
   else if(d.kx==='other'){$('#bgOther').click();}
@@ -8129,7 +8204,7 @@ function bgFillAt(si,bi,k,src){const bar=BG.g.secs[si].bars[bi]; if(src==='%'){b
   if(bar[0]==='%'||bar.length===1){bar.splice(0,bar.length,src); return;} if(bar[k]==='=')k=2; bar[k]=src;}
 function bgHit(x,y){const el=document.elementFromPoint(x,y), c=el&&el.closest('#bgMain .bgc'); if(!c||c.classList.contains('bgghostc'))return null; const si=+c.dataset.si, bi=+c.dataset.bi, bar=BG.g.secs[si].bars[bi], rc=c.getBoundingClientRect();
   return {si,bi,k:bgPartAt(bar[0]==='%'?1:bar.length,(x-rc.left)/rc.width,(y-rc.top)/rc.height,bgMeter(si)),el:c};}
-function bgPaint(v){BG.paint=v||null; bgDraw(); if(v)toast('🖌 '+(v==='%'?'%':bgName(v,BG.r.cn))+' : touche ou glisse sur les mesures',2200);}
+function bgPaint(v){BG.paint=v||null; if(v)BG.erase=false; if(v)BG.lastPaint=v; bgDraw(); if(v)toast('🖌 '+(v==='%'?'%':bgName(v,BG.r.cn))+' : touche ou glisse sur les mesures',2200);}
 function bgWheel(si,bi,k,el){if(BGD){clearTimeout(BGD.timer); if(BGD.ghost)BGD.ghost.remove(); BGD=null;} BGR=null; BG.noClick=Date.now()+400;
   $$('#bgMain .dropon,#bgMain .dropl,#bgMain .dropr').forEach(e=>e.classList.remove('dropon','dropl','dropr')); {const o=$('#bgDropG'); if(o)o.remove();}
   const bar=BG.g.secs[si].bars[bi], m=bgMeter(si), sl=bgSlotsOf(bar,m), kk=bar[k]==='='?2:k; let ks=sl.findIndex(ix=>ix.includes(kk)); BG.sel={si,bi,k:Math.max(0,ks)};
@@ -8178,8 +8253,8 @@ $('#bgSlots').onclick=ev=>{if(Date.now()-(BG.noClick||0)<400)return; const b=ev.
 $('#bgChips').onclick=ev=>{if(Date.now()-(BG.lp||0)<700||!BG.paint&&Date.now()-(BG.noClick||0)<400)return; const b=ev.target.closest('button'); if(!b)return; if(BG.paint){const v=toSource(BG.r,b.textContent)||b.textContent; bgPaint(BG.paint===v?null:v); return;} bgPut(b.textContent);};
 // pinceau : chaque mesure touchée ou survolée prend l'accord
 let BGP=null;
-$('#bgEd').addEventListener('pointerdown',ev=>{if(!BG.paint||ev.button>0)return; if(ev.target.closest('#bgKeys'))return; const h=bgHit(ev.clientX,ev.clientY); if(!h)return; ev.stopPropagation(); ev.preventDefault(); BGP={last:''}; BG.gest='p'+Date.now(); try{$('#bgEd').setPointerCapture(ev.pointerId);}catch(_){} bgPaintAt(ev.clientX,ev.clientY);},true);
-function bgPaintAt(x,y){const h=bgHit(x,y); if(!h)return; const key=h.si+'/'+h.bi+'/'+h.k; if(BGP.last===key)return; BGP.last=key; BG.noClick=Date.now(); BG.sel={si:h.si,bi:h.bi,k:0}; bgSet(()=>bgFillAt(h.si,h.bi,h.k,BG.paint));}
+$('#bgEd').addEventListener('pointerdown',ev=>{if(!(BG.paint||BG.erase)||ev.button>0)return; if(ev.target.closest('#bgKeys'))return; const h=bgHit(ev.clientX,ev.clientY); if(!h)return; ev.stopPropagation(); ev.preventDefault(); BGP={last:''}; BG.gest='p'+Date.now(); try{$('#bgEd').setPointerCapture(ev.pointerId);}catch(_){} bgPaintAt(ev.clientX,ev.clientY);},true);
+function bgPaintAt(x,y){const h=bgHit(x,y); if(!h)return; const key=h.si+'/'+h.bi+'/'+h.k; if(BGP.last===key)return; BGP.last=key; BG.noClick=Date.now(); BG.sel={si:h.si,bi:h.bi,k:0}; const v=BG.erase?'':BG.paint; bgSet(()=>bgFillAt(h.si,h.bi,h.k,v));}
 document.addEventListener('pointermove',ev=>{if(BGP&&(ev.pointerType!=='mouse'||ev.buttons))bgPaintAt(ev.clientX,ev.clientY);});
 document.addEventListener('touchmove',ev=>{if(!BGP)return; const t=ev.touches[0]; if(t){bgPaintAt(t.clientX,t.clientY); if(ev.cancelable)ev.preventDefault();}},{passive:false});
 ['pointerup','touchend','pointercancel'].forEach(n=>document.addEventListener(n,()=>{if(BGP){BGP=null; BG.gest=0; BG.noClick=Date.now();}}));
@@ -8347,10 +8422,10 @@ $('#bgRowFrom').onclick=()=>{const L=$('#bgRowList'); if(!L.hidden){L.hidden=tru
 $('#bgRowList').onclick=ev=>{const b=ev.target.closest('[data-rf]'); if(!b)return; const [si,a]=b.dataset.rf.split('/').map(Number), per=+BG.g.per||4, src=JSON.parse(JSON.stringify(BG.g.secs[si].bars.slice(a,a+per))), c=BG.sel, a0=Math.floor(c.bi/per)*per, sc=BG.g.secs[c.si];
   bgSet(()=>{const n=Math.min(per,Math.max(src.length,sc.bars.length-a0)); bgSplice(sc,a0,Math.min(per,sc.bars.length-a0),...src.slice(0,n)); BG.sel={si:c.si,bi:Math.min(a0+src.length,sc.bars.length-1),k:0};});
   $('#bgRowList').hidden=true; toast('Ligne recopiée');};
-function bgRename(si){const sc=BG.g.secs[si], n=prompt('Nom de la section :',sc.n||''); if(n==null)return; bgSet(()=>sc.n=n.trim());}
+async function bgRename(si){const sc=BG.g.secs[si], n=await promptBox('Nom de la section :',sc.n||''); if(n==null)return; bgSet(()=>sc.n=n.trim());}
 $('#bgSecRen').onclick=()=>bgRename(BG.sel.si);
-$('#bgSecAdd').onclick=()=>{const names=['Intro','Couplet','Refrain','Pont','Solo','Outro'], used=new Set(BG.g.secs.map(x=>x.n)), def=names.find(x=>!used.has(x))||'Section';
-  const n=prompt('Nom de la nouvelle section :',def); if(n==null)return;
+$('#bgSecAdd').onclick=async()=>{const names=['Intro','Couplet','Refrain','Pont','Solo','Outro'], used=new Set(BG.g.secs.map(x=>x.n)), def=names.find(x=>!used.has(x))||'Section';
+  const n=await promptBox('Nom de la nouvelle section :',def); if(n==null)return;
   bgSet(()=>{const per=+BG.g.per||4; BG.g.secs.push({n:n.trim(),bars:Array.from({length:per},()=>[''])}); BG.g.form.push(BG.g.secs.length-1); BG.sel={si:BG.g.secs.length-1,bi:0,k:0};});};
 // couper la section à la mesure choisie : la suite devient une nouvelle section, juste après, dont on écrit le nom
 $('#bgSecCut').onclick=()=>{const g=BG.g, si=BG.sel.si, bi=BG.sel.bi, sc=g.secs[si];
@@ -8367,7 +8442,7 @@ $('#bgSecGlue').onclick=()=>{const g=BG.g, si=BG.sel.si; if(si<1){toast('Choisis
     const f=[]; g.form.forEach((i,j)=>{if(i===si&&f.length&&f[f.length-1]===si-1&&g.form[j-1]===si-1)return; f.push(i===si?si-1:i>si?i-1:i);}); g.form=f;
     BG.f=null; BG.sel={si:si-1,bi:n,k:0};});
   toast('Sections recollées');};
-$('#bgSecDel').onclick=()=>{const g=BG.g, si=BG.sel.si; if(g.secs.length<2){toast('Il faut garder au moins une section');return;} if(!confirm('Supprimer la section « '+(g.secs[si].n||'—')+' » et la retirer de la structure ?'))return;
+$('#bgSecDel').onclick=async()=>{const g=BG.g, si=BG.sel.si; if(g.secs.length<2){toast('Il faut garder au moins une section');return;} if(!await confirmBox('Supprimer la section « '+(g.secs[si].n||'—')+' » et la retirer de la structure ?'))return;
   bgSet(()=>{g.secs.splice(si,1); g.form=g.form.filter(i=>i!==si).map(i=>i>si?i-1:i); BG.f=null; BG.sel={si:Math.max(0,si-1),bi:0,k:0};});};
 $('#bgSec34').onclick=()=>bgSet(()=>{const g=BG.g, sc=g.secs[BG.sel.si], base=+g.meter||4, m=bgMeter(BG.sel.si), nm=m===3?4:3; if(nm===base)delete sc.m; else sc.m=nm;});
 $('#bgPer').onclick=ev=>{const b=ev.target.closest('button'); if(b)bgSet(()=>BG.g.per=+b.dataset.v);};
@@ -8377,7 +8452,7 @@ $('#bgAddForm').onclick=ev=>{if(BG.mode==='mix'){toast('En Mixte, l’ordre des 
 $('#bgFL').onclick=()=>{if(BG.mode==='mix'){toast('En Mixte, l’ordre des sections suit les paroles (🔒 pour le changer ici)',3000); return;} const j=BG.f; if(j==null||j<1)return; bgSet(()=>{const f=BG.g.form; [f[j-1],f[j]]=[f[j],f[j-1]]; BG.f=j-1;});};
 $('#bgFR').onclick=()=>{if(BG.mode==='mix'){toast('En Mixte, l’ordre des sections suit les paroles (🔒 pour le changer ici)',3000); return;} const j=BG.f, f=BG.g.form; if(j==null||j>=f.length-1)return; bgSet(()=>{[f[j+1],f[j]]=[f[j],f[j+1]]; BG.f=j+1;});};
 $('#bgFX').onclick=()=>{if(BG.mode==='mix'){toast('En Mixte, l’ordre des sections suit les paroles (🔒 pour le changer ici)',3000); return;} const j=BG.f; if(j==null)return; bgSet(()=>{BG.g.form.splice(j,1); BG.f=null;});};
-$('#bgRegen').onclick=()=>{if(!confirm('Recréer la grille à partir des accords des paroles ? Tes modifications de la grille seront remplacées.'))return; const a=compute({...BG.s,bgrid:null}).autoGrid; bgSet(()=>{const per=BG.g.per; BG.g=JSON.parse(JSON.stringify(a)); if(per)BG.g.per=per; BG.sel={si:0,bi:0,k:0}; BG.f=null;});};
+$('#bgRegen').onclick=async()=>{if(!await confirmBox('Recréer la grille à partir des accords des paroles ? Tes modifications de la grille seront remplacées.'))return; const a=compute({...BG.s,bgrid:null}).autoGrid; bgSet(()=>{const per=BG.g.per; BG.g=JSON.parse(JSON.stringify(a)); if(per)BG.g.per=per; BG.sel={si:0,bi:0,k:0}; BG.f=null;});};
 function bgClose(){BGT.buf=''; bgTypeShow(); const ip=$('#bgInPop'); if(ip)ip.remove(); $('#bgEd').hidden=true; V.lastKey=null; vRender();}
 function bgDoSave(quiet){const s=BG.s; s.bgMode=BG.mode; if(BG.mode==='link')s.bgrid=null; else s.bgrid=JSON.parse(JSON.stringify(BG.g)); delete s._r; if((s.view||'grille')!=='accords')s.view='accords'; touch(s); save(); if(s._el)update(s); else if($('#viewer').hidden)renderAll(); BG.dirty=false; bgClose(); if(!quiet)toast('Grille enregistrée');}
 $('#bgSave').onclick=()=>bgDoSave();
@@ -8386,6 +8461,8 @@ $('#bgHelp').onclick=()=>{$('#bgHelpTxt').hidden=!$('#bgHelpTxt').hidden;};
 function bgTabSet(t){BG.tab=t||BG.tab||'mes'; $('#bgPad').dataset.tab=BG.tab; $$('#bgTabs button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===BG.tab));}
 $('#bgTabs').onclick=e=>{const b=e.target.closest('[data-t]'); if(b)bgTabSet(b.dataset.t);}; bgTabSet('mes');
 function bgFoldSet(){const open=bgIn().chips!==false; $('#bgChipsBox').classList.toggle('shut',!open);}
+$('#bgBrush').onclick=()=>{if(BG.paint){bgPaint(null); return;} const c=bgCurSrc(), v=BG.lastPaint||c||(BG.chips&&BG.chips[0]&&(toSource(BG.r,BG.chips[0])||BG.chips[0])); if(!v){toast('Choisis d’abord un accord'); return;} bgPaint(v);};
+$('#bgEraser').onclick=()=>{BG.erase=!BG.erase; if(BG.erase){BG.paint=null; toast('🧽 Gomme : touche ou glisse sur les cases',2000);} bgDraw();};
 $('#bgChipsT').onclick=()=>{S.bgIn=Object.assign(bgIn(),{chips:bgIn().chips===false}); save(); bgFoldSet();}; bgFoldSet();
 $('#shareAppBtn').onclick=shareApp; try{if(APP&&window.Android.appVersion)$('#appVer').textContent=window.Android.appVersion();}catch(_){}
 $('#bgModeBtn').onclick=ev=>{let p=$('#bgInPop'); if(p){p.remove(); if(p.dataset.k==='md')return;} p=document.createElement('div'); p.id='bgInPop'; p.dataset.k='md'; const m=BG.mode;
@@ -8395,7 +8472,7 @@ $('#bgModeBtn').onclick=ev=>{let p=$('#bgInPop'); if(p){p.remove(); if(p.dataset
   p.onclick=e=>{const b=e.target.closest('[data-mm]'); if(b){p.remove(); bgSetMode(b.dataset.mm);}};
   setTimeout(()=>document.addEventListener('pointerdown',function f(e){if(!e.target.closest('#bgInPop,#bgModeBtn')){p.remove(); document.removeEventListener('pointerdown',f,true);}},true),0);};
 $('#bgToTxt').onclick=()=>{const s=BG.s; if(BG.dirty)bgDoSave(true); else bgClose(); openEditor(s,BG.e&&BG.e.item?BG.e:null);};
-$('#bgBack').onclick=()=>{if(BG.dirty&&!confirm('Quitter sans enregistrer la grille ?'))return; bgClose();};
+$('#bgBack').onclick=async()=>{if(BG.dirty&&!await confirmBox('Quitter sans enregistrer la grille ?',{ok:'Quitter',danger:1}))return; bgClose();};
 $('#vbgEdit').onclick=e=>{e.stopPropagation(); const c=V.list[V.i]; if(c)openBG(c,0,0);};
 $('#vdBass').onclick=()=>{const e=V.list[V.i]; $('#vdisp').hidden=true; if(!e)return; setViewMode('accords'); if(!(FOLLOW&&!e.mine))openBG(e,0,0);};
 $('#vcleanBtn').onclick=()=>setClean(!V.clean);
@@ -8645,6 +8722,7 @@ const GD={tok:null,exp:0,tc:null,ids:{},folder:null,
     const r=await this.api(id?'PATCH':'POST','https://www.googleapis.com/upload/drive/v3/files'+(id?'/'+id:'')+'?uploadType=multipart&fields=id',{'Content-Type':'multipart/related; boundary='+B},body);
     try{this.ids[name]=JSON.parse(r.body).id;}catch(e){} return true;
   },
+  async who(){if(S.gd&&S.gd.email)return S.gd.email; try{const r=await this.api('GET','https://www.googleapis.com/drive/v3/about?fields=user(emailAddress,displayName)'); const u=JSON.parse(r.body).user||{}; S.gd.email=u.emailAddress||u.displayName||''; save(); return S.gd.email;}catch(e){return '';}},
   async remove(name){const id=this.ids[name]; if(!id)return; try{await this.api('DELETE','https://www.googleapis.com/drive/v3/files/'+id);}catch(e){} delete this.ids[name];},
   async login(){
     if(!this.ok()){toast('La connexion Google n\'est pas encore configurée dans cette version.'); return;}
@@ -8652,7 +8730,7 @@ const GD={tok:null,exp:0,tc:null,ids:{},folder:null,
     S.gd={...(S.gd||{}),on:true}; save(); Sync.mode='drive'; Sync.ready=true; Sync.label='Google Drive'; Sync.refreshUI(); Sync.run(false);
   },
   async logout(){
-    if(!confirm('Se déconnecter de Google Drive ?\n\nTes morceaux restent sur cet appareil et dans ton Drive ; la synchro s\'arrête.'))return;
+    if(!await confirmBox('Se déconnecter de Google Drive ?\n\nTes morceaux restent sur cet appareil et dans ton Drive ; la synchro s\'arrête.'))return;
     const t=this.tok, rt=S.gd&&S.gd.rt;
     try{if(rt||t)httpReq('POST','https://oauth2.googleapis.com/revoke',{'Content-Type':'application/x-www-form-urlencoded'},'token='+encodeURIComponent(rt||t));}catch(e){}
     this.tok=null; this.exp=0; this.folder=null; this.ids={}; try{localStorage.removeItem('accords-gtok');}catch(e){}
@@ -8687,19 +8765,19 @@ const Sync={
     try{const h=await window.showDirectoryPicker({mode:'readwrite'}); await kvSet('syncDir',h); this.handle=h; this.ready=true; this.label=h.name; this.refreshUI(); this.run(true);}catch(e){}
   },
   async off(){if(APP)window.Android.syncOff(); else await kvSet('syncDir',null); this.ready=false; this.handle=null; this.label=''; this.refreshUI();},
-  refreshUI(){try{GD.ui();}catch(e){} $('#syncPath').textContent=this.label?'Dossier : '+this.label:'Aucun dossier choisi'; $('#syncNow').disabled=!this.label; $('#syncOff').disabled=!this.label; $('#syncStatus').textContent=S.lastSync?'Dernière synchro : '+new Date(S.lastSync).toLocaleString('fr-FR'):'';},
+  refreshUI(){try{GD.ui(); syncUI();}catch(e){} $('#syncPath').textContent=this.label?'Dossier : '+this.label:'Aucun dossier choisi'; $('#syncNow').disabled=!this.label; $('#syncOff').disabled=!this.label; $('#syncStatus').textContent=S.lastSync?'Dernière synchro : '+new Date(S.lastSync).toLocaleString('fr-FR'):'';},
   // couche fichiers
   async list(){if(this.mode==='drive')return GD.list(); if(APP)return JSON.parse((await sx('list'))||'[]'); const out=[]; for await(const [name,h] of this.handle.entries()){if(h.kind==='file')out.push({name});} return out;},
   async read(name){if(this.mode==='drive')return GD.read(name); if(APP)return await sx('read',name); const h=await this.handle.getFileHandle(name); return await (await h.getFile()).text();},
   async write(name,txt){if(this.mode==='drive')return GD.write(name,txt); if(APP)return (await sx('write',name,txt))==='1'; const h=await this.handle.getFileHandle(name,{create:true}); const w=await h.createWritable(); await w.write(txt); await w.close(); return true;},
   async remove(name){try{if(this.mode==='drive')return await GD.remove(name); if(APP)await sx('delete',name); else await this.handle.removeEntry(name);}catch(e){}},
   async run(quiet){
-    if(!this.ready||this.busy)return; this.busy=true; $('#syncStatus').textContent='Synchronisation…';
-    if(this.mode==='drive'){const t=await GD.token(!quiet); if(!t){$('#syncStatus').textContent='Google Drive : touche « Synchroniser » pour te reconnecter.'; this.busy=false; GD.ui(); return;}}
+    if(!this.ready||this.busy)return; this.busy=true; this.err=null; syncUI(); $('#syncStatus').textContent='Synchronisation…';
+    if(this.mode==='drive'){const t=await GD.token(!quiet); if(!t){$('#syncStatus').textContent='Google Drive : touche « Synchroniser » pour te reconnecter.'; this.busy=false; this.err='Google demande de te reconnecter'; GD.ui(); syncUI(); return;}}
     try{
       if(!APP&&this.handle&&(await this.handle.queryPermission({mode:'readwrite'}))!=='granted'){const p=await this.handle.requestPermission({mode:'readwrite'}); if(p!=='granted')throw new Error('refusé');}
       const files=await this.list(), names=new Set(files.map(f=>f.name)); let changed=false, pulled=0, pushed=0, fails=0, done=0;
-      const put=async(n,t)=>{if((await this.write(n,t))===false)fails++; else pushed++; if(++done%10===0)$('#syncStatus').textContent='Synchronisation… '+done;};
+      const put=async(n,t)=>{if((await this.write(n,t))===false)fails++; else {pushed++; names.add(n);} if(++done%10===0)$('#syncStatus').textContent='Synchronisation… '+done;}, rm0=this.remove.bind(this); this.remove=async n=>{names.delete(n); return rm0(n);};
       // suppressions
       let rdel={songs:{},lists:{}}; if(names.has('deleted.json')){try{rdel=JSON.parse(await this.read('deleted.json'));}catch(e){}}
       const mdel={songs:{...rdel.songs,...S.del.songs},lists:{...rdel.lists,...S.del.lists}};
@@ -8732,13 +8810,48 @@ const Sync={
       let med={up:0,down:0}; try{med=await this.media(files,quiet);}catch(e){console.warn(e);}
       pulled+=med.down; pushed+=med.up;
       S.lastSync=Date.now(); localStorage.setItem(KEY,JSON.stringify(S,(k,v)=>k[0]==='_'?undefined:v));
-      if(changed)renderAll(); this.refreshUI();
+      if(changed)renderAll(); this.refreshUI(); delete this.remove;
+      const cnt=re=>[...names].filter(n=>re.test(n)).length;
+      S.syncLast={at:Date.now(),pulled,pushed,fails,songs:cnt(/^song-.+\.json$/),lists:cnt(/^list-.+\.json$/),where:this.mode==='drive'?'drive':(this.label||'dossier'),dev:APP?'l’appli Android':'ce navigateur'}; this.pending=false; save(); this.pending=false;
+      if(quiet&&pushed&&!fails)toast('☁ Enregistré dans le cloud',1400);
       if(fails){$('#syncStatus').textContent=`Synchro incomplète : ${fails} fichier(s) non écrit(s) dans le dossier.`; if(!quiet)toast(`Synchro : ${fails} fichier(s) non écrit(s). Réessaie plus tard.`);}
       else if(!quiet||pulled)toast(`Synchro OK — ${pulled} reçu(s), ${pushed} envoyé(s)`);
-    }catch(e){$('#syncStatus').textContent='Synchro impossible : '+(e.message||e); if(!quiet)toast('Synchro impossible : '+(e.message||e));}
-    this.busy=false;
-  }
+    }catch(e){delete this.remove; this.err=String(e.message||e); $('#syncStatus').textContent='Synchro impossible : '+this.err; if(!quiet)toast('Synchro impossible : '+this.err);}
+    this.busy=false; syncUI(); if(!$('#syncPanel').hidden)syncPanelDraw();
+  },
+  // comparer l'appareil et le cloud, sans rien écrire
+  async check(){const files=await this.list(), byName=new Map(files.map(f=>[f.name,f])); const out={noCloud:[],noHere:0,diff:0,unknown:0};
+    S.songs.forEach(s=>{const f=byName.get(`song-${s.id}.json`); if(!f)out.noCloud.push(s.q); else if(f.up==null)out.unknown++; else if(f.up!==(s.up||0))out.diff++;});
+    S.lists.forEach(l=>{const f=byName.get(`list-${l.id}.json`); if(!f)out.noCloud.push('🎵 '+l.name); else if(f.up!=null&&f.up!==(l.up||0))out.diff++;});
+    files.forEach(f=>{const m=/^(song|list)-(.+)\.json$/.exec(f.name); if(!m)return; const k=m[1]==='song'?'songs':'lists'; if(!(k==='songs'?songById(m[2]):listById(m[2]))&&!(S.del[k]||{})[m[2]])out.noHere++;});
+    out.cloud=files.filter(f=>/^song-/.test(f.name)).length; out.cloudL=files.filter(f=>/^list-/.test(f.name)).length; return out;}
 };
+/* ---------- témoin ☁ et panneau Synchro : est-ce enregistré, et où ---------- */
+function syncState(){if(!Sync.ready)return 'off'; if(Sync.busy)return 'busy'; if(Sync.err)return 'err'; if(Sync.pending)return 'pend'; return 'ok';}
+const ago=t=>{if(!t)return 'jamais'; const m=Math.round((Date.now()-t)/60000); return m<1?'à l’instant':m<60?'il y a '+m+' min':new Date(t).toLocaleString('fr-FR',{weekday:'short',hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});};
+function syncUI(){const b=$('#syncBtn'); if(!b)return; const st=syncState(), L=S.syncLast;
+  const t={off:['☁','Synchro','Pas de synchro : tes morceaux ne sont que sur cet appareil'],busy:['↻','Synchro…','Synchronisation en cours'],err:['⚠','Synchro','Synchro impossible : '+(Sync.err||'')],pend:['⬆','À envoyer','Des changements attendent d’être envoyés'],ok:['☁','À jour','À jour · '+ago(L&&L.at)]}[st];
+  b.className='hbtn syncb '+st; b.querySelector('.sbi').textContent=t[0]; b.querySelector('.sbt').textContent=t[1]; b.title=t[2];}
+setInterval(syncUI,30000);
+function syncPanelDraw(chk){const L=S.syncLast, st=syncState(), drive=Sync.mode==='drive', box=$('#syncPanel .spbody');
+  const where=!Sync.ready?'<b>Nulle part ailleurs</b> : seulement sur cet appareil.':drive?`<b>Google Drive</b>${S.gd&&S.gd.email?' de <b>'+esc(S.gd.email)+'</b>':''}<br><span class="sppath">Mon Drive › Accords</span>`:`<b>Dossier</b> <span class="sppath">${esc(Sync.label||'')}</span>`;
+  const stl={off:'⚪ Pas de synchro',busy:'🔵 Synchronisation en cours…',err:'🔴 Synchro impossible : '+esc(Sync.err||''),pend:'🟠 Des changements attendent d’être envoyés (dans quelques secondes)',ok:'🟢 Tout est enregistré dans le cloud'}[st];
+  const nS=S.songs.length, nL=S.lists.length, cS=L&&L.songs, cL=L&&L.lists, same=L&&cS===nS&&cL===nL;
+  box.innerHTML=`<div class="spst ${st}">${stl}</div>
+    <div class="sprow"><span>Où</span><div>${where}</div></div>
+    ${Sync.ready?`<div class="sprow"><span>Quoi</span><div>Sur cet appareil : <b>${nS}</b> morceau${nS>1?'x':''} · <b>${nL}</b> playlist${nL>1?'s':''}<br>Dans le cloud${L?' (à la dernière synchro)':''} : ${L?`<b>${cS}</b> · <b>${cL}</b> ${same?'✓':'⚠'}`:'pas encore synchronisé'}</div></div>
+    <div class="sprow"><span>Quand</span><div>${L?`Dernière synchro <b>${ago(L.at)}</b> depuis ${esc(L.dev||'')}<br>${L.pushed} envoyé${L.pushed>1?'s':''} · ${L.pulled} reçu${L.pulled>1?'s':''} · ${L.fails?'<b style="color:#ef4444">'+L.fails+' erreur(s)</b>':'0 erreur'}`:'jamais'}</div></div>`:''}
+    ${chk?`<div class="spchk">${chk}</div>`:''}
+    <div class="sprow"><span>Copie du jour</span><div class="lab">${S.lastBackup?`${new Date(S.lastBackup).toLocaleDateString('fr-FR')} · ${esc(S.lastBackupWhere||'')}`:'pas encore'}</div></div>
+    <div class="spbtns">${Sync.ready?`<button class="pri" data-sp="run">↻ Synchroniser maintenant</button><button data-sp="check">🔍 Vérifier</button>${drive&&GD.folder||drive&&S.gd&&S.gd.folder?'<button data-sp="open">📂 Ouvrir dans Drive</button>':''}`:`<button class="pri" data-sp="login">Se connecter avec Google</button>`}<button data-sp="set">⚙ Réglages</button></div>`;}
+$('#syncBtn').onclick=async()=>{modal('#syncPanel',true); syncPanelDraw(); if(Sync.mode==='drive'&&!(S.gd&&S.gd.email)){await GD.who(); syncPanelDraw();}};
+$('#syncPanel').addEventListener('click',async e=>{const b=e.target.closest('[data-sp]'); if(!b)return; const a=b.dataset.sp;
+  if(a==='run'){await Sync.run(false); syncPanelDraw();}
+  else if(a==='login'){modal('#syncPanel',false); GD.login();}
+  else if(a==='open'){extOpen('https://drive.google.com/drive/folders/'+(GD.folder||S.gd.folder));}
+  else if(a==='set'){modal('#syncPanel',false); $('#settingsBtn').click(); setTimeout(()=>{const c=$('#setNav [data-cat="save"]'); if(c)c.click();},30);}
+  else if(a==='check'){b.disabled=true; b.textContent='🔍 Vérification…'; try{const o=await Sync.check(); const ok=!o.noCloud.length&&!o.noHere&&!o.diff;
+    syncPanelDraw(ok?`✅ Vérifié : les ${o.cloud} morceaux et ${o.cloudL} playlists du cloud correspondent à cet appareil.`:`⚠ ${o.noCloud.length?'<b>'+o.noCloud.length+'</b> pas encore dans le cloud'+(o.noCloud.length<=5?' ('+o.noCloud.map(esc).join(', ')+')':'')+'. ':''}${o.noHere?'<b>'+o.noHere+'</b> dans le cloud mais pas ici. ':''}${o.diff?'<b>'+o.diff+'</b> différent(s). ':''}Touche « Synchroniser maintenant ».`);}catch(err){syncPanelDraw('🔴 Vérification impossible : '+esc(err.message||err));}}});
 /* ---------- synchro des images de partition et des bandes son ---------- */
 const b64Blob=(s,type)=>{const bin=atob(s||''), a=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i); return new Blob([a],{type:type||'application/octet-stream'});};
 const mimeOf=n=>/\.jpe?g$/i.test(n)?'image/jpeg':/\.png$/i.test(n)?'image/png':/\.mp3$/i.test(n)?'audio/mpeg':/\.m4a$/i.test(n)?'audio/mp4':/\.wav$/i.test(n)?'audio/wav':/\.ogg$/i.test(n)?'audio/ogg':'application/octet-stream';
@@ -8888,10 +9001,7 @@ $('#selFolder').onclick=async()=>{if(!SEL.size)return toast('Coche d\'abord des 
 $('#selType').onclick=async()=>{if(!SEL.size)return toast('Coche d\'abord des morceaux'); const v=await ask('Ajouter une étiquette','à travailler, reprise… (« -étiquette » pour l\'enlever)','dlTypes'); if(v==null||!v.trim())return; const t=v.trim(), off=t[0]==='-'; selSongs().forEach(s=>{setTag(s,off?t.slice(1).trim():t,!off); touch(s);}); save(); renderAll();};
 $('#selList').onclick=async()=>{
   if(!SEL.size)return toast('Coche d\'abord des morceaux'); return addSongsToList([...SEL]);
-  $('#dlLists').innerHTML=S.lists.map(l=>`<option value="${esc(l.name)}">`).join('');
-  const v=await ask('Ajouter à la playlist','Nom d\'une playlist (nouvelle si inconnue)','dlLists'); if(!v||!v.trim())return;
-  let l=S.lists.find(x=>x.name.toLowerCase()===v.trim().toLowerCase()); if(!l){l={id:uid(),name:v.trim(),date:'',notes:'',items:[],up:Date.now()}; S.lists.push(l);}
-  selSongs().forEach(s=>l.items.push({sid:s.id,target:null,capo:null,notes:'',dur:''})); touch(l); save(); renderAll(); toast(SEL.size+' morceau(x) ajouté(s) à « '+l.name+' »');
+  pickList(selSongs().map(s=>s.id));
 };
 $('#selTv').onclick=async()=>{const es=selSongs().filter(x=>(x.text||'').trim()).map(x=>entryOf(x)); if(!es.length)return toast('Coche d\'abord des morceaux');
   if(!Kara.linked()){Kara.afterLink=()=>Kara.sendList(es); toast('Scanne le QR affiché par le karaoké'); startScan(); return;} Kara.sendList(es);};
@@ -8933,12 +9043,12 @@ $('#jsonFile').onchange=e=>{const f=e.target.files[0]; if(f)importJSON(f); e.tar
 $('#pdfAll').onclick=async()=>{const b=await makePDF(libEntries(),null); if(b)saveBlob('bibliotheque.pdf',b);};
 $('#karaokeAll').onclick=()=>saveBlob('karaoke-depuis-accords.json',new Blob([karaokeJSON(libEntries())],{type:'application/json'}));
 $('#txtAll').onclick=()=>saveBlob('chansons.txt',new Blob([gridText(libEntries())],{type:'text/plain'}));
-$('#vider').onclick=()=>{if(confirm('Effacer toutes les chansons et playlists de cet appareil ?')){S.songs.forEach(s=>S.del.songs[s.id]=Date.now()); S.lists.forEach(l=>S.del.lists[l.id]=Date.now()); S.songs=[]; S.lists=[]; curList=null; save(); renderAll();}};
+$('#vider').onclick=async()=>{if(await confirmBox('Effacer toutes les chansons et playlists de cet appareil ?')){S.songs.forEach(s=>S.del.songs[s.id]=Date.now()); S.lists.forEach(l=>S.del.lists[l.id]=Date.now()); S.songs=[]; S.lists=[]; curList=null; save(); renderAll();}};
 
 // démarrage
 if(FOLLOW) startFollow();
 else { if(!S.homeV){S.homeV=1; S.libView='tableau'; S.cur='home';} showTab(S.cur||'home'); renderAll(); Sync.init().then(()=>setTimeout(autoBackup,2500)); backupInfo(); SP.ui(); placeMenu(); document.addEventListener('visibilitychange',()=>{if(!document.hidden)autoBackup();}); }
-if(!FOLLOW&&location.hash.includes('#pack=')){const h=location.hash; history.replaceState(null,'',location.pathname); if(confirm('Ce lien contient des morceaux. Les importer ?'))importLink(h);}
+(async()=>{if(!FOLLOW&&location.hash.includes('#pack=')){const h=location.hash; history.replaceState(null,'',location.pathname); if(await confirmBox('Ce lien contient des morceaux. Les importer ?'))importLink(h);}})();
 function extOpen(u){if(APP){try{window.Android.openUrl(u);}catch(e){toast('Ouverture impossible');}} else window.open(u,'_blank','noopener');}
 
 /* lecture : appli du service (tablette), petit lecteur intégré, ou Spotify connecté */
