@@ -1430,6 +1430,13 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #syncPanel .sppath{font-family:ui-monospace,Menlo,monospace;font-size:13px;opacity:.85}#syncPanel .spchk{margin:10px 0;padding:10px 12px;border-radius:12px;background:rgba(128,128,128,.12);font-size:14px;line-height:1.5}
 #syncPanel .spbtns{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
 #dlgBox .box{max-width:420px;width:calc(100% - 24px)}#dlgBox .dlgmsg{white-space:pre-line;font-size:15px;line-height:1.5;margin:4px 0 14px}#dlgBox input{width:100%;box-sizing:border-box;margin-bottom:12px}#dlgBox .dlgbtns{justify-content:flex-end;gap:8px}#dlgBox .danger{background:#dc2626!important;color:#fff!important;border-color:#dc2626!important}
+
+#kdemo{position:absolute;right:14px;top:64px;z-index:30;width:300px;border-radius:14px;background:#000;border:2px solid #38bdf8;box-shadow:0 14px 34px rgba(0,0,0,.6);color:#fff;overflow:hidden;font-family:Inter,system-ui}
+#kdemo[hidden]{display:none}#kdemo .kdh{display:flex;align-items:center;gap:8px;padding:6px 8px 6px 12px;background:#0b1a2a;font-size:12px}#kdemo .kdh b{flex:1;color:#7dd3fc}#kdemo .kdh span{opacity:.7}
+#kdemo .kdh button{width:28px;height:26px;padding:0;border-radius:8px;border:0;background:#1e293b;color:#fff}
+#kdemo .kdscr{min-height:110px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;gap:4px;text-align:center;font:700 15px/1.3 Inter,system-ui}
+#kdemo .kdp{display:flex;gap:6px;padding:8px}#kdemo .kdp button{flex:1;height:40px;border-radius:10px;border:0;background:#38bdf8;color:#04121f;font:800 14px Inter,system-ui}
+@media (max-width:700px){#kdemo{width:220px;right:8px}#kdemo .kdscr{min-height:80px;font-size:12.5px}}
 /* ===== Accords 10 : un peu de neuf (design « Accords » par défaut, retouches légères pour les autres) ===== */
 :root{--r10:14px}
 button,select,input,textarea{transition:background-color .15s,border-color .15s,box-shadow .15s,transform .08s}
@@ -1559,7 +1566,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.2.1</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.2.2</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes">
       <section data-cat="moi"><h3>Moi</h3>
@@ -2201,6 +2208,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
         <span class="lab" id="vdPedal"></span>
         <div class="vdrow seg vdpm" id="vdPedalMode"><button data-m="long">Court : dans le morceau · long : morceau</button><button data-m="song">Chaque appui : morceau</button><button data-m="screen">Écran puis morceau</button><button data-m="line">Bloc du karaoké</button></div>
         <p class="vdhint" id="vdPedalHint"></p>
+        <div class="vdrow"><button id="vdKDemo" aria-pressed="false">🧪 Démo karaoké (sans projecteur)</button></div>
       </section>
       <section>
         <h4>Écran</h4>
@@ -4980,7 +4988,7 @@ function openViewer(entries,start,list){
   // iPhone dans Safari : pas de vrai plein écran possible, sauf en appli sur l'écran d'accueil
   if(!APP&&/iPhone|iPad|iPod/.test(navigator.userAgent)&&!navigator.standalone&&!S.iosTip){S.iosTip=1; save(); setTimeout(()=>toast('Plein écran sur iPhone : Partager ⬆︎ puis « Sur l\'écran d\'accueil », et ouvre Accords depuis son icône',6000),800);}
 }
-function closeViewer(){try{ryStop(); const u=$('#vliteUR'); if(u)u.hidden=true; $('#viewer .vctl').classList.remove('liteon'); liteSnack(); LPT.ch=null; const lp=$('#litePaint'); if(lp)lp.hidden=true;}catch(e){}
+function closeViewer(){try{const kd=$('#kdemo'); if(kd)kd.hidden=true; ryStop(); const u=$('#vliteUR'); if(u)u.hidden=true; $('#viewer .vctl').classList.remove('liteon'); liteSnack(); LPT.ch=null; const lp=$('#litePaint'); if(lp)lp.hidden=true;}catch(e){}
   if(Follow.app){stopFollowApp(true);}
   closeInline(); setClean(false,true); $('#viewer').hidden=true; document.body.classList.remove('inscene'); $('#vlist').hidden=true; $('#vdisp').hidden=true; document.body.style.overflow='';
   if(APP){try{window.Android.setScene(false,false);}catch(e){}}
@@ -5033,7 +5041,7 @@ function vRender(){try{if(typeof ryUpdate==='function')setTimeout(ryUpdate,0); i
   $('#vtitle').textContent=e.s.q;
   if(V.lastSong!==e.s.id&&(V.tvFollow&&!FOLLOW||S.karaPilot)&&Kara.linked()){const en=e; setTimeout(()=>tvSend(en,$('#vtv')),0);}
   if(V.lastSong!==e.s.id){histArm(e); if(Kara.linked()&&!FOLLOW&&(KP.set||(V.tvFollow||S.karaPilot)&&isList()))setTimeout(kpSetlist,400); setTimeout(()=>Req.between(),600);}
-  setTimeout(()=>{if(KHL.st)KHL.paint(); if(!KHL.t&&!KHL.busy)KHL.kick();},0);
+  setTimeout(()=>{if(S.karaDemo){KHL.st=KDemo.state(); KDemo.draw();} if(KHL.st)KHL.paint(); if(!KHL.t&&!KHL.busy)KHL.kick();},0);
   if(V.lastSong!==e.s.id&&V.vid&&!FOLLOW)setTimeout(()=>vidPlay(e.s),0);
   else if(V.lastSong!==e.s.id&&!$('#spEmbed').hidden)muEmbed(e.s,MUE.k&&MU[MUE.k].id(e.s)?MUE.k:muPref(e.s));
   if(V.lastSong!==e.s.id){V.lastSong=e.s.id; if(!e.preview&&!FOLLOW){S.recent=[e.s.id,...(S.recent||[]).filter(x=>x!==e.s.id)].slice(0,12); if(V.listRef&&V.listRef.id)S.lastList=V.listRef.id; save();}}
@@ -7023,10 +7031,10 @@ $('#grpPilot').onchange=e=>{S.karaPilot=e.target.checked; save();
 $('#grpHL').onchange=e=>{S.karaHL=e.target.checked; save(); KHL.kick(); if(!S.karaHL)KHL.clear();};
 /* ---------- ce qui est projeté, entouré sur la partition (karaoké ≥ réponse « playing.now ») ---------- */
 const KHL={st:null,busy:false,t:null,miss:0,last:-1,
-  on(){return APP&&S.karaHL!==false&&Kara.linked()&&!$('#viewer').hidden;},
+  on(){return (S.karaDemo||APP&&S.karaHL!==false&&Kara.linked())&&!$('#viewer').hidden;},
   kick(){clearTimeout(this.t); if(this.on())this.t=setTimeout(()=>this.poll(),50);},
   async poll(){
-    clearTimeout(this.t); if(!this.on()){this.clear(); return;} if(this.busy)return; this.busy=true;
+    clearTimeout(this.t); if(!this.on()){this.clear(); return;} if(S.karaDemo){this.st=KDemo.state(); this.paint(); KDemo.draw(); return;} if(this.busy)return; this.busy=true;
     let st=null; try{const r=await httpReq('POST',S.kara.base+'/api?k='+encodeURIComponent(S.kara.k),{'Content-Type':'application/json'},JSON.stringify({op:'get'})); if(r.status===200)st=JSON.parse(r.body);}catch(e){}
     this.busy=false; if(st){this.miss=0; this.st=st.playing||null; this.paint();} else if(++this.miss>=2){this.st=null; this.clear();}
     this.t=setTimeout(()=>this.poll(),st?1200:6000);
@@ -7968,15 +7976,31 @@ function pedalDir(id,key){const nx=(S.pedalNext||[]), pv=(S.pedalPrev||[]);
   if(nx.includes(id)||(!pv.includes(id)&&(PEDAL_NEXT.includes(id)||PEDAL_NEXT.includes(key))))return 1;
   if(pv.includes(id)||PEDAL_PREV.includes(id)||PEDAL_PREV.includes(key))return -1; return 0;}
 // projecteur qui suit : l'appui court fait aussi passer l'écran du karaoké
-function karaStep(dir){if(!((V.tvFollow&&!FOLLOW||S.karaPilot)&&Kara.linked()))return; if(APP)httpReq('POST',S.kara.base+'/api?k='+encodeURIComponent(S.kara.k),{'Content-Type':'application/json'},JSON.stringify({op:dir>0?'next':'prev'})).then(r=>{try{const st=JSON.parse(r.body); if(st.playing){KHL.st=st.playing; KHL.paint();}}catch(e){}}); else Kara.call({op:dir>0?'next':'prev'});}
+function karaStep(dir){if(S.karaDemo){KDemo.step(dir); return;} if(!((V.tvFollow&&!FOLLOW||S.karaPilot)&&Kara.linked()))return; if(APP)httpReq('POST',S.kara.base+'/api?k='+encodeURIComponent(S.kara.k),{'Content-Type':'application/json'},JSON.stringify({op:dir>0?'next':'prev'})).then(r=>{try{const st=JSON.parse(r.body); if(st.playing){KHL.st=st.playing; KHL.paint();}}catch(e){}}); else Kara.call({op:dir>0?'next':'prev'});}
 function pedalLong(dir,h){
   h.fired=true; clearTimeout(h.t); const j=h.origI+dir;
   if(j>=0&&j<V.list.length){V.i=j; V.page=0; V.half=false; vRender(); try{$('#vstage').scrollTo({top:0,behavior:'instant'});}catch(e){} toast(dir>0?'⏭ Morceau suivant':'⏮ Morceau précédent');}
   else {if(V.i!==h.origI){V.i=h.origI; vRender();} toast(dir>0?'Dernier morceau':'Premier morceau');}
 }
+/* ---------- 🧪 démo karaoké : un faux projecteur dans Accords, pour essayer la pédale sans rien relier ---------- */
+const KDemo={sid:null,scr:[],idx:0,
+  build(e){const lines=karaokeText(e).split('\n'), scr=[]; let cur=[]; lines.forEach(l=>{if(!l.trim()){if(cur.length){scr.push(cur); cur=[];} return;} cur.push(l); if(cur.length>=4){scr.push(cur); cur=[];}}); if(cur.length)scr.push(cur);
+    this.sid=e.s.id; this.scr=scr.length?scr:[['♪']]; this.idx=0;},
+  cur(){const e=V.list[V.i]; if(!e)return null; if(this.sid!==e.s.id)this.build(e); return e;},
+  state(){const e=this.cur(); if(!e)return null; return {title:split(e.s.q).titre.trim()||e.s.q,now:this.scr[this.idx].join('\n'),idx:this.idx+1,n:this.scr.length};},
+  step(dir){if(!this.cur())return; this.idx=Math.max(0,Math.min(this.scr.length-1,this.idx+dir)); KHL.st=this.state(); KHL.paint(); this.draw();},
+  draw(){let el=$('#kdemo'); const on=S.karaDemo&&!$('#viewer').hidden; if(!on){if(el)el.hidden=true; return;}
+    if(!el){el=document.createElement('div'); el.id='kdemo'; $('#viewer').appendChild(el);
+      el.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-kd]'); if(!b)return; e.preventDefault(); e.stopPropagation(); const d=+b.dataset.kd; if(d)pedalAct(d,'down','kdemo'); else {S.karaDemo=false; save(); this.draw(); KHL.clear(); pedalModeUI(); toast('Démo karaoké arrêtée');}});
+      el.addEventListener('pointerup',e=>{const b=e.target.closest('[data-kd]'); if(b&&+b.dataset.kd)pedalAct(+b.dataset.kd,'up','kdemo');});
+      el.addEventListener('click',e=>e.stopPropagation());}
+    const st=this.cur()?this.state():null; el.hidden=false;
+    el.innerHTML=`<div class="kdh"><b>📺 Démo karaoké</b><span>${st?st.idx+' / '+st.n:''}</span><button data-kd="0" aria-label="Arrêter la démo">✕</button></div><div class="kdscr">${st?st.now.split('\n').map(l=>`<div>${esc(l)}</div>`).join(''):''}</div><div class="kdp"><button data-kd="-1">◀ pédale</button><button data-kd="1">pédale ▶</button></div>`;}
+};
+$('#vdKDemo').onclick=()=>{S.karaDemo=!S.karaDemo; if(S.karaDemo){S.pedalMode='line'; KDemo.sid=null;} save(); pedalModeUI(); KHL.kick(); KDemo.draw(); if(!S.karaDemo)KHL.clear(); toast(S.karaDemo?'🧪 Démo : le faux projecteur est en haut à droite ; appuie sur la pédale (ou ◀ ▶)':'Démo karaoké arrêtée',3500);};
 /* ---------- mode pédale « bloc du karaoké » : chaque appui = écran suivant au projecteur ; sur la tablette, le bloc projeté est entouré et la page suit ---------- */
 const BLK_N=4;   // sans karaoké : blocs de 4 lignes
-const lnKaraOn=()=>APP&&Kara.linked()&&(V.tvFollow&&!FOLLOW||S.karaPilot)&&S.karaHL!==false;
+const lnKaraOn=()=>!!S.karaDemo||APP&&Kara.linked()&&(V.tvFollow&&!FOLLOW||S.karaPilot)&&S.karaHL!==false;
 function lnGroups(){const gs=[]; $$('#vstage .ly').forEach(el=>{if(!el.textContent.trim())return; const k=el.dataset.raw??null, g=gs[gs.length-1]; if(g&&k!=null&&g.k===k)g.els.push(el); else gs.push({k,els:[el]});}); return gs;}
 const lnPaged=()=>{const st=$('#vstage'); return !st.classList.contains('scroll')&&((S.vlayout==='fixed'&&S.vfixMode==='pages'&&(V.pages||1)>1)||isSheet((V.list[V.i]||{}).s||{}));};
 // garder le bloc visible : défilement, ou page suivante si le bloc n'est pas sur cette page
@@ -8513,7 +8537,7 @@ $$('#vdMode button').forEach(b=>b.onclick=()=>{S.vfixMode=b.dataset.v; S.setUp=D
 const fixSize=d=>{S.vfixSize=Math.max(12,Math.min(90,(+S.vfixSize||28)+d)); S.setUp=Date.now(); V.page=0; save(); vRender();};
 $('#vdSmall').onclick=()=>fixSize(-2); $('#vdBig').onclick=()=>fixSize(2);
 $('#vdLearn').onclick=()=>{if(Learn.step){Learn.step=0; Learn.ui();} else Learn.start();};
-function pedalModeUI(){const m=S.pedalMode||'long'; $$('#vdPedalMode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m)); $('#vdPedalHint').textContent={long:'Appui court : avance ou recule dans le morceau, sans en changer. Appui long (½ s) : morceau suivant ou précédent. Pédale Donner : mets REPEAT sur ON.',screen:'Chaque appui : écran suivant, puis morceau suivant une fois en bas.',line:'Chaque appui : écran suivant au karaoké ; sur la tablette, le bloc projeté est entouré et la page suit toute seule, puis morceau suivant. Sans karaoké : blocs de 4 lignes. Appui long : morceau suivant ou précédent.',song:'Chaque appui : morceau suivant (ou précédent), tout de suite.'}[m]+' Les bords de l\'écran : écran suivant, puis morceau.';}
+function pedalModeUI(){const m=S.pedalMode||'long'; {const d=$('#vdKDemo'); if(d)d.setAttribute('aria-pressed',String(!!S.karaDemo));} $$('#vdPedalMode button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===m)); $('#vdPedalHint').textContent={long:'Appui court : avance ou recule dans le morceau, sans en changer. Appui long (½ s) : morceau suivant ou précédent. Pédale Donner : mets REPEAT sur ON.',screen:'Chaque appui : écran suivant, puis morceau suivant une fois en bas.',line:'Chaque appui : écran suivant au karaoké ; sur la tablette, le bloc projeté est entouré et la page suit toute seule, puis morceau suivant. Sans karaoké : blocs de 4 lignes. Appui long : morceau suivant ou précédent.',song:'Chaque appui : morceau suivant (ou précédent), tout de suite.'}[m]+' Les bords de l\'écran : écran suivant, puis morceau.';}
 $('#vdPedalMode').onclick=e=>{const b=e.target.closest('button'); if(!b)return; S.pedalMode=b.dataset.m; save(); pedalModeUI();};
 pedalModeUI();
 $('#vdPedalReset').onclick=()=>{S.pedalNext=[]; S.pedalPrev=[]; Learn.step=0; save(); if(APP){try{window.Android.setScene(true,false);}catch(e){}} Learn.ui(); toast('Pédale : touches par défaut');};
