@@ -856,7 +856,7 @@ body.inscene #spEmbed{bottom:12px}
 .grpbox{max-width:560px}.grprole{margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid #333;display:grid;gap:6px}.grprole .gopt{display:flex;gap:10px;align-items:center;text-align:left;cursor:pointer}.grprole .gopt input{flex:none;width:20px;height:20px}
 #vstage .ly.lnon{color:#fff}
 .hlbox{position:absolute;z-index:3;pointer-events:none;border:3px solid #facc15;border-radius:12px;box-shadow:0 0 0 3px rgba(250,204,21,.18),0 0 22px rgba(250,204,21,.35)}
-#vstage.kdim pre>span:not(.kon):not(.lnon):not(.kcon),#vstage.kdim .ln>span:not(.kon):not(.lnon):not(.kcon){opacity:.42;transition:opacity .2s}
+#vstage.kdim pre>span:not(.kon):not(.lnon):not(.kcon),#vstage.kdim .ln>span:not(.kon):not(.lnon):not(.kcon){opacity:.8;transition:opacity .2s}
 html[data-theme=light] .hlbox,.light .hlbox{border-color:#d97706;box-shadow:0 0 0 3px rgba(217,119,6,.18)}
 .ly.kon{-webkit-box-decoration-break:clone;box-decoration-break:clone}.grpstate{padding:10px 12px;border-radius:10px;background:rgba(127,127,127,.14);color:inherit;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}.grpstate b{flex:1 1 auto}
 .grpbig{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grpbig button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:16px 10px;border-radius:14px;font-size:16px}.grpbig i{font-style:normal;font-size:30px}.grpbig small{opacity:.7;font-size:12px}
@@ -1569,7 +1569,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.2.3</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.2.4</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes">
       <section data-cat="moi"><h3>Moi</h3>
@@ -7988,11 +7988,13 @@ function pedalLong(dir,h){
 /* ---------- cadre autour du bloc projeté (calque par-dessus : rien ne bouge) + le reste atténué ---------- */
 function hlFrames(){const st=$('#vstage'); if(!st)return; st.querySelectorAll('.hlbox').forEach(x=>x.remove()); st.querySelectorAll('.kcon').forEach(x=>x.classList.remove('kcon'));
   const els=$$('#vstage .ly.kon, #vstage .ly.lnon'); st.classList.toggle('kdim',!!els.length&&S.kDim!==false); if(!els.length)return;
-  const all=[]; els.forEach(el=>{let p=el.previousElementSibling; if(p&&p.classList.contains('c')){p.classList.add('kcon'); all.push(p);} all.push(el);});
   if(getComputedStyle(st).position==='static')st.style.position='relative';
-  const sr=st.getBoundingClientRect(), rs=[]; all.forEach(el=>[...el.getClientRects()].forEach(r=>{if(r.width>1)rs.push(r);}));
-  rs.sort((a,b)=>a.left-b.left||a.top-b.top); const cols=[];
-  rs.forEach(r=>{let c=cols.find(c=>Math.abs(c.l-r.left)<40&&r.top-c.b<r.height*1.8); if(!c){c={l:r.left,t:r.top,b:r.bottom,r:r.right}; cols.push(c);} else {c.t=Math.min(c.t,r.top); c.b=Math.max(c.b,r.bottom); c.r=Math.max(c.r,r.right); c.l=Math.min(c.l,r.left);}});
+  // une boîte par colonne : chaque ligne de paroles (et sa ligne d'accords au-dessus) va dans la colonne où commence la ligne
+  const sr=st.getBoundingClientRect(), cols=[];
+  els.forEach(el=>{const lr=[...el.getClientRects()].filter(r=>r.width>1); if(!lr.length)return; const x=lr[0].left; let c=cols.find(c=>Math.abs(c.x-x)<30);
+    if(!c){c={x,l:Infinity,t:Infinity,b:-Infinity,r:-Infinity}; cols.push(c);}
+    const add=r=>{c.l=Math.min(c.l,r.left); c.r=Math.max(c.r,r.right); c.t=Math.min(c.t,r.top); c.b=Math.max(c.b,r.bottom);};
+    lr.forEach(add); const p=el.previousElementSibling; if(p&&p.classList.contains('c')){p.classList.add('kcon'); [...p.getClientRects()].filter(r=>r.width>1&&Math.abs(r.top-lr[0].top)<lr[0].height*2.2).forEach(add);}});
   cols.forEach(c=>{const d=document.createElement('div'); d.className='hlbox'; Object.assign(d.style,{left:(c.l-sr.left+st.scrollLeft-10)+'px',top:(c.t-sr.top+st.scrollTop-6)+'px',width:(c.r-c.l+20)+'px',height:(c.b-c.t+12)+'px'}); st.appendChild(d);});}
 addEventListener('resize',()=>{if($('#vstage .ly.kon, #vstage .ly.lnon'))setTimeout(hlFrames,120);});
 /* ---------- 🧪 démo karaoké : un faux projecteur dans Accords, pour essayer la pédale sans rien relier ---------- */
