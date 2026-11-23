@@ -1088,6 +1088,10 @@ html[data-design=nb] button,html[data-design=nbi] button{border-color:var(--ink)
 html[data-design=nb] button:not(.pri):not(.fab):not([aria-pressed=true]):not(#viewer button):not(#lisr button):not(#bgEd button),html[data-design=nbi] button:not(.pri):not(.fab):not([aria-pressed=true]):not(#viewer button):not(#lisr button):not(#bgEd button){background-color:var(--card)!important;color:var(--ink)!important;background-image:none!important;border-color:var(--ink)!important}
 html[data-design=nb] button[aria-pressed=true]:not(#viewer button):not(#lisr button):not(#bgEd button),html[data-design=nbi] button[aria-pressed=true]:not(#viewer button):not(#lisr button):not(#bgEd button){background:var(--ink)!important;color:var(--bg)!important}
 html[data-design=nb] button[aria-pressed=true] *,html[data-design=nbi] button[aria-pressed=true] *{color:inherit!important}
+/* surfaces sombres (scène, éditeurs) : en noir et blanc, encre blanche pour que les accords restent visibles */
+html[data-design=nb] :is(#viewer,#vtext,#bgEd,#kdemo,#lisList){--acc:#fff;--acc2:#e6e6e6;--hl:#fff;--hlrgb:255,255,255;--hl2:#fff;--onhl:#000;--warn:#fff}
+html[data-design=nb] :is(#vtext,#bgEd){--ink:#fff;--mute:#bdbdbd;--line:#5a5a5a;--card:#161616;--bg:#000}
+html[data-design^=nb] #bnav button[aria-pressed=true]::after{display:none}
 html[data-design=nb] .pri,html[data-design=nbi] .pri,html[data-design=nb] .fab,html[data-design=nbi] .fab{background:var(--ink)!important;color:var(--bg)!important}
 html[data-design=nb] .logo,html[data-design=nbi] .logo{background:var(--ink)!important;color:var(--bg)!important}
 html[data-design=nb] img,html[data-design=nb] .ltile,html[data-design=nb] .htile,html[data-design=nbi] .ltile,html[data-design=nbi] .htile{filter:grayscale(1)}
@@ -1534,7 +1538,7 @@ button,select,input,textarea{transition:background-color .15s,border-color .15s,
 button:active{transform:scale(.97)}
 button.pri{box-shadow:0 6px 18px -8px color-mix(in srgb,var(--acc) 70%,transparent)}
 :focus-visible{outline:2px solid color-mix(in srgb,var(--acc) 70%,transparent);outline-offset:2px}
-#bnav{backdrop-filter:saturate(1.4) blur(14px);-webkit-backdrop-filter:saturate(1.4) blur(14px);background:color-mix(in srgb,var(--card) 82%,transparent)!important}
+#bnav{background:var(--card)!important}
 #bnav button{border-radius:14px;padding:5px 18px;outline:0!important}
 #bnav button[aria-pressed=true]{background:color-mix(in srgb,var(--acc) 14%,transparent);box-shadow:none!important;border:0!important}
 .fab{border-radius:18px!important;box-shadow:0 12px 28px -10px color-mix(in srgb,var(--acc) 75%,transparent),0 2px 6px rgba(0,0,0,.18)!important}
@@ -1658,7 +1662,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.5.1</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.5.2</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
