@@ -185,6 +185,7 @@ pre .k{color:var(--warn);font-weight:700}
 #viewer.portrait .vtop{flex-wrap:wrap}
 #viewer.portrait > .vctl{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:6px;padding:8px 10px max(10px,env(safe-area-inset-bottom));border-top:1px solid #26262b;background:var(--s1,#121215)}
 #viewer.portrait > .vctl button{height:54px;font-size:20px;min-width:0;background:#1b1b20;color:#eee;border:0;border-radius:12px;padding:0}
+.vctl button,.vbar button{display:inline-flex;align-items:center;justify-content:center;gap:6px}.vctl button{display:flex}
 #viewer.portrait > .vctl button[aria-pressed=true]{background:var(--hl,#fb923c);color:var(--onhl,#111)}
 #viewer.portrait .vhead{flex:1 1 calc(100% - 60px)!important}
 #viewer.portrait > .vctl .vkeys,#viewer.portrait > .vctl .vtempo{display:contents}
@@ -1662,7 +1663,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.5.2</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.5.3</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
