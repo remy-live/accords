@@ -1089,6 +1089,18 @@ html[data-design=nb] button,html[data-design=nbi] button{border-color:var(--ink)
 html[data-design=nb] button:not(.pri):not(.fab):not([aria-pressed=true]):not(#viewer button):not(#lisr button):not(#bgEd button),html[data-design=nbi] button:not(.pri):not(.fab):not([aria-pressed=true]):not(#viewer button):not(#lisr button):not(#bgEd button){background-color:var(--card)!important;color:var(--ink)!important;background-image:none!important;border-color:var(--ink)!important}
 html[data-design=nb] button[aria-pressed=true]:not(#viewer button):not(#lisr button):not(#bgEd button),html[data-design=nbi] button[aria-pressed=true]:not(#viewer button):not(#lisr button):not(#bgEd button){background:var(--ink)!important;color:var(--bg)!important}
 html[data-design=nb] button[aria-pressed=true] *,html[data-design=nbi] button[aria-pressed=true] *{color:inherit!important}
+/* Liseuse (encre électronique) : noir pur sur blanc partout, scène comprise, pas d'animation */
+html[data-ls] *{transition:none!important;animation:none!important;scroll-behavior:auto!important}
+html[data-ls] #viewer{--acc:#000;--acc2:#000;--hl:#000;--hlrgb:0,0,0;--hl2:#000;--onhl:#fff;--warn:#000;--s0:#fff;--s1:#fff;--s2:#fff;--s3:#fff}
+html[data-ls] #viewer.sun,html[data-ls] #viewer.sun .vbar,html[data-ls] #viewer.sun .vctl,html[data-ls] #viewer.sun #vmenu{background:#fff!important;border-color:#000!important}
+html[data-ls] #viewer.sun button{background:#fff!important;color:#000!important;border:2px solid #000!important}
+html[data-ls] #viewer.sun button[aria-pressed=true]{background:#000!important;color:#fff!important}
+html[data-ls] #viewer.sun #vstage pre,html[data-ls] #viewer.sun #vstage pre *{color:#000!important}
+html[data-ls] #viewer.sun #vstage pre .c{font-weight:900!important;text-decoration:none!important;border-bottom:0!important}
+html[data-ls] #viewer.sun #vstage pre .s{background:#fff!important;border:2px solid #000!important;color:#000!important}
+html[data-ls] #viewer.sun :is(#vkey,#vkeyChip,#vkeyChip small,#vcapo,.pchip,#vnotes,#vwork,#vsub,.vhead b){color:#000!important;background:#fff!important;border-color:#000!important}
+html[data-ls] #viewer.sun .ly.kon,html[data-ls] #viewer.sun .lnon{background:#fff!important;outline:3px solid #000}
+html[data-ls] #lisr{--lbg:#fff;--lfg:#000}
 /* surfaces sombres (scène, éditeurs) : en noir et blanc, encre blanche pour que les accords restent visibles */
 html[data-design=nb] :is(#viewer,#vtext,#bgEd,#kdemo,#lisList){--acc:#fff;--acc2:#e6e6e6;--hl:#fff;--hlrgb:255,255,255;--hl2:#fff;--onhl:#000;--warn:#fff}
 html[data-design=nb] :is(#vtext,#bgEd){--ink:#fff;--mute:#bdbdbd;--line:#5a5a5a;--card:#161616;--bg:#000}
@@ -1663,7 +1675,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.5.3</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.6.0</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
@@ -1680,6 +1692,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
     <button data-d="papier"><span class="dsprev" style="background:#f3ecdc"><i style="background:#7c2d12"></i><i style="background:#fbf7ee;box-shadow:0 0 0 1px #e0d4bb"></i><i style="background:#b45309"></i></span><b>Partition</b><small>Papier crème, titres à empattements</small></button>
     <button data-d="contraste"><span class="dsprev" style="background:#000000"><i style="background:#facc15"></i><i style="background:#38bdf8"></i><i style="background:#1e1e1e"></i></span><b>Contraste</b><small>Noir et jaune, lisible en scène</small></button>
     <button data-d="gris"><span class="dsprev" style="background:#e6e6e6"><i style="background:#3a3a3a"></i><i style="background:#f7f7f7;box-shadow:0 0 0 1px #bbb"></i><i style="background:#8a8a8a"></i></span><b>Niveaux de gris</b><small>Gris doux, suit clair / sombre</small></button>
+    <button data-d="liseuse"><span class="dsprev" style="background:#fff;box-shadow:inset 0 0 0 2px #000"><i style="background:#000"></i><i style="background:#000"></i><i style="background:#fff;box-shadow:0 0 0 2px #000"></i></span><b>Liseuse</b><small>Encre électronique : tout en noir sur blanc, même la scène, sans animation</small></button>
     <button data-d="nb"><span class="dsprev" style="background:#fff;box-shadow:inset 0 0 0 1px #000"><i style="background:#000"></i><i style="background:#fff;box-shadow:0 0 0 2px #000"></i><i style="background:#777"></i></span><b>Noir et blanc</b><small>Encre noire sur blanc, façon liseuse</small></button>
     <button data-d="nbi"><span class="dsprev" style="background:#000"><i style="background:#fff"></i><i style="background:#000;box-shadow:0 0 0 2px #fff"></i><i style="background:#888"></i></span><b>Noir et blanc inversé</b><small>Blanc sur noir, reposant le soir</small></button>
   </div></div>
@@ -3756,9 +3769,9 @@ $('#askIn').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault(); askDone($('#as
 function applyLook(){
   const b=Math.max(5,Math.min(100,+S.bright||100));
   document.documentElement.dataset.theme=S.theme==='auto'?'':S.theme==='sun'?'light':S.theme;
-  if(['neon','foret','ocean','prune','ardoise','soleil'].includes(S.design))S.design='accords'; document.documentElement.dataset.design=S.design||'accords'; $$('#design [data-d]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.d===(S.design||'accords')));
-  {const m=document.querySelector('meta[name=theme-color]'); if(m)m.content={mac:'#007aff',papier:'#7c2d12',neon:'#0b1120',foret:'#17241b',ocean:'#0a1220',contraste:'#000000',nb:'#ffffff',nbi:'#000000',gris:'#2a2a2a',prune:'#22152f',ardoise:'#1c2025',soleil:'#2a1d0c'}[S.design]||'#c2410c';}
-  $('#viewer').classList.toggle('sun',S.theme==='sun'); $('#vsun').setAttribute('aria-pressed',S.theme==='sun');
+  if(['neon','foret','ocean','prune','ardoise','soleil'].includes(S.design))S.design='accords'; document.documentElement.dataset.design=S.design==='liseuse'?'nb':(S.design||'accords'); if(S.design==='liseuse')document.documentElement.dataset.ls='1'; else delete document.documentElement.dataset.ls; $$('#design [data-d]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.d===(S.design||'accords')));
+  {const m=document.querySelector('meta[name=theme-color]'); if(m)m.content={mac:'#007aff',papier:'#7c2d12',neon:'#0b1120',foret:'#17241b',ocean:'#0a1220',contraste:'#000000',nb:'#ffffff',nbi:'#000000',liseuse:'#ffffff',gris:'#2a2a2a',prune:'#22152f',ardoise:'#1c2025',soleil:'#2a1d0c'}[S.design]||'#c2410c';}
+  $('#viewer').classList.toggle('sun',S.theme==='sun'||S.design==='liseuse'); $('#vsun').setAttribute('aria-pressed',S.theme==='sun');
   if(APP){try{window.Android.setBrightness(b/100);}catch(e){} $('#dim').style.opacity=0;}
   else $('#dim').style.opacity=((100-b)/100*.85).toFixed(2);
   $('#bright').value=b; $('#vbright').value=b; $('#brightVal').textContent=b+' %';
@@ -4828,7 +4841,7 @@ function nextConcert(){
   const any=S.lists.slice().sort((a,b)=>(b.up||0)-(a.up||0))[0]; return any?{l:any,d:listDate(any),kind:'last'}:null;
 }
 const TILE=['#c2410c','#0f766e','#7c3aed','#be185d','#1d4ed8','#4d7c0f','#a16207'];
-const TILES={gris:['#3a3a3a','#555','#6b6b6b','#4a4a4a','#2e2e2e','#7a7a7a','#5e5e5e'],nb:['#000','#333','#555','#222','#444','#111','#666'],nbi:['#fff','#ddd','#bbb','#eee','#ccc','#aaa','#999'],foret:["#3f6212", "#15803d", "#0f766e", "#65a30d", "#166534", "#4d7c0f", "#047857"],ocean:["#1d4ed8", "#0e7490", "#2563eb", "#0891b2", "#1e40af", "#0369a1", "#3b82f6"],contraste:["#a16207", "#1d4ed8", "#b91c1c", "#15803d", "#7e22ce", "#c2410c", "#0e7490"],prune:["#7e22ce", "#be185d", "#9333ea", "#db2777", "#6b21a8", "#a21caf", "#c026d3"],ardoise:["#334155", "#475569", "#0f766e", "#64748b", "#1e293b", "#57534e", "#3f3f46"],soleil:["#c2410c", "#b45309", "#e11d48", "#ca8a04", "#9a3412", "#be123c", "#d97706"],mac:['#007aff','#5856d6','#34aadc','#af52de','#ff9500','#30b0c7','#5ac8fa'],papier:['#7c2d12','#3f6212','#92400e','#57534e','#9a3412','#365314','#78350f'],neon:['#0891b2','#a21caf','#4f46e5','#0d9488','#be185d','#2563eb','#7c3aed']};
+const TILES={liseuse:['#000','#000','#000','#000','#000','#000','#000'],gris:['#3a3a3a','#555','#6b6b6b','#4a4a4a','#2e2e2e','#7a7a7a','#5e5e5e'],nb:['#000','#333','#555','#222','#444','#111','#666'],nbi:['#fff','#ddd','#bbb','#eee','#ccc','#aaa','#999'],foret:["#3f6212", "#15803d", "#0f766e", "#65a30d", "#166534", "#4d7c0f", "#047857"],ocean:["#1d4ed8", "#0e7490", "#2563eb", "#0891b2", "#1e40af", "#0369a1", "#3b82f6"],contraste:["#a16207", "#1d4ed8", "#b91c1c", "#15803d", "#7e22ce", "#c2410c", "#0e7490"],prune:["#7e22ce", "#be185d", "#9333ea", "#db2777", "#6b21a8", "#a21caf", "#c026d3"],ardoise:["#334155", "#475569", "#0f766e", "#64748b", "#1e293b", "#57534e", "#3f3f46"],soleil:["#c2410c", "#b45309", "#e11d48", "#ca8a04", "#9a3412", "#be123c", "#d97706"],mac:['#007aff','#5856d6','#34aadc','#af52de','#ff9500','#30b0c7','#5ac8fa'],papier:['#7c2d12','#3f6212','#92400e','#57534e','#9a3412','#365314','#78350f'],neon:['#0891b2','#a21caf','#4f46e5','#0d9488','#be185d','#2563eb','#7c3aed']};
 const tileC=i=>{const p=TILES[S.design]||TILE; return p[i%p.length];};
 function homeRow(s,extra){const r=s._r||compute(s), sp=split(s.q);
   return `<div class="hrow" data-id="${s.id}"><span class="hi">${s.kind==='sheet'?'📄':'♪'}</span><span class="ht"><b>${esc(sp.titre||s.q)}</b><span>${esc(sp.artiste||'')}</span></span>${extra||''}<span class="hk2">${r.key?esc(keyName(r.target,r.key.minor)):''}</span><button class="hp" data-play="${s.id}" aria-label="Scène">▶</button></div>`;}
