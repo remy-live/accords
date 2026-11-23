@@ -1589,7 +1589,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.3.1</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.3.2</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes">
       <section data-cat="moi"><h3>Moi</h3>
@@ -8878,7 +8878,7 @@ const Sync={
     try{
       if(!APP&&this.handle&&(await this.handle.queryPermission({mode:'readwrite'}))!=='granted'){const p=await this.handle.requestPermission({mode:'readwrite'}); if(p!=='granted')throw new Error('refusé');}
       const files=await this.list(), names=new Set(files.map(f=>f.name)); let changed=false, pulled=0, pushed=0, fails=0, done=0;
-      const put=async(n,t)=>{if((await this.write(n,t))===false)fails++; else {pushed++; names.add(n);} if(++done%10===0)$('#syncStatus').textContent='Synchronisation… '+done;}, rm0=this.remove.bind(this); this.remove=async n=>{names.delete(n); return rm0(n);};
+      const put=async(n,t)=>{if((await this.write(n,t))===false)fails++; else {pushed++; names.add(n);} if(++done%10===0)$('#syncStatus').textContent='Synchronisation… '+done;}, rmOrig=Sync._rm0||(Sync._rm0=Sync.remove), rm0=rmOrig.bind(this); this.remove=async n=>{names.delete(n); return rm0(n);};
       // suppressions
       let rdel={songs:{},lists:{}}; if(names.has('deleted.json')){try{rdel=JSON.parse(await this.read('deleted.json'));}catch(e){}}
       const mdel={songs:{...rdel.songs,...S.del.songs},lists:{...rdel.lists,...S.del.lists}};
@@ -8911,13 +8911,13 @@ const Sync={
       let med={up:0,down:0}; try{med=await this.media(files,quiet);}catch(e){console.warn(e);}
       pulled+=med.down; pushed+=med.up;
       S.lastSync=Date.now(); localStorage.setItem(KEY,JSON.stringify(S,(k,v)=>k[0]==='_'?undefined:v));
-      if(changed){renderAll(); try{if(!$('#lisr').hidden)lisRefresh();}catch(e){}} this.refreshUI(); delete this.remove;
+      if(changed){renderAll(); try{if(!$('#lisr').hidden)lisRefresh();}catch(e){}} this.refreshUI(); this.remove=Sync._rm0||this.remove;
       const cnt=re=>[...names].filter(n=>re.test(n)).length;
       S.syncLast={at:Date.now(),pulled,pushed,fails,songs:cnt(/^song-.+\.json$/),lists:cnt(/^list-.+\.json$/),where:this.mode==='drive'?'drive':(this.label||'dossier'),dev:APP?'l’appli Android':'ce navigateur'}; this.pending=false; save(); this.pending=false;
       if(quiet&&pushed&&!fails)toast('☁ Enregistré dans le cloud',1400);
       if(fails){$('#syncStatus').textContent=`Synchro incomplète : ${fails} fichier(s) non écrit(s) dans le dossier.`; if(!quiet)toast(`Synchro : ${fails} fichier(s) non écrit(s). Réessaie plus tard.`);}
       else if(!quiet||pulled)toast(`Synchro OK — ${pulled} reçu(s), ${pushed} envoyé(s)`);
-    }catch(e){delete this.remove; this.err=String(e.message||e); $('#syncStatus').textContent='Synchro impossible : '+this.err; if(!quiet)toast('Synchro impossible : '+this.err);}
+    }catch(e){this.remove=Sync._rm0||this.remove; this.err=String(e.message||e); $('#syncStatus').textContent='Synchro impossible : '+this.err; if(!quiet)toast('Synchro impossible : '+this.err);}
     this.busy=false; syncUI(); if(!$('#syncPanel').hidden)syncPanelDraw();
   },
   // comparer l'appareil et le cloud, sans rien écrire
@@ -8971,6 +8971,7 @@ document.addEventListener('keydown',e=>{if($('#lisr').hidden)return; const k=e.k
 addEventListener('resize',()=>{if(!$('#lisr').hidden)lisRender(false);});
 // en revenant sur l'appli (liseuse rallumée le matin ou le soir) : on récupère tout de suite les changements du cloud
 document.addEventListener('visibilitychange',()=>{if(document.hidden||!Sync.ready||Sync.busy)return; const L=S.syncLast; if(!L||Date.now()-L.at>60000)Sync.run(true);});
+try{if(Sync.remove&&!Sync._rm0)Sync._rm0=Sync.remove;}catch(e){}
 /* ---------- témoin ☁ et panneau Synchro : est-ce enregistré, et où ---------- */
 function syncState(){if(!Sync.ready)return 'off'; if(Sync.busy)return 'busy'; if(Sync.err)return 'err'; if(Sync.pending)return 'pend'; return 'ok';}
 const ago=t=>{if(!t)return 'jamais'; const m=Math.round((Date.now()-t)/60000); return m<1?'à l’instant':m<60?'il y a '+m+' min':new Date(t).toLocaleString('fr-FR',{weekday:'short',hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});};
