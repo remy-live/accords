@@ -470,7 +470,20 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 .iot{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}.iot small{color:var(--mute);font-size:12.5px}.iot input{margin-top:4px;width:100%}
 .iorow button{min-width:96px}.ioadv{margin-top:12px}.ioadv summary{cursor:pointer;color:var(--mute);font-size:14px}.ioadv input{width:100%;margin-top:6px}
 .setpanes{overflow-y:auto;padding:0 6px 10px 18px}.setpanes section h3:first-child{margin-top:4px}
-@media (max-width:700px){.setgrid{grid-template-columns:1fr;grid-template-rows:auto 1fr}#setNav{flex-direction:row;flex-wrap:wrap;border-right:0;padding:0 0 8px}#setNav button{min-height:0;padding:8px 10px}#setNav small,.setcred,#setNav .grow{display:none}.setpanes{padding-left:0}}
+@media (max-width:700px){.setgrid{grid-template-columns:1fr;grid-template-rows:1fr}
+ .setgrid.lst .setpanes{display:none}.setgrid:not(.lst) #setNav{display:none}
+ #setNav{border-right:0;padding:2px 0 14px;gap:0}
+ #setNav button[data-cat]{flex-direction:row;align-items:center;min-height:58px;padding:10px 14px;border-radius:0;border:0;border-bottom:1px solid var(--line);background:var(--card)}
+ #setNav button[data-cat]:first-child{border-radius:14px 14px 0 0}#setNav button[data-cat="io"]{border-radius:0 0 14px 14px;border-bottom:0}
+ #setNav button[data-cat] b{flex:none}#setNav button[data-cat] small{flex:1;text-align:right;margin-left:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ #setNav button[data-cat]::after{content:'›';font-size:22px;opacity:.4;margin-left:8px;line-height:1}
+ #setNav button[aria-pressed=true]{background:var(--card);border-color:var(--line)}#setNav button[aria-pressed=true] b{color:inherit}
+ #setNav .grow{display:block;flex:none;height:18px}
+ #setNav .setshare,#setNav .setdanger{justify-content:center;align-items:center;min-height:50px;border-radius:14px;background:var(--card);border:1px solid var(--line);margin-bottom:8px}
+ #setNav button[data-cat]:focus:not(:focus-visible){outline:0}#setNav .setshare{order:1}#setNav .setdanger{order:2}#setNav .setcred{order:3}
+ .setcred{text-align:center;margin-top:6px}
+ .setback{display:inline-flex!important}.setpanes{padding-left:0}}
+.setback{display:none;align-items:center;gap:4px;border:0;background:none;color:var(--hl,#fb923c);font-weight:700;font-size:15px;padding:6px 2px;margin:0 0 4px;min-height:0}
 .qrbox{width:min(900px,96vw)!important;max-width:none!important}
 #liveBadge,#rcSum,.shsteps{margin-right:auto!important;margin-left:12px!important}
 .qrbadge{font-size:13px;padding:3px 10px;border-radius:999px;background:#0f2a27;color:#2dd4bf;font-weight:700}
@@ -1314,7 +1327,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 @media (max-width:699px){
  .libhead.lhb{flex-wrap:wrap;row-gap:8px}.libhead.lhb #libSw,.libhead.lhb .lhsep,#libChipsBox,.libhead.lhb label.chsel{display:none!important}
  .libhead.lhb h2{font-size:22px}.lhfilt{display:inline-flex;align-items:center;margin-left:auto}.libhead.lhb #scene{flex:none}
- #libAct{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-2px 0 8px}#libAct .lacnt{font-size:12.5px;color:var(--mute);font-weight:600;margin-right:2px}
+ #libAct{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-2px 0 8px}#libAct .lacnt{font-size:12.5px;color:var(--mute);font-weight:600;margin-right:2px}#libAct .latri{font-size:12.5px;font-weight:700;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);min-height:0}
  #libAct button{height:28px;padding:0 10px;border-radius:8px;border:0!important;background:color-mix(in srgb,var(--acc) 14%,transparent)!important;color:var(--acc)!important;font-size:12.5px;font-weight:600}}
 #lfSheet{position:fixed;inset:0;z-index:94;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}#lfSheet[hidden]{display:none}
 #lfSheet .lfs{width:min(560px,100%);max-height:85vh;overflow-y:auto;background:var(--card);color:var(--ink);border-radius:20px 20px 0 0;padding:8px 16px calc(16px + env(safe-area-inset-bottom));box-sizing:border-box}
@@ -1577,7 +1590,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
 <!-- ===== Réglages ===== -->
 <div id="settings" class="modal" hidden><div class="box setbox">
   <h2>Réglages <button class="close">✕</button></h2>
-  <div class="setgrid">
+  <div class="setgrid lst">
     <nav id="setNav">
       <button data-cat="moi" aria-pressed="true"><b>Moi</b><small>Prénom, instrument</small></button>
       <button data-cat="aff"><b>Affichage</b><small>Thème, luminosité, notation</small></button>
@@ -1589,9 +1602,9 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.3.2</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.3.3</span> — Rémy DEVODDERE</p>
     </nav>
-    <div class="setpanes">
+    <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
         <div class="opt"><span>Prénom</span><input type="text" id="meName" class="grow" placeholder="Ton prénom" autocomplete="off"></div>
         <div class="opt"><span>Instrument</span><input type="text" id="meInst" class="grow" placeholder="guitare, basse, chant…" autocomplete="off"></div>
@@ -4559,8 +4572,8 @@ function libActUI(){const a=$('#libAct'); if(!a)return; const it=[];
   const lab={'~bg':'Grille basse','~sheet':'Partitions','~sp':'Écoute liée'};
   if(S.fType)it.push(['t','🏷 '+S.fType]); if(S.fKind)it.push(['k',lab[S.fKind]||S.fKind]); if(S.fFolder)it.push(['f','📁 '+(S.fFolder==='∅'?'Sans dossier':S.fFolder)]);
   const o=$('#tri').options[$('#tri').selectedIndex];
-  a.innerHTML=`<span class="lacnt">${visibleSongs().length} morceau${visibleSongs().length>1?'x':''} · ↕ ${esc(o?o.text:'')}</span>`+it.map(([k,t])=>`<button type="button" data-x="${k}">${esc(t)} ✕</button>`).join('');
-  a.onclick=e=>{const b=e.target.closest('[data-x]'); if(!b)return; const k=b.dataset.x; if(k==='t')S.fType=''; if(k==='k')S.fKind=''; if(k==='f'){S.fFolder=''; $('#fFolder').value='';} save(); renderAll();};}
+  a.innerHTML=`<span class="lacnt">${visibleSongs().length} morceau${visibleSongs().length>1?'x':''}</span><button type="button" class="latri" data-tri>↕ ${esc(o?o.text:'')} ▾</button>`+it.map(([k,t])=>`<button type="button" data-x="${k}">${esc(t)} ✕</button>`).join('');
+  a.onclick=e=>{const tb=e.target.closest('[data-tri]'); if(tb){e.stopPropagation(); ddOpen($('#tri'),tb); return;} const b=e.target.closest('[data-x]'); if(!b)return; const k=b.dataset.x; if(k==='t')S.fType=''; if(k==='k')S.fKind=''; if(k==='f'){S.fFolder=''; $('#fFolder').value='';} save(); renderAll();};}
 function libFilters(){let el=$('#lfSheet'); if(!el){el=document.createElement('div'); el.id='lfSheet'; document.body.appendChild(el);
     el.addEventListener('click',e=>{if(e.target===el||e.target.closest('[data-close]')){el.hidden=true; return;}
       const b=e.target.closest('[data-g]'); if(!b)return; const g=b.dataset.g, v=b.dataset.v;
@@ -4583,7 +4596,7 @@ function ddOpen(sel,b){let m=$('#ddPop'); if(m&&m.dataset.for===sel.id){m.remove
   m.innerHTML=[...sel.options].map((o,i)=>`<button type="button" data-i="${i}"${i===sel.selectedIndex?' aria-selected="true"':''}><span>${esc(o.text)}</span>${i===sel.selectedIndex?'<i>✓</i>':''}</button>`).join('');
   document.body.appendChild(m); const r=b.getBoundingClientRect(), w=Math.max(r.width,210); let x=Math.min(r.left,innerWidth-w-8), y=r.bottom+6;
   m.style.cssText=`left:${Math.max(8,x)}px;top:${y}px;min-width:${w}px`; const mr=m.getBoundingClientRect(); if(mr.bottom>innerHeight-8)m.style.top=Math.max(8,r.top-mr.height-6)+'px';
-  m.onclick=e=>{const it=e.target.closest('[data-i]'); if(!it)return; sel.selectedIndex=+it.dataset.i; m.remove(); sel.dispatchEvent(new Event('change',{bubbles:true})); const lab=b.querySelector('.ddl').textContent, ico=b.querySelector('.ddi').textContent; ddMake(sel,ico,lab);};
+  m.onclick=e=>{const it=e.target.closest('[data-i]'); if(!it)return; sel.selectedIndex=+it.dataset.i; m.remove(); sel.dispatchEvent(new Event('change',{bubbles:true})); const dl=b.querySelector('.ddl'); if(dl)ddMake(sel,b.querySelector('.ddi').textContent,dl.textContent);};
   setTimeout(()=>{const off=e=>{if(!m.contains(e.target)&&e.target!==b){m.remove(); removeEventListener('pointerdown',off,true);}}; addEventListener('pointerdown',off,true);},0);}
 /* ---------- bibliothèque : bascule liste / tableau, pastilles, sélection ---------- */
 $('#libSw').onclick=e=>{const b=e.target.closest('[data-v]'); if(!b)return; S.libView=b.dataset.v; S.libNavAt=null; save(); renderAll();};
@@ -9162,8 +9175,9 @@ $('#tri').onchange=e=>{S.sort=e.target.value; save(); renderAll();};
 $('#libView').onchange=e=>{S.libView=e.target.value; S.libNavAt=null; save(); renderAll();};
 $('#libNav').onchange=e=>{S.libNav=e.target.value; S.libNavAt=null; save(); renderAll();};
 $('#scene').onclick=()=>{if(S.cur!=='lib'&&curList)openViewer(listEntries(curList),-1,curList); else openViewer(libEntries(),-1);};
-$('#settingsBtn').onclick=()=>{try{GD.prep(); GD.ui();}catch(e){} $('#meName').value=(S.me&&S.me.n)||''; $('#meInst').value=(S.me&&S.me.i)||''; $('#setSpSub').textContent=S.spot?'Connecté':'Non connecté'; modal('#settings',true);};
-$('#setNav').onclick=e=>{const b=e.target.closest('[data-cat]'); if(!b)return; $$('#setNav [data-cat]').forEach(x=>x.setAttribute('aria-pressed',x===b)); $$('.setpanes section').forEach(x=>x.hidden=x.dataset.cat!==b.dataset.cat);};
+$('#settingsBtn').onclick=()=>{$('.setgrid').classList.add('lst'); try{GD.prep(); GD.ui();}catch(e){} $('#meName').value=(S.me&&S.me.n)||''; $('#meInst').value=(S.me&&S.me.i)||''; $('#setSpSub').textContent=S.spot?'Connecté':'Non connecté'; modal('#settings',true);};
+$('#setBack').onclick=()=>$('.setgrid').classList.add('lst');
+$('#setNav').onclick=e=>{const b=e.target.closest('[data-cat]'); if(!b)return; $('.setgrid').classList.remove('lst'); $('.setpanes').scrollTop=0; $$('#setNav [data-cat]').forEach(x=>x.setAttribute('aria-pressed',x===b)); $$('.setpanes section').forEach(x=>x.hidden=x.dataset.cat!==b.dataset.cat);};
 ['#meName','#meInst'].forEach(x=>$(x).addEventListener('change',()=>{S.me={n:$('#meName').value.trim(),i:$('#meInst').value.trim()}; S.setUp=Date.now(); save();}));
 micify($('#meName'));
 const setBright=v=>{S.bright=+v; save(); applyLook();};
