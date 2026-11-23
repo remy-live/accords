@@ -1347,6 +1347,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 .hvit .hvn{font-size:12px;font-weight:700;white-space:nowrap}.hvit .hvn .p{color:#16a34a}.hvit .hvn .m{color:#dc2626}
 .hvit .hvx{margin-top:8px}.hvit .hvx[hidden]{display:none}.hvit .hvx pre{background:rgba(128,128,128,.08);border-radius:8px;padding:8px;margin-bottom:8px}
 .hvcur{font-size:11px;font-weight:800;color:var(--acc);text-transform:uppercase;letter-spacing:.5px}
+#vtextSave{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}#vtSv{font-size:10.5px;font-weight:600;opacity:.85}#vtSv[data-st=wait]{opacity:.6}
 #vtSyncNote{margin:6px 12px 0;padding:8px 12px;border-radius:10px;background:rgba(245,158,11,.14);border:1px solid #f59e0b;font-size:13.5px}#vtSyncNote button{margin-left:6px;min-height:30px;padding:0 10px;border-radius:8px;font-weight:700}
 .spwarn{display:flex;flex-direction:column;gap:6px;margin:8px 0}.spwarn button{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid #f59e0b!important;background:rgba(245,158,11,.1)!important}
 .spwarn b{flex:1 1 60%}.spwarn small{order:3;flex-basis:100%;color:var(--mute)}.spwarn span{font-weight:700;color:var(--acc)}
@@ -1623,7 +1624,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.4.0</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.4.1</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
@@ -2300,7 +2301,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="bgInBtn" title="Façon de saisir les accords" aria-label="Saisie">⚙</button><button id="bgRegen" title="Recréer la grille depuis les paroles" aria-label="Recréer depuis les paroles">↻</button>
       <span class="bgur"><button id="bgUndo" title="Annuler (⌘Z)" aria-label="Annuler" disabled>↶</button><button id="bgRedo" title="Rétablir (⇧⌘Z)" aria-label="Rétablir" disabled>↷</button></span>
-      <button id="bgSave" class="bgok">Enregistrer</button>
+      <button id="bgSave" class="bgok" title="Enregistré automatiquement">✓ Terminé</button>
     </header>
     <div class="bgbody">
       <main id="bgMain"></main>
@@ -2345,13 +2346,13 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
   </div>
   <div id="vtext" hidden>
     <div class="vthead">
-      <button id="vtextCancel" aria-label="Annuler et fermer">‹</button>
+      <button id="vtextCancel" aria-label="Fermer (enregistré automatiquement)">‹</button>
       <div class="vtt"><span>ÉDITION</span><div class="vtti"><input type="text" id="vtTitre" placeholder="Titre" autocomplete="off" aria-label="Titre"><input type="text" id="vtArtiste" placeholder="Artiste" autocomplete="off" aria-label="Artiste"></div></div>
       <div class="vtnote"><input type="text" id="vtextNotes" placeholder="Note du morceau : intro seul, qui chante…"></div>
       <label class="lab vttempo">♩ <input type="number" id="vtextTempo" class="num" placeholder="bpm"></label>
       <span class="seg vtmode" id="vtMode"><button data-m="text">✎ Texte</button><button data-m="both" class="vtboth">⇆ Les deux</button><button data-m="prev">👆 Aperçu</button></span>
       <button id="vtHist" aria-label="Historique des versions" title="Historique des versions">🕘</button><button id="vtFull" aria-label="Plein écran" title="Plein écran">⛶</button>
-      <button id="vtToGrid" title="Éditer la grille du bassiste">▦ Grille</button><button class="pri" id="vtextSave">Enregistrer</button>
+      <button id="vtToGrid" title="Éditer la grille du bassiste">▦ Grille</button><button class="pri" id="vtextSave">Terminé<small id="vtSv" data-st="ok">✓ enregistré</small></button>
     </div>
     <div class="row vtitem" id="vtextItemWrap"><div class="vtnote"><input type="text" id="vtextItem" placeholder="Note pour ce concert"></div></div>
     <div class="vtwrap"><div id="vtGut" title="Touche un libellé pour changer le type de la ligne"></div><textarea id="vtextArea" spellcheck="false" wrap="off" inputmode="none" placeholder="Colle ou écris le morceau ici : une ligne d'accords au-dessus de chaque ligne de paroles."></textarea><pre id="vtPrev" aria-label="Aperçu" hidden></pre></div>
@@ -5063,7 +5064,7 @@ function closeViewer(){try{const kd=$('#kdemo'); if(kd)kd.hidden=true; ryStop();
   try{V.lock&&V.lock.release();}catch(e){} V.lock=null;
   if(!APP&&history.state&&history.state.scene&&!V.popping){try{history.back();}catch(e){}} V.popping=false;
 }
-addEventListener('popstate',()=>{if(!$('#viewer').hidden){V.popping=true; if(!$('#vtext').hidden){$('#vtext').hidden=true; try{history.pushState({scene:1},'');}catch(e){} V.popping=false; return;} closeViewer();}});
+addEventListener('popstate',()=>{if(!$('#viewer').hidden){V.popping=true; if(!$('#vtext').hidden){vtClose(); try{history.pushState({scene:1},'');}catch(e){} V.popping=false; return;} closeViewer();}});
 // pas de zoom de la page entière ni de « tirer pour recharger » : le zoom du texte se fait dans la scène
 document.addEventListener('gesturestart',e=>e.preventDefault());
 document.addEventListener('dblclick',e=>{if(!e.target.closest('input,textarea'))e.preventDefault();},{passive:false});
@@ -7228,24 +7229,33 @@ function openEditor(song,entry){
   $('#vtextItemWrap').hidden=!ED.item; $('#vtextItem').value=ED.item?ED.item.notes||'':'';
   vtSetMode(S.vtMode||'text',true); histAdd(song,song,'avant modification'); vtSyncNote(); $('#vtext').classList.toggle('full',!!S.vtFull); $('#vtFull').setAttribute('aria-pressed',!!S.vtFull); V.vtWarnOpen=false;
   $('#vtext').hidden=false; vtKbd(false); vtAnalyze(); vtCaret(); vtBgNote();
+  ED.saved=vtVals(); ED.orig={s:JSON.stringify({q:song.q,text:song.text,tabs:song.tabs||[],notes:song.notes||'',tempo:song.tempo||''}),item:ED.item?ED.item.notes||'':''}; vtSv('ok'); clearInterval(VT_TM); VT_TM=setInterval(vtAuto,2000);
 }
 $('#vedText').onclick=()=>{const e=V.list[V.i]; if(e)openEditor(e.s,e);};
-$('#vtextCancel').onclick=()=>{$('#vtext').hidden=true;};
-$('#vtToGrid').onclick=()=>{if(!ED)return; const s=ED.s, it=ED.item, li=ED.list; $('#vtextSave').click(); const e=entryOf(s); if(it){e.item=it; e.list=li;} openBG(e,0,0);};
+$('#vtextCancel').onclick=()=>vtClose();
+$('#vtToGrid').onclick=()=>{if(!ED)return; const s=ED.s, it=ED.item, li=ED.list; vtClose(); const e=entryOf(s); if(it){e.item=it; e.list=li;} openBG(e,0,0);};
 function vtSyncNote(){let n=$('#vtSyncNote'); const s=ED&&ED.s; const h=!s?'':s.conf?'⚠ Ce morceau a aussi été modifié sur <b>'+esc(s.conf.by||'un autre appareil')+'</b>.':s.shrink?'⚠ Ce morceau a beaucoup raccourci : il n’est pas envoyé au cloud tant que tu n’as pas confirmé.':'';
-  if(!h){if(n)n.remove(); return;} if(!n){n=document.createElement('div'); n.id='vtSyncNote'; $('#vtext .vthead').after(n);} n.innerHTML=h+' <button type="button">Comparer…</button>'; n.querySelector('button').onclick=()=>hvOpen(s,true);}
-$('#vtHist').onclick=()=>{if(ED)hvOpen(ED.s,true);};
+  if(!h){if(n)n.remove(); return;} if(!n){n=document.createElement('div'); n.id='vtSyncNote'; $('#vtext .vthead').after(n);} n.innerHTML=h+' <button type="button">Comparer…</button>'; n.querySelector('button').onclick=()=>{vtAuto(); hvOpen(s,true);};}
+$('#vtHist').onclick=()=>{if(ED){vtAuto(); hvOpen(ED.s,true);}};
 function vtBgNote(){let n=$('#vtBgNote'); if(!ED){if(n)n.remove(); return;} const s=ED.s, m=bgModeOf(s); let h='';
   if(m==='lock'&&validGrid(s.bgrid))h='🔒 La grille du bassiste est <b>figée</b> : tes changements d’accords ici ne s’y reportent pas.';
   else if(m==='mix'&&validGrid(s.bgrid)){const hs=s.bgrid.secs.filter(x=>x.hand||x.lock).map(x=>(x.lock?'🔒 ':'✎ ')+x.n); if(hs.length)h='⇄ Grille du bassiste retouchée pour : <b>'+esc(hs.join(', '))+'</b>. Le reste suit ces paroles.';}
   if(!h){if(n)n.remove(); return;} if(!n){n=document.createElement('div'); n.id='vtBgNote'; $('#vtext .vthead').after(n);} n.innerHTML=h+' <button id="vtBgGo">▦ Voir la grille</button>'; $('#vtBgGo').onclick=()=>$('#vtToGrid').click();}
-$('#vtextSave').onclick=()=>{
-  if(!ED)return; const s=ED.s;
-  beginEdit(s); {const t=$('#vtTitre').value.trim(), a=$('#vtArtiste').value.trim(); if(t||a){const q=a&&t?a+' - '+t:(t||a); if(q!==s.q){s.q=q; delete s._r;}}} s.text=$('#vtextArea').value; if(ED.tabsMerged)s.tabs=[]; s.notes=$('#vtextNotes').value; s.tempo=$('#vtextTempo').value?+$('#vtextTempo').value:'';
-  if(ED.item&&ED.list){ED.item.notes=$('#vtextItem').value; touch(ED.list);}
-  $('#vtext').hidden=true; afterEdit(s);
+// enregistrement automatique : on ne perd plus rien en quittant l'éditeur
+const vtVals=()=>JSON.stringify([$('#vtTitre').value,$('#vtArtiste').value,$('#vtextArea').value,$('#vtextNotes').value,$('#vtextTempo').value,$('#vtextItem').value]);
+function vtApply(){const s=ED.s; if(!ED.began){beginEdit(s); ED.began=1;}
+  {const t=$('#vtTitre').value.trim(), a=$('#vtArtiste').value.trim(); if(t||a){const q=a&&t?a+' - '+t:(t||a); if(q!==s.q){s.q=q; delete s._r;}}} s.text=$('#vtextArea').value; if(ED.tabsMerged)s.tabs=[]; s.notes=$('#vtextNotes').value; s.tempo=$('#vtextTempo').value?+$('#vtextTempo').value:'';
+  if(ED.item&&ED.list){ED.item.notes=$('#vtextItem').value; touch(ED.list);}}
+function vtSv(st){const e=$('#vtSv'); if(e){e.textContent=st==='wait'?'enregistrement…':'✓ enregistré'; e.dataset.st=st;}}
+function vtAuto(){if(!ED||$('#vtext').hidden)return; const v=vtVals(); if(v===ED.saved)return; vtApply(); ED.saved=v; ED.changed=1; touch(ED.s); delete ED.s._r; save(); vtSv('ok');}
+function vtClose(){if(!ED)return; clearInterval(VT_TM); const s=ED.s, v=vtVals(); if(v!==ED.saved){vtApply(); ED.saved=v; ED.changed=1;}
+  $('#vtext').hidden=true; if(!ED.changed)return; const o=ED.orig, it=ED.item; afterEdit(s);
   if(s._el){const n=s._el.querySelector('.notes'), t=s._el.querySelector('.tempo'); if(n)n.value=s.notes||''; if(t)t.value=s.tempo||'';}
-};
+  undoSnack('✓ Modifications enregistrées',()=>{Object.assign(s,JSON.parse(o.s)); if(it)it.notes=o.item; delete s._r; afterEdit(s); renderAll(); toast('Modifications annulées');});}
+let VT_TM=0;
+$('#vtextSave').onclick=()=>vtClose();
+$('#vtext').addEventListener('input',()=>{vtSv('wait'); clearTimeout(vtAuto.t); vtAuto.t=setTimeout(vtAuto,1200);});
+addEventListener('visibilitychange',()=>{if(document.hidden)vtAuto();}); addEventListener('pagehide',vtAuto);
 // par défaut on place le curseur sans clavier (pour poser les accords) ; « ⌨ Écrire » fait apparaître le clavier
 function vtKbd(on){const ta=$('#vtextArea'); ta.setAttribute('inputmode',on?'text':'none'); $('#vtKbd').setAttribute('aria-pressed',!!on); $('#vtKbd').textContent=on?'⌨ Fermer le clavier':'⌨ Écrire';
   if(on){ta.blur(); setTimeout(()=>ta.focus(),30);} else ta.blur();}
@@ -8011,7 +8021,7 @@ $('#vstage').addEventListener('touchstart',e=>{if((V.lite||V.edit)&&e.target.clo
 $('#vstage').addEventListener('touchend',e=>{if(tx==null)return; if(V.pinch||e.touches.length){tx=null;return;} const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty; tx=null; if(V.lite||Date.now()-(V.noClick||0)<450)return; if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)) vGo(dx<0?1:-1);});
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape'&&$('#vinline')){closeInline();return;}
-  if(e.key==='Escape'){const m=$$('.modal').find(x=>!x.hidden); if(m){if(m.id==='tabBox')tabStop(); if(m.id==='drumBox')drStop(); m.hidden=true;return;} if(!$('#vtext').hidden){$('#vtext').hidden=true;return;}}
+  if(e.key==='Escape'){const m=$$('.modal').find(x=>!x.hidden); if(m){if(m.id==='tabBox')tabStop(); if(m.id==='drumBox')drStop(); m.hidden=true;return;} if(!$('#vtext').hidden){vtClose();return;}}
   if($$('.modal').some(x=>!x.hidden)) return;
   if((e.ctrlKey||e.metaKey)&&(e.key.toLowerCase()==='y'||e.key.toLowerCase()==='z'&&e.shiftKey)&&!/INPUT|TEXTAREA/.test(e.target.tagName)){e.preventDefault(); redo(!$('#viewer').hidden&&V.list[V.i]?V.list[V.i].s.id:null); return;}
   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!/INPUT|TEXTAREA/.test(e.target.tagName)){e.preventDefault(); undo(!$('#viewer').hidden&&V.list[V.i]?V.list[V.i].s.id:null); return;}
@@ -8162,7 +8172,7 @@ function openBG(e,si,bi){try{if(e&&e.s)histAdd(e.s,e.s,'avant modification');}ca
   BG.e=e; BG.s=s; BG.r=r; BG.g=JSON.parse(JSON.stringify(r.bg)); BG.dirty=false; BG.f=null; BG.rng=null; BG.mode=bgModeOf(s); BG.auto=r.autoGrid; BG.ask=null; BG.hist=[]; BG.fut=[]; BG.hT=0;
   if(!BG.g.secs.length){BG.g.secs=[{n:'Couplet',bars:[[''],[''],[''],['']]}]; BG.g.form=[0];}
   BG.sel={si:Math.min(si||0,BG.g.secs.length-1),bi:bi||0,k:0}; bgClamp();
-  $('#bgTitle').textContent=s.q; $('#bgEd').hidden=false; bgDraw();
+  $('#bgTitle').textContent=s.q; $('#bgEd').hidden=false; bgDraw(); BG.changed=0; BG.orig=JSON.stringify({bgrid:s.bgrid||null,bgMode:s.bgMode||null,view:s.view||null}); clearInterval(BG_TM); BG_TM=setInterval(bgPersist,2000);
 }
 function bgClamp(){const g=BG.g, c=BG.sel; c.si=Math.max(0,Math.min(c.si,g.secs.length-1)); const sc=g.secs[c.si]; if(!sc.bars.length)sc.bars.push(['']); c.bi=Math.max(0,Math.min(c.bi,sc.bars.length-1)); c.k=Math.max(0,Math.min(c.k,sc.bars[c.bi].length-1));}
 const bgMeter=si=>+(BG.g.secs[si]||{}).m||+BG.g.meter||4;
@@ -8592,8 +8602,10 @@ $('#bgFL').onclick=()=>{if(BG.mode==='mix'){toast('En Mixte, l’ordre des secti
 $('#bgFR').onclick=()=>{if(BG.mode==='mix'){toast('En Mixte, l’ordre des sections suit les paroles (🔒 pour le changer ici)',3000); return;} const j=BG.f, f=BG.g.form; if(j==null||j>=f.length-1)return; bgSet(()=>{[f[j+1],f[j]]=[f[j],f[j+1]]; BG.f=j+1;});};
 $('#bgFX').onclick=()=>{if(BG.mode==='mix'){toast('En Mixte, l’ordre des sections suit les paroles (🔒 pour le changer ici)',3000); return;} const j=BG.f; if(j==null)return; bgSet(()=>{BG.g.form.splice(j,1); BG.f=null;});};
 $('#bgRegen').onclick=async()=>{if(!await confirmBox('Recréer la grille à partir des accords des paroles ? Tes modifications de la grille seront remplacées.'))return; const a=compute({...BG.s,bgrid:null}).autoGrid; bgSet(()=>{const per=BG.g.per; BG.g=JSON.parse(JSON.stringify(a)); if(per)BG.g.per=per; BG.sel={si:0,bi:0,k:0}; BG.f=null;});};
-function bgClose(){BGT.buf=''; bgTypeShow(); const ip=$('#bgInPop'); if(ip)ip.remove(); $('#bgEd').hidden=true; V.lastKey=null; vRender();}
-function bgDoSave(quiet){const s=BG.s; s.bgMode=BG.mode; if(BG.mode==='link')s.bgrid=null; else s.bgrid=JSON.parse(JSON.stringify(BG.g)); delete s._r; if((s.view||'grille')!=='accords')s.view='accords'; touch(s); save(); if(s._el)update(s); else if($('#viewer').hidden)renderAll(); BG.dirty=false; bgClose(); if(!quiet)toast('Grille enregistrée');}
+function bgPersist(){const s=BG.s; if(!s||!BG.dirty)return; s.bgMode=BG.mode; if(BG.mode==='link')s.bgrid=null; else s.bgrid=JSON.parse(JSON.stringify(BG.g)); delete s._r; if((s.view||'grille')!=='accords')s.view='accords'; touch(s); save(); BG.dirty=false; BG.changed=1;}
+let BG_TM=0; addEventListener('visibilitychange',()=>{if(document.hidden&&!$('#bgEd').hidden)bgPersist();});
+function bgClose(){clearInterval(BG_TM); if(BG.dirty)bgPersist(); if(BG.changed&&BG.s){const s=BG.s, o=BG.orig; BG.changed=0; if(s._el)update(s); else if($('#viewer').hidden)renderAll(); if(o)undoSnack('✓ Grille enregistrée',()=>{Object.assign(s,JSON.parse(o)); delete s._r; touch(s); save(); if(s._el)update(s); renderAll(); vRender(); toast('Grille remise comme avant');});} BGT.buf=''; bgTypeShow(); const ip=$('#bgInPop'); if(ip)ip.remove(); $('#bgEd').hidden=true; V.lastKey=null; vRender();}
+function bgDoSave(quiet){bgClose();}
 $('#bgSave').onclick=()=>bgDoSave();
 $('#bgUndo').onclick=$('#bgUndo2').onclick=()=>bgUR(true); $('#bgRedo').onclick=$('#bgRedo2').onclick=()=>bgUR(false);
 $('#bgHelp').onclick=()=>{$('#bgHelpTxt').hidden=!$('#bgHelpTxt').hidden;};
@@ -8611,7 +8623,7 @@ $('#bgModeBtn').onclick=ev=>{let p=$('#bgInPop'); if(p){p.remove(); if(p.dataset
   p.onclick=e=>{const b=e.target.closest('[data-mm]'); if(b){p.remove(); bgSetMode(b.dataset.mm);}};
   setTimeout(()=>document.addEventListener('pointerdown',function f(e){if(!e.target.closest('#bgInPop,#bgModeBtn')){p.remove(); document.removeEventListener('pointerdown',f,true);}},true),0);};
 $('#bgToTxt').onclick=()=>{const s=BG.s; if(BG.dirty)bgDoSave(true); else bgClose(); openEditor(s,BG.e&&BG.e.item?BG.e:null);};
-$('#bgBack').onclick=async()=>{if(BG.dirty&&!await confirmBox('Quitter sans enregistrer la grille ?',{ok:'Quitter',danger:1}))return; bgClose();};
+$('#bgBack').onclick=()=>bgClose();
 $('#vbgEdit').onclick=e=>{e.stopPropagation(); const c=V.list[V.i]; if(c)openBG(c,0,0);};
 $('#vdBass').onclick=()=>{const e=V.list[V.i]; $('#vdisp').hidden=true; if(!e)return; setViewMode('accords'); if(!(FOLLOW&&!e.mine))openBG(e,0,0);};
 $('#vcleanBtn').onclick=()=>setClean(!V.clean);
@@ -8914,7 +8926,7 @@ const hvLines=v=>normText((v&&v.text)||'').split('\n').map(x=>x.trim()).filter(B
 function hvDiff(v,cur){const a=hvLines(v), b=new Set(hvLines(cur)), A=new Set(a); return {p:a.filter(x=>!b.has(x)).length, m:hvLines(cur).filter(x=>!A.has(x)).length};}
 const hvPrev=(v,n)=>{const l=normText((v&&v.text)||'').split('\n'); return esc(l.slice(0,n||12).join('\n'))+(l.length>(n||12)?'\n…':'')||(validGrid(v&&v.bgrid)?'(grille de basse seulement)':'(vide)');};
 function hvSetContent(s,v){Object.keys(s).forEach(k=>{if(k[0]!=='_'&&!HV_SKIP.has(k))delete s[k];}); Object.assign(s,JSON.parse(JSON.stringify(v))); delete s._r;}
-async function hvAfter(s,msg,fromEd){save(); renderAll(); toast(msg); if(fromEd){$('#vtext').hidden=true; openEditor(s,null);} hvOpen(s,fromEd);}
+async function hvAfter(s,msg,fromEd){save(); renderAll(); toast(msg); if(fromEd){clearInterval(VT_TM); $('#vtext').hidden=true; openEditor(s,null);} hvOpen(s,fromEd);}
 const HVA={
   async mine(s,ed){const c=s.conf; if(!c)return; s.base=c.up; s.baseLen=hvLen(c.v); s.shrinkOk=true; delete s.conf; touch(s); if(s.up<=c.up)s.up=c.up+1; hvAfter(s,'✓ Ta version sera envoyée',ed);},
   async theirs(s,ed){const c=s.conf; if(!c)return; await histAdd(s,s,'avant de prendre l’autre version'); hvSetContent(s,c.v); s.up=c.up; s.base=c.up; s.baseLen=hvLen(c.v); s.by=c.by; delete s.conf; hvAfter(s,'✓ Version de '+(c.by||'l’autre appareil')+' gardée',ed);},
