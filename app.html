@@ -1440,6 +1440,25 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #kdemo .kdscr{min-height:110px;padding:12px 14px;display:flex;flex-direction:column;justify-content:center;gap:4px;text-align:center;font:700 15px/1.3 Inter,system-ui}
 #kdemo .kdp{display:flex;gap:6px;padding:8px}#kdemo .kdp button{flex:1;height:40px;border-radius:10px;border:0;background:#38bdf8;color:#04121f;font:800 14px Inter,system-ui}
 @media (max-width:700px){#kdemo{width:220px;right:8px}#kdemo .kdscr{min-height:80px;font-size:12.5px}}
+
+/* 📖 liseuse */
+#lisr{position:fixed;inset:0;z-index:3000;background:#fff;color:#000;display:flex;flex-direction:column;font-family:Georgia,'Times New Roman',serif}#lisr[hidden]{display:none}
+#lisr *{transition:none!important;animation:none!important;box-shadow:none!important}
+#lisr button{background:#fff;color:#000;border:2px solid #000;border-radius:10px;font:700 15px Inter,system-ui,sans-serif;min-height:44px;padding:0 14px}
+#lisr .lish{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:2px solid #000}#lisr .lish .grow{flex:1}#lisr #lisP{font:700 14px Inter,system-ui;white-space:nowrap}
+#lisr .list{border:0!important;font-size:16px!important;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60vw;padding:0 6px!important}
+#lisr .lisv{flex:1;position:relative;overflow:hidden;margin:18px 22px}
+#lisB{column-gap:40px;column-fill:auto;line-height:1.55}#lisB h1{font-size:1.25em;margin:0 0 2px}#lisB .lisa{margin:0 0 .8em;color:#444;font-style:italic}
+#lisB .liss{font:800 .58em Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#444;margin:.7em 0 .15em;break-after:avoid}
+#lisB .lisl,#lisB .lisc{break-inside:avoid}#lisB .lisg{height:.6em}
+#lisB.mono{font-family:ui-monospace,Menlo,monospace;line-height:1.35}#lisB.mono .lisl{white-space:pre}#lisB .lisc{font-weight:800}
+#lisr .lisf{display:flex;gap:8px;padding:8px 10px;border-top:2px solid #000}#lisr .lisf button{flex:1}
+#lisMenu{position:absolute;left:10px;right:10px;top:62px;z-index:5;background:#fff;border:2px solid #000;border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;max-height:70vh;overflow:auto}
+#lisMenu[hidden]{display:none}#lisMenu button{text-align:left}#lisList{display:flex;flex-direction:column;gap:6px;border-top:1px solid #000;padding-top:8px}
+#lisList button{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:6px 12px!important;height:auto}#lisList button small{font-weight:500;color:#444}#lisList button.on{background:#000!important;color:#fff!important}#lisList button.on small{color:#ddd}
+.hlearn{display:flex;align-items:center;gap:14px;width:100%;margin:0 0 18px;padding:14px 18px;border-radius:16px;text-align:left;border:2px solid var(--line,#3a3d46);background:var(--card,#1a1a1f)}
+.hlearn .hli{font-size:30px}.hlearn b{display:block;font-size:17px}.hlearn small{color:var(--mut,#a1a1aa)}.hlearn i{margin-left:auto;font-style:normal;font-size:22px;opacity:.6}
+html.lison body{overflow:hidden}
 /* ===== Accords 10 : un peu de neuf (design « Accords » par défaut, retouches légères pour les autres) ===== */
 :root{--r10:14px}
 button,select,input,textarea{transition:background-color .15s,border-color .15s,box-shadow .15s,transform .08s}
@@ -1481,6 +1500,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
   <!-- ===== Accueil ===== -->
   <section id="home" hidden>
     <div id="hHero"></div>
+    <div id="hLearn"></div>
     <div class="hsec"><h2>Playlists</h2><button class="sm hall" data-go="lists">tout voir ›</button></div>
     <div id="hLists"></div>
     <div class="hcols"><div><div class="hsec"><h2>Joués récemment</h2></div><div id="hRecent"></div></div><div><div class="hsec"><h2>À travailler</h2><span class="lab" id="hWorkN"></span></div><div id="hWork"></div></div></div>
@@ -1569,7 +1589,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.2.4</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.3.0</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes">
       <section data-cat="moi"><h3>Moi</h3>
@@ -1696,6 +1716,10 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
 </div></div>
 
 <!-- ===== Question simple ===== -->
+<div id="lisr" hidden><div class="lish"><button id="lisX" aria-label="Fermer">✕</button><button id="lisT" class="list"></button><span class="grow"></span><span id="lisP"></span><button id="lisM" aria-label="Options">⋯</button></div>
+  <div id="lisMenu" hidden><button data-lm="start"></button><button data-lm="drop">Retirer ce morceau de la pile</button><div id="lisList"></div></div>
+  <div class="lisv"><div id="lisB"></div></div>
+  <div class="lisf"><button data-lf="-1">◀ page</button><button data-lf="aa">Aa</button><button data-lf="ch"></button><button data-lf="1">page ▶</button></div></div>
 <div id="syncPanel" class="modal" hidden><div class="box"><h2>☁ Synchro <button class="close">✕</button></h2><div class="spbody"></div></div></div>
 <div id="askBox" class="modal" hidden><div class="box">
   <h2><span id="askTitle"></span> <button class="close">✕</button></h2>
@@ -2139,6 +2163,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       </div>
       <div class="shchips">
         <button id="vworkBtn">À travailler</button>
+        <button id="vlearnBtn">📖 À apprendre</button>
         <button id="vnoteBtn" class="cl">✎ Note</button>
         <button id="vsimp">Accords simplifiés</button>
         <button id="vsun">Plein soleil</button>
@@ -2840,7 +2865,7 @@ function save(){
 }
 const touch=o=>{o.up=Date.now(); S.up=o.up;};
 // étiquettes (remplacent l'ancien « type ») : plusieurs par morceau ; « à travailler » est une étiquette comme les autres
-const WORK='à travailler';
+const WORK='à travailler', LEARN='à apprendre';
 const tagsOf=s=>Array.isArray(s.tags)?s.tags:[];
 const hasTag=(s,t)=>tagsOf(s).some(x=>x.toLowerCase()===t.toLowerCase());
 function setTag(s,t,on){const o=tagsOf(s).filter(x=>x.toLowerCase()!==t.toLowerCase()); if(on)o.push(t); s.tags=o; if(!o.length)delete s.tags;}
@@ -3428,7 +3453,7 @@ function update(song){
   else if(!has) pre.innerHTML='<span class="empty">Ouvre un des liens, copie la grille ou les paroles, puis colle-les ici.</span>';
   else pre.innerHTML=view==='paroles'?esc(r.lyrics):view==='accords'?r.bars.map(lineHTML).join('\n'):r.gridHTML;
 }
-const TYPES=['à travailler','reprise','compo','instrumental','medley','ballade','rock','chanson française','exercice'];
+const TYPES=['à travailler','à apprendre','reprise','compo','instrumental','medley','ballade','rock','chanson française','exercice'];
 const allTags=()=>[...new Set(S.songs.flatMap(tagsOf))].sort(coll.compare);
 let selMode=false, shownIds=[]; const SEL=new Set();
 function refreshFilters(){
@@ -3590,7 +3615,7 @@ function lpOpen(btn){lpClose(); const kind=btn.dataset.pk?'k':btn.dataset.pc?'c'
     if(kind==='k'){const d=r.key&&r.target!=null&&r.target!==r.orig;
       p.innerHTML=`<div class="lph">Tonalité · ${esc(sp.titre)}</div><div class="lpk"><button data-k="-1" aria-label="Baisser d'un demi-ton">−½</button><b>${r.key?esc(keyName(r.target,r.key.minor)):'?'}</b><button data-k="1" aria-label="Monter d'un demi-ton">+½</button></div><div class="lpf"><span>origine : ${r.key?esc(keyName(r.orig,r.key.minor)):''}</span>${d?'<button data-k="0" class="lpo">↺ origine</button>':''}</div>`;}
     else if(kind==='c'){p.innerHTML=`<div class="lph">Capo · ${esc(sp.titre)}</div><div class="lpc">${[0,1,2,3,4,5,7].map(c=>`<button data-cap="${c}" aria-pressed="${(+s.capoInfo||0)===c}">${c}</button>`).join('')}</div>`;}
-    else{const mine=tagsOf(s), all=[...new Set([WORK,...allTags(),...mine])];
+    else{const mine=tagsOf(s), all=[...new Set([WORK,LEARN,...allTags(),...mine])];
       p.innerHTML=`<div class="lph">Étiquettes · ${esc(sp.titre)}</div><div class="lpt">${all.map(t=>{const on=mine.some(x=>x.toLowerCase()===t.toLowerCase()); return `<button data-tg="${esc(t)}" aria-pressed="${on}">${on?'✓ ':''}${esc(t)}</button>`;}).join('')}</div><div class="lpn"><input type="text" placeholder="＋ nouvelle étiquette…" aria-label="Nouvelle étiquette" maxlength="30"><button data-new="1">Ajouter</button></div>`;}
     place();};
   const place=()=>{const b=document.querySelector(`#songs [data-p${kind}="${id}"]`)||btn, R=b.getBoundingClientRect(), w=p.offsetWidth, h=p.offsetHeight;
@@ -4729,6 +4754,8 @@ function renderHome(){
   const rec=(S.recent||[]).map(songById).filter(Boolean).slice(0,5);
   if(typeof homeTools==='function')try{homeTools();}catch(e){}
   $('#hRecent').innerHTML=rec.map(x=>homeRow(x)).join('')||'<p class="lab">Les morceaux joués en scène apparaîtront ici.</p>';
+  {const L=lisSongs(), last=songById(lsGet('lisLast')); $('#hLearn').innerHTML=L.length?`<button class="hlearn"><span class="hli">📖</span><span><b>Apprendre mes textes</b><small>${L.length} morceau${L.length>1?'x':''}${last&&hasTag(last,LEARN)?' · reprendre à « '+esc(split(last.q).titre||last.q)+' »':''}</small></span><i>›</i></button>`:'';
+   const hb=$('#hLearn .hlearn'); if(hb)hb.onclick=()=>openLis();}
   const work=S.songs.filter(x=>hasTag(x,WORK));
   $('#hWorkN').textContent=work.length||''; $('#hWork').innerHTML=work.slice(0,6).map(x=>homeRow(x,(validGrid(x.bgrid)?'<span class="htag">grille basse</span>':'')+(x.kind==='sheet'?'<span class="htag">partition</span>':''))).join('')||'<p class="lab">Ajoute l\'étiquette « à travailler » à un morceau pour le retrouver ici.</p>';
 }
@@ -7664,6 +7691,7 @@ function vFiltUI(songs){
 }
 $('#vlfilt').onclick=e=>{const b=e.target.closest('button'); if(!b)return; V.vlF=b.dataset.f; vListKeep();};
 function vActUI(){const e=V.list[V.i]; $('#vlact').hidden=!e||FOLLOW||V.vlTab==='tools'; if(!e)return;
+  {const lb=$('#vlearnBtn'); if(lb)lb.setAttribute('aria-pressed',hasTag(e.s,LEARN));}
   $('#vaWork').setAttribute('aria-pressed',hasTag(e.s,WORK)); $('#vaWork').textContent=hasTag(e.s,WORK)?'✓ À travailler':'À travailler';
   $('#vaNote').textContent=(e.s.notes||'').trim()?'✎ Note':'+ Note';
   const pl=isList(); $('#vaPl').hidden=!pl; if(pl)$('#vaPl').textContent=e.preview?'＋ Ajouter':'Retirer';}
@@ -7757,6 +7785,7 @@ function vidPlay(s){
 if($('#vvid'))$('#vvid').onclick=()=>{const e=V.list[V.i]; V.vid=!V.vid; $('#vvid').setAttribute('aria-pressed',V.vid);
   if(V.vid){if(e)vidPlay(e.s); toast('YouTube : la vidéo suivra le morceau affiché');}
   else {if(!$('#spEmbed').hidden)$('#speClose').click(); if(APP&&window.Android.ytClose)try{window.Android.ytClose();}catch(x){}}};
+$('#vlearnBtn').onclick=()=>{const e=V.list[V.i]; if(!e||FOLLOW)return; const on=!hasTag(e.s,LEARN); setTag(e.s,LEARN,on); touch(e.s); save(); if(e.s._el)update(e.s); vRender(); toast(on?'📖 Ajouté à tes textes à apprendre':'Retiré des textes à apprendre');};
 $('#vworkBtn').onclick=()=>{const e=V.list[V.i]; if(!e||FOLLOW)return; const on=!hasTag(e.s,WORK); setTag(e.s,WORK,on); touch(e.s); save(); if(e.s._el)update(e.s); vRender(); toast(on?'Étiquette « à travailler » ajoutée':'Étiquette « à travailler » retirée');};
 async function vEditNote(){const e=V.list[V.i]; if(!e||FOLLOW)return; const v=await ask('Note du morceau','Intro seul, enchaîner, qui chante…',null,e.s.notes||''); if(v==null)return; e.s.notes=v.trim(); touch(e.s); save(); if(e.s._el)update(e.s); vRender();}
 $('#vnoteBtn').onclick=vEditNote;
@@ -8898,6 +8927,46 @@ const Sync={
     files.forEach(f=>{const m=/^(song|list)-(.+)\.json$/.exec(f.name); if(!m)return; const k=m[1]==='song'?'songs':'lists'; if(!(k==='songs'?songById(m[2]):listById(m[2]))&&!(S.del[k]||{})[m[2]])out.noHere++;});
     out.cloud=files.filter(f=>/^song-/.test(f.name)).length; out.cloudL=files.filter(f=>/^list-/.test(f.name)).length; return out;}
 };
+/* ---------- 📖 liseuse : apprendre ses textes (encre : noir sur blanc, des pages, pas de défilement) ---------- */
+const lsGet=k=>{try{return localStorage.getItem(k);}catch(e){return null;}}, lsSet=(k,v)=>{try{localStorage.setItem(k,v);}catch(e){}};
+const lisSongs=()=>S.songs.filter(x=>hasTag(x,LEARN)).sort((a,b)=>(split(a.q).titre||a.q).localeCompare(split(b.q).titre||b.q,'fr'));
+const LIS={i:0,p:0,n:1,list:[]};
+const lisPos=()=>{try{return JSON.parse(lsGet('lisPos')||'{}');}catch(e){return {};}};
+function openLis(sid){LIS.list=lisSongs(); if(!LIS.list.length){toast('Aucun morceau « 📖 À apprendre » pour l’instant'); return;}
+  const want=sid||lsGet('lisLast'); LIS.i=Math.max(0,LIS.list.findIndex(x=>x.id===want)); $('#lisr').hidden=false; $('#lisMenu').hidden=true; document.documentElement.classList.add('lison'); lisRender(true);}
+function lisClose(){$('#lisr').hidden=true; document.documentElement.classList.remove('lison'); if(!$('#home').hidden)renderHome();}
+function lisRender(restore){const so=LIS.list[LIS.i]; if(!so){lisClose(); return;} lsSet('lisLast',so.id); const ch=lsGet('lisCh')==='1', fs=+(lsGet('lisFs')||21);
+  const sp=split(so.q), lines=parseSheet(so.text||'').lines; let h=`<h1>${esc(sp.titre||so.q)}</h1>${sp.artiste?`<p class="lisa">${esc(sp.artiste)}</p>`:''}`, prevB=true;
+  let pend='';  // la ligne d'accords reste collée à sa ligne de paroles (jamais coupées entre deux pages)
+  const flush=()=>{if(pend){h+=`<div class="lisl">${pend}</div>`; pend='';}};
+  lines.forEach(L=>{if(L.t==='s'){flush(); h+=`<div class="liss">${esc(L.s)}</div>`; prevB=false;} else if(L.t==='l'){h+=`<div class="lisl">${pend}${esc(L.s.replace(/\s+$/,''))||'&nbsp;'}</div>`; pend=''; prevB=false;}
+    else if(L.t==='c'&&ch){flush(); pend=`<span class="lisc">${esc(L.s)}</span>\n`;} else if(L.t==='b'&&!prevB){flush(); h+='<div class="lisg"></div>'; prevB=true;}}); flush();
+  const b=$('#lisB'); b.className=ch?'mono':''; b.style.fontSize=fs+'px'; b.innerHTML=h; $('#lisT').textContent=(sp.titre||so.q)+' · '+(LIS.i+1)+'/'+LIS.list.length+' ▾';
+  $('[data-lf="ch"]').textContent=ch?'accords ✓':'accords';
+  setTimeout(()=>{const v=$('#lisr .lisv'), W=v.clientWidth; b.style.columnWidth=W+'px'; b.style.height=v.clientHeight+'px';
+    LIS.n=Math.max(1,Math.round((b.scrollWidth+40)/(W+40))); if(restore){const pp=lisPos()[so.id]; LIS.p=Math.min(LIS.n-1,pp|0);} LIS.p=Math.max(0,Math.min(LIS.p,LIS.n-1)); lisShow();},30);}
+function lisShow(){const so=LIS.list[LIS.i], v=$('#lisr .lisv'), b=$('#lisB'); LIS.n=Math.max(1,Math.round((b.scrollWidth+40)/(v.clientWidth+40))); LIS.p=Math.max(0,Math.min(LIS.p,LIS.n-1)); $('#lisB').style.transform=`translateX(${-LIS.p*(v.clientWidth+40)}px)`; $('#lisP').textContent='page '+(LIS.p+1)+'/'+LIS.n;
+  if(so){const o=lisPos(); o[so.id]=LIS.p; lsSet('lisPos',JSON.stringify(o));}}
+function lisGo(d){if(!$('#lisMenu').hidden){$('#lisMenu').hidden=true; return;} const p=LIS.p+d;
+  if(p>=LIS.n){if(LIS.i<LIS.list.length-1){LIS.i++; LIS.p=0; lisRender(false);} else toast('Fin de la pile 📖'); return;}
+  if(p<0){if(LIS.i>0){LIS.i--; LIS.p=1e9; lisRender(false);} return;} LIS.p=p; lisShow();}
+$('#lisX').onclick=lisClose;
+$('#lisr .lisv').addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect(); lisGo(e.clientX-r.left<r.width*.3?-1:1);});
+$('#lisr .lisf').onclick=e=>{const b=e.target.closest('[data-lf]'); if(!b)return; const a=b.dataset.lf;
+  if(a==='aa'){const z=[18,21,24,28,32], cur=+(lsGet('lisFs')||21); lsSet('lisFs',z[(z.indexOf(cur)+1)%z.length]); LIS.p=0; lisRender(false);}
+  else if(a==='ch'){lsSet('lisCh',lsGet('lisCh')==='1'?'0':'1'); LIS.p=0; lisRender(false);} else lisGo(+a);};
+const lisMenuDraw=()=>{$('[data-lm="start"]').textContent=(lsGet('lisStart')==='1'?'☑':'☐')+' Ouvrir directement ici au lancement (cet appareil)';
+  $('#lisList').innerHTML=LIS.list.map((x,i)=>`<button data-li="${i}" class="${i===LIS.i?'on':''}">${esc(split(x.q).titre||x.q)}<small>${esc(split(x.q).artiste||'')}</small></button>`).join('');};
+$('#lisM').onclick=$('#lisT').onclick=()=>{const m=$('#lisMenu'); m.hidden=!m.hidden; if(!m.hidden)lisMenuDraw();};
+$('#lisMenu').onclick=e=>{const b=e.target.closest('button'); if(!b)return;
+  if(b.dataset.lm==='start'){lsSet('lisStart',lsGet('lisStart')==='1'?'0':'1'); lisMenuDraw(); toast(lsGet('lisStart')==='1'?'📖 L’appli s’ouvrira directement sur tes textes':'L’appli s’ouvrira normalement'); return;}
+  if(b.dataset.lm==='drop'){const so=LIS.list[LIS.i]; setTag(so,LEARN,false); touch(so); save(); renderAll(); LIS.list=lisSongs(); LIS.i=Math.min(LIS.i,LIS.list.length-1); toast('Retiré de la pile'); $('#lisMenu').hidden=true; if(!LIS.list.length){lisClose(); return;} LIS.p=0; lisRender(true); return;}
+  if(b.dataset.li!=null){LIS.i=+b.dataset.li; $('#lisMenu').hidden=true; lisRender(true);}};
+document.addEventListener('keydown',e=>{if($('#lisr').hidden)return; const k=e.key;
+  if(['ArrowRight','ArrowDown','PageDown',' ','Enter','AudioVolumeDown','MediaTrackNext'].includes(k)){e.preventDefault(); e.stopPropagation(); lisGo(1);}
+  else if(['ArrowLeft','ArrowUp','PageUp','AudioVolumeUp','MediaTrackPrevious','Backspace'].includes(k)){e.preventDefault(); e.stopPropagation(); lisGo(-1);}
+  else if(k==='Escape'){e.preventDefault(); lisClose();}},true);
+addEventListener('resize',()=>{if(!$('#lisr').hidden)lisRender(false);});
 /* ---------- témoin ☁ et panneau Synchro : est-ce enregistré, et où ---------- */
 function syncState(){if(!Sync.ready)return 'off'; if(Sync.busy)return 'busy'; if(Sync.err)return 'err'; if(Sync.pending)return 'pend'; return 'ok';}
 const ago=t=>{if(!t)return 'jamais'; const m=Math.round((Date.now()-t)/60000); return m<1?'à l’instant':m<60?'il y a '+m+' min':new Date(t).toLocaleString('fr-FR',{weekday:'short',hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});};
@@ -9119,7 +9188,7 @@ $('#vider').onclick=async()=>{if(await confirmBox('Effacer toutes les chansons e
 
 // démarrage
 if(FOLLOW) startFollow();
-else { if(!S.homeV){S.homeV=1; S.libView='tableau'; S.cur='home';} showTab(S.cur||'home'); renderAll(); Sync.init().then(()=>setTimeout(autoBackup,2500)); backupInfo(); SP.ui(); placeMenu(); document.addEventListener('visibilitychange',()=>{if(!document.hidden)autoBackup();}); }
+else { if(!S.homeV){S.homeV=1; S.libView='tableau'; S.cur='home';} showTab(S.cur||'home'); renderAll(); if(lsGet('lisStart')==='1'&&lisSongs().length)setTimeout(()=>openLis(),0); Sync.init().then(()=>setTimeout(autoBackup,2500)); backupInfo(); SP.ui(); placeMenu(); document.addEventListener('visibilitychange',()=>{if(!document.hidden)autoBackup();}); }
 (async()=>{if(!FOLLOW&&location.hash.includes('#pack=')){const h=location.hash; history.replaceState(null,'',location.pathname); if(await confirmBox('Ce lien contient des morceaux. Les importer ?'))importLink(h);}})();
 function extOpen(u){if(APP){try{window.Android.openUrl(u);}catch(e){toast('Ouverture impossible');}} else window.open(u,'_blank','noopener');}
 
