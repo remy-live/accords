@@ -1445,7 +1445,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #lisr{position:fixed;inset:0;z-index:3000;background:#fff;color:#000;display:flex;flex-direction:column;font-family:Georgia,'Times New Roman',serif}#lisr[hidden]{display:none}
 #lisr *{transition:none!important;animation:none!important;box-shadow:none!important}
 #lisr button{background:#fff;color:#000;border:2px solid #000;border-radius:10px;font:700 15px Inter,system-ui,sans-serif;min-height:44px;padding:0 14px}
-#lisr .lish{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:2px solid #000}#lisr .lish .grow{flex:1}#lisr #lisP{font:700 14px Inter,system-ui;white-space:nowrap}
+#lisr .lish{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:2px solid #000}#lisr .lish .grow{flex:1}#lisr #lisS{font:600 12px Inter,system-ui;white-space:nowrap}#lisr #lisP{font:700 14px Inter,system-ui;white-space:nowrap}
 #lisr .list{border:0!important;font-size:16px!important;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60vw;padding:0 6px!important}
 #lisr .lisv{flex:1;position:relative;overflow:hidden;margin:18px 22px}
 #lisB{column-gap:40px;column-fill:auto;line-height:1.55}#lisB h1{font-size:1.25em;margin:0 0 2px}#lisB .lisa{margin:0 0 .8em;color:#444;font-style:italic}
@@ -1589,7 +1589,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.3.0</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.3.1</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes">
       <section data-cat="moi"><h3>Moi</h3>
@@ -1716,7 +1716,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
 </div></div>
 
 <!-- ===== Question simple ===== -->
-<div id="lisr" hidden><div class="lish"><button id="lisX" aria-label="Fermer">✕</button><button id="lisT" class="list"></button><span class="grow"></span><span id="lisP"></span><button id="lisM" aria-label="Options">⋯</button></div>
+<div id="lisr" hidden><div class="lish"><button id="lisX" aria-label="Fermer">✕</button><button id="lisT" class="list"></button><span class="grow"></span><span id="lisS"></span><span id="lisP"></span><button id="lisM" aria-label="Options">⋯</button></div>
   <div id="lisMenu" hidden><button data-lm="start"></button><button data-lm="drop">Retirer ce morceau de la pile</button><div id="lisList"></div></div>
   <div class="lisv"><div id="lisB"></div></div>
   <div class="lisf"><button data-lf="-1">◀ page</button><button data-lf="aa">Aa</button><button data-lf="ch"></button><button data-lf="1">page ▶</button></div></div>
@@ -8911,7 +8911,7 @@ const Sync={
       let med={up:0,down:0}; try{med=await this.media(files,quiet);}catch(e){console.warn(e);}
       pulled+=med.down; pushed+=med.up;
       S.lastSync=Date.now(); localStorage.setItem(KEY,JSON.stringify(S,(k,v)=>k[0]==='_'?undefined:v));
-      if(changed)renderAll(); this.refreshUI(); delete this.remove;
+      if(changed){renderAll(); try{if(!$('#lisr').hidden)lisRefresh();}catch(e){}} this.refreshUI(); delete this.remove;
       const cnt=re=>[...names].filter(n=>re.test(n)).length;
       S.syncLast={at:Date.now(),pulled,pushed,fails,songs:cnt(/^song-.+\.json$/),lists:cnt(/^list-.+\.json$/),where:this.mode==='drive'?'drive':(this.label||'dossier'),dev:APP?'l’appli Android':'ce navigateur'}; this.pending=false; save(); this.pending=false;
       if(quiet&&pushed&&!fails)toast('☁ Enregistré dans le cloud',1400);
@@ -8933,7 +8933,9 @@ const lisSongs=()=>S.songs.filter(x=>hasTag(x,LEARN)).sort((a,b)=>(split(a.q).ti
 const LIS={i:0,p:0,n:1,list:[]};
 const lisPos=()=>{try{return JSON.parse(lsGet('lisPos')||'{}');}catch(e){return {};}};
 function openLis(sid){LIS.list=lisSongs(); if(!LIS.list.length){toast('Aucun morceau « 📖 À apprendre » pour l’instant'); return;}
-  const want=sid||lsGet('lisLast'); LIS.i=Math.max(0,LIS.list.findIndex(x=>x.id===want)); $('#lisr').hidden=false; $('#lisMenu').hidden=true; document.documentElement.classList.add('lison'); lisRender(true);}
+  const want=sid||lsGet('lisLast'); LIS.i=Math.max(0,LIS.list.findIndex(x=>x.id===want)); $('#lisr').hidden=false; try{syncUI(); if(Sync.ready&&!Sync.busy)Sync.run(true);}catch(e){} $('#lisMenu').hidden=true; document.documentElement.classList.add('lison'); lisRender(true);}
+function lisRefresh(){const cur=LIS.list[LIS.i]&&LIS.list[LIS.i].id; LIS.list=lisSongs(); if(!LIS.list.length){lisClose(); toast('Ta pile « à apprendre » est vide'); return;}
+  const j=LIS.list.findIndex(x=>x.id===cur); LIS.i=j>=0?j:Math.min(LIS.i,LIS.list.length-1); lisRender(true); if(!$('#lisMenu').hidden)lisMenuDraw();}
 function lisClose(){$('#lisr').hidden=true; document.documentElement.classList.remove('lison'); if(!$('#home').hidden)renderHome();}
 function lisRender(restore){const so=LIS.list[LIS.i]; if(!so){lisClose(); return;} lsSet('lisLast',so.id); const ch=lsGet('lisCh')==='1', fs=+(lsGet('lisFs')||21);
   const sp=split(so.q), lines=parseSheet(so.text||'').lines; let h=`<h1>${esc(sp.titre||so.q)}</h1>${sp.artiste?`<p class="lisa">${esc(sp.artiste)}</p>`:''}`, prevB=true;
@@ -8967,12 +8969,15 @@ document.addEventListener('keydown',e=>{if($('#lisr').hidden)return; const k=e.k
   else if(['ArrowLeft','ArrowUp','PageUp','AudioVolumeUp','MediaTrackPrevious','Backspace'].includes(k)){e.preventDefault(); e.stopPropagation(); lisGo(-1);}
   else if(k==='Escape'){e.preventDefault(); lisClose();}},true);
 addEventListener('resize',()=>{if(!$('#lisr').hidden)lisRender(false);});
+// en revenant sur l'appli (liseuse rallumée le matin ou le soir) : on récupère tout de suite les changements du cloud
+document.addEventListener('visibilitychange',()=>{if(document.hidden||!Sync.ready||Sync.busy)return; const L=S.syncLast; if(!L||Date.now()-L.at>60000)Sync.run(true);});
 /* ---------- témoin ☁ et panneau Synchro : est-ce enregistré, et où ---------- */
 function syncState(){if(!Sync.ready)return 'off'; if(Sync.busy)return 'busy'; if(Sync.err)return 'err'; if(Sync.pending)return 'pend'; return 'ok';}
 const ago=t=>{if(!t)return 'jamais'; const m=Math.round((Date.now()-t)/60000); return m<1?'à l’instant':m<60?'il y a '+m+' min':new Date(t).toLocaleString('fr-FR',{weekday:'short',hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});};
 function syncUI(){const b=$('#syncBtn'); if(!b)return; const st=syncState(), L=S.syncLast;
   const t={off:['☁','Synchro','Pas de synchro : tes morceaux ne sont que sur cet appareil'],busy:['↻','Synchro…','Synchronisation en cours'],err:['⚠','Synchro','Synchro impossible : '+(Sync.err||'')],pend:['⬆','À envoyer','Des changements attendent d’être envoyés'],ok:['☁','À jour','À jour · '+ago(L&&L.at)]}[st];
-  b.className='hbtn syncb '+st; b.querySelector('.sbi').textContent=t[0]; b.querySelector('.sbt').textContent=t[1]; b.title=t[2];}
+  b.className='hbtn syncb '+st; b.querySelector('.sbi').textContent=t[0]; b.querySelector('.sbt').textContent=t[1]; b.title=t[2];
+  const ls=$('#lisS'); if(ls)ls.textContent={off:'',busy:'↻ synchro…',err:'⚠ synchro',pend:'⬆ à envoyer',ok:'☁ à jour'}[st];}
 setInterval(syncUI,30000);
 function syncPanelDraw(chk){const L=S.syncLast, st=syncState(), drive=Sync.mode==='drive', box=$('#syncPanel .spbody');
   const where=!Sync.ready?'<b>Nulle part ailleurs</b> : seulement sur cet appareil.':drive?`<b>Google Drive</b>${S.gd&&S.gd.email?' de <b>'+esc(S.gd.email)+'</b>':''}<br><span class="sppath">Mon Drive › Accords</span>`:`<b>Dossier</b> <span class="sppath">${esc(Sync.label||'')}</span>`;
