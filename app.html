@@ -1329,6 +1329,27 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
  .libhead.lhb h2{font-size:22px}.lhfilt{display:inline-flex;align-items:center;margin-left:auto}.libhead.lhb #scene{flex:none}
  #libAct{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:-2px 0 8px}#libAct .lacnt{font-size:12.5px;color:var(--mute);font-weight:600;margin-right:2px}#libAct .latri{font-size:12.5px;font-weight:700;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);min-height:0}
  #libAct button{height:28px;padding:0 10px;border-radius:8px;border:0!important;background:color-mix(in srgb,var(--acc) 14%,transparent)!important;color:var(--acc)!important;font-size:12.5px;font-weight:600}}
+#dlgBox{z-index:120}
+#hvSheet{position:fixed;inset:0;z-index:96;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}#hvSheet[hidden]{display:none}
+#hvSheet .hvs{width:min(620px,100%);max-height:88vh;overflow-y:auto;background:var(--card);color:var(--ink);border-radius:20px 20px 0 0;padding:10px 16px calc(16px + env(safe-area-inset-bottom));box-sizing:border-box}
+@media (min-width:701px){#hvSheet{align-items:center}#hvSheet .hvs{border-radius:20px}}
+#hvSheet .hvhd{display:flex;align-items:center;gap:10px;margin:4px 0 10px}#hvSheet .hvhd b{font-size:18px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#hvSheet .hvhd button{height:36px;padding:0 16px;border-radius:10px;font-weight:700}
+.hvwarn{border:1px solid #f59e0b;background:rgba(245,158,11,.1);border-radius:14px;padding:12px;margin-bottom:12px;font-size:14px;line-height:1.4}
+.hvwarn .hvcmp{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.hvwarn .hvcmp>div{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px;min-width:0}
+.hvwarn .hvcmp h6{margin:0 0 4px;font-size:12.5px}.hvwarn .hvcmp small{display:block;color:var(--mute);font-size:12px;margin-bottom:4px}
+.hvwarn pre,.hvit pre{white-space:pre-wrap;font:12.5px/1.35 ui-monospace,Menlo,monospace;margin:0;max-height:180px;overflow:auto}
+.hvbtns{display:flex;flex-wrap:wrap;gap:8px}.hvbtns button{flex:1 1 auto;min-height:40px;border-radius:10px;font-weight:700;padding:0 12px}
+.hvit{border-top:1px solid var(--line);padding:10px 2px}.hvit:first-of-type{border-top:0}
+.hvit .hvr{display:flex;align-items:center;gap:10px;width:100%;background:none!important;border:0!important;padding:0;text-align:left;color:inherit!important;min-height:44px}
+.hvit .hvd{flex:1;min-width:0}.hvit .hvd b{display:block;font-size:14.5px}.hvit .hvd small{color:var(--mute);font-size:12.5px}
+.hvit .hvn{font-size:12px;font-weight:700;white-space:nowrap}.hvit .hvn .p{color:#16a34a}.hvit .hvn .m{color:#dc2626}
+.hvit .hvx{margin-top:8px}.hvit .hvx[hidden]{display:none}.hvit .hvx pre{background:rgba(128,128,128,.08);border-radius:8px;padding:8px;margin-bottom:8px}
+.hvcur{font-size:11px;font-weight:800;color:var(--acc);text-transform:uppercase;letter-spacing:.5px}
+#vtSyncNote{margin:6px 12px 0;padding:8px 12px;border-radius:10px;background:rgba(245,158,11,.14);border:1px solid #f59e0b;font-size:13.5px}#vtSyncNote button{margin-left:6px;min-height:30px;padding:0 10px;border-radius:8px;font-weight:700}
+.spwarn{display:flex;flex-direction:column;gap:6px;margin:8px 0}.spwarn button{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid #f59e0b!important;background:rgba(245,158,11,.1)!important}
+.spwarn b{flex:1 1 60%}.spwarn small{order:3;flex-basis:100%;color:var(--mute)}.spwarn span{font-weight:700;color:var(--acc)}
 #lfSheet{position:fixed;inset:0;z-index:94;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}#lfSheet[hidden]{display:none}
 #lfSheet .lfs{width:min(560px,100%);max-height:85vh;overflow-y:auto;background:var(--card);color:var(--ink);border-radius:20px 20px 0 0;padding:8px 16px calc(16px + env(safe-area-inset-bottom));box-sizing:border-box}
 #lfSheet .lfhd{display:flex;align-items:center;justify-content:space-between;margin:6px 0 2px}#lfSheet .lfhd b{font-size:19px}#lfSheet .lfhd button{height:36px;padding:0 16px;border-radius:10px;background:var(--acc)!important;color:#fff!important;border:0!important;font-weight:700}
@@ -1439,7 +1460,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #plPick .pllist button .plck{grid-row:span 2;width:24px;height:24px;border-radius:7px;border:2px solid var(--line,#3a3d46);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff}
 #plPick .pllist button.in .plck{background:var(--acc);border-color:var(--acc)}#plPick .pllist button small{color:var(--mut,#a1a1aa);font-size:12px}
 
-.syncb{display:inline-flex;align-items:center;gap:6px;font-weight:700}.syncb .sbi{font-size:16px}.syncb.ok .sbi{color:#22c55e}.syncb.busy .sbi{color:#60a5fa;animation:spin 1s linear infinite;display:inline-block}.syncb.pend{color:#f59e0b}.syncb.err{color:#ef4444}.syncb.off{opacity:.7}
+.syncb.warn .sbi{color:#f59e0b}.syncb{display:inline-flex;align-items:center;gap:6px;font-weight:700}.syncb .sbi{font-size:16px}.syncb.ok .sbi{color:#22c55e}.syncb.busy .sbi{color:#60a5fa;animation:spin 1s linear infinite;display:inline-block}.syncb.pend{color:#f59e0b}.syncb.err{color:#ef4444}.syncb.off{opacity:.7}
 @keyframes spin{to{transform:rotate(360deg)}}@media (max-width:700px){.syncb .sbt{display:none}}
 #syncPanel .box{max-width:520px;width:calc(100% - 24px)}#syncPanel .spst{padding:10px 12px;border-radius:12px;background:rgba(128,128,128,.14);font-weight:700;margin-bottom:10px}#syncPanel .spst.ok{background:rgba(34,197,94,.15)}#syncPanel .spst.pend{background:rgba(245,158,11,.16)}#syncPanel .spst.err{background:rgba(239,68,68,.15)}#syncPanel .spst.busy{background:rgba(96,165,250,.16)}
 #syncPanel .sprow{display:grid;grid-template-columns:96px 1fr;gap:10px;padding:9px 0;border-bottom:1px solid var(--line,#2a2e38);font-size:14px;line-height:1.5}#syncPanel .sprow>span{color:var(--mut,#a1a1aa);font-weight:600}
@@ -1602,12 +1623,13 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.3.3</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.4.0</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
         <div class="opt"><span>Prénom</span><input type="text" id="meName" class="grow" placeholder="Ton prénom" autocomplete="off"></div>
         <div class="opt"><span>Instrument</span><input type="text" id="meInst" class="grow" placeholder="guitare, basse, chant…" autocomplete="off"></div>
+        <div class="opt"><span>Nom de cet appareil</span><input type="text" id="meDev" class="grow" placeholder="ex. iPhone, liseuse…" autocomplete="off"></div>
         <p class="lab">C'est ce nom que voient les autres musiciens quand tu leur envoies des morceaux ou qu'ils te suivent.</p></section>
       <section data-cat="aff" hidden><h3>Affichage</h3>
   <div class="opt"><span>Luminosité</span><input type="range" id="bright" min="5" max="100" step="5"><span id="brightVal" class="lab"></span></div>
@@ -2328,7 +2350,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <div class="vtnote"><input type="text" id="vtextNotes" placeholder="Note du morceau : intro seul, qui chante…"></div>
       <label class="lab vttempo">♩ <input type="number" id="vtextTempo" class="num" placeholder="bpm"></label>
       <span class="seg vtmode" id="vtMode"><button data-m="text">✎ Texte</button><button data-m="both" class="vtboth">⇆ Les deux</button><button data-m="prev">👆 Aperçu</button></span>
-      <button id="vtFull" aria-label="Plein écran" title="Plein écran">⛶</button>
+      <button id="vtHist" aria-label="Historique des versions" title="Historique des versions">🕘</button><button id="vtFull" aria-label="Plein écran" title="Plein écran">⛶</button>
       <button id="vtToGrid" title="Éditer la grille du bassiste">▦ Grille</button><button class="pri" id="vtextSave">Enregistrer</button>
     </div>
     <div class="row vtitem" id="vtextItemWrap"><div class="vtnote"><input type="text" id="vtextItem" placeholder="Note pour ce concert"></div></div>
@@ -4544,7 +4566,7 @@ function editSong(s){if(s.kind==='sheet')openAnnot(entryOf(s),0); else if(!(s.te
 function songMenu(s,x,y){
   ctxMenu(x,y,[{ico:'▶',t:'Jouer en scène',fn:()=>{if(hasBody(s))openViewer([entryOf(s)],0); else toast('Morceau encore vide');}},
     {ico:'＋',t:'Ajouter à une playlist…',fn:()=>addSongsToList([s.id])},{ico:'⇪',t:'Partager',fn:()=>openShareSel({songs:[s.id]})},
-    {ico:'✎',t:'Éditer',fn:()=>editSong(s)},{ico:'✓',t:'Sélectionner',fn:()=>{selMode=true; SEL.add(s.id); renderAll();}},'-',
+    {ico:'✎',t:'Éditer',fn:()=>editSong(s)},{ico:'🕘',t:'Historique des versions',fn:()=>hvOpen(s)},{ico:'✓',t:'Sélectionner',fn:()=>{selMode=true; SEL.add(s.id); renderAll();}},'-',
     {ico:'🗑',t:'Supprimer',red:1,fn:()=>deleteSongs([s.id])}]);
 }
 /* ---------- en-tête de la bibliothèque : une seule barre (B) ; sur téléphone, bouton Filtres + panneau (D) ---------- */
@@ -7204,12 +7226,15 @@ function openEditor(song,entry){
     txt=out.join('\n\n'); ED.tabsMerged=true;}
   {const sp=split(song.q||''); $('#vtTitre').value=/^Nouveau morceau( \d+)?$/.test(sp.titre)&&!sp.artiste?'':sp.titre; $('#vtArtiste').value=sp.artiste;} $('#vtextArea').value=txt; vtHistReset(); $('#vtextNotes').value=song.notes||''; $('#vtextTempo').value=song.tempo||'';
   $('#vtextItemWrap').hidden=!ED.item; $('#vtextItem').value=ED.item?ED.item.notes||'':'';
-  vtSetMode(S.vtMode||'text',true); $('#vtext').classList.toggle('full',!!S.vtFull); $('#vtFull').setAttribute('aria-pressed',!!S.vtFull); V.vtWarnOpen=false;
+  vtSetMode(S.vtMode||'text',true); histAdd(song,song,'avant modification'); vtSyncNote(); $('#vtext').classList.toggle('full',!!S.vtFull); $('#vtFull').setAttribute('aria-pressed',!!S.vtFull); V.vtWarnOpen=false;
   $('#vtext').hidden=false; vtKbd(false); vtAnalyze(); vtCaret(); vtBgNote();
 }
 $('#vedText').onclick=()=>{const e=V.list[V.i]; if(e)openEditor(e.s,e);};
 $('#vtextCancel').onclick=()=>{$('#vtext').hidden=true;};
 $('#vtToGrid').onclick=()=>{if(!ED)return; const s=ED.s, it=ED.item, li=ED.list; $('#vtextSave').click(); const e=entryOf(s); if(it){e.item=it; e.list=li;} openBG(e,0,0);};
+function vtSyncNote(){let n=$('#vtSyncNote'); const s=ED&&ED.s; const h=!s?'':s.conf?'⚠ Ce morceau a aussi été modifié sur <b>'+esc(s.conf.by||'un autre appareil')+'</b>.':s.shrink?'⚠ Ce morceau a beaucoup raccourci : il n’est pas envoyé au cloud tant que tu n’as pas confirmé.':'';
+  if(!h){if(n)n.remove(); return;} if(!n){n=document.createElement('div'); n.id='vtSyncNote'; $('#vtext .vthead').after(n);} n.innerHTML=h+' <button type="button">Comparer…</button>'; n.querySelector('button').onclick=()=>hvOpen(s,true);}
+$('#vtHist').onclick=()=>{if(ED)hvOpen(ED.s,true);};
 function vtBgNote(){let n=$('#vtBgNote'); if(!ED){if(n)n.remove(); return;} const s=ED.s, m=bgModeOf(s); let h='';
   if(m==='lock'&&validGrid(s.bgrid))h='🔒 La grille du bassiste est <b>figée</b> : tes changements d’accords ici ne s’y reportent pas.';
   else if(m==='mix'&&validGrid(s.bgrid)){const hs=s.bgrid.secs.filter(x=>x.hand||x.lock).map(x=>(x.lock?'🔒 ':'✎ ')+x.n); if(hs.length)h='⇄ Grille du bassiste retouchée pour : <b>'+esc(hs.join(', '))+'</b>. Le reste suit ces paroles.';}
@@ -8132,7 +8157,7 @@ $('#vdMenuMode').onchange=e=>{S.menuMode=e.target.value; S.setUp=Date.now(); sav
 /* ---------- éditeur de la grille du bassiste ---------- */
 const BG={};
 document.body.appendChild($('#bgEd')); // l'éditeur de grille s'ouvre aussi depuis l'accueil
-function openBG(e,si,bi){
+function openBG(e,si,bi){try{if(e&&e.s)histAdd(e.s,e.s,'avant modification');}catch(_){}
   const s=e.s, r=compute(s,e.item?{target:e.item.target,capo:e.item.capo}:null);
   BG.e=e; BG.s=s; BG.r=r; BG.g=JSON.parse(JSON.stringify(r.bg)); BG.dirty=false; BG.f=null; BG.rng=null; BG.mode=bgModeOf(s); BG.auto=r.autoGrid; BG.ask=null; BG.hist=[]; BG.fut=[]; BG.hT=0;
   if(!BG.g.secs.length){BG.g.secs=[{n:'Couplet',bars:[[''],[''],[''],['']]}]; BG.g.form=[0];}
@@ -8863,6 +8888,59 @@ $('#gdOut').onclick=()=>GD.logout();
 $('#gdSync').onclick=()=>Sync.run(false);
 $('#gdBtn').onclick=()=>Sync.run(false);
 setInterval(()=>{if(GD.on())GD.ui();},60000);
+/* ---------- historique des versions (IndexedDB local + hist-<id>.json dans le cloud) ---------- */
+function devLabel(){let n=''; try{n=localStorage.getItem('devName')||'';}catch(e){} if(n)return n; const u=navigator.userAgent;
+  const d=/iPad/.test(u)||(/Macintosh/.test(u)&&navigator.maxTouchPoints>1)?'iPad':/iPhone/.test(u)?'iPhone':/Android/.test(u)?(/Mobile/.test(u)?'Téléphone Android':'Tablette Android'):/Mac/.test(u)?'Mac':/Windows/.test(u)?'PC':/Linux/.test(u)?'Linux':'Appareil';
+  return d+(APP?' (appli)':'');}
+const HV_SKIP=new Set(['id','up','base','baseLen','conf','shrink','shrinkOk','open','by']), HV_MAX=30;
+const hvSnap=s=>{const o={}; Object.keys(s||{}).sort().forEach(k=>{if(k[0]!=='_'&&!HV_SKIP.has(k))o[k]=s[k];}); return JSON.parse(JSON.stringify(o));};
+const hvSig=v=>JSON.stringify([normText(v.text||''),v.bgrid||null,v.q||'']);
+const hvLen=s=>normText((s&&s.text)||'').trim().length;
+const HV={dirty:new Set((()=>{try{return JSON.parse(localStorage.getItem('hvDirty')||'[]');}catch(e){return [];}})()), cache:{}};
+const hvSaveDirty=()=>{try{localStorage.setItem('hvDirty',JSON.stringify([...HV.dirty]));}catch(e){}};
+async function hvGet(id){if(!HV.cache[id])HV.cache[id]=(await kvGet('hist:'+id))||[]; return HV.cache[id];}
+async function hvPut(id,a){HV.cache[id]=a; await kvSet('hist:'+id,a);}
+function hvMerge(a,b){const m=new Map(); [...a,...b].forEach(e=>{if(e&&e.sig&&!m.has(e.sig))m.set(e.sig,e);}); return [...m.values()].sort((x,y)=>y.at-x.at).slice(0,HV_MAX);}
+async function histAdd(s,src,why,dev){if(!s||!src)return; const v=hvSnap(src); if(!normText(v.text||'').trim()&&!validGrid(v.bgrid))return; // une version vide n'a rien à sauver
+  const sig=hvSig(v), a=(await hvGet(s.id)).slice(); if(a.some(e=>e.sig===sig))return;
+  const d=dev||devLabel(), at=src.up||Date.now(), top=a[0];
+  if(top&&why==='envoyée'&&top.why==='envoyée'&&top.dev===d&&Math.abs(at-top.at)<10*60e3)a.shift(); // une séance d'édition = une version
+  a.unshift({at,dev:d,why,sig,len:hvLen(v),v}); await hvPut(s.id,hvMerge(a,[])); HV.dirty.add(s.id); hvSaveDirty();}
+async function hvAll(id){let a=await hvGet(id); if(Sync.ready){try{const fn=`hist-${id}.json`, fs=await Sync.list(); if(fs.some(f=>f.name===fn)){const r=JSON.parse(await Sync.read(fn)).items||[]; a=hvMerge(a,r); await hvPut(id,a);}}catch(e){}} return a;}
+/* ---------- historique / conflits : panneau ---------- */
+const hvDate=t=>{const d=new Date(t), now=new Date(), y=new Date(now-864e5); const hm=d.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'});
+  return d.toDateString()===now.toDateString()?'Aujourd’hui à '+hm:d.toDateString()===y.toDateString()?'Hier à '+hm:d.toLocaleDateString('fr-FR',{weekday:'short',day:'numeric',month:'short',year:d.getFullYear()===now.getFullYear()?undefined:'numeric'})+' à '+hm;};
+const hvLines=v=>normText((v&&v.text)||'').split('\n').map(x=>x.trim()).filter(Boolean);
+function hvDiff(v,cur){const a=hvLines(v), b=new Set(hvLines(cur)), A=new Set(a); return {p:a.filter(x=>!b.has(x)).length, m:hvLines(cur).filter(x=>!A.has(x)).length};}
+const hvPrev=(v,n)=>{const l=normText((v&&v.text)||'').split('\n'); return esc(l.slice(0,n||12).join('\n'))+(l.length>(n||12)?'\n…':'')||(validGrid(v&&v.bgrid)?'(grille de basse seulement)':'(vide)');};
+function hvSetContent(s,v){Object.keys(s).forEach(k=>{if(k[0]!=='_'&&!HV_SKIP.has(k))delete s[k];}); Object.assign(s,JSON.parse(JSON.stringify(v))); delete s._r;}
+async function hvAfter(s,msg,fromEd){save(); renderAll(); toast(msg); if(fromEd){$('#vtext').hidden=true; openEditor(s,null);} hvOpen(s,fromEd);}
+const HVA={
+  async mine(s,ed){const c=s.conf; if(!c)return; s.base=c.up; s.baseLen=hvLen(c.v); s.shrinkOk=true; delete s.conf; touch(s); if(s.up<=c.up)s.up=c.up+1; hvAfter(s,'✓ Ta version sera envoyée',ed);},
+  async theirs(s,ed){const c=s.conf; if(!c)return; await histAdd(s,s,'avant de prendre l’autre version'); hvSetContent(s,c.v); s.up=c.up; s.base=c.up; s.baseLen=hvLen(c.v); s.by=c.by; delete s.conf; hvAfter(s,'✓ Version de '+(c.by||'l’autre appareil')+' gardée',ed);},
+  async both(s,ed){const c=s.conf; if(!c)return; const cp=Object.assign(hvSnap(s),{id:uid(),q:(s.q||'Morceau')+' (ma version)'}); touch(cp); S.songs.splice(S.songs.indexOf(s)+1,0,cp); await HVA.theirs(s,ed); toast('✓ Les deux gardées : « '+cp.q+' » ajouté');},
+  async send(s,ed){s.shrinkOk=true; delete s.shrink; touch(s); hvAfter(s,'✓ Elle sera envoyée',ed);},
+  async cloud(s,ed){try{await Sync.list(); const r=JSON.parse(await Sync.read(`song-${s.id}.json`)); await histAdd(s,s,'raccourcie, remplacée'); hvSetContent(s,r); s.up=r.up; s.base=r.up; s.baseLen=hvLen(r); s.by=r.by; delete s.shrink; hvAfter(s,'✓ Version du cloud récupérée',ed);}catch(e){toast('Cloud injoignable pour l’instant');}},
+  async restore(s,e,ed){await histAdd(s,s,'avant restauration'); hvSetContent(s,e.v); if(s.conf){s.base=s.conf.up; s.baseLen=hvLen(s.conf.v); delete s.conf;} s.shrinkOk=true; touch(s); hvAfter(s,'✓ Version du '+hvDate(e.at).replace(/^./,x=>x.toLowerCase())+' restaurée',ed);}
+};
+async function hvOpen(s,fromEd){if(!s)return; let el=$('#hvSheet'); if(!el){el=document.createElement('div'); el.id='hvSheet'; document.body.appendChild(el);}
+  const draw=list=>{const cur=hvSnap(s), sig=hvSig(cur);
+    let w='';
+    if(s.conf){const c=s.conf; w=`<div class="hvwarn">⚠ <b>Modifié sur deux appareils.</b> Choisis la version à garder.
+      <div class="hvcmp"><div><h6>Cet appareil</h6><small>${hvDate(s.up)} · ${hvLen(s)} car.</small><pre>${hvPrev(cur,10)}</pre></div><div><h6>${esc(c.by||'Autre appareil')}</h6><small>${hvDate(c.up)} · ${hvLen(c.v)} car.</small><pre>${hvPrev(c.v,10)}</pre></div></div>
+      <div class="hvbtns"><button data-a="mine">Garder la mienne</button><button data-a="theirs">Prendre l’autre</button><button data-a="both">Garder les deux</button></div></div>`;}
+    else if(s.shrink){w=`<div class="hvwarn">⚠ <b>Texte beaucoup raccourci</b> : ${s.shrink.from} → ${s.shrink.to} caractères. Il n’est pas envoyé au cloud pour ne pas écraser la version complète des autres appareils.
+      <div class="hvbtns" style="margin-top:10px"><button data-a="cloud">Récupérer la version du cloud</button><button data-a="send">Envoyer quand même</button></div></div>`;}
+    const it=list.filter(e=>e.sig!==sig);
+    el.innerHTML=`<div class="hvs"><span class="shgrip"></span><div class="hvhd"><b>🕘 ${esc(s.q||'Sans titre')}</b><button type="button" data-close>OK</button></div>${w}
+      <div class="hvit"><div class="hvr"><span class="hvd"><span class="hvcur">Version actuelle</span><b>${hvDate(s.up||Date.now())}</b><small>${esc(s.base!=null&&s.up!==s.base||!s.by?devLabel():s.by)} · ${hvLen(s)} car.</small></span></div></div>
+      ${it.length?it.map((e,i)=>{const d=hvDiff(e.v,cur); return `<div class="hvit"><button type="button" class="hvr" data-o="${i}"><span class="hvd"><b>${hvDate(e.at)}</b><small>${esc(e.dev||'')} · ${esc(e.why||'')} · ${e.len} car.</small></span><span class="hvn">${d.p?`<span class="p">+${d.p}</span> `:''}${d.m?`<span class="m">−${d.m}</span>`:''}${!d.p&&!d.m?'≈':''} ligne${d.p+d.m>1?'s':''}</span></button>
+        <div class="hvx" hidden><pre>${hvPrev(e.v,40)}</pre><div class="hvbtns"><button type="button" data-r="${i}">↺ Restaurer cette version</button></div></div></div>`;}).join(''):'<p class="lab" style="margin:14px 2px">Pas encore d’autre version enregistrée. Une version est gardée à chaque modification et à chaque synchro.</p>'}</div>`;
+    el.onclick=async ev=>{if(ev.target===el||ev.target.closest('[data-close]')){el.hidden=true; return;}
+      const a=ev.target.closest('[data-a]'); if(a){el.hidden=true; await HVA[a.dataset.a](s,fromEd); return;}
+      const o=ev.target.closest('[data-o]'); if(o){const x=o.nextElementSibling; x.hidden=!x.hidden; return;}
+      const r=ev.target.closest('[data-r]'); if(r){const e=it[+r.dataset.r]; if(await confirmBox('Restaurer la version du '+hvDate(e.at).replace(/^./,x=>x.toLowerCase())+' ?\nLa version actuelle reste dans l’historique.',{ok:'Restaurer'})){el.hidden=true; await HVA.restore(s,e,fromEd);}}};};
+  draw(await hvGet(s.id)); el.hidden=false; const all=await hvAll(s.id); if(!el.hidden)draw(all);}
 const Sync={
   ready:false, handle:null, busy:false, label:'', mode:null,
   async init(){
@@ -8885,13 +8963,19 @@ const Sync={
   async read(name){if(this.mode==='drive')return GD.read(name); if(APP)return await sx('read',name); const h=await this.handle.getFileHandle(name); return await (await h.getFile()).text();},
   async write(name,txt){if(this.mode==='drive')return GD.write(name,txt); if(APP)return (await sx('write',name,txt))==='1'; const h=await this.handle.getFileHandle(name,{create:true}); const w=await h.createWritable(); await w.write(txt); await w.close(); return true;},
   async remove(name){try{if(this.mode==='drive')return await GD.remove(name); if(APP)await sx('delete',name); else await this.handle.removeEntry(name);}catch(e){}},
+  held(s){if(s.conf)return true; const bl=s.baseLen||0, n=hvLen(s); if(bl>200&&n<bl*0.3&&!s.shrinkOk){s.shrink={from:bl,to:n}; return true;} delete s.shrink; return false;},
+  async pushSong(s,name,put){if(s.up!==s.base||!s.by)s.by=devLabel(); await histAdd(s,s,'envoyée'); if(await put(name,JSON.stringify(stripSong(s)))){s.base=s.up; s.baseLen=hvLen(s); delete s.shrinkOk; delete s.shrink;}},
+  async histSync(names){for(const id of [...HV.dirty]){if(!songById(id)){HV.dirty.delete(id); continue;} const fn=`hist-${id}.json`; let rem=[];
+      if(names.has(fn)){try{rem=JSON.parse(await this.read(fn)).items||[];}catch(e){}}
+      const m=hvMerge(await hvGet(id),rem); await hvPut(id,m); if((await this.write(fn,JSON.stringify({up:Date.now(),items:m})))!==false){names.add(fn); HV.dirty.delete(id);}}
+    hvSaveDirty();},
   async run(quiet){
     if(!this.ready||this.busy)return; this.busy=true; this.err=null; syncUI(); $('#syncStatus').textContent='Synchronisation…';
     if(this.mode==='drive'){const t=await GD.token(!quiet); if(!t){$('#syncStatus').textContent='Google Drive : touche « Synchroniser » pour te reconnecter.'; this.busy=false; this.err='Google demande de te reconnecter'; GD.ui(); syncUI(); return;}}
     try{
       if(!APP&&this.handle&&(await this.handle.queryPermission({mode:'readwrite'}))!=='granted'){const p=await this.handle.requestPermission({mode:'readwrite'}); if(p!=='granted')throw new Error('refusé');}
       const files=await this.list(), names=new Set(files.map(f=>f.name)); let changed=false, pulled=0, pushed=0, fails=0, done=0;
-      const put=async(n,t)=>{if((await this.write(n,t))===false)fails++; else {pushed++; names.add(n);} if(++done%10===0)$('#syncStatus').textContent='Synchronisation… '+done;}, rmOrig=Sync._rm0||(Sync._rm0=Sync.remove), rm0=rmOrig.bind(this); this.remove=async n=>{names.delete(n); return rm0(n);};
+      const put=async(n,t)=>{const ok=(await this.write(n,t))!==false; if(!ok)fails++; else {pushed++; names.add(n);} if(++done%10===0)$('#syncStatus').textContent='Synchronisation… '+done; return ok;}; let conflicts=0; const shrunkIn=[], rmOrig=Sync._rm0||(Sync._rm0=Sync.remove), rm0=rmOrig.bind(this); this.remove=async n=>{names.delete(n); return rm0(n);};
       // suppressions
       let rdel={songs:{},lists:{}}; if(names.has('deleted.json')){try{rdel=JSON.parse(await this.read('deleted.json'));}catch(e){}}
       const mdel={songs:{...rdel.songs,...S.del.songs},lists:{...rdel.lists,...S.del.lists}};
@@ -8904,16 +8988,30 @@ const Sync={
         if(f.up!=null){ // Google Drive donne la date de modification sans ouvrir le fichier
           if(!keep(kind,{id,up:f.up})){await this.remove(f.name); continue;}
           const l0=kind==='songs'?songById(id):listById(id);
-          if(l0&&(l0.up||0)===f.up)continue;
-          if(l0&&(l0.up||0)>f.up){await put(f.name,JSON.stringify(kind==='songs'?stripSong(l0):l0)); continue;}}
+          if(l0&&(l0.up||0)===f.up){if(kind==='songs'){l0.base=f.up; l0.baseLen=hvLen(l0); delete l0.conf;} continue;}
+          if(l0&&(l0.up||0)>f.up&&(kind!=='songs'||l0.base===f.up)){if(kind==='songs'){if(!this.held(l0))await this.pushSong(l0,f.name,put);} else await put(f.name,JSON.stringify(l0)); continue;}}
         let rem; try{rem=JSON.parse(await this.read(f.name));}catch(e){continue;} if(!keep(kind,{id,up:rem.up})){await this.remove(f.name);continue;}
         const loc=(kind==='songs'?songById(id):listById(id));
-        if(!loc){rem.id=id; (kind==='songs'?S.songs:S.lists).push(rem); pulled++; changed=true;}
-        else if((rem.up||0)>(loc.up||0)){await this.write(`backup-${id}-${loc.up||0}.json`,JSON.stringify(stripSong(loc))); Object.assign(loc,rem,{id}); delete loc._r; pulled++; changed=true;}
-        else if((loc.up||0)>(rem.up||0)){await put(f.name,JSON.stringify(stripSong(loc)));}
+        if(!loc){rem.id=id; if(kind==='songs'){rem.base=rem.up; rem.baseLen=hvLen(rem);} (kind==='songs'?S.songs:S.lists).push(rem); pulled++; changed=true; continue;}
+        if(kind==='lists'){if((rem.up||0)>(loc.up||0)){Object.assign(loc,rem,{id}); pulled++; changed=true;} else if((loc.up||0)>(rem.up||0))await put(f.name,JSON.stringify(loc)); continue;}
+        // morceaux : qui a changé depuis la dernière version commune (base) ?
+        const same=JSON.stringify(hvSnap(loc))===JSON.stringify(hvSnap(rem)), hasB=loc.base!=null, locCh=hasB&&(loc.up||0)!==loc.base, remCh=hasB&&(rem.up||0)!==loc.base;
+        if(same){if((rem.up||0)>(loc.up||0))loc.up=rem.up; else if((loc.up||0)>(rem.up||0)){await this.pushSong(loc,f.name,put); continue;} loc.base=loc.up; loc.baseLen=hvLen(loc); delete loc.conf; continue;}
+        if(locCh&&remCh){ // les deux appareils ont modifié : on ne tranche pas tout seul
+          await histAdd(loc,loc,'conflit · cet appareil'); await histAdd(loc,rem,'conflit · autre appareil',rem.by);
+          if(!loc.conf||loc.conf.up!==rem.up){loc.conf={up:rem.up,by:rem.by||'',at:Date.now(),v:hvSnap(rem)}; conflicts++; changed=true;} continue;}
+        if((rem.up||0)>(loc.up||0)&&!locCh||remCh&&!locCh){ // la version du cloud est plus récente
+          await histAdd(loc,loc,'remplacée par la synchro'); await histAdd(loc,rem,'reçue',rem.by);
+          if(hvLen(loc)>200&&hvLen(rem)<hvLen(loc)*0.3)shrunkIn.push(rem.q||loc.q);
+          Object.assign(loc,rem,{id}); delete loc._r; delete loc.conf; delete loc.shrink; loc.base=rem.up; loc.baseLen=hvLen(rem); pulled++; changed=true; continue;}
+        // la mienne est plus récente
+        if(!hasB)loc.baseLen=hvLen(rem);
+        await histAdd(loc,rem,'version du cloud',rem.by);
+        if(!this.held(loc))await this.pushSong(loc,f.name,put);
       }
       // locaux absents du dossier
-      for(const s of S.songs){if(!names.has(`song-${s.id}.json`)){await put(`song-${s.id}.json`,JSON.stringify(stripSong(s)));}}
+      for(const s of S.songs){if(!names.has(`song-${s.id}.json`)){await this.pushSong(s,`song-${s.id}.json`,put);}}
+      await this.histSync(names);
       for(const l of S.lists){if(!names.has(`list-${l.id}.json`)){await put(`list-${l.id}.json`,JSON.stringify(l));}}
       // réglages : le plus récent gagne
       let rset=null; if(names.has('settings.json')){try{rset=JSON.parse(await this.read('settings.json'));}catch(e){}}
@@ -8926,7 +9024,7 @@ const Sync={
       S.lastSync=Date.now(); localStorage.setItem(KEY,JSON.stringify(S,(k,v)=>k[0]==='_'?undefined:v));
       if(changed){renderAll(); try{if(!$('#lisr').hidden)lisRefresh();}catch(e){}} this.refreshUI(); this.remove=Sync._rm0||this.remove;
       const cnt=re=>[...names].filter(n=>re.test(n)).length;
-      S.syncLast={at:Date.now(),pulled,pushed,fails,songs:cnt(/^song-.+\.json$/),lists:cnt(/^list-.+\.json$/),where:this.mode==='drive'?'drive':(this.label||'dossier'),dev:APP?'l’appli Android':'ce navigateur'}; this.pending=false; save(); this.pending=false;
+      if(conflicts)toast('⚠ '+conflicts+' morceau'+(conflicts>1?'x modifiés':' modifié')+' sur deux appareils : à vérifier (☁)'); if(shrunkIn.length)toast('⚠ Version très courte reçue pour « '+shrunkIn[0]+' » : l’ancienne est dans l’historique'); S.syncLast={at:Date.now(),pulled,pushed,fails,songs:cnt(/^song-.+\.json$/),lists:cnt(/^list-.+\.json$/),where:this.mode==='drive'?'drive':(this.label||'dossier'),dev:APP?'l’appli Android':'ce navigateur'}; this.pending=false; save(); this.pending=false;
       if(quiet&&pushed&&!fails)toast('☁ Enregistré dans le cloud',1400);
       if(fails){$('#syncStatus').textContent=`Synchro incomplète : ${fails} fichier(s) non écrit(s) dans le dossier.`; if(!quiet)toast(`Synchro : ${fails} fichier(s) non écrit(s). Réessaie plus tard.`);}
       else if(!quiet||pulled)toast(`Synchro OK — ${pulled} reçu(s), ${pushed} envoyé(s)`);
@@ -8986,18 +9084,19 @@ addEventListener('resize',()=>{if(!$('#lisr').hidden)lisRender(false);});
 document.addEventListener('visibilitychange',()=>{if(document.hidden||!Sync.ready||Sync.busy)return; const L=S.syncLast; if(!L||Date.now()-L.at>60000)Sync.run(true);});
 try{if(Sync.remove&&!Sync._rm0)Sync._rm0=Sync.remove;}catch(e){}
 /* ---------- témoin ☁ et panneau Synchro : est-ce enregistré, et où ---------- */
-function syncState(){if(!Sync.ready)return 'off'; if(Sync.busy)return 'busy'; if(Sync.err)return 'err'; if(Sync.pending)return 'pend'; return 'ok';}
+function syncState(){if(!Sync.ready)return 'off'; if(Sync.busy)return 'busy'; if(Sync.err)return 'err'; if(S.songs.some(x=>x.conf||x.shrink))return 'warn'; if(Sync.pending)return 'pend'; return 'ok';}
 const ago=t=>{if(!t)return 'jamais'; const m=Math.round((Date.now()-t)/60000); return m<1?'à l’instant':m<60?'il y a '+m+' min':new Date(t).toLocaleString('fr-FR',{weekday:'short',hour:'2-digit',minute:'2-digit',day:'numeric',month:'short'});};
 function syncUI(){const b=$('#syncBtn'); if(!b)return; const st=syncState(), L=S.syncLast;
-  const t={off:['☁','Synchro','Pas de synchro : tes morceaux ne sont que sur cet appareil'],busy:['↻','Synchro…','Synchronisation en cours'],err:['⚠','Synchro','Synchro impossible : '+(Sync.err||'')],pend:['⬆','À envoyer','Des changements attendent d’être envoyés'],ok:['☁','À jour','À jour · '+ago(L&&L.at)]}[st];
+  const t={off:['☁','Synchro','Pas de synchro : tes morceaux ne sont que sur cet appareil'],busy:['↻','Synchro…','Synchronisation en cours'],err:['⚠','Synchro','Synchro impossible : '+(Sync.err||'')],pend:['⬆','À envoyer','Des changements attendent d’être envoyés'],warn:['⚠','À vérifier','Des morceaux sont à vérifier'],ok:['☁','À jour','À jour · '+ago(L&&L.at)]}[st];
   b.className='hbtn syncb '+st; b.querySelector('.sbi').textContent=t[0]; b.querySelector('.sbt').textContent=t[1]; b.title=t[2];
-  const ls=$('#lisS'); if(ls)ls.textContent={off:'',busy:'↻ synchro…',err:'⚠ synchro',pend:'⬆ à envoyer',ok:'☁ à jour'}[st];}
+  const ls=$('#lisS'); if(ls)ls.textContent={off:'',busy:'↻ synchro…',warn:'⚠ à vérifier',err:'⚠ synchro',pend:'⬆ à envoyer',ok:'☁ à jour'}[st];}
 setInterval(syncUI,30000);
 function syncPanelDraw(chk){const L=S.syncLast, st=syncState(), drive=Sync.mode==='drive', box=$('#syncPanel .spbody');
   const where=!Sync.ready?'<b>Nulle part ailleurs</b> : seulement sur cet appareil.':drive?`<b>Google Drive</b>${S.gd&&S.gd.email?' de <b>'+esc(S.gd.email)+'</b>':''}<br><span class="sppath">Mon Drive › Accords</span>`:`<b>Dossier</b> <span class="sppath">${esc(Sync.label||'')}</span>`;
-  const stl={off:'⚪ Pas de synchro',busy:'🔵 Synchronisation en cours…',err:'🔴 Synchro impossible : '+esc(Sync.err||''),pend:'🟠 Des changements attendent d’être envoyés (dans quelques secondes)',ok:'🟢 Tout est enregistré dans le cloud'}[st];
+  const stl={off:'⚪ Pas de synchro',busy:'🔵 Synchronisation en cours…',err:'🔴 Synchro impossible : '+esc(Sync.err||''),pend:'🟠 Des changements attendent d’être envoyés (dans quelques secondes)',warn:'🟠 Des morceaux sont à vérifier avant d’être envoyés',ok:'🟢 Tout est enregistré dans le cloud'}[st];
   const nS=S.songs.length, nL=S.lists.length, cS=L&&L.songs, cL=L&&L.lists, same=L&&cS===nS&&cL===nL;
   box.innerHTML=`<div class="spst ${st}">${stl}</div>
+    ${(()=>{const w=S.songs.filter(x=>x.conf||x.shrink); return w.length?`<div class="spwarn">${w.map(x=>`<button type="button" data-sp="cf" data-id="${x.id}"><b>${esc(x.q||'Sans titre')}</b><small>${x.conf?'modifié sur deux appareils':'texte beaucoup raccourci'}</small><span>Comparer ›</span></button>`).join('')}</div>`:'';})()}
     <div class="sprow"><span>Où</span><div>${where}</div></div>
     ${Sync.ready?`<div class="sprow"><span>Quoi</span><div>Sur cet appareil : <b>${nS}</b> morceau${nS>1?'x':''} · <b>${nL}</b> playlist${nL>1?'s':''}<br>Dans le cloud${L?' (à la dernière synchro)':''} : ${L?`<b>${cS}</b> · <b>${cL}</b> ${same?'✓':'⚠'}`:'pas encore synchronisé'}</div></div>
     <div class="sprow"><span>Quand</span><div>${L?`Dernière synchro <b>${ago(L.at)}</b> depuis ${esc(L.dev||'')}<br>${L.pushed} envoyé${L.pushed>1?'s':''} · ${L.pulled} reçu${L.pulled>1?'s':''} · ${L.fails?'<b style="color:#ef4444">'+L.fails+' erreur(s)</b>':'0 erreur'}`:'jamais'}</div></div>`:''}
@@ -9008,6 +9107,7 @@ $('#syncBtn').onclick=async()=>{modal('#syncPanel',true); syncPanelDraw(); if(Sy
 $('#syncPanel').addEventListener('click',async e=>{const b=e.target.closest('[data-sp]'); if(!b)return; const a=b.dataset.sp;
   if(a==='run'){await Sync.run(false); syncPanelDraw();}
   else if(a==='login'){modal('#syncPanel',false); GD.login();}
+  else if(a==='cf'){modal('#syncPanel',false); const s=songById(b.dataset.id); if(s)hvOpen(s);}
   else if(a==='open'){extOpen('https://drive.google.com/drive/folders/'+(GD.folder||S.gd.folder));}
   else if(a==='set'){modal('#syncPanel',false); $('#settingsBtn').click(); setTimeout(()=>{const c=$('#setNav [data-cat="save"]'); if(c)c.click();},30);}
   else if(a==='check'){b.disabled=true; b.textContent='🔍 Vérification…'; try{const o=await Sync.check(); const ok=!o.noCloud.length&&!o.noHere&&!o.diff;
@@ -9096,7 +9196,7 @@ function backupInfo(){
   $('#autoBackInfo').textContent=S.lastBackup?`Dernière sauvegarde : ${new Date(S.lastBackup).toLocaleDateString('fr-FR')} (${S.lastBackupWhere||''}). Une par jour d'utilisation ; pour restaurer : « Importer (.json) ».`
     :(APP?'Une sauvegarde par jour d\'utilisation, dans le dossier synchronisé s\'il est choisi, sinon dans Téléchargements/Accords.':'Choisis un dossier de synchronisation ci-dessous pour activer une sauvegarde par jour.');
 }
-const stripSong=s=>{const {_r,_el,open,...o}=s; return o;};
+const stripSong=s=>{const {_r,_el,open,base,baseLen,conf,shrink,shrinkOk,...o}=s; return o;};
 window.syncPicked=function(label){Sync.label=label||''; Sync.ready=!!label; Sync.refreshUI(); if(label)Sync.run(false);};
 function kvGet(k){return new Promise(ok=>{try{const rq=indexedDB.open('accords-kv',1); rq.onupgradeneeded=()=>rq.result.createObjectStore('kv'); rq.onsuccess=()=>{const r=rq.result.transaction('kv').objectStore('kv').get(k); r.onsuccess=()=>ok(r.result||null); r.onerror=()=>ok(null);}; rq.onerror=()=>ok(null);}catch(e){ok(null);}});}
 function kvSet(k,v){return new Promise(ok=>{try{const rq=indexedDB.open('accords-kv',1); rq.onupgradeneeded=()=>rq.result.createObjectStore('kv'); rq.onsuccess=()=>{const tx=rq.result.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=ok; tx.onerror=ok;}; rq.onerror=()=>ok();}catch(e){ok();}});}
@@ -9175,9 +9275,10 @@ $('#tri').onchange=e=>{S.sort=e.target.value; save(); renderAll();};
 $('#libView').onchange=e=>{S.libView=e.target.value; S.libNavAt=null; save(); renderAll();};
 $('#libNav').onchange=e=>{S.libNav=e.target.value; S.libNavAt=null; save(); renderAll();};
 $('#scene').onclick=()=>{if(S.cur!=='lib'&&curList)openViewer(listEntries(curList),-1,curList); else openViewer(libEntries(),-1);};
-$('#settingsBtn').onclick=()=>{$('.setgrid').classList.add('lst'); try{GD.prep(); GD.ui();}catch(e){} $('#meName').value=(S.me&&S.me.n)||''; $('#meInst').value=(S.me&&S.me.i)||''; $('#setSpSub').textContent=S.spot?'Connecté':'Non connecté'; modal('#settings',true);};
+$('#settingsBtn').onclick=()=>{$('.setgrid').classList.add('lst'); try{GD.prep(); GD.ui();}catch(e){} $('#meName').value=(S.me&&S.me.n)||''; $('#meInst').value=(S.me&&S.me.i)||''; $('#meDev').value=(()=>{try{return localStorage.getItem('devName')||'';}catch(e){return '';}})(); $('#meDev').placeholder=devLabel(); $('#setSpSub').textContent=S.spot?'Connecté':'Non connecté'; modal('#settings',true);};
 $('#setBack').onclick=()=>$('.setgrid').classList.add('lst');
 $('#setNav').onclick=e=>{const b=e.target.closest('[data-cat]'); if(!b)return; $('.setgrid').classList.remove('lst'); $('.setpanes').scrollTop=0; $$('#setNav [data-cat]').forEach(x=>x.setAttribute('aria-pressed',x===b)); $$('.setpanes section').forEach(x=>x.hidden=x.dataset.cat!==b.dataset.cat);};
+$('#meDev').addEventListener('change',()=>{try{localStorage.setItem('devName',$('#meDev').value.trim());}catch(e){}});
 ['#meName','#meInst'].forEach(x=>$(x).addEventListener('change',()=>{S.me={n:$('#meName').value.trim(),i:$('#meInst').value.trim()}; S.setUp=Date.now(); save();}));
 micify($('#meName'));
 const setBright=v=>{S.bright=+v; save(); applyLook();};
