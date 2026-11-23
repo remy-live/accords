@@ -1087,10 +1087,11 @@ html[data-design=nb] .card,html[data-design=nbi] .card,html[data-design=nb] .mod
 html[data-design=nb] button,html[data-design=nbi] button{border-color:var(--ink)!important}
 html[data-design=nb] button:not(.pri):not(.fab):not([aria-pressed=true]):not(#viewer button):not(#lisr button):not(#bgEd button),html[data-design=nbi] button:not(.pri):not(.fab):not([aria-pressed=true]):not(#viewer button):not(#lisr button):not(#bgEd button){background-color:var(--card)!important;color:var(--ink)!important;background-image:none!important;border-color:var(--ink)!important}
 html[data-design=nb] button[aria-pressed=true]:not(#viewer button):not(#lisr button):not(#bgEd button),html[data-design=nbi] button[aria-pressed=true]:not(#viewer button):not(#lisr button):not(#bgEd button){background:var(--ink)!important;color:var(--bg)!important}
+html[data-design=nb] button[aria-pressed=true] *,html[data-design=nbi] button[aria-pressed=true] *{color:inherit!important}
 html[data-design=nb] .pri,html[data-design=nbi] .pri,html[data-design=nb] .fab,html[data-design=nbi] .fab{background:var(--ink)!important;color:var(--bg)!important}
 html[data-design=nb] .logo,html[data-design=nbi] .logo{background:var(--ink)!important;color:var(--bg)!important}
 html[data-design=nb] img,html[data-design=nb] .ltile,html[data-design=nb] .htile,html[data-design=nbi] .ltile,html[data-design=nbi] .htile{filter:grayscale(1)}
-.dsgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;width:100%}@media (max-width:700px){.dsgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.dsgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;width:100%}.dsgrid b,.dsgrid small{overflow-wrap:anywhere;hyphens:auto}@media (max-width:700px){.dsgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .dsgrid button{display:flex;flex-direction:column;gap:6px;padding:8px!important;border-radius:14px!important;text-align:left;border:2px solid var(--line)!important;background:var(--card)!important;color:var(--ink)!important;height:auto}
 .dsgrid button[aria-pressed=true]{border-color:var(--hl)!important}.dsgrid b{font-size:14px}.dsgrid small{color:var(--mute);font-size:11px}
 .dsprev{height:58px;border-radius:9px;display:flex;align-items:flex-end;gap:5px;padding:7px;box-sizing:border-box}.dsprev i{display:block;border-radius:4px;height:12px;flex:1}.dsprev i:first-child{flex:2}
@@ -1438,7 +1439,10 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 .lpr{display:flex;flex-direction:column;gap:10px}.lpq{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.lpb{display:flex;gap:6px;flex-wrap:wrap}.lpb .pri{flex:1;min-width:120px}
 @media (max-width:699px){.lpw{grid-template-columns:1fr}.lpv pre{max-height:220px;font-size:13.5px}}
 .lpw{grid-template-columns:minmax(0,1.3fr) minmax(300px,1fr)}.lpb{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.lpb .pri{grid-column:1/-1}.lpb button{white-space:nowrap;justify-content:center;width:100%;min-width:0!important;overflow:hidden;text-overflow:ellipsis}.lpb button{white-space:nowrap}.lpb .pri{min-width:0}
-@media (min-width:700px){.lpw{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(300px,380px)!important}.lpr{width:auto!important;min-width:0}}
+@media (min-width:900px){.lpw{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(300px,380px)!important}.lpr{width:auto!important;min-width:0}}
+@media (max-width:899px){.lpw{display:flex!important;flex-direction:column!important}.lpw>*{width:100%!important;max-width:none!important;box-sizing:border-box}}
+@media (max-width:1180px){.libhead{flex-wrap:wrap!important;row-gap:8px}}
+.libtab.lt2 tr.lprev,.libtab.lt2 tr.lprev td{box-sizing:border-box}@media (max-width:760px){.libtab.lt2,.libtab.lt2 tbody{display:block;width:100%}.libtab.lt2 thead{display:none}.libtab.lt2 tr.lrow{width:100%;box-sizing:border-box}.libtab.lt2 tr.lprev,.libtab.lt2 tr.lprev td{width:100%!important}}
 @media (max-width:699px){.lpw{grid-template-columns:1fr}}
 .lpb>button{flex:none!important}.lpb .pri{flex:1 0 auto!important;padding:0 18px!important;min-width:110px!important}
 .lpnav{display:flex;align-items:center;gap:8px}.lpnav button{width:38px;height:34px;padding:0;border-radius:9px;font-size:20px;line-height:1;border:1px solid var(--line)!important;background:var(--card)!important;color:var(--ink)!important}
@@ -1654,7 +1658,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.5.0</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.5.1</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
