@@ -1388,6 +1388,34 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #vtSyncNote{margin:6px 12px 0;padding:8px 12px;border-radius:10px;background:rgba(245,158,11,.14);border:1px solid #f59e0b;font-size:13.5px}#vtSyncNote button{margin-left:6px;min-height:30px;padding:0 10px;border-radius:8px;font-weight:700}
 .spwarn{display:flex;flex-direction:column;gap:6px;margin:8px 0}.spwarn button{display:flex;flex-wrap:wrap;align-items:center;gap:2px 10px;text-align:left;padding:10px 12px;border-radius:12px;border:1px solid #f59e0b!important;background:rgba(245,158,11,.1)!important}
 .spwarn b{flex:1 1 60%}.spwarn small{order:3;flex-basis:100%;color:var(--mute)}.spwarn span{font-weight:700;color:var(--acc)}
+/* lecteur MP3 */
+#apSheet,#apImp{position:fixed;inset:0;z-index:97;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center}#apSheet[hidden],#apImp[hidden]{display:none}
+#apSheet .aps,#apImp .aps{width:min(560px,100%);max-height:94vh;overflow-y:auto;background:var(--card);color:var(--ink);border-radius:22px 22px 0 0;padding:12px 18px calc(16px + env(safe-area-inset-bottom));box-sizing:border-box}
+@media (min-width:701px){#apSheet,#apImp{align-items:center}#apSheet .aps,#apImp .aps{border-radius:22px}}
+.aph{display:flex;align-items:center;gap:12px;margin-bottom:12px}.aph>button{width:44px;height:44px;border-radius:12px;font-size:20px;flex:none}
+.apt{min-width:0}.apt b{display:block;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.apt small{display:block;color:var(--mute);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.apico{width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,#6d28d9,#db2777);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;flex:none}
+.apw{height:86px;margin:10px 0 4px}.apw canvas{width:100%;height:100%;display:block;touch-action:none;cursor:pointer}
+.aptimes{display:flex;justify-content:space-between;gap:8px;font:600 12px ui-monospace,monospace;color:var(--mute)}
+.apctl{display:flex;align-items:center;justify-content:center;gap:10px;margin:14px 0 6px}.apctl button{height:46px;border-radius:12px;padding:0 12px;font-weight:700}
+.apctl .appp{width:66px;height:66px;border-radius:50%;background:var(--acc)!important;color:var(--onhl,#111)!important;font-size:24px;border:0!important}
+.apctl .apab{width:46px;border-radius:50%;font-weight:800}.apctl .apab.on{background:var(--acc)!important;color:var(--onhl,#111)!important;border-color:var(--acc)!important}
+.apsl{margin-top:14px}.aplab{display:flex;align-items:baseline;gap:8px;margin-bottom:6px}.aplab b{font-size:12px;letter-spacing:.08em;color:var(--mute)}.aplab span{margin-left:auto;font:800 20px ui-monospace,monospace}
+.aprow{display:flex;align-items:center;gap:10px}.aprow button{width:44px;height:44px;border-radius:12px;font-size:20px;flex:none}.aprow input[type=range]{flex:1;min-width:0;height:34px;accent-color:var(--acc)}
+.appre{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.appre button{height:32px;min-width:44px;border-radius:999px;padding:0 10px;font-weight:700;font-size:13px}.appre button[aria-pressed=true]{background:var(--acc)!important;color:var(--onhl,#111)!important;border-color:var(--acc)!important}
+.apnote{display:block;color:var(--mute);font-size:12px;margin-top:4px}
+.apfol{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px;font-weight:600}.apfol input{width:22px;height:22px;accent-color:var(--acc)}.apfol i{font-style:normal;color:var(--mute);font-weight:500}
+.apfoot{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;padding-top:12px;border-top:1px solid var(--line)}.apfoot button{flex:1 1 auto;min-height:42px;border-radius:12px;font-weight:600}
+#apImp .apnew{width:100%;min-height:56px;border-radius:14px;font-weight:800;font-size:16px;text-align:left;padding:0 16px}
+#apImpQ{width:100%;box-sizing:border-box;height:44px;border-radius:12px;padding:0 12px;margin-bottom:6px}
+#apImpL{max-height:38vh;overflow-y:auto}#apImpL button{display:flex;width:100%;align-items:center;gap:8px;min-height:50px;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0;background:none!important;text-align:left;padding:0 4px}#apImpL b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}#apImpL small{color:var(--mute)}
+#apImp .apcancel{width:100%;margin-top:10px;min-height:44px;border-radius:12px}
+#apMini{display:flex;align-items:center;gap:10px;margin:6px 10px 0;padding:6px 8px;border-radius:16px;background:var(--s2,#1b1b20);border:1px solid #2c2c33;color:#eee}#apMini[hidden]{display:none}
+#apMini button{background:#26262c;color:#eee;border:0;border-radius:10px;height:40px;min-width:40px;padding:0 10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+#apMini [data-am=pp]{width:44px;height:44px;border-radius:50%;background:var(--hl,#fb923c);color:var(--onhl,#111)}
+#apMini canvas{flex:1;min-width:0;height:34px;touch-action:none}#apMiniL{font-size:12.5px!important;white-space:nowrap}
+#viewer.sun #apMini{background:#fff;border-color:#000;color:#000}#viewer.sun #apMini button{background:#fff;color:#000;border:1.5px solid #000}
+.fmaud{font-size:17px}
 #lfSheet{position:fixed;inset:0;z-index:94;background:rgba(0,0,0,.4);display:flex;align-items:flex-end;justify-content:center}#lfSheet[hidden]{display:none}
 #lfSheet .lfs{width:min(560px,100%);max-height:85vh;overflow-y:auto;background:var(--card);color:var(--ink);border-radius:20px 20px 0 0;padding:8px 16px calc(16px + env(safe-area-inset-bottom));box-sizing:border-box}
 #lfSheet .lfhd{display:flex;align-items:center;justify-content:space-between;margin:6px 0 2px}#lfSheet .lfhd b{font-size:19px}#lfSheet .lfhd button{height:36px;padding:0 16px;border-radius:10px;background:var(--acc)!important;color:#fff!important;border:0!important;font-weight:700}
@@ -1677,7 +1705,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.6.1</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.7.0</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
@@ -1741,6 +1769,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
   </div>
   <p class="lab" id="syncStatus"></p>
   <div class="opt"><span>Synchroniser aussi les images des partitions et les bandes son</span><input type="checkbox" id="syncMediaOpt"></div>
+  <div class="opt"><span>Télécharger tous les sons sur cet appareil (sinon : au premier ▶)</span><input type="checkbox" id="audAllOpt"></div>
   <div class="opt"><span>Images et sons seulement en Wi-Fi</span><input type="checkbox" id="syncWifiOpt"></div>
       </section>
       <section data-cat="io" hidden>
@@ -1995,6 +2024,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
     <button data-new="ug" class="nug"><b>🌐 Ultimate Guitar</b><span>Chercher le titre et importer la grille</span></button>
     <button data-new="paste"><b>📋 Coller</b><span>Une grille copiée ailleurs (UG, ChordPro…)</span></button>
     <button data-new="bulk"><b>📥 Plusieurs fichiers</b><span>PDF, Guitar Pro, textes… en une fois, dans l'ordre voulu</span></button>
+    <button data-new="mp3"><b>🎵 MP3</b><span>Un son (Suno, maquette…) : vitesse et hauteur réglables, boucle</span></button>
     <button data-new="gp"><b>🎼 Guitar Pro / MusicXML</b><span>Tablatures, accords et paroles d'un fichier .gp, .gpx, .musicxml…</span></button>
   </div>
   <div id="newPaste" hidden>
@@ -2222,11 +2252,12 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span id="vpl" hidden></span>
       <span id="vcount" hidden></span>
     </div>
+    <div id="apMini" hidden><button data-am="pp" aria-label="Lecture / pause">▶</button><canvas id="apMiniW"></canvas><button data-am="open" id="apMiniL" title="Ouvrir le lecteur"></button><button data-am="x" aria-label="Fermer le lecteur">✕</button></div>
     <div class="vctl">
       <button id="vprev" aria-label="Précédent">‹</button><button id="vnext" aria-label="Suivant">›</button>
       <span class="vkeys"><button id="vdn" aria-label="Baisser d'un demi-ton">−½</button><button id="vup" aria-label="Monter d'un demi-ton">+½</button></span>
       <span class="vtempo"><span id="beat"></span><button id="vtdn" aria-label="Tempo moins">−</button><button id="vmetro" aria-label="Métronome">♩<span id="vtempo"></span></button><button id="vtup" aria-label="Tempo plus">+</button></span>
-      <button id="vaudio" aria-label="Bande son" hidden>▶</button>
+      <button id="vaudio" aria-label="Son du morceau" title="Son : vitesse, hauteur, boucle" hidden>🎵</button>
       <button id="vscroll" aria-label="Défilement" hidden>⇣</button>
       <button id="vshare" aria-label="Partager ce morceau" title="Partager ce morceau">⇪</button>
       <button id="vtv" aria-label="Lancer au vidéoprojecteur" title="Lancer au vidéoprojecteur (appui long : panneau Projecteur)">📺</button>
@@ -2436,6 +2467,804 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
 </div>
 <div id="dim"></div>
 
+<script>
+/* SoundTouch JS 0.3.0 (LGPL 2.1) — vitesse et hauteur indépendantes */
+(function(){
+/*
+ * SoundTouch JS v0.3.0 audio processing library
+ * Copyright (c) Olli Parviainen
+ * Copyright (c) Ryan Berdeen
+ * Copyright (c) Jakub Fiala
+ * Copyright (c) Steve 'Cutter' Blades
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+class FifoSampleBuffer {
+  constructor() {
+    this._vector = new Float32Array();
+    this._position = 0;
+    this._frameCount = 0;
+  }
+  get vector() {
+    return this._vector;
+  }
+  get position() {
+    return this._position;
+  }
+  get startIndex() {
+    return this._position * 2;
+  }
+  get frameCount() {
+    return this._frameCount;
+  }
+  get endIndex() {
+    return (this._position + this._frameCount) * 2;
+  }
+  clear() {
+    this._vector.fill(0);
+    this._position = 0;
+    this._frameCount = 0;
+  }
+  put(numFrames) {
+    this._frameCount += numFrames;
+  }
+  putSamples(samples, position, numFrames = 0) {
+    position = position || 0;
+    const sourceOffset = position * 2;
+    if (!(numFrames >= 0)) {
+      numFrames = (samples.length - sourceOffset) / 2;
+    }
+    const numSamples = numFrames * 2;
+    this.ensureCapacity(numFrames + this._frameCount);
+    const destOffset = this.endIndex;
+    this.vector.set(samples.subarray(sourceOffset, sourceOffset + numSamples), destOffset);
+    this._frameCount += numFrames;
+  }
+  putBuffer(buffer, position, numFrames = 0) {
+    position = position || 0;
+    if (!(numFrames >= 0)) {
+      numFrames = buffer.frameCount - position;
+    }
+    this.putSamples(buffer.vector, buffer.position + position, numFrames);
+  }
+  receive(numFrames) {
+    if (!(numFrames >= 0) || numFrames > this._frameCount) {
+      numFrames = this.frameCount;
+    }
+    this._frameCount -= numFrames;
+    this._position += numFrames;
+  }
+  receiveSamples(output, numFrames = 0) {
+    const numSamples = numFrames * 2;
+    const sourceOffset = this.startIndex;
+    output.set(this._vector.subarray(sourceOffset, sourceOffset + numSamples));
+    this.receive(numFrames);
+  }
+  extract(output, position = 0, numFrames = 0) {
+    const sourceOffset = this.startIndex + position * 2;
+    const numSamples = numFrames * 2;
+    output.set(this._vector.subarray(sourceOffset, sourceOffset + numSamples));
+  }
+  ensureCapacity(numFrames = 0) {
+    const minLength = parseInt(numFrames * 2);
+    if (this._vector.length < minLength) {
+      const newVector = new Float32Array(minLength);
+      newVector.set(this._vector.subarray(this.startIndex, this.endIndex));
+      this._vector = newVector;
+      this._position = 0;
+    } else {
+      this.rewind();
+    }
+  }
+  ensureAdditionalCapacity(numFrames = 0) {
+    this.ensureCapacity(this._frameCount + numFrames);
+  }
+  rewind() {
+    if (this._position > 0) {
+      this._vector.set(this._vector.subarray(this.startIndex, this.endIndex));
+      this._position = 0;
+    }
+  }
+}
+
+class AbstractFifoSamplePipe {
+  constructor(createBuffers) {
+    if (createBuffers) {
+      this._inputBuffer = new FifoSampleBuffer();
+      this._outputBuffer = new FifoSampleBuffer();
+    } else {
+      this._inputBuffer = this._outputBuffer = null;
+    }
+  }
+  get inputBuffer() {
+    return this._inputBuffer;
+  }
+  set inputBuffer(inputBuffer) {
+    this._inputBuffer = inputBuffer;
+  }
+  get outputBuffer() {
+    return this._outputBuffer;
+  }
+  set outputBuffer(outputBuffer) {
+    this._outputBuffer = outputBuffer;
+  }
+  clear() {
+    this._inputBuffer.clear();
+    this._outputBuffer.clear();
+  }
+}
+
+class RateTransposer extends AbstractFifoSamplePipe {
+  constructor(createBuffers) {
+    super(createBuffers);
+    this.reset();
+    this._rate = 1;
+  }
+  set rate(rate) {
+    this._rate = rate;
+  }
+  reset() {
+    this.slopeCount = 0;
+    this.prevSampleL = 0;
+    this.prevSampleR = 0;
+  }
+  clear() {
+    super.clear();
+    this.reset();
+  }
+  clone() {
+    const result = new RateTransposer();
+    result.rate = this._rate;
+    return result;
+  }
+  process() {
+    const numFrames = this._inputBuffer.frameCount;
+    this._outputBuffer.ensureAdditionalCapacity(numFrames / this._rate + 1);
+    const numFramesOutput = this.transpose(numFrames);
+    this._inputBuffer.receive();
+    this._outputBuffer.put(numFramesOutput);
+  }
+  transpose(numFrames = 0) {
+    if (numFrames === 0) {
+      return 0;
+    }
+    const src = this._inputBuffer.vector;
+    const srcOffset = this._inputBuffer.startIndex;
+    const dest = this._outputBuffer.vector;
+    const destOffset = this._outputBuffer.endIndex;
+    let used = 0;
+    let i = 0;
+    while (this.slopeCount < 1.0) {
+      dest[destOffset + 2 * i] = (1.0 - this.slopeCount) * this.prevSampleL + this.slopeCount * src[srcOffset];
+      dest[destOffset + 2 * i + 1] = (1.0 - this.slopeCount) * this.prevSampleR + this.slopeCount * src[srcOffset + 1];
+      i = i + 1;
+      this.slopeCount += this._rate;
+    }
+    this.slopeCount -= 1.0;
+    if (numFrames !== 1) {
+      out: while (true) {
+        while (this.slopeCount > 1.0) {
+          this.slopeCount -= 1.0;
+          used = used + 1;
+          if (used >= numFrames - 1) {
+            break out;
+          }
+        }
+        const srcIndex = srcOffset + 2 * used;
+        dest[destOffset + 2 * i] = (1.0 - this.slopeCount) * src[srcIndex] + this.slopeCount * src[srcIndex + 2];
+        dest[destOffset + 2 * i + 1] = (1.0 - this.slopeCount) * src[srcIndex + 1] + this.slopeCount * src[srcIndex + 3];
+        i = i + 1;
+        this.slopeCount += this._rate;
+      }
+    }
+    this.prevSampleL = src[srcOffset + 2 * numFrames - 2];
+    this.prevSampleR = src[srcOffset + 2 * numFrames - 1];
+    return i;
+  }
+}
+
+class FilterSupport {
+  constructor(pipe) {
+    this._pipe = pipe;
+  }
+  get pipe() {
+    return this._pipe;
+  }
+  get inputBuffer() {
+    return this._pipe.inputBuffer;
+  }
+  get outputBuffer() {
+    return this._pipe.outputBuffer;
+  }
+  fillInputBuffer(
+  ) {
+    throw new Error('fillInputBuffer() not overridden');
+  }
+  fillOutputBuffer(numFrames = 0) {
+    while (this.outputBuffer.frameCount < numFrames) {
+      const numInputFrames = 8192 * 2 - this.inputBuffer.frameCount;
+      this.fillInputBuffer(numInputFrames);
+      if (this.inputBuffer.frameCount < 8192 * 2) {
+        break;
+      }
+      this._pipe.process();
+    }
+  }
+  clear() {
+    this._pipe.clear();
+  }
+}
+
+const noop = function () {
+  return;
+};
+
+class SimpleFilter extends FilterSupport {
+  constructor(sourceSound, pipe, callback = noop) {
+    super(pipe);
+    this.callback = callback;
+    this.sourceSound = sourceSound;
+    this.historyBufferSize = 22050;
+    this._sourcePosition = 0;
+    this.outputBufferPosition = 0;
+    this._position = 0;
+  }
+  get position() {
+    return this._position;
+  }
+  set position(position) {
+    if (position > this._position) {
+      throw new RangeError('New position may not be greater than current position');
+    }
+    const newOutputBufferPosition = this.outputBufferPosition - (this._position - position);
+    if (newOutputBufferPosition < 0) {
+      throw new RangeError('New position falls outside of history buffer');
+    }
+    this.outputBufferPosition = newOutputBufferPosition;
+    this._position = position;
+  }
+  get sourcePosition() {
+    return this._sourcePosition;
+  }
+  set sourcePosition(sourcePosition) {
+    this.clear();
+    this._sourcePosition = sourcePosition;
+  }
+  onEnd() {
+    this.callback();
+  }
+  fillInputBuffer(numFrames = 0) {
+    const samples = new Float32Array(numFrames * 2);
+    const numFramesExtracted = this.sourceSound.extract(samples, numFrames, this._sourcePosition);
+    this._sourcePosition += numFramesExtracted;
+    this.inputBuffer.putSamples(samples, 0, numFramesExtracted);
+  }
+  extract(target, numFrames = 0) {
+    this.fillOutputBuffer(this.outputBufferPosition + numFrames);
+    const numFramesExtracted = Math.min(numFrames, this.outputBuffer.frameCount - this.outputBufferPosition);
+    this.outputBuffer.extract(target, this.outputBufferPosition, numFramesExtracted);
+    const currentFrames = this.outputBufferPosition + numFramesExtracted;
+    this.outputBufferPosition = Math.min(this.historyBufferSize, currentFrames);
+    this.outputBuffer.receive(Math.max(currentFrames - this.historyBufferSize, 0));
+    this._position += numFramesExtracted;
+    return numFramesExtracted;
+  }
+  handleSampleData(event) {
+    this.extract(event.data, 4096);
+  }
+  clear() {
+    super.clear();
+    this.outputBufferPosition = 0;
+  }
+}
+
+const USE_AUTO_SEQUENCE_LEN = 0;
+const DEFAULT_SEQUENCE_MS = USE_AUTO_SEQUENCE_LEN;
+const USE_AUTO_SEEKWINDOW_LEN = 0;
+const DEFAULT_SEEKWINDOW_MS = USE_AUTO_SEEKWINDOW_LEN;
+const DEFAULT_OVERLAP_MS = 8;
+const _SCAN_OFFSETS = [[124, 186, 248, 310, 372, 434, 496, 558, 620, 682, 744, 806, 868, 930, 992, 1054, 1116, 1178, 1240, 1302, 1364, 1426, 1488, 0], [-100, -75, -50, -25, 25, 50, 75, 100, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [-20, -15, -10, -5, 5, 10, 15, 20, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [-4, -3, -2, -1, 1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]];
+const AUTOSEQ_TEMPO_LOW = 0.25;
+const AUTOSEQ_TEMPO_TOP = 4.0;
+const AUTOSEQ_AT_MIN = 125.0;
+const AUTOSEQ_AT_MAX = 50.0;
+const AUTOSEQ_K = (AUTOSEQ_AT_MAX - AUTOSEQ_AT_MIN) / (AUTOSEQ_TEMPO_TOP - AUTOSEQ_TEMPO_LOW);
+const AUTOSEQ_C = AUTOSEQ_AT_MIN - AUTOSEQ_K * AUTOSEQ_TEMPO_LOW;
+const AUTOSEEK_AT_MIN = 25.0;
+const AUTOSEEK_AT_MAX = 15.0;
+const AUTOSEEK_K = (AUTOSEEK_AT_MAX - AUTOSEEK_AT_MIN) / (AUTOSEQ_TEMPO_TOP - AUTOSEQ_TEMPO_LOW);
+const AUTOSEEK_C = AUTOSEEK_AT_MIN - AUTOSEEK_K * AUTOSEQ_TEMPO_LOW;
+class Stretch extends AbstractFifoSamplePipe {
+  constructor(createBuffers) {
+    super(createBuffers);
+    this._quickSeek = true;
+    this.midBufferDirty = false;
+    this.midBuffer = null;
+    this.overlapLength = 0;
+    this.autoSeqSetting = true;
+    this.autoSeekSetting = true;
+    this._tempo = 1;
+    this.setParameters(44100, DEFAULT_SEQUENCE_MS, DEFAULT_SEEKWINDOW_MS, DEFAULT_OVERLAP_MS);
+  }
+  clear() {
+    super.clear();
+    this.clearMidBuffer();
+  }
+  clearMidBuffer() {
+    this.midBufferDirty = false;
+    this.midBuffer = null;
+    if (this.refMidBuffer) {
+      this.refMidBuffer.fill(0);
+    }
+    this.skipFract = 0;
+  }
+  setParameters(sampleRate, sequenceMs, seekWindowMs, overlapMs) {
+    if (sampleRate > 0) {
+      this.sampleRate = sampleRate;
+    }
+    if (overlapMs > 0) {
+      this.overlapMs = overlapMs;
+    }
+    if (sequenceMs > 0) {
+      this.sequenceMs = sequenceMs;
+      this.autoSeqSetting = false;
+    } else {
+      this.autoSeqSetting = true;
+    }
+    if (seekWindowMs > 0) {
+      this.seekWindowMs = seekWindowMs;
+      this.autoSeekSetting = false;
+    } else {
+      this.autoSeekSetting = true;
+    }
+    this.calculateSequenceParameters();
+    this.calculateOverlapLength(this.overlapMs);
+    this.tempo = this._tempo;
+  }
+  set tempo(newTempo) {
+    let intskip;
+    this._tempo = newTempo;
+    this.calculateSequenceParameters();
+    this.nominalSkip = this._tempo * (this.seekWindowLength - this.overlapLength);
+    this.skipFract = 0;
+    intskip = Math.floor(this.nominalSkip + 0.5);
+    this.sampleReq = Math.max(intskip + this.overlapLength, this.seekWindowLength) + this.seekLength;
+  }
+  get tempo() {
+    return this._tempo;
+  }
+  get inputChunkSize() {
+    return this.sampleReq;
+  }
+  get outputChunkSize() {
+    return this.overlapLength + Math.max(0, this.seekWindowLength - 2 * this.overlapLength);
+  }
+  calculateOverlapLength(overlapInMsec = 0) {
+    let newOvl;
+    newOvl = this.sampleRate * overlapInMsec / 1000;
+    newOvl = newOvl < 16 ? 16 : newOvl;
+    newOvl -= newOvl % 8;
+    this.overlapLength = newOvl;
+    this.refMidBuffer = new Float32Array(this.overlapLength * 2);
+    this.midBuffer = new Float32Array(this.overlapLength * 2);
+  }
+  checkLimits(x, mi, ma) {
+    return x < mi ? mi : x > ma ? ma : x;
+  }
+  calculateSequenceParameters() {
+    let seq;
+    let seek;
+    if (this.autoSeqSetting) {
+      seq = AUTOSEQ_C + AUTOSEQ_K * this._tempo;
+      seq = this.checkLimits(seq, AUTOSEQ_AT_MAX, AUTOSEQ_AT_MIN);
+      this.sequenceMs = Math.floor(seq + 0.5);
+    }
+    if (this.autoSeekSetting) {
+      seek = AUTOSEEK_C + AUTOSEEK_K * this._tempo;
+      seek = this.checkLimits(seek, AUTOSEEK_AT_MAX, AUTOSEEK_AT_MIN);
+      this.seekWindowMs = Math.floor(seek + 0.5);
+    }
+    this.seekWindowLength = Math.floor(this.sampleRate * this.sequenceMs / 1000);
+    this.seekLength = Math.floor(this.sampleRate * this.seekWindowMs / 1000);
+  }
+  set quickSeek(enable) {
+    this._quickSeek = enable;
+  }
+  clone() {
+    const result = new Stretch();
+    result.tempo = this._tempo;
+    result.setParameters(this.sampleRate, this.sequenceMs, this.seekWindowMs, this.overlapMs);
+    return result;
+  }
+  seekBestOverlapPosition() {
+    return this._quickSeek ? this.seekBestOverlapPositionStereoQuick() : this.seekBestOverlapPositionStereo();
+  }
+  seekBestOverlapPositionStereo() {
+    let bestOffset;
+    let bestCorrelation;
+    let correlation;
+    let i = 0;
+    this.preCalculateCorrelationReferenceStereo();
+    bestOffset = 0;
+    bestCorrelation = Number.MIN_VALUE;
+    for (; i < this.seekLength; i = i + 1) {
+      correlation = this.calculateCrossCorrelationStereo(2 * i, this.refMidBuffer);
+      if (correlation > bestCorrelation) {
+        bestCorrelation = correlation;
+        bestOffset = i;
+      }
+    }
+    return bestOffset;
+  }
+  seekBestOverlapPositionStereoQuick() {
+    let bestOffset;
+    let bestCorrelation;
+    let correlation;
+    let scanCount = 0;
+    let correlationOffset;
+    let tempOffset;
+    this.preCalculateCorrelationReferenceStereo();
+    bestCorrelation = Number.MIN_VALUE;
+    bestOffset = 0;
+    correlationOffset = 0;
+    tempOffset = 0;
+    for (; scanCount < 4; scanCount = scanCount + 1) {
+      let j = 0;
+      while (_SCAN_OFFSETS[scanCount][j]) {
+        tempOffset = correlationOffset + _SCAN_OFFSETS[scanCount][j];
+        if (tempOffset >= this.seekLength) {
+          break;
+        }
+        correlation = this.calculateCrossCorrelationStereo(2 * tempOffset, this.refMidBuffer);
+        if (correlation > bestCorrelation) {
+          bestCorrelation = correlation;
+          bestOffset = tempOffset;
+        }
+        j = j + 1;
+      }
+      correlationOffset = bestOffset;
+    }
+    return bestOffset;
+  }
+  preCalculateCorrelationReferenceStereo() {
+    let i = 0;
+    let context;
+    let temp;
+    for (; i < this.overlapLength; i = i + 1) {
+      temp = i * (this.overlapLength - i);
+      context = i * 2;
+      this.refMidBuffer[context] = this.midBuffer[context] * temp;
+      this.refMidBuffer[context + 1] = this.midBuffer[context + 1] * temp;
+    }
+  }
+  calculateCrossCorrelationStereo(mixingPosition, compare) {
+    const mixing = this._inputBuffer.vector;
+    mixingPosition += this._inputBuffer.startIndex;
+    let correlation = 0;
+    let i = 2;
+    const calcLength = 2 * this.overlapLength;
+    let mixingOffset;
+    for (; i < calcLength; i = i + 2) {
+      mixingOffset = i + mixingPosition;
+      correlation += mixing[mixingOffset] * compare[i] + mixing[mixingOffset + 1] * compare[i + 1];
+    }
+    return correlation;
+  }
+  overlap(overlapPosition) {
+    this.overlapStereo(2 * overlapPosition);
+  }
+  overlapStereo(inputPosition) {
+    const input = this._inputBuffer.vector;
+    inputPosition += this._inputBuffer.startIndex;
+    const output = this._outputBuffer.vector;
+    const outputPosition = this._outputBuffer.endIndex;
+    let i = 0;
+    let context;
+    let tempFrame;
+    const frameScale = 1 / this.overlapLength;
+    let fi;
+    let inputOffset;
+    let outputOffset;
+    for (; i < this.overlapLength; i = i + 1) {
+      tempFrame = (this.overlapLength - i) * frameScale;
+      fi = i * frameScale;
+      context = 2 * i;
+      inputOffset = context + inputPosition;
+      outputOffset = context + outputPosition;
+      output[outputOffset + 0] = input[inputOffset + 0] * fi + this.midBuffer[context + 0] * tempFrame;
+      output[outputOffset + 1] = input[inputOffset + 1] * fi + this.midBuffer[context + 1] * tempFrame;
+    }
+  }
+  process() {
+    let offset;
+    let temp;
+    let overlapSkip;
+    if (this.midBuffer === null) {
+      if (this._inputBuffer.frameCount < this.overlapLength) {
+        return;
+      }
+      this.midBuffer = new Float32Array(this.overlapLength * 2);
+      this._inputBuffer.receiveSamples(this.midBuffer, this.overlapLength);
+    }
+    while (this._inputBuffer.frameCount >= this.sampleReq) {
+      offset = this.seekBestOverlapPosition();
+      this._outputBuffer.ensureAdditionalCapacity(this.overlapLength);
+      this.overlap(Math.floor(offset));
+      this._outputBuffer.put(this.overlapLength);
+      temp = this.seekWindowLength - 2 * this.overlapLength;
+      if (temp > 0) {
+        this._outputBuffer.putBuffer(this._inputBuffer, offset + this.overlapLength, temp);
+      }
+      const start = this._inputBuffer.startIndex + 2 * (offset + this.seekWindowLength - this.overlapLength);
+      this.midBuffer.set(this._inputBuffer.vector.subarray(start, start + 2 * this.overlapLength));
+      this.skipFract += this.nominalSkip;
+      overlapSkip = Math.floor(this.skipFract);
+      this.skipFract -= overlapSkip;
+      this._inputBuffer.receive(overlapSkip);
+    }
+  }
+}
+
+const testFloatEqual = function (a, b) {
+  return (a > b ? a - b : b - a) > 1e-10;
+};
+
+class SoundTouch {
+  constructor() {
+    this.transposer = new RateTransposer(false);
+    this.stretch = new Stretch(false);
+    this._inputBuffer = new FifoSampleBuffer();
+    this._intermediateBuffer = new FifoSampleBuffer();
+    this._outputBuffer = new FifoSampleBuffer();
+    this._rate = 0;
+    this._tempo = 0;
+    this.virtualPitch = 1.0;
+    this.virtualRate = 1.0;
+    this.virtualTempo = 1.0;
+    this.calculateEffectiveRateAndTempo();
+  }
+  clear() {
+    this.transposer.clear();
+    this.stretch.clear();
+  }
+  clone() {
+    const result = new SoundTouch();
+    result.rate = this.rate;
+    result.tempo = this.tempo;
+    return result;
+  }
+  get rate() {
+    return this._rate;
+  }
+  set rate(rate) {
+    this.virtualRate = rate;
+    this.calculateEffectiveRateAndTempo();
+  }
+  set rateChange(rateChange) {
+    this._rate = 1.0 + 0.01 * rateChange;
+  }
+  get tempo() {
+    return this._tempo;
+  }
+  set tempo(tempo) {
+    this.virtualTempo = tempo;
+    this.calculateEffectiveRateAndTempo();
+  }
+  set tempoChange(tempoChange) {
+    this.tempo = 1.0 + 0.01 * tempoChange;
+  }
+  set pitch(pitch) {
+    this.virtualPitch = pitch;
+    this.calculateEffectiveRateAndTempo();
+  }
+  set pitchOctaves(pitchOctaves) {
+    this.pitch = Math.exp(0.69314718056 * pitchOctaves);
+    this.calculateEffectiveRateAndTempo();
+  }
+  set pitchSemitones(pitchSemitones) {
+    this.pitchOctaves = pitchSemitones / 12.0;
+  }
+  get inputBuffer() {
+    return this._inputBuffer;
+  }
+  get outputBuffer() {
+    return this._outputBuffer;
+  }
+  calculateEffectiveRateAndTempo() {
+    const previousTempo = this._tempo;
+    const previousRate = this._rate;
+    this._tempo = this.virtualTempo / this.virtualPitch;
+    this._rate = this.virtualRate * this.virtualPitch;
+    if (testFloatEqual(this._tempo, previousTempo)) {
+      this.stretch.tempo = this._tempo;
+    }
+    if (testFloatEqual(this._rate, previousRate)) {
+      this.transposer.rate = this._rate;
+    }
+    if (this._rate > 1.0) {
+      if (this._outputBuffer != this.transposer.outputBuffer) {
+        this.stretch.inputBuffer = this._inputBuffer;
+        this.stretch.outputBuffer = this._intermediateBuffer;
+        this.transposer.inputBuffer = this._intermediateBuffer;
+        this.transposer.outputBuffer = this._outputBuffer;
+      }
+    } else {
+      if (this._outputBuffer != this.stretch.outputBuffer) {
+        this.transposer.inputBuffer = this._inputBuffer;
+        this.transposer.outputBuffer = this._intermediateBuffer;
+        this.stretch.inputBuffer = this._intermediateBuffer;
+        this.stretch.outputBuffer = this._outputBuffer;
+      }
+    }
+  }
+  process() {
+    if (this._rate > 1.0) {
+      this.stretch.process();
+      this.transposer.process();
+    } else {
+      this.transposer.process();
+      this.stretch.process();
+    }
+  }
+}
+
+class WebAudioBufferSource {
+  constructor(buffer) {
+    this.buffer = buffer;
+    this._position = 0;
+  }
+  get dualChannel() {
+    return this.buffer.numberOfChannels > 1;
+  }
+  get position() {
+    return this._position;
+  }
+  set position(value) {
+    this._position = value;
+  }
+  extract(target, numFrames = 0, position = 0) {
+    this.position = position;
+    let left = this.buffer.getChannelData(0);
+    let right = this.dualChannel ? this.buffer.getChannelData(1) : this.buffer.getChannelData(0);
+    let i = 0;
+    for (; i < numFrames; i++) {
+      target[i * 2] = left[i + position];
+      target[i * 2 + 1] = right[i + position];
+    }
+    return Math.min(numFrames, left.length - position);
+  }
+}
+
+const getWebAudioNode = function (context, filter, sourcePositionCallback = noop, bufferSize = 4096) {
+  const node = context.createScriptProcessor(bufferSize, 2, 2);
+  const samples = new Float32Array(bufferSize * 2);
+  node.onaudioprocess = event => {
+    let left = event.outputBuffer.getChannelData(0);
+    let right = event.outputBuffer.getChannelData(1);
+    let framesExtracted = filter.extract(samples, bufferSize);
+    sourcePositionCallback(filter.sourcePosition);
+    if (framesExtracted === 0) {
+      filter.onEnd();
+    }
+    let i = 0;
+    for (; i < framesExtracted; i++) {
+      left[i] = samples[i * 2];
+      right[i] = samples[i * 2 + 1];
+    }
+  };
+  return node;
+};
+
+const pad = function (n, width, z) {
+  z = z || '0';
+  n = n + '';
+  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+};
+const minsSecs = function (secs) {
+  const mins = Math.floor(secs / 60);
+  const seconds = secs - mins * 60;
+  return `${mins}:${pad(parseInt(seconds), 2)}`;
+};
+
+const onUpdate = function (sourcePosition) {
+  const currentTimePlayed = this.timePlayed;
+  const sampleRate = this.sampleRate;
+  this.sourcePosition = sourcePosition;
+  this.timePlayed = sourcePosition / sampleRate;
+  if (currentTimePlayed !== this.timePlayed) {
+    const timePlayed = new CustomEvent('play', {
+      detail: {
+        timePlayed: this.timePlayed,
+        formattedTimePlayed: this.formattedTimePlayed,
+        percentagePlayed: this.percentagePlayed
+      }
+    });
+    this._node.dispatchEvent(timePlayed);
+  }
+};
+class PitchShifter {
+  constructor(context, buffer, bufferSize, onEnd = noop) {
+    this._soundtouch = new SoundTouch();
+    const source = new WebAudioBufferSource(buffer);
+    this.timePlayed = 0;
+    this.sourcePosition = 0;
+    this._filter = new SimpleFilter(source, this._soundtouch, onEnd);
+    this._node = getWebAudioNode(context, this._filter, sourcePostion => onUpdate.call(this, sourcePostion), bufferSize);
+    this.tempo = 1;
+    this.rate = 1;
+    this.duration = buffer.duration;
+    this.sampleRate = context.sampleRate;
+    this.listeners = [];
+  }
+  get formattedDuration() {
+    return minsSecs(this.duration);
+  }
+  get formattedTimePlayed() {
+    return minsSecs(this.timePlayed);
+  }
+  get percentagePlayed() {
+    return 100 * this._filter.sourcePosition / (this.duration * this.sampleRate);
+  }
+  set percentagePlayed(perc) {
+    this._filter.sourcePosition = parseInt(perc * this.duration * this.sampleRate);
+    this.sourcePosition = this._filter.sourcePosition;
+    this.timePlayed = this.sourcePosition / this.sampleRate;
+  }
+  get node() {
+    return this._node;
+  }
+  set pitch(pitch) {
+    this._soundtouch.pitch = pitch;
+  }
+  set pitchSemitones(semitone) {
+    this._soundtouch.pitchSemitones = semitone;
+  }
+  set rate(rate) {
+    this._soundtouch.rate = rate;
+  }
+  set tempo(tempo) {
+    this._soundtouch.tempo = tempo;
+  }
+  connect(toNode) {
+    this._node.connect(toNode);
+  }
+  disconnect() {
+    this._node.disconnect();
+  }
+  on(eventName, cb) {
+    this.listeners.push({
+      name: eventName,
+      cb: cb
+    });
+    this._node.addEventListener(eventName, event => cb(event.detail));
+  }
+  off(eventName = null) {
+    let listeners = this.listeners;
+    if (eventName) {
+      listeners = listeners.filter(e => e.name === eventName);
+    }
+    listeners.forEach(e => {
+      this._node.removeEventListener(e.name, event => e.cb(event.detail));
+    });
+  }
+}
+
+window.ST={SoundTouch,SimpleFilter,WebAudioBufferSource,getWebAudioNode};
+})();
+</script>
 <script>
 /* ======================================================================
    1. Notes & accords (moteur)
@@ -3250,8 +4079,174 @@ function liveToPack(set){
   return {app:'accords-paroles',version:2,songs,lists:[{id:'recu-'+uid(),name:set.title||('Playlist reçue '+new Date().toLocaleDateString('fr-FR')),items:(set.songs||[]).map(x=>({sid:x.id,target:x.target??null,capo:x.capo??null,notes:'',dur:''})),up:Date.now()}]};
 }
 // fichier ou texte reçu d'une autre appli (Bluetooth, Quick Share, partage Android)
+/* ---------- MP3 : lecteur avec vitesse et hauteur indépendantes (moteur SoundTouch), boucle A-B ---------- */
+const AP={ctx:null,gain:null,id:null,s:null,buf:null,peaks:null,st:null,flt:null,node:null,playing:false,pos:0,dl:null,raf:0};
+const apCfg=s=>Object.assign({sp:100,pt:0,a:null,b:null,fol:1},(s&&s.aud)||{});
+const audExt=s=>((/\.([a-z0-9]{2,4})$/i.exec(s.audio||'')||[])[1]||'mp3').toLowerCase();
+const audName=s=>'audio-'+s.id+'-'+s.audioV+'.'+audExt(s);
+// « garder hors ligne » et « tout télécharger » : réglages de cet appareil
+const audKeep=()=>{try{return JSON.parse(lsGet('audKeep')||'{}');}catch(e){return {};}};
+const audKept=id=>lsGet('audAll')==='1'||!!audKeep()[id];
+function audSetKeep(id,on){const k=audKeep(); if(on)k[id]=1; else delete k[id]; lsSet('audKeep',JSON.stringify(k));}
+function apPitch(s){const c=apCfg(s); let p=+c.pt||0; if(c.fol){try{const r=compute(s); if(r.key){let d=((r.target-r.orig)%12+12)%12; if(d>6)d-=12; p+=d;}}catch(e){}} return Math.max(-24,Math.min(24,p));}
+function apTransp(s){try{const r=compute(s); if(!r.key)return 0; let d=((r.target-r.orig)%12+12)%12; if(d>6)d-=12; return d;}catch(e){return 0;}}
+function apCtx(){if(!AP.ctx){const C=window.AudioContext||window.webkitAudioContext; AP.ctx=new C(); AP.gain=AP.ctx.createGain(); AP.gain.connect(AP.ctx.destination);} return AP.ctx;}
+async function apBlob(s,dl=true){
+  const loc=S.audioLocal||(S.audioLocal={}); let b=await Media.get(s.id);
+  if(b&&(!s.audioV||loc[s.id]===s.audioV||!Sync.ready))return b;
+  if(dl&&Sync.ready&&s.audioV){AP.dl=s.id; apUI(); toast('↓ Téléchargement du son…');
+    try{const n=audName(s), fs=await Sync.list(); if(fs.some(f=>f.name===n)){const nb=await Sync.readBin(n); if(nb&&nb.size){await Media.put(s.id,nb); loc[s.id]=s.audioV; save(); b=nb;}}}catch(e){}
+    AP.dl=null;}
+  return b||null;}
+function apPeaks(buf,n){const d=buf.getChannelData(0), step=Math.max(1,Math.floor(d.length/n)), out=new Float32Array(n); let mx=0;
+  for(let i=0;i<n;i++){let m=0; const o=i*step; for(let j=0;j<step;j+=8){const v=Math.abs(d[o+j]||0); if(v>m)m=v;} out[i]=m; if(m>mx)mx=m;}
+  if(mx)for(let i=0;i<n;i++)out[i]/=mx; return out;}
+async function apLoad(s){
+  if(AP.id===s.id&&AP.buf){AP.s=s; return true;}
+  apStop();
+  const b=await apBlob(s); if(!b){toast(Sync.ready?'Son introuvable dans le cloud pour l’instant':'Ce son n’est pas encore sur cet appareil (synchro)'); apUI(); return false;}
+  apCtx(); let buf=null; try{const ab=await b.arrayBuffer(); buf=await new Promise((ok,ko)=>AP.ctx.decodeAudioData(ab,ok,ko));}catch(e){}
+  if(!buf){toast('Fichier son illisible'); return false;}
+  AP.id=s.id; AP.s=s; AP.buf=buf; AP.pos=0; AP.peaks=apPeaks(buf,600); return true;}
+function apBuild(){const sr=AP.buf.sampleRate;
+  AP.st=new ST.SoundTouch(); AP.flt=new ST.SimpleFilter(new ST.WebAudioBufferSource(AP.buf),AP.st,()=>apEnd());
+  AP.node=ST.getWebAudioNode(AP.ctx,AP.flt,p=>{AP.pos=p/sr; const c=apCfg(AP.s); if(c.a!=null&&c.b!=null&&AP.pos>=c.b)apSeek(c.a);},4096);
+  apParams();}
+function apParams(){if(!AP.st||!AP.s)return; const c=apCfg(AP.s); AP.st.tempo=Math.max(.3,Math.min(2,(+c.sp||100)/100)); AP.st.pitchSemitones=apPitch(AP.s);}
+function apEnd(){const c=apCfg(AP.s); if(c.a!=null&&c.b!=null){apSeek(c.a); return;} if(!AP.playing)return; AP.playing=false; try{AP.node.disconnect();}catch(e){} AP.pos=0; if(AP.flt)AP.flt.sourcePosition=0; setTimeout(apUI,0);}
+async function apPlay(s){if(!await apLoad(s))return; try{await AP.ctx.resume();}catch(e){} if(!AP.node)apBuild(); else apParams();
+  const c=apCfg(s); if(c.a!=null&&c.b!=null&&(AP.pos<c.a||AP.pos>=c.b))AP.pos=c.a;
+  if(AP.pos>=AP.buf.duration-0.05)AP.pos=0;
+  AP.flt.sourcePosition=Math.floor(AP.pos*AP.buf.sampleRate); AP.node.connect(AP.gain); AP.playing=true; apTick(); apUI();}
+function apPause(){if(AP.node)try{AP.node.disconnect();}catch(e){} AP.playing=false; apUI();}
+function apToggle(s){if(AP.playing&&AP.id===s.id)apPause(); else apPlay(s);}
+function apStop(){apPause(); AP.node=AP.flt=AP.st=null; AP.buf=null; AP.peaks=null; AP.id=null; AP.pos=0;}
+function apSeek(t){if(!AP.buf)return; t=Math.max(0,Math.min(AP.buf.duration-0.01,t)); AP.pos=t; if(AP.flt)AP.flt.sourcePosition=Math.floor(t*AP.buf.sampleRate);}
+function apTick(){cancelAnimationFrame(AP.raf); const f=()=>{apDraw(); if(AP.playing)AP.raf=requestAnimationFrame(f);}; AP.raf=requestAnimationFrame(f);}
+function apSet(s,k,v){s.aud=Object.assign(apCfg(s),{[k]:v}); touch(s); save(); if(AP.id===s.id)apParams(); apUI();}
+// ---- dessin de la forme d'onde (grand lecteur + mini en scène)
+function apWave(cv,s,opt){if(!cv)return; const dpr=devicePixelRatio||1, w=cv.clientWidth, h=cv.clientHeight; if(!w||!h)return;
+  if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr);}
+  const g=cv.getContext('2d'); g.setTransform(dpr,0,0,dpr,0,0); g.clearRect(0,0,w,h);
+  const cs=getComputedStyle(document.documentElement), acc=(cs.getPropertyValue('--acc')||'#e8a160').trim()||'#e8a160', mu=opt&&opt.mu||'rgba(140,128,118,.55)';
+  const on=AP.id===s.id&&AP.peaks, dur=on?AP.buf.duration:1, c=apCfg(s), bw=opt&&opt.bw||3, gap=opt&&opt.gap||2, n=Math.floor(w/(bw+gap));
+  const pk=on?AP.peaks:null, pos=on?AP.pos/dur:0;
+  if(on&&c.a!=null){const xa=c.a/dur*w, xb=(c.b!=null?c.b:AP.pos)/dur*w; g.fillStyle='rgba(232,161,96,.16)'; g.fillRect(xa,0,Math.max(2,xb-xa),h); g.fillStyle=acc; g.fillRect(xa-1,0,3,h); if(c.b!=null)g.fillRect(xb-1,0,3,h);}
+  for(let i=0;i<n;i++){const v=pk?pk[Math.floor(i/n*pk.length)]:(.25+.2*Math.abs(Math.sin(i*.7))), bh=Math.max(2,v*h*.9), x=i*(bw+gap);
+    g.fillStyle=on&&x/w<=pos?acc:mu; g.fillRect(x,(h-bh)/2,bw,bh);}
+  if(on){g.fillStyle=opt&&opt.head||'#fff'; g.fillRect(pos*w-1,0,2,h);}}
+function apDraw(){const s=AP.s; if(!s)return;
+  if(!$('#apSheet')?.hidden&&APS.s===s){apWave($('#apWave'),s); $('#apPos').textContent=fmtT(AP.pos);}
+  const m=$('#apMini'); if(m&&!m.hidden&&m.dataset.id===s.id)apWave($('#apMiniW'),s,{bw:2,gap:2});}
+// ---- grand lecteur
+const APS={s:null};
+function apSheetBuild(){if($('#apSheet'))return;
+  const d=document.createElement('div'); d.id='apSheet'; d.hidden=true; d.innerHTML=`<div class="aps">
+  <div class="aph"><button data-ap="x" aria-label="Fermer">⌄</button><div class="apt"><b id="apT"></b><small id="apC"></small></div></div>
+  <div class="apw"><canvas id="apWave"></canvas></div>
+  <div class="aptimes"><span id="apPos">0:00</span><span id="apLoop"></span><span id="apDur"></span></div>
+  <div class="apctl"><button data-ap="A" class="apab" title="Début de boucle (toucher encore pour l’enlever)">A</button><button data-ap="rw">⏪ 5 s</button><button data-ap="pp" class="appp">▶</button><button data-ap="ff">5 s ⏩</button><button data-ap="B" class="apab" title="Fin de boucle">B</button></div>
+  <div class="apsl"><div class="aplab"><b>VITESSE</b><span id="apSpV"></span></div><div class="aprow"><button data-ap="sp-">−</button><input type="range" id="apSp" min="50" max="150" step="1"><button data-ap="sp+">+</button></div><div class="appre" id="apSpP"></div><small class="apnote">la hauteur ne bouge pas</small></div>
+  <div class="apsl"><div class="aplab"><b>HAUTEUR</b><span id="apPtV"></span></div><div class="aprow"><button data-ap="pt-">−</button><input type="range" id="apPt" min="-12" max="12" step="1"><button data-ap="pt+">+</button></div><div class="appre" id="apPtP"></div>
+    <label class="apfol"><input type="checkbox" id="apFol"><span>suit la transposition du morceau <i id="apFolV"></i></span></label></div>
+  <div class="apfoot"><button data-ap="keep" id="apKeep"></button><button data-ap="repl">↻ Remplacer le MP3</button><button data-ap="del">✕ Retirer le son</button></div></div>`;
+  document.body.appendChild(d);
+  d.addEventListener('click',async e=>{if(e.target===d){apClose(); return;} const b=e.target.closest('[data-ap]'); if(!b)return; const s=APS.s; if(!s)return; const k=b.dataset.ap, c=apCfg(s);
+    if(k==='x')return apClose();
+    if(k==='pp')return apToggle(s);
+    if(k==='rw'||k==='ff'){if(await apLoad(s)){apSeek(AP.pos+(k==='ff'?5:-5)); apUI();} return;}
+    if(k==='A'){if(c.a!=null){s.aud=Object.assign(c,{a:null,b:null}); touch(s); save(); apUI(); return;} if(!await apLoad(s))return; apSet(s,'a',AP.pos); return;}
+    if(k==='B'){if(c.b!=null){apSet(s,'b',null); return;} if(!await apLoad(s))return; if(c.a==null||AP.pos<=c.a+.2){toast('Pose d’abord A, puis avance un peu'); return;} apSet(s,'b',AP.pos); return;}
+    if(k==='sp-'||k==='sp+')return apSet(s,'sp',Math.max(50,Math.min(150,(+c.sp||100)+(k==='sp+'?5:-5))));
+    if(k==='pt-'||k==='pt+')return apSet(s,'pt',Math.max(-12,Math.min(12,(+c.pt||0)+(k==='pt+'?1:-1))));
+    if(b.dataset.sp)return apSet(s,'sp',+b.dataset.sp);
+    if(b.dataset.pt!=null&&k==='ptv')return apSet(s,'pt',+b.dataset.pt);
+    if(k==='keep'){const on=!audKept(s.id); audSetKeep(s.id,on); if(on){const bb=await apBlob(s); toast(bb?'✓ Gardé sur cet appareil':'Pas encore disponible');} else toast('Se téléchargera au besoin'); apUI(); return;}
+    if(k==='repl'){apPick(f=>apAttach(s,f)); return;}
+    if(k==='del'){if(!await confirmBox('Retirer le son de « '+(split(s.q).titre||s.q)+' » ?',{ok:'Retirer',danger:1}))return; if(AP.id===s.id)apStop(); Media.del(s.id); s.audio=''; delete s.audioV; delete s.aud; if(S.audioLocal)delete S.audioLocal[s.id]; touch(s); save(); renderAll(); apClose(); toast('Son retiré'); return;}
+  });
+  $('#apSp').oninput=e=>{const s=APS.s; if(s)apSet(s,'sp',+e.target.value);};
+  $('#apPt').oninput=e=>{const s=APS.s; if(s)apSet(s,'pt',+e.target.value);};
+  $('#apFol').onchange=e=>{const s=APS.s; if(s)apSet(s,'fol',e.target.checked?1:0);};
+  // forme d'onde : toucher / glisser = se déplacer ; appui long = poser A puis B
+  const cv=$('#apWave'); let lp=0, moved=false, sx=0;
+  const at=e=>{const r=cv.getBoundingClientRect(); return Math.max(0,Math.min(1,(e.clientX-r.left)/r.width));};
+  cv.addEventListener('pointerdown',async e=>{const s=APS.s; if(!s||!await apLoad(s))return; cv.setPointerCapture(e.pointerId); moved=false; sx=e.clientX; const x=at(e);
+    lp=setTimeout(()=>{lp=0; const c=apCfg(s), t=x*AP.buf.duration; if(c.a==null||c.b!=null){s.aud=Object.assign(c,{a:t,b:null}); touch(s); save(); toast('A posé : appui long plus loin pour B');} else if(t>c.a+.2){apSet(s,'b',t); toast('Boucle A-B');} apUI(); try{navigator.vibrate&&navigator.vibrate(15);}catch(_){}} ,500);});
+  cv.addEventListener('pointermove',e=>{if(!AP.buf||!e.buttons&&e.pointerType==='mouse')return; if(Math.abs(e.clientX-sx)>6){moved=true; if(lp){clearTimeout(lp); lp=0;}} if(moved&&cv.hasPointerCapture(e.pointerId)){apSeek(at(e)*AP.buf.duration); apDraw();}});
+  cv.addEventListener('pointerup',e=>{if(lp){clearTimeout(lp); lp=0; if(AP.buf){apSeek(at(e)*AP.buf.duration); apUI();}}});
+  addEventListener('resize',()=>{if(!$('#apSheet').hidden)apDraw();});}
+function apClose(){$('#apSheet').hidden=true; document.body.classList.remove('ap-on');}
+async function apOpen(s){if(!s||!s.audio)return; apSheetBuild(); APS.s=s; $('#apSheet').hidden=false; document.body.classList.add('ap-on'); apUI(); if(await apLoad(s))apUI();}
+function apUI(){
+  const sh=$('#apSheet'), s=APS.s;
+  if(sh&&!sh.hidden&&s){const c=apCfg(s), on=AP.id===s.id&&AP.buf, sp=split(s.q);
+    $('#apT').textContent=sp.titre||s.q;
+    const st=AP.dl===s.id?'↓ téléchargement…':Sync.ready?(audKept(s.id)?'☁ sur le cloud · ✓ gardé sur cet appareil':'☁ sur le cloud'):'sur cet appareil';
+    $('#apC').textContent=(s.audio||'')+' · '+st;
+    $('#apDur').textContent=on?fmtT(AP.buf.duration):''; $('#apPos').textContent=fmtT(on?AP.pos:0);
+    $('#apLoop').textContent=c.a!=null?('boucle '+fmtT(c.a)+' → '+(c.b!=null?fmtT(c.b):'…')):'appui long sur l’onde : boucle A-B';
+    $$('#apSheet .apab').forEach(b=>b.classList.toggle('on',b.dataset.ap==='A'?c.a!=null:c.b!=null));
+    $('#apSheet .appp').textContent=AP.playing&&AP.id===s.id?'❚❚':'▶';
+    $('#apSp').value=c.sp; $('#apSpV').textContent=c.sp+' %';
+    $('#apSpP').innerHTML=[70,80,90,100,110].map(v=>`<button data-ap="spv" data-sp="${v}" aria-pressed="${+c.sp===v}">${v}</button>`).join('');
+    $('#apPt').value=c.pt; const tp=apTransp(s), tot=apPitch(s);
+    $('#apPtV').textContent=(c.pt>0?'+':'')+c.pt+' ½t'+(c.fol&&tp?' ('+(tot>0?'+':'')+tot+' en tout)':'');
+    $('#apPtP').innerHTML=[-2,-1,0,1,2].map(v=>`<button data-ap="ptv" data-pt="${v}" aria-pressed="${+c.pt===v}">${v>0?'+'+v:v===0?'0':'−'+(-v)}</button>`).join('');
+    $('#apFol').checked=!!c.fol; try{const r=compute(s); $('#apFolV').textContent=r.key&&tp?'('+keyName(r.orig,r.key.minor)+' → '+keyName(r.target,r.key.minor)+')':'(non transposé)';}catch(e){}
+    $('#apKeep').textContent=(audKept(s.id)?'✓ ':'')+'Garder hors ligne'; $('#apKeep').hidden=!Sync.ready;
+    apWave($('#apWave'),s);}
+  apMiniUI();}
+// ---- mini-lecteur en scène
+function apMiniUI(){const m=$('#apMini'); if(!m||m.hidden)return; const s=songById(m.dataset.id); if(!s){m.hidden=true; return;} const c=apCfg(s), tp=apPitch(s);
+  m.querySelector('[data-am=pp]').textContent=AP.playing&&AP.id===s.id?'❚❚':'▶';
+  $('#apMiniL').textContent=c.sp+' % · '+(tp>0?'+':'')+tp+(c.a!=null&&c.b!=null?' · 🔁':'');
+  apWave($('#apMiniW'),s,{bw:2,gap:2});}
+function apMiniShow(s,show){const m=$('#apMini'); if(!m)return; if(!s||!s.audio){m.hidden=true; return;} m.dataset.id=s.id; m.hidden=!show; if(show){apMiniUI(); apLoad(s).then(ok=>ok&&apMiniUI());}}
+// ---- choisir un fichier, attacher, importer
+function apPick(cb){let i=$('#apFile'); if(!i){i=document.createElement('input'); i.type='file'; i.id='apFile'; i.accept='audio/*,.mp3,.m4a,.wav,.ogg,.aac,.flac'; i.hidden=true; document.body.appendChild(i);}
+  i.onchange=()=>{const f=i.files[0]; i.value=''; if(f)cb(f);}; i.click();}
+async function apAttach(s,f,name){const n=name||f.name||'son.mp3'; await Media.put(s.id,f); if(AP.id===s.id)apStop();
+  s.audio=n; s.audioV=uid().slice(0,8); (S.audioLocal||(S.audioLocal={}))[s.id]=s.audioV; s.aud=Object.assign(apCfg(s),{a:null,b:null}); audSetKeep(s.id,true);
+  touch(s); save(); renderAll(); if(FICHE===s.id)try{ficheDraw(s);}catch(e){} toast('🎵 Son enregistré'+(Sync.ready?' (envoi au cloud à la prochaine synchro)':'')); return s;}
+const apTitle=n=>String(n||'Son').replace(/\.[a-z0-9]{2,4}$/i,'').replace(/[_]+/g,' ').replace(/\s*\(\d+\)$/,'').trim()||'Son';
+function newSongObj(q){return {id:uid(),q,text:'',target:null,capo:null,view:'grille',open:false,notes:'',tempo:'',dur:'',tabs:[],up:Date.now(),added:Date.now()};}
+function mp3Import(f,name,from){const nm=name||f.name||'son.mp3', title=apTitle(nm);
+  let el=$('#apImp'); if(!el){el=document.createElement('div'); el.id='apImp'; document.body.appendChild(el);}
+  const nz=x=>String(x||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''), tz=nz(title);
+  const list=q=>{q=nz(q); const sc=s=>{const n=nz(split(s.q).titre||s.q); return n&&(tz.includes(n)||n.includes(tz))?1:0;}; return S.songs.filter(s=>!q||nz(s.q).includes(q)).sort((a,b)=>sc(b)-sc(a)||(b.up||0)-(a.up||0)).slice(0,40);};
+  const draw=q=>{$('#apImpL').innerHTML=list(q).map(s=>`<button data-att="${s.id}"><b>${esc(split(s.q).titre||s.q)}</b><small>${s.audio?'🎵 déjà un son':'sans son'} ›</small></button>`).join('')||'<p class="lab">Aucun morceau</p>';};
+  el.innerHTML=`<div class="aps"><div class="aph"><span class="apico">♫</span><div class="apt"><b>${esc(title)}</b><small>${esc(nm)} · ${(f.size/1048576).toFixed(1).replace('.',',')} Mo${from?' · reçu de '+esc(from):''}</small></div></div>
+    <button class="pri apnew" data-imp="new">＋ Nouveau morceau « ${esc(title)} »</button>
+    <div class="aplab" style="margin-top:14px"><b>OU L’ATTACHER À UN MORCEAU</b></div>
+    <input type="search" id="apImpQ" placeholder="🔍 Chercher un morceau" autocomplete="off">
+    <div id="apImpL"></div><button data-imp="x" class="apcancel">Annuler</button></div>`;
+  el.hidden=false; draw(''); $('#apImpQ').oninput=e=>draw(e.target.value);
+  el.onclick=async e=>{if(e.target===el){el.hidden=true; return;} const b=e.target.closest('button'); if(!b)return;
+    if(b.dataset.imp==='x'){el.hidden=true; return;}
+    let s=null;
+    if(b.dataset.imp==='new'){s=newSongObj(title); S.songs.unshift(s);}
+    else if(b.dataset.att){s=songById(b.dataset.att); if(s&&s.audio&&!await confirmBox('« '+(split(s.q).titre||s.q)+' » a déjà un son. Le remplacer ?',{ok:'Remplacer'}))return;}
+    if(!s)return; el.hidden=true; await apAttach(s,f,nm); try{showTab('lib');}catch(_){} apOpen(s);};}
+// partage Android : un fichier son reçu d'une autre appli (Suno, Fichiers, WhatsApp…)
+window.receiveSharedAudio=function(o){try{const b64=window.Android.takeSharedAudio(); if(!b64){toast('Son vide'); return;} const mime=o&&o.mime||mimeOf(o&&o.name||'x.mp3'); mp3Import(b64Blob(b64,mime),(o&&o.name)||'son.mp3',o&&o.from);}catch(e){toast('Son illisible');}};
+// lien Suno : l'appli Android va chercher le MP3 elle-même
+async function sunoFetch(txt){const m=/https?:\/\/[^\s]*suno\.(?:com|ai)[^\s]*/i.exec(txt); if(!m)return false;
+  if(!APP){toast('Sur iPhone : télécharge le MP3 depuis Suno, puis ＋ Nouveau › MP3'); return true;}
+  toast('🎵 Lien Suno : récupération du son…');
+  try{let url=m[0], id=(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i.exec(url)||[])[0], title='';
+    const pg=await httpBin('GET',url,{'User-Agent':'Mozilla/5.0'},'',false);
+    if(pg&&pg.status<400&&pg.body){const h=pg.body; if(!id)id=(/cdn\d?\.suno\.ai\/([0-9a-f-]{36})\.mp3/i.exec(h)||/song\/([0-9a-f-]{36})/i.exec(h)||[])[1]; const t=/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/i.exec(h); if(t)title=t[1].replace(/&#x27;|&#39;/g,'’').replace(/&amp;/g,'&').replace(/\s*\|\s*Suno.*$/i,'');}
+    if(!id)throw 0;
+    const r=await httpBin('GET','https://cdn1.suno.ai/'+id+'.mp3',{'User-Agent':'Mozilla/5.0'},'',true);
+    if(!r||r.status!==200||!r.body)throw 0;
+    mp3Import(b64Blob(r.body,'audio/mpeg'),(title||'Suno '+id.slice(0,8))+'.mp3','Suno');}
+  catch(e){toast('Suno n’a pas donné le son : dans Suno, Télécharger › MP3, puis Partager › Accords');}
+  return true;}
+
 window.receiveShared=function(o){
   const t=String(o&&o.text||'').trim(); if(!t){toast('Fichier vide.');return;}
+  if(/suno\.(com|ai)\//i.test(t)&&t.split('\n').length<=3){sunoFetch(t); return;}
   if(t[0]==='{'||t[0]==='['){importData(t,{ask:false}); return;}
   if(/#pack=/.test(t)){importLink(t); return;}
   if(/^ACC[1-9zY]/.test(t)){qrPayload(t); return;}
@@ -3501,7 +4496,7 @@ function buildCard(song){
   q('.simp').onclick=()=>{song.simple=!song.simple; touch(song); save(); update(song); toast(song.simple?'Accords simplifiés (affichage seulement)':'Accords d\'origine');};
   q('.capoAuto').onclick=()=>{const r=song._r; if(!r||!r.key)return; const c=bestCapo(r); if(song.target==null)song.target=r.target; song.capo=c; touch(song); save(); update(song); toast(c?'Capo '+c+' → formes de '+keyName(((r.target-c)%12+12)%12,r.key.minor):'Sans capo');};
   q('.audioPick').onclick=()=>q('.audioFile').click();
-  q('.audioFile').onchange=e=>{const f=e.target.files[0]; if(f){Media.put(song.id,f).then(()=>{song.audio=f.name; song.audioV=uid().slice(0,8); (S.audioLocal||(S.audioLocal={}))[song.id]=song.audioV; touch(song); save(); update(song); toast('Bande son enregistrée');});} e.target.value='';};
+  q('.audioFile').onchange=e=>{const f=e.target.files[0]; if(f)apAttach(song,f).then(()=>update(song)); e.target.value='';};
   q('.audioDel').onclick=()=>{Media.del(song.id); song.audio=''; delete song.audioV; if(S.audioLocal)delete S.audioLocal[song.id]; touch(song); save(); update(song);};
   q('.mup').onclick=()=>moveSong(song,-1); q('.mdn').onclick=()=>moveSong(song,1);
   d.querySelectorAll('.seg [data-v]').forEach(b=>b.onclick=()=>{song.view=b.dataset.v; save(); update(song);});
@@ -3638,7 +4633,7 @@ function renderLibTable(box,list){
 }
 let LIBPICK=null, LIBOPEN=null;
 // aperçu déplié : « à travailler » et « partager » d'un geste, quelle que soit la vue
-$('#songs').addEventListener('click',e=>{const w=e.target.closest('[data-work]'), sh=e.target.closest('[data-shr]'); if(!w&&!sh)return; e.stopPropagation(); e.preventDefault();
+$('#songs').addEventListener('click',e=>{const au=e.target.closest('[data-aud]'); if(au){e.stopPropagation(); e.preventDefault(); apOpen(songById(au.dataset.aud)); return;} const w=e.target.closest('[data-work]'), sh=e.target.closest('[data-shr]'); if(!w&&!sh)return; e.stopPropagation(); e.preventDefault();
   if(sh){openShareSel({songs:[sh.dataset.shr]}); return;}
   const s=songById(w.dataset.work); if(!s)return; const on=!tagsOf(s).includes(WORK); setTag(s,WORK,on); touch(s); save(); renderAll(); toast(on?'🎯 Ajouté à « à travailler »':'Retiré de « à travailler »');},true);
 // feuilleter : passer au morceau suivant / précédent sans refermer l'aperçu
@@ -3710,7 +4705,7 @@ function libPrevInner(s){const r=s._r||compute(s);
   return `<div class="lpw"><div class="lpv"><pre>${body}</pre></div><div class="lpr">${nn>1&&ix>=0?`<div class="lpnav"><button data-nav="-1" aria-label="Morceau précédent"${ix?'':' disabled'}>‹</button><span>${ix+1} / ${nn}</span><button data-nav="1" aria-label="Morceau suivant"${ix<nn-1?'':' disabled'}>›</button><small>← → ou balayer</small></div>`:''}
     <div class="lpq">${r.key?`<button class="lcell lk" data-pk="${s.id}" title="Tonalité">${esc(keyName(r.target,r.key.minor))} ▾</button>`:''}<button class="lcell lc${+s.capoInfo?'':' none'}" data-pc="${s.id}">Capo ${+s.capoInfo||0} ▾</button>${tagsOf(s).map(t=>`<span class="tpill${t===WORK?' work':''}" data-pt="${s.id}">${esc(t)}</span>`).join('')}<button class="lcell lt" data-pt="${s.id}" aria-label="Étiquettes">＋</button>${mk?`<button class="spmu" data-sp="${s.id}" style="color:${MU[mk].c}" title="Écouter sur ${MU[mk].n}">♫ ${MU[mk].n}</button>`:''}</div>
     <div class="lpm">${tmp?`<span>${tmp}</span>`:''}${s.note?`<span>📝 ${esc(String(s.note).slice(0,60))}</span>`:''}</div>
-    <div class="lpb"><button class="pri" data-scene="${s.id}">▶ Scène</button><button data-ed="${s.id}">✎ Éditer</button><button data-work="${s.id}" aria-pressed="${tagsOf(s).includes(WORK)}">${tagsOf(s).includes(WORK)?'✓ À travailler':'🎯 À travailler'}</button><button data-shr="${s.id}">⇪ Partager</button><button data-eye="${s.id}" title="Tout : structure, liens, mémos, playlists…">👁 Détails</button></div></div></div>`;}
+    <div class="lpb"><button class="pri" data-scene="${s.id}">▶ Scène</button><button data-ed="${s.id}">✎ Éditer</button><button data-work="${s.id}" aria-pressed="${tagsOf(s).includes(WORK)}">${tagsOf(s).includes(WORK)?'✓ À travailler':'🎯 À travailler'}</button><button data-shr="${s.id}">⇪ Partager</button>${s.audio?`<button data-aud="${s.id}">🎵 Son</button>`:''}<button data-eye="${s.id}" title="Tout : structure, liens, mémos, playlists…">👁 Détails</button></div></div></div>`;}
 function libPrevRow(s,n){const tr=document.createElement('tr'); tr.className='lprev'; tr.dataset.id=s.id; tr.innerHTML=`<td colspan="${n}">${libPrevInner(s)}</td>`; return tr;}
 // bulles : ton, capo, étiquettes, réglés sur place
 function lpClose(){const p=$('#lpop'); if(p)p.remove();}
@@ -4736,11 +5731,12 @@ function ficheDraw(s){
     ${F.capo?`<button class="fmcap${+s.capoInfo?' on':''}" data-pc="${s.id}">Capo ${+s.capoInfo||0} ▾</button>`:''}
     ${F.tags?`<span class="fmtags">${tagsOf(s).map(t=>`<span class="ftag${t===WORK?' work':''}">${esc(t)}<button data-untag="${esc(t)}" aria-label="Retirer">✕</button></span>`).join('')}<button class="fmadd" data-pt="${s.id}" aria-label="Étiquettes">＋</button></span>`:''}
     <span class="fmr">${mu.length&&F.mu?`<button class="fmmu" data-mu="${mu[0]}" style="--c:${MU[mu[0]].c};--f:${MU[mu[0]].f}">▶ ${MU[mu[0]].n}</button>`:''}
-    ${F.ed?'<button class="fmed" data-fed="1" aria-label="Éditer" title="Éditer">✎</button>':''}<button class="pri fmsc" data-fsc="1">▶ Scène</button>
+    ${s.audio?'<button class="fmed fmaud" data-fau="1" aria-label="Écouter le son" title="Lecteur : vitesse, hauteur, boucle">🎵</button>':''}${F.ed?'<button class="fmed" data-fed="1" aria-label="Éditer" title="Éditer">✎</button>':''}<button class="pri fmsc" data-fsc="1">▶ Scène</button>
     <button class="fmplus" data-fplus="1">${plus?'Moins ▴':'Plus ▾'}</button><button class="fmx" data-fset="1" aria-label="Choisir ce qui s’affiche" title="Choisir ce qui s’affiche">⚙</button><button class="fmx" data-fmore="1" aria-label="Plus d’actions">⋯</button></span><button class="fmx fmclose" data-fclose="1" aria-label="Fermer">✕</button></div>`;
   $('#fCard').innerHTML=mini+`<div class="fplusbox"${plus?'':' hidden'}>`+(F.sum?prev:'')+`<div class="fq">
     ${r.key&&!$('#fiche').classList.contains('mini')&&false?`<div class="fqr"><span>Tonalité</span><button data-k="-1">−½</button><b class="fkey">${esc(keyName(r.target,r.key.minor))}</b><button data-k="1">+½</button><small class="lab">${d?'origine '+esc(keyName(r.orig,r.key.minor)):'origine'}</small>${d?'<button data-k="0" class="sm">Origine</button>':''}</div>`:''}
     ${F.listen?'':'<!--'}<div class="fqr"><span>Écouter</span>${muLinks(s).map(k=>`<button class="fmu" data-mu="${k}" style="--c:${MU[k].c};--f:${MU[k].f}">▶ ${MU[k].n}</button>`).join('')}<button class="sm" data-muadd="1">${muLinks(s).length?'Liens…':'+ Lien'}</button></div>${F.listen?'':'-->'}
+    <div class="fqr"><span>Son</span>${s.audio?'<button class="sm" data-fau="1">🎵 '+esc(s.audio)+' · lecteur</button>':''}<button class="sm" data-fimp="1">${s.audio?'Remplacer':'🎵 Importer un MP3'}</button></div>
     ${F.memo?'':'<!--'}<div class="fqr"><span>Mémos</span><button class="sm" data-memo="1">🎙 ${(s.memos||[]).length?(s.memos.length+' mémo'+(s.memos.length>1?'s':'')+' · écouter / ajouter'):'Enregistrer une idée'}</button></div>${F.memo?'':'-->'}
     ${(()=>{const h=histOf(s.id); if(!h.length||!F.hist)return ''; const last=h[h.length-1]; return `<div class="fqr"><span>Joué</span><span class="ficheinfo">${h.length} fois · dernière fois le ${fmtDay(last.d)}${last.ln?' ('+esc(last.ln)+(last.pl?', '+esc(last.pl):'')+')':''}</span></div>`;})()}
     ${F.pl?'':'<!--'}<div class="fqr"><span>Playlists</span>${lists.map(l=>`<button class="ftag" data-open="${l.id}">${esc(l.name)}</button>`).join('')}<button data-addl="1" class="sm">+ Ajouter</button></div>${F.pl?'':'-->'}
@@ -4768,6 +5764,8 @@ $('#fCard').onclick=async e=>{const s=songById(FICHE); if(!s)return; const b=e.t
   if(b.dataset.tag){$('#dlTypes').innerHTML=allTags().map(t=>`<option value="${esc(t)}">`).join(''); const v=await ask('Ajouter une étiquette','à travailler, reprise…','dlTypes'); if(v&&v.trim()){setTag(s,v.trim(),true); touch(s); save(); ficheDraw(s); renderLibLight();} return;}
   if(b.dataset.addl){await addSongsToList([s.id]); ficheDraw(s); return;}
   if(b.dataset.memo){openMemos(s); return;}
+  if(b.dataset.fau){apOpen(s); return;}
+  if(b.dataset.fimp){apPick(f=>apAttach(s,f).then(()=>apOpen(s))); return;}
   if(b.dataset.mu){muPlay(s,b.dataset.mu); return;}
   if(b.dataset.muadd){muBox(s); return;}
   if(b.dataset.spl){spListen(s.id); return;}
@@ -5197,7 +6195,7 @@ function vRender(){try{if(typeof ryUpdate==='function')setTimeout(ryUpdate,0); i
   $('.vkeys').style.visibility=e._r.key?'visible':'hidden';
   $('#vtempo').textContent=e.s.tempo?' '+e.s.tempo:'';
   if(V.metro&&V.metro.tempo!==(+e.s.tempo||0)){metroStop(); if(e.s.tempo)metroStart(same);}
-  $('#vaudio').hidden=!e.s.audio;
+  $('#vaudio').hidden=!e.s.audio; {const m=$('#apMini'); if(!e.s.audio){if(!m.hidden){m.hidden=true;} } else if(!m.hidden&&m.dataset.id!==e.s.id){if(AP.playing)apPause(); apMiniShow(e.s,true);} $('#vaudio').setAttribute('aria-pressed',!m.hidden);}
   if(!same){audioStop(); stopScroll();}
   vDispUI();
   st.classList.toggle('edit',!!V.edit); $('#vedbar').hidden=!V.edit; $('#vedit').setAttribute('aria-pressed',!!V.edit); closeInline();
@@ -5280,9 +6278,12 @@ function tapTempo(){ // tempo inconnu : on tape 4 fois sur ♩
 }
 $('#vmetro').onclick=()=>V.metro?metroStop():metroStart();
 // bande son
-async function audioPlay(){const e=V.list[V.i], a=$('#player'); if(a.src&&!a.paused){a.pause(); $('#vaudio').textContent='▶'; return;} if(a.dataset.id!==e.s.id){const b=await Media.get(e.s.id); if(!b){toast('Bande son introuvable');return;} if(a.src)URL.revokeObjectURL(a.src); a.src=URL.createObjectURL(b); a.dataset.id=e.s.id;} a.play(); $('#vaudio').textContent='⏸';}
-function audioStop(){const a=$('#player'); if(a.src){a.pause(); a.currentTime=0;} $('#vaudio').textContent='▶';}
-$('#vaudio').onclick=audioPlay; $('#player').onended=()=>$('#vaudio').textContent='▶';
+function audioPlay(){const e=V.list[V.i]; if(!e||!e.s.audio)return; const m=$('#apMini'), show=m.hidden||m.dataset.id!==e.s.id; apMiniShow(e.s,show); $('#vaudio').setAttribute('aria-pressed',show);}
+function audioStop(){if(AP.playing)apPause();}
+$('#vaudio').onclick=audioPlay;
+$('#apMini').onclick=e=>{const b=e.target.closest('[data-am]'); const s=songById($('#apMini').dataset.id); if(!b||!s)return; const k=b.dataset.am;
+  if(k==='pp')apToggle(s); else if(k==='open')apOpen(s); else if(k==='x'){apPause(); $('#apMini').hidden=true; $('#vaudio').setAttribute('aria-pressed','false');}};
+$('#apMiniW').addEventListener('pointerdown',async e=>{const s=songById($('#apMini').dataset.id); if(!s||!await apLoad(s))return; const r=e.currentTarget.getBoundingClientRect(); apSeek((e.clientX-r.left)/r.width*AP.buf.duration); apMiniUI();});
 // répétition : enchaîne les morceaux selon leur durée
 $('#vedit').onclick=()=>{const e=V.list[V.i]; if(e&&!FOLLOW){stopScroll(); openEditor(e.s,e);}};
 $('#vedDone').onclick=()=>{V.edit=false; vRender();};
@@ -6059,6 +7060,7 @@ function newSong(extra){const t=$('#newTitle').value.trim()||'Nouveau morceau';
 async function blankPage(){const cv=document.createElement('canvas'); cv.width=1240; cv.height=1754; const cx=cv.getContext('2d'); cx.fillStyle='#fff'; cx.fillRect(0,0,cv.width,cv.height);
   const blob=await new Promise(ok=>cv.toBlob(ok,'image/jpeg',.9)), pid=uid(); await Media.put('pg:'+pid,blob); PGURL.set(pid,URL.createObjectURL(blob)); return {pid,w:1240,h:1754,ann:[]};}
 $$('#newBox [data-new]').forEach(b=>b.onclick=async()=>{const k=b.dataset.new;
+  if(k==='mp3'){modal('#newBox',false); apPick(f=>mp3Import(f)); return;}
   if(k==='ug'||k==='paste'){
     const t=$('#newTitle').value.trim();
     if(k==='ug'&&!t){toast('Tape d\'abord « Artiste - Titre »'); $('#newTitle').focus(); return;}
@@ -9276,6 +10278,7 @@ Object.assign(Sync,{
       step();
       const has=await Media.get(w.key), fresh=!w.audio||loc[w.s.id]===w.s.audioV;
       if(has&&fresh&&!names.has(n)){try{await this.writeBin(n,has); up++;}catch(e){} continue;}
+      if(w.audio&&!has&&!audKept(w.s.id))continue; // son : téléchargé à la demande (premier ▶), sauf « garder hors ligne »
       if((!has||!fresh)&&names.has(n)){const b=await this.readBin(n); if(b){await Media.put(w.key,b); if(w.audio)loc[w.s.id]=w.s.audioV; else PGURL.delete(w.key.slice(3)); down++;}}
       else if(has&&w.audio&&!loc[w.s.id]){loc[w.s.id]=w.s.audioV;}
     }
@@ -9314,6 +10317,7 @@ const stripSong=s=>{const {_r,_el,open,base,baseLen,conf,shrink,shrinkOk,...o}=s
 window.syncPicked=function(label){Sync.label=label||''; Sync.ready=!!label; Sync.refreshUI(); if(label)Sync.run(false);};
 function kvGet(k){return new Promise(ok=>{try{const rq=indexedDB.open('accords-kv',1); rq.onupgradeneeded=()=>rq.result.createObjectStore('kv'); rq.onsuccess=()=>{const r=rq.result.transaction('kv').objectStore('kv').get(k); r.onsuccess=()=>ok(r.result||null); r.onerror=()=>ok(null);}; rq.onerror=()=>ok(null);}catch(e){ok(null);}});}
 function kvSet(k,v){return new Promise(ok=>{try{const rq=indexedDB.open('accords-kv',1); rq.onupgradeneeded=()=>rq.result.createObjectStore('kv'); rq.onsuccess=()=>{const tx=rq.result.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=ok; tx.onerror=ok;}; rq.onerror=()=>ok();}catch(e){ok();}});}
+$('#audAllOpt').checked=lsGet('audAll')==='1'; $('#audAllOpt').onchange=()=>lsSet('audAll',$('#audAllOpt').checked?'1':'');
 $('#syncMediaOpt').checked=S.syncMedia!==false; $('#syncMediaOpt').onchange=()=>{S.syncMedia=$('#syncMediaOpt').checked; save();};
 $('#syncWifiOpt').checked=S.syncWifi!==false; $('#syncWifiOpt').onchange=()=>{S.syncWifi=$('#syncWifiOpt').checked; save();};
 $('#syncPick').onclick=()=>Sync.pick(); $('#syncNow').onclick=()=>Sync.run(false); $('#syncOff').onclick=()=>Sync.off();
