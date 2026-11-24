@@ -1521,7 +1521,9 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #lisr{position:fixed;inset:0;z-index:3000;background:var(--lbg,#fff);color:var(--lfg,#000);display:flex;flex-direction:column;font-family:Georgia,'Times New Roman',serif}#lisr[hidden]{display:none}
 #lisr *{transition:none!important;animation:none!important;box-shadow:none!important}
 #lisr button{background:var(--lbg,#fff);color:var(--lfg,#000);border:2px solid var(--lfg,#000);border-radius:10px;font:700 15px Inter,system-ui,sans-serif;min-height:44px;padding:0 14px}
-#lisr .lish{display:flex;align-items:center;gap:8px;padding:8px 10px;border-bottom:2px solid var(--lfg,#000)}#lisr .lish .grow{flex:1}#lisr #lisS{font:600 12px Inter,system-ui;white-space:nowrap}#lisr #lisP{font:700 14px Inter,system-ui;white-space:nowrap}
+#lisr .lish{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:'x t m' 'x i m';align-items:center;column-gap:10px;row-gap:0;padding:8px 10px;padding-top:max(8px,env(safe-area-inset-top));border-bottom:2px solid var(--lfg,#000)}
+@media (max-width:700px){#gdBtn{display:none!important}} /* le bouton synchro du haut fait déjà le travail */
+#lisX{grid-area:x}#lisM{grid-area:m}#lisT{grid-area:t;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;border:0!important;padding:0!important;min-height:0!important;font-weight:800;font-size:17px}#lisS{grid-area:i;justify-self:start}#lisP{grid-area:i;justify-self:end}#lisr .lish .grow{display:none}#lisr .lish .grow{flex:1}#lisr #lisS{font:600 12px Inter,system-ui;white-space:nowrap}#lisr #lisP{font:700 14px Inter,system-ui;white-space:nowrap}
 #lisr .list{border:0!important;font-size:16px!important;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60vw;padding:0 6px!important}
 #lisr .lisv{flex:1;position:relative;overflow:hidden;margin:18px 22px}
 #lisB{column-gap:40px;column-fill:auto;line-height:1.55}#lisB h1{font-size:1.25em;margin:0 0 2px}#lisB .lisa{margin:0 0 .8em;color:var(--lmu,#444);font-style:italic}
@@ -1529,7 +1531,7 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #lisB .lisl,#lisB .lisc{break-inside:avoid}#lisB .lisg{height:.6em}
 #lisB.mono{font-family:ui-monospace,Menlo,monospace;line-height:1.35}#lisB.mono .lisl{white-space:pre}#lisB .lisc{font-weight:800}
 #lisr .lisf{display:flex;gap:8px;padding:8px 10px;border-top:2px solid var(--lfg,#000)}#lisr .lisf button{flex:1}
-#lisMenu{position:absolute;left:10px;right:10px;top:62px;z-index:5;background:var(--lbg,#fff);border:2px solid var(--lfg,#000);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;max-height:70vh;overflow:auto}
+#lisMenu{position:absolute;left:10px;right:10px;top:calc(max(8px,env(safe-area-inset-top)) + 64px);z-index:5;background:var(--lbg,#fff);border:2px solid var(--lfg,#000);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;max-height:70vh;overflow:auto}
 #lisMenu[hidden]{display:none}#lisMenu button{text-align:left}#lisList{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--lfg,#000);padding-top:8px}
 #lisList button{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:6px 12px!important;height:auto}#lisList button small{font-weight:500;color:var(--lmu,#444)}#lisList button.on{background:var(--lfg,#000)!important;color:var(--lbg,#fff)!important}#lisList button.on small{color:inherit;opacity:.8}
 #lisr .lisv.scr{overflow-y:auto;overflow-x:hidden;margin:0;padding:18px 22px;-webkit-overflow-scrolling:touch}#lisr .lisv.scr #lisB{transform:none!important;columns:auto!important;height:auto!important}
@@ -1675,7 +1677,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.6.0</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.6.1</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
@@ -9094,7 +9096,7 @@ const Sync={
       for(const l of S.lists){if(!names.has(`list-${l.id}.json`)){await put(`list-${l.id}.json`,JSON.stringify(l));}}
       // réglages : le plus récent gagne
       let rset=null; if(names.has('settings.json')){try{rset=JSON.parse(await this.read('settings.json'));}catch(e){}}
-      const keys=['menuMode','design','fr','sec','sort','theme','vmax','vmin','scrollSpeed','metroSound','defDur','shareBase','refs','bigBtns','vlayout','vfixSize','vfixMode','pedalNext','pedalPrev','pedalMode'];
+      const keys=['menuMode','fr','sec','sort','vmax','vmin','scrollSpeed','metroSound','defDur','shareBase','refs','bigBtns','vlayout','vfixSize','vfixMode','pedalNext','pedalPrev','pedalMode'];
       if(rset&&(rset.up||0)>(S.setUp||0)){keys.forEach(k=>{if(rset[k]!==undefined)S[k]=rset[k];}); S.setUp=rset.up; changed=true;}
       else if(!rset||(S.setUp||0)>(rset.up||0)){const o={up:S.setUp||Date.now()}; keys.forEach(k=>o[k]=S[k]); await this.write('settings.json',JSON.stringify(o));}
       await this.write('deleted.json',JSON.stringify(mdel)); S.del=mdel;
