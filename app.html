@@ -1557,6 +1557,14 @@ html[data-design=contraste] #viewer .ch,html[data-design=contraste] #viewer .c{f
 #lisB{column-gap:40px;column-fill:auto;line-height:1.55}#lisB h1{font-size:1.25em;margin:0 0 2px}#lisB .lisa{margin:0 0 .8em;color:var(--lmu,#444);font-style:italic}
 #lisB .liss{font:800 .58em Inter,system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--lmu,#444);margin:.7em 0 .15em;break-after:avoid}
 #lisB .lisl,#lisB .lisc{break-inside:avoid}#lisB .lisg{height:.6em}
+#lisVw{position:absolute;left:10px;right:10px;bottom:70px;z-index:7;display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--lbg,#fff);border:2px solid var(--lfg,#000);border-radius:14px;padding:10px}#lisVw[hidden]{display:none}
+#lisVw button{min-height:54px;font:700 16px Inter,system-ui,sans-serif!important}#lisVw button[aria-pressed=true]{background:var(--lfg,#000)!important;color:var(--lbg,#fff)!important}
+#lisB .lisnote{font:500 .7em Inter,system-ui,sans-serif;color:var(--lmu,#444);margin:.2em 0 .8em}
+#lisB.lisgr .bgwrap{color:var(--lfg,#000)}#lisB.lisgr .bgsec{display:flex;gap:8px;align-items:center;margin:14px 0 6px;break-after:avoid}
+#lisB.lisgr .bgname{background:none!important;color:var(--lfg,#000)!important;border:2px solid var(--lfg,#000);font:800 15px Inter,system-ui,sans-serif}#lisB.lisgr .bgrep,#lisB.lisgr .bgm{font:800 15px Inter,system-ui,sans-serif;color:var(--lfg,#000)}
+#lisB.lisgr .bgrow{display:grid;break-inside:avoid}#lisB.lisgr .bgc{background:var(--lbg,#fff)!important;border:2px solid var(--lfg,#000)!important;color:var(--lfg,#000)!important}
+#lisB.lisgr .bgc svg text{fill:var(--lfg,#000)!important;font-weight:800}#lisB.lisgr .bgc svg line,#lisB.lisgr .bgc svg .bgl{stroke:var(--lfg,#000)!important}
+#lisB.lisgr .bgform{font:600 15px Inter,system-ui,sans-serif;margin-top:16px;break-inside:avoid}#lisB.lisgr .bgform *{color:var(--lfg,#000)!important;background:none!important}
 #lisB.mono{font-family:ui-monospace,Menlo,monospace;line-height:1.35}#lisB.mono .lisl{white-space:pre}#lisB .lisc{font-weight:800}
 #lisr .lisf{display:flex;gap:8px;padding:8px 10px;border-top:2px solid var(--lfg,#000)}#lisr .lisf button{flex:1}
 #lisMenu{position:absolute;left:10px;right:10px;top:calc(max(8px,env(safe-area-inset-top)) + 64px);z-index:5;background:var(--lbg,#fff);border:2px solid var(--lfg,#000);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;max-height:70vh;overflow:auto}
@@ -1705,7 +1713,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.7.0</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.7.1</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
@@ -1849,7 +1857,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
     <div class="lar"><button style="flex:1" data-la="reset">Réglages par défaut</button><button style="flex:1" data-la="ok">OK</button></div>
   </div>
   <div id="lisWarm"></div><div id="lisDim"></div>
-  <div class="lisf"><button data-lf="-1">◀ page</button><button data-lf="aa">Aa</button><button data-lf="ch"></button><button data-lf="1">page ▶</button></div></div>
+  <div class="lisf"><button data-lf="-1">◀ page</button><button data-lf="aa">Aa</button><button data-lf="ch"></button><div id="lisVw" hidden><button data-lv="txt">📝 Texte</button><button data-lv="ch">🎸 Texte + accords</button><button data-lv="grid">▦ Grille</button><button data-lv="bass">🎵 Grille de basse</button></div><button data-lf="1">page ▶</button></div></div>
 <div id="syncPanel" class="modal" hidden><div class="box"><h2>☁ Synchro <button class="close">✕</button></h2><div class="spbody"></div></div></div>
 <div id="askBox" class="modal" hidden><div class="box">
   <h2><span id="askTitle"></span> <button class="close">✕</button></h2>
@@ -10154,14 +10162,23 @@ function openLis(sid){LIS.list=lisSongs(); if(!LIS.list.length){toast('Aucun mor
 function lisRefresh(){const cur=LIS.list[LIS.i]&&LIS.list[LIS.i].id; LIS.list=lisSongs(); if(!LIS.list.length){lisClose(); toast('Ta pile « à apprendre » est vide'); return;}
   const j=LIS.list.findIndex(x=>x.id===cur); LIS.i=j>=0?j:Math.min(LIS.i,LIS.list.length-1); lisRender(true); if(!$('#lisMenu').hidden)lisMenuDraw();}
 function lisClose(){$('#lisr').hidden=true; $('#lisAa').hidden=true; if(laGet('lisLum')!=='')applyLook(); document.documentElement.classList.remove('lison'); if(!$('#home').hidden)renderHome();}
-function lisRender(restore,keep){const so=LIS.list[LIS.i]; if(!so){lisClose(); return;} lsSet('lisLast',so.id); const ch=lsGet('lisCh')==='1', fs=+laGet('lisFs'), scr=laGet('lisMode')==='scroll'; lisLook();
+const LV_LAB={txt:'📝 Texte',ch:'🎸 Accords',grid:'▦ Grille',bass:'🎵 Basse'};
+const lisViews=()=>{try{return JSON.parse(lsGet('lisView')||'{}');}catch(e){return {};}};
+const lisViewOf=id=>lisViews()[id]||lsGet('lisViewDef')||(lsGet('lisCh')==='1'?'ch':'txt');
+function lisSetView(id,v){const o=lisViews(); o[id]=v; lsSet('lisView',JSON.stringify(o)); lsSet('lisViewDef',v);}
+function lisRender(restore,keep){const so=LIS.list[LIS.i]; if(!so){lisClose(); return;} lsSet('lisLast',so.id); const vw=lisViewOf(so.id), ch=vw==='ch', fs=+laGet('lisFs'), scr=laGet('lisMode')==='scroll'; lisLook();
   const sp=split(so.q), lines=parseSheet(so.text||'').lines; let h=`<h1>${esc(sp.titre||so.q)}</h1>${sp.artiste?`<p class="lisa">${esc(sp.artiste)}</p>`:''}`, prevB=true;
   let pend='';  // la ligne d'accords reste collée à sa ligne de paroles (jamais coupées entre deux pages)
   const flush=()=>{if(pend){h+=`<div class="lisl">${pend}</div>`; pend='';}};
   lines.forEach(L=>{if(L.t==='s'){flush(); h+=`<div class="liss">${esc(L.s)}</div>`; prevB=false;} else if(L.t==='l'){h+=`<div class="lisl">${pend}${esc(L.s.replace(/\s+$/,''))||'&nbsp;'}</div>`; pend=''; prevB=false;}
     else if(L.t==='c'&&ch){flush(); pend=`<span class="lisc">${esc(L.s)}</span>\n`;} else if(L.t==='b'&&!prevB){flush(); h+='<div class="lisg"></div>'; prevB=true;}}); flush();
-  const b=$('#lisB'); b.className=ch?'mono':''; b.style.fontSize=fs+'px'; b.innerHTML=h; $('#lisT').textContent=(sp.titre||so.q)+' · '+(LIS.i+1)+'/'+LIS.list.length+' ▾';
-  $('[data-lf="ch"]').textContent=ch?'accords ✓':'accords';
+  if(vw==='grid'||vw==='bass'){let r=null; try{r=compute(so);}catch(e){} const g=r&&(vw==='bass'?r.bg:r.autoGrid), W=Math.max(240,($('#lisr .lisv').clientWidth||600)-6);
+    h=`<h1>${esc(sp.titre||so.q)}</h1>${sp.artiste?`<p class="lisa">${esc(sp.artiste)}</p>`:''}`;
+    if(!r||!validGrid(g)||!g.secs.some(x=>x.bars.length))h+='<p class="lisnote">Pas encore d’accords pour faire une grille.</p>';
+    else{if(vw==='bass'&&r.bgAuto)h+='<p class="lisnote">Pas de grille de basse dessinée : voici la grille calculée depuis les paroles.</p>';
+      h+=bgHTML(g,r.cn,W,9999,{cellH:Math.round(Math.max(54,Math.min(110,fs*3.1)))});}}
+  const b=$('#lisB'); b.className=(ch?'mono':'')+(vw==='grid'||vw==='bass'?' lisgr':''); b.style.fontSize=fs+'px'; b.innerHTML=h; $('#lisT').textContent=(sp.titre||so.q)+' · '+(LIS.i+1)+'/'+LIS.list.length+' ▾';
+  $('[data-lf="ch"]').textContent=LV_LAB[vw]+' ▾'; $$('#lisVw [data-lv]').forEach(x=>x.setAttribute('aria-pressed',x.dataset.lv===vw));
   const v0=$('#lisr .lisv'), frac=keep&&scr&&v0.scrollHeight>v0.clientHeight?v0.scrollTop/(v0.scrollHeight-v0.clientHeight):null; v0.classList.toggle('scr',scr);
   if(scr){b.style.columnWidth=''; b.style.height=''; setTimeout(()=>{const v=v0, mx=v.scrollHeight-v.clientHeight; v.scrollTop=frac!=null?frac*mx:restore?(lisPosS()[so.id]||0)*mx:LIS.p>=1e9?mx:0; LIS.p=0; lisShow();},30); return;}
   setTimeout(()=>{const v=$('#lisr .lisv'), W=v.clientWidth; b.style.columnWidth=W+'px'; b.style.height=v.clientHeight+'px';
@@ -10170,7 +10187,7 @@ const lisPosS=()=>{try{return JSON.parse(lsGet('lisPosS')||'{}');}catch(e){retur
 function lisShow(){const so=LIS.list[LIS.i], v=$('#lisr .lisv'), b=$('#lisB');
   if(laGet('lisMode')==='scroll'){const mx=v.scrollHeight-v.clientHeight, f=mx>0?v.scrollTop/mx:1; $('#lisP').textContent=mx>0?Math.round(f*100)+' %':''; if(so){const o=lisPosS(); o[so.id]=+f.toFixed(3); lsSet('lisPosS',JSON.stringify(o));} return;} LIS.n=Math.max(1,Math.round((b.scrollWidth+40)/(v.clientWidth+40))); LIS.p=Math.max(0,Math.min(LIS.p,LIS.n-1)); $('#lisB').style.transform=`translateX(${-LIS.p*(v.clientWidth+40)}px)`; $('#lisP').textContent='page '+(LIS.p+1)+'/'+LIS.n;
   if(so){const o=lisPos(); o[so.id]=LIS.p; lsSet('lisPos',JSON.stringify(o));}}
-function lisGo(d){if(!$('#lisMenu').hidden){$('#lisMenu').hidden=true; return;} if(!$('#lisAa').hidden){$('#lisAa').hidden=true; return;}
+function lisGo(d){if(!$('#lisVw').hidden){$('#lisVw').hidden=true; return;} if(!$('#lisMenu').hidden){$('#lisMenu').hidden=true; return;} if(!$('#lisAa').hidden){$('#lisAa').hidden=true; return;}
   if(laGet('lisMode')==='scroll'){const v=$('#lisr .lisv'), mx=v.scrollHeight-v.clientHeight;
     if(d>0&&v.scrollTop>=mx-4){if(LIS.i<LIS.list.length-1){LIS.i++; LIS.p=0; lisRender(false);} else toast('Fin de la pile 📖'); return;}
     if(d<0&&v.scrollTop<=4){if(LIS.i>0){LIS.i--; LIS.p=1e9; lisRender(false);} return;}
@@ -10182,7 +10199,8 @@ $('#lisX').onclick=lisClose;
 $('#lisr .lisv').addEventListener('click',e=>{const r=e.currentTarget.getBoundingClientRect(); lisGo(e.clientX-r.left<r.width*.3?-1:1);});
 $('#lisr .lisf').onclick=e=>{const b=e.target.closest('[data-lf]'); if(!b)return; const a=b.dataset.lf;
   if(a==='aa'){const m=$('#lisAa'); $('#lisMenu').hidden=true; m.hidden=!m.hidden; if(!m.hidden)lisAaDraw();}
-  else if(a==='ch'){lsSet('lisCh',lsGet('lisCh')==='1'?'0':'1'); LIS.p=0; lisRender(false);} else lisGo(+a);};
+  else if(a==='ch'){$('#lisVw').hidden=!$('#lisVw').hidden;} else lisGo(+a);};
+$('#lisVw').onclick=e=>{const b=e.target.closest('[data-lv]'); if(!b)return; e.stopPropagation(); const so=LIS.list[LIS.i]; $('#lisVw').hidden=true; if(!so)return; lisSetView(so.id,b.dataset.lv); LIS.p=0; lisRender(false);};
 const lisMenuDraw=()=>{$('[data-lm="start"]').textContent=(lsGet('lisStart')==='1'?'☑':'☐')+' Ouvrir directement ici au lancement (cet appareil)';
   $('#lisList').innerHTML=LIS.list.map((x,i)=>`<button data-li="${i}" class="${i===LIS.i?'on':''}">${esc(split(x.q).titre||x.q)}<small>${esc(split(x.q).artiste||'')}</small></button>`).join('');};
 $('#lisM').onclick=$('#lisT').onclick=()=>{$('#lisAa').hidden=true; const m=$('#lisMenu'); m.hidden=!m.hidden; if(!m.hidden)lisMenuDraw();};
