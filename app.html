@@ -659,6 +659,9 @@ body.follow .vtempo button:not(#vmetro){display:none!important}
 .ansel{outline:2px dashed var(--hl,#fb923c);outline-offset:4px}
 #ytbar{position:fixed;left:12px;bottom:12px;z-index:70;display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:14px;background:var(--s2,#18181b);color:#ececf0;border:1px solid #3a1d1d;box-shadow:0 10px 30px rgba(0,0,0,.5);max-width:calc(100vw - 24px);font-family:system-ui,sans-serif}
 #ytbar[hidden]{display:none}#ytbar button{height:40px;min-width:40px;padding:0 8px;border-radius:10px;border:1px solid #33333a;background:var(--s3,#1f1f23);color:#ececf0;font:700 14px system-ui}
+#ytRates{position:fixed;z-index:3100;display:grid;grid-template-columns:repeat(5,auto);gap:6px;padding:8px;border-radius:14px;background:#1b1b20;border:1px solid #333;box-shadow:0 10px 30px rgba(0,0,0,.5)}#ytRates[hidden]{display:none}
+#ytRates button{min-width:52px;height:38px;border-radius:10px;border:0;background:#2a2a30;color:#eee;font-weight:700}#ytRates button[aria-pressed=true]{background:#dc2626;color:#fff}
+.ytab{font-weight:800}.ytab.on{background:#dc2626!important;color:#fff!important;border-color:#dc2626!important}
 #ytPlay{background:#dc2626!important;border-color:#dc2626!important;font-size:17px!important}
 .ytlogo{width:30px;height:22px;border-radius:6px;background:#dc2626;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;flex:none}
 .ytinfo{display:flex;flex-direction:column;min-width:0;width:200px}.ytinfo b{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ytinfo span{font-size:11px;color:#a1a1aa}
@@ -1713,7 +1716,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.7.1</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred">Accords &amp; paroles <span id="appVer">10.7.2</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
@@ -2013,11 +2016,11 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
 <nav id="bnav" class="noprint"><button data-tab="home"><span>⌂</span>Accueil</button><button data-tab="lib"><span>♫</span>Bibliothèque</button><button data-tab="lists"><span>☰</span>Playlists</button></nav>
 <aside id="fiche" hidden><div class="fhead"><b id="fTitle"></b><button id="fClose" aria-label="Fermer">✕</button></div><span class="lab" id="fSub"></span>
   <div class="row fbtns"><button class="pri fbig" id="fScene">▶ Scène</button><button id="fEdit">✎ Éditer</button><button id="fShare" hidden>Partager</button><button id="fMore" aria-label="Plus">⋯</button></div><div id="fCard"></div></aside>
-<div id="spEmbed" hidden><div class="speh"><b id="speName">Écouter</b><span class="lab" id="speInfo"></span><select id="speSvc" hidden aria-label="Service"></select><span class="speyt" id="speYt" hidden><button data-sk="-10">−10 s</button><button data-sk="10">+10 s</button><button id="speRate" title="Vitesse">1×</button></span><button id="speOut" title="Ouvrir dans l'appli du service">↗</button><button id="speClose" aria-label="Fermer">✕</button></div><button id="speNo" hidden>Pas encore de lien d'écoute pour ce morceau : + Lien</button><iframe id="speFrame" title="Lecteur de musique" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
+<div id="spEmbed" hidden><div class="speh"><b id="speName">Écouter</b><span class="lab" id="speInfo"></span><select id="speSvc" hidden aria-label="Service"></select><span class="speyt" id="speYt" hidden><button data-sk="-10">−10 s</button><button data-sk="10">+10 s</button><button id="speA" class="ytab" title="Début de boucle (toucher encore pour l’enlever)">A</button><button id="speB" class="ytab" title="Fin de boucle">B</button><button id="speRate" title="Vitesse">1×</button></span><button id="speOut" title="Ouvrir dans l'appli du service">↗</button><button id="speClose" aria-label="Fermer">✕</button></div><button id="speNo" hidden>Pas encore de lien d'écoute pour ce morceau : + Lien</button><iframe id="speFrame" title="Lecteur de musique" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe></div>
 <!-- ===== Petit lecteur YouTube ===== -->
 <div id="ytbar" hidden><span class="ytlogo">▶</span><div class="ytinfo"><b id="ytTitle">YouTube</b><span id="ytTime"></span><i id="ytProg"><u></u></i></div>
   <button data-y="back" aria-label="Reculer de 10 secondes">−10</button><button data-y="toggle" id="ytPlay" aria-label="Lecture ou pause">⏸</button><button data-y="fwd" aria-label="Avancer de 10 secondes">+10</button>
-  <button data-y="speed" id="ytSpeed" aria-label="Vitesse">1×</button><button data-y="open" aria-label="Rouvrir la vidéo">⤢</button><button data-y="stop" aria-label="Arrêter">✕</button></div>
+  <button data-y="A" class="ytab" title="Début de boucle">A</button><button data-y="B" class="ytab" title="Fin de boucle">B</button><button data-y="speed" id="ytSpeed" aria-label="Vitesse">1×</button><button data-y="open" aria-label="Rouvrir la vidéo">⤢</button><button data-y="stop" aria-label="Arrêter">✕</button></div>
 <!-- ===== Nouveau morceau ===== -->
 <div id="newBox" class="modal" hidden><div class="box newbox">
   <h2>Nouveau morceau <button class="close">✕</button></h2>
@@ -7057,9 +7060,27 @@ const YT={t:null,st:null};
 const fmtT=x=>{x=Math.max(0,Math.floor(x||0)); return Math.floor(x/60)+':'+String(x%60).padStart(2,'0');};
 window.ytMini=on=>{$('#ytbar').hidden=!on; clearInterval(YT.t); YT.t=null; if(!on)return; ytTick(); YT.t=setInterval(ytTick,1000);};
 function ytTick(){let st=null; try{const j=window.Android.ytState(); st=j?JSON.parse(j):null;}catch(e){} YT.st=st; if(!st)return;
-  $('#ytTitle').textContent=st.ti||'YouTube'; $('#ytPlay').textContent=st.p?'⏸':'▶'; $('#ytTime').textContent=fmtT(st.t)+(st.d?' / '+fmtT(st.d):'');
+  ytBarSync(); $('#ytTitle').textContent=st.ti||'YouTube'; $('#ytPlay').textContent=st.p?'⏸':'▶'; $('#ytTime').textContent=fmtT(st.t)+(st.d?' / '+fmtT(st.d):'');
   $('#ytProg u').style.width=st.d?Math.min(100,st.t/st.d*100)+'%':'0'; $('#ytSpeed').textContent=(st.r&&st.r!==1?String(st.r).replace('.',','):'1')+'×';}
-$('#ytbar').onclick=e=>{const b=e.target.closest('[data-y]'); if(!b||!APP)return; let a=b.dataset.y; if(a==='toggle')a=YT.st&&YT.st.p?'pause':'play'; try{window.Android.ytCtl(a);}catch(er){} setTimeout(ytTick,300);};
+// vitesse fine et boucle A-B, retenues pour chaque morceau (YouTube ne permet pas de changer la hauteur)
+const YTR=[.5,.6,.7,.75,.8,.9,1,1.1,1.25], ytRateOf=s=>(s&&+s.ytRate)||1, ytRateTxt=r=>String(r).replace('.',',')+'×';
+function ytLoopSet(s,k,t){if(!s)return; const L=Object.assign({a:null,b:null},s.ytLoop||{});
+  if(k==='A'){s.ytLoop=L.a!=null?null:{a:+(+t||0).toFixed(2),b:null};}
+  else{if(L.b!=null){L.b=null; s.ytLoop=L;} else if(L.a==null||t<=L.a+.3){toast('Pose d’abord A, puis laisse avancer un peu'); return;} else{L.b=+(+t).toFixed(2); s.ytLoop=L; toast('🔁 Boucle '+fmtT(L.a)+' → '+fmtT(L.b));}}
+  touch(s); save();}
+function ytRatePick(anchor,cur,cb){let m=$('#ytRates'); if(!m){m=document.createElement('div'); m.id='ytRates'; document.body.appendChild(m);}
+  m.innerHTML=YTR.map(r=>`<button data-r="${r}" aria-pressed="${r===cur}">${ytRateTxt(r)}</button>`).join('');
+  m.hidden=false; const rc=anchor.getBoundingClientRect(), w=m.offsetWidth, h=m.offsetHeight;
+  m.style.left=Math.max(8,Math.min(innerWidth-w-8,rc.left+rc.width/2-w/2))+'px'; m.style.top=(rc.top>h+16?rc.top-h-8:rc.bottom+8)+'px';
+  m.onclick=e=>{const b=e.target.closest('[data-r]'); m.hidden=true; if(b)cb(+b.dataset.r);};
+  setTimeout(()=>document.addEventListener('pointerdown',function f(ev){if(!m.contains(ev.target)){m.hidden=true; document.removeEventListener('pointerdown',f,true);}},true),0);}
+function ytBarSync(){const s=songById(YT.sid), st=YT.st; if(!s||!st||!APP)return; const L=s.ytLoop, key=L&&L.b!=null?L.a+','+L.b:'';
+  try{window.Android.ytCtl('loop:'+key);}catch(e){} const r=ytRateOf(s); if(st.r&&Math.abs(st.r-r)>.01)try{window.Android.ytCtl('rate:'+r);}catch(e){}
+  $$('#ytbar .ytab').forEach(b=>b.classList.toggle('on',b.dataset.y==='A'?!!(L&&L.a!=null):!!(L&&L.b!=null))); $('#ytSpeed').textContent=ytRateTxt(r);}
+$('#ytbar').onclick=e=>{const b=e.target.closest('[data-y]'); if(!b||!APP)return; let a=b.dataset.y; const s=songById(YT.sid);
+  if(a==='A'||a==='B'){if(!s){toast('Vidéo non liée à un morceau'); return;} ytLoopSet(s,a,YT.st&&YT.st.t||0); ytBarSync(); return;}
+  if(a==='speed'&&s){ytRatePick(b,ytRateOf(s),r=>{s.ytRate=r; touch(s); save(); try{window.Android.ytCtl('rate:'+r);}catch(er){} $('#ytSpeed').textContent=ytRateTxt(r);}); return;}
+  if(a==='toggle')a=YT.st&&YT.st.p?'pause':'play'; try{window.Android.ytCtl(a);}catch(er){} setTimeout(ytTick,300);};
 document.body.appendChild($('#ytbar'));
 $('#newBtn').onclick=()=>{$('#newTitle').value=''; $('#newPaste').hidden=true; $('#newPasteTxt').value=''; $('#newBox .newgrid').hidden=false; modal('#newBox',true); setTimeout(()=>$('#newTitle').focus(),50);};
 function newSong(extra){const t=$('#newTitle').value.trim()||'Nouveau morceau';
@@ -8893,7 +8914,7 @@ $('#vtuner').onclick=()=>Tuner.open();
 $('#vlistBtn').onclick=()=>{$('#vmenu').hidden=true; $('#vzoomBox').hidden=true; vListToggle();};
 $('#vhandle').onclick=()=>{$('#vmenu').hidden=true; vListToggle();};
 $('#vquit').onclick=()=>closeViewer();
-function ytOpen(s){
+function ytOpen(s){YT.sid=s.id;
   const sp=split(s.q), url=s.yt&&s.yt.id?'https://www.youtube.com/watch?v='+s.yt.id:'https://www.youtube.com/results?search_query='+encodeURIComponent((sp.artiste+' '+sp.titre).trim());
   if(APP&&window.Android.openYouTube){window.Android.openYouTube(url,s.id); if(!s.yt)toast('Choisis la vidéo : elle sera retenue pour ce morceau. Bouton « 1× » en haut pour ralentir.');}
   else window.open(url,'_blank','noopener');
@@ -8902,7 +8923,7 @@ window.ytPicked=(sid,id)=>{const s=songById(sid); if(!s||(s.yt&&s.yt.id===id))re
 $('#vyt').onclick=()=>{const e=V.list[V.i]; if(e)ytOpen(e.s);};
 // bouton vidéo de la scène : ouvre la vidéo du morceau et la change toute seule quand on passe au morceau suivant
 function vidPlay(s){
-  if(!s)return;
+  if(!s)return; YT.sid=s.id;
   if(APP&&window.Android.ytFollow){const sp=split(s.q), url=s.yt&&s.yt.id?'https://www.youtube.com/watch?v='+s.yt.id:'https://www.youtube.com/results?search_query='+encodeURIComponent((sp.artiste+' '+sp.titre).trim()); window.Android.ytFollow(url,s.id,!!(s.yt&&s.yt.id)); if(!s.yt)toast('Choisis la vidéo : elle sera retenue pour ce morceau'); return;}
   if(APP&&window.Android.openYouTube){ytOpen(s); return;}
   if(s.yt&&s.yt.id){muEmbed(s,'youtube'); return;}
@@ -10461,7 +10482,7 @@ function muEmbed(s,k){k=k||muPref(s); const box=$('#spEmbed'), fr=$('#speFrame')
   if(!k){$('#speName').textContent='Écouter'; fr.src='about:blank'; fr.dataset.id=''; fr.style.height='0'; $('#speNo').hidden=false; $('#speYt').hidden=true; $('#speSvc').hidden=true; return true;}
   $('#speNo').hidden=true; const M=MU[k], id=M.id(s), key=k+':'+id;
   $('#speName').textContent=M.n; box.style.setProperty('--mu',M.c); fr.style.height=M.h+'px';
-  if(fr.dataset.id!==key){fr.src=M.emb(id); fr.dataset.id=key; MUE.t=0; MUE.rate=1; $('#speRate').textContent='1×';}
+  if(fr.dataset.id!==key){fr.src=M.emb(id); fr.dataset.id=key; MUE.t=0; MUE.rate=ytRateOf(s); speYtUI();}
   $('#speYt').hidden=k!=='youtube';
   const L=muLinks(s); $('#speSvc').hidden=L.length<2; $('#speSvc').innerHTML=L.map(x=>`<option value="${x}"${x===k?' selected':''}>${MU[x].n}</option>`).join('');
   return true;}
@@ -10470,11 +10491,14 @@ $('#speOut').onclick=()=>{const s=songById(MUE.sid); if(s&&MUE.k)extOpen(MU[MUE.
 $('#speNo').onclick=()=>{const s=songById(MUE.sid); if(s)muBox(s);};
 // YouTube se pilote depuis la page : ±10 s et vitesse (pratique pour travailler un passage)
 function ytCmd(f,a){const w=$('#speFrame').contentWindow; if(w)w.postMessage(JSON.stringify({event:'command',func:f,args:a||[]}),'*');}
-$('#speFrame').addEventListener('load',()=>{if(MUE.k==='youtube'){const w=$('#speFrame').contentWindow; if(w)w.postMessage(JSON.stringify({event:'listening',id:1,channel:'widget'}),'*');}});
-window.addEventListener('message',e=>{if(!/youtube(-nocookie)?\.com$/.test((e.origin||'').replace(/^https?:\/\//,'')))return; let d=null; try{d=typeof e.data==='string'?JSON.parse(e.data):e.data;}catch(x){} if(d&&d.info&&typeof d.info.currentTime==='number')MUE.t=d.info.currentTime;});
+$('#speFrame').addEventListener('load',()=>{if(MUE.k==='youtube'){const w=$('#speFrame').contentWindow; if(w)w.postMessage(JSON.stringify({event:'listening',id:1,channel:'widget'}),'*'); const s=songById(MUE.sid); MUE.rate=ytRateOf(s); setTimeout(()=>{if(MUE.rate!==1)ytCmd('setPlaybackRate',[MUE.rate]);},1500); speYtUI();}});
+window.addEventListener('message',e=>{if(!/youtube(-nocookie)?\.com$/.test((e.origin||'').replace(/^https?:\/\//,'')))return; let d=null; try{d=typeof e.data==='string'?JSON.parse(e.data):e.data;}catch(x){} if(d&&d.info&&typeof d.info.currentTime==='number'){MUE.t=d.info.currentTime; const s=songById(MUE.sid), L=s&&s.ytLoop; if(L&&L.b!=null&&MUE.t>=L.b){ytCmd('seekTo',[L.a,true]); MUE.t=L.a;}}});
 $('#speYt').onclick=e=>{const b=e.target.closest('button'); if(!b)return;
   if(b.dataset.sk){ytCmd('seekTo',[Math.max(0,MUE.t+ +b.dataset.sk),true]); MUE.t=Math.max(0,MUE.t+ +b.dataset.sk);}
-  if(b.id==='speRate'){const R=[1,.75,.5], r=R[(R.indexOf(MUE.rate)+1)%R.length]; MUE.rate=r; ytCmd('setPlaybackRate',[r]); b.textContent=String(r).replace('.',',')+'×';}};
+  const s=songById(MUE.sid);
+  if((b.id==='speA'||b.id==='speB')&&s){ytLoopSet(s,b.id==='speA'?'A':'B',MUE.t); speYtUI(); return;}
+  if(b.id==='speRate'){ytRatePick(b,MUE.rate,r=>{MUE.rate=r; ytCmd('setPlaybackRate',[r]); if(s){s.ytRate=r; touch(s); save();} speYtUI();});}};
+function speYtUI(){const s=songById(MUE.sid), L=s&&s.ytLoop; $('#speRate').textContent=ytRateTxt(MUE.rate); $('#speA').classList.toggle('on',!!(L&&L.a!=null)); $('#speB').classList.toggle('on',!!(L&&L.b!=null));}
 $('#speClose').onclick=()=>{V.vid=false; if($('#vvid'))$('#vvid').setAttribute('aria-pressed','false'); $('#spEmbed').hidden=true; $('#speFrame').src='about:blank'; $('#speFrame').dataset.id=''; MUE.sid=null; MUE.k=null;};
 // compatibilité avec l'ancien nom
 function spEmbed(s){return muEmbed(s,'spotify');}
