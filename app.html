@@ -1735,7 +1735,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred"><span data-noi18n>Accords</span> <span id="appVer">10.12.2</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred"><span data-noi18n>Accords</span> <span id="appVer">10.12.3</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
@@ -3452,8 +3452,13 @@ function inlineSplit(s){ // ChordPro [Am]paroles
   return found?[cl,ll+s.slice(last)]:null;
 }
 const FORCE_C='\u2063', FORCE_L='\u2060';
+const nlFix=t=>String(t==null?'':t).replace(/\r\n?|[\u2028\u2029\u0085\v\f]/g,'\n');
+document.addEventListener('paste',e=>{const ta=e.target; if(!ta||!(ta.tagName==='TEXTAREA'||ta.tagName==='INPUT'&&/^(text|search)$/.test(ta.type)))return;
+  const t=e.clipboardData&&e.clipboardData.getData('text/plain'); if(!t||!/[\u2028\u2029\u0085\v\f\r]/.test(t))return;
+  e.preventDefault(); const v=ta.tagName==='INPUT'?nlFix(t).replace(/\n+/g,' '):nlFix(t);
+  if(!document.execCommand||!document.execCommand('insertText',false,v)){const a=ta.selectionStart, b=ta.selectionEnd; ta.value=ta.value.slice(0,a)+v+ta.value.slice(b); ta.selectionStart=ta.selectionEnd=a+v.length; ta.dispatchEvent(new Event('input',{bubbles:true}));}},true);
 function parseSheet(raw){
-  const t=raw.replace(/\r/g,'').replace(/\t/g,'    ').replace(/\[\/?tab\]/gi,'').replace(/\[ch\](.*?)\[\/ch\]/gi,'$1');
+  const t=nlFix(raw).replace(/\t/g,'    ').replace(/\[\/?tab\]/gi,'').replace(/\[ch\](.*?)\[\/ch\]/gi,'$1');
   const lines=[]; let capo=0;
   t.split('\n').forEach((s,i)=>{
     s=s.replace(/\s+$/,'');
@@ -3835,6 +3840,7 @@ try{
   let j=JSON.parse(localStorage.getItem(KEY));
   if(!j){j=JSON.parse(localStorage.getItem(OLDKEY)); if(j) j.songs=(j.songs||[]).map(s=>Object.assign(s,{up:Date.now()}));}
   if(j&&j.songs) S=Object.assign(S,j);
+  try{(S.songs||[]).forEach(x=>{if(x&&typeof x.text==='string'&&/[\u2028\u2029\u0085\v\f\r]/.test(x.text))x.text=x.text.replace(/\r\n?|[\u2028\u2029\u0085\v\f]/g,'\n');});}catch(e){}
 }catch(e){}
 S.lists=S.lists||[]; S.del=S.del||{songs:{},lists:{}};
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
