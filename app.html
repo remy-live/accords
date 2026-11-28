@@ -1735,7 +1735,7 @@ html[data-design=accords] .hsearch{border-radius:16px!important}
       <span class="grow"></span>
       <button id="vider" class="setdanger">Tout effacer…</button>
       <button id="shareAppBtn" class="setshare">📤 Partager l’appli</button>
-      <p class="lab setcred"><span data-noi18n>Accords</span> <span id="appVer">10.12.1</span> — Rémy DEVODDERE</p>
+      <p class="lab setcred"><span data-noi18n>Accords</span> <span id="appVer">10.12.2</span> — Rémy DEVODDERE</p>
     </nav>
     <div class="setpanes"><button type="button" class="setback" id="setBack">‹ Réglages</button>
       <section data-cat="moi"><h3>Moi</h3>
@@ -6453,9 +6453,12 @@ function inlineEdit(span,entry,isNew){
 // ---------- 🎧 Spotify (Web API : l'appli Spotify de la tablette joue, Accords la pilote) ----------
 const HTTP={n:0,cb:{}};
 window._httpDone=(id,r)=>{const f=HTTP.cb[id]; delete HTTP.cb[id]; if(f)f(r);};
+// lance fn sur chaque élément, n à la fois
+async function pool(items,n,fn){let i=0; const w=async()=>{while(i<items.length){const x=items[i++]; try{await fn(x);}catch(e){console.warn(e);}}}; await Promise.all(Array.from({length:Math.min(n,items.length)},w));}
 function httpReq(method,url,headers,body){
   if(APP&&window.Android.httpAsync) return new Promise(res=>{const id='h'+(++HTTP.n); HTTP.cb[id]=res; window.Android.httpAsync(id,method,url,JSON.stringify(headers||{}),body||'');});
-  return fetch(url,{method,headers,body:method==='GET'?undefined:(body||'')}).then(async r=>({status:r.status,body:await r.text()})).catch(e=>({status:0,body:String(e)}));
+  const ac=typeof AbortController!=='undefined'?new AbortController():null, to=ac&&setTimeout(()=>ac.abort(),30000);
+  return fetch(url,{method,headers,body:method==='GET'?undefined:(body||''),signal:ac?ac.signal:undefined}).then(async r=>({status:r.status,body:await r.text()})).catch(e=>({status:0,body:ac&&ac.signal.aborted?'délai dépassé':String(e)})).finally(()=>clearTimeout(to));
 }
 // appel à l'appli Android : la méthode doit rester attachée à window.Android
 function andOpenReturn(u){try{if(window.Android.openUrlAndReturn)window.Android.openUrlAndReturn(u); else window.Android.openUrl(u);}catch(e){toast('Ouverture impossible : '+e.message);}}
@@ -10023,7 +10026,8 @@ const GD={tok:null,exp:0,tc:null,ids:{},folder:null,
       try{const c=JSON.parse(localStorage.getItem('accords-gtok')||'null'); if(c&&c.exp>Date.now()+60000){this.tok=c.t; this.exp=c.exp; return this.tok;}}catch(e){}
       if(!interactive)return null;
       if(!this.tc){await this.prep(); if(!this.tc){toast('Google inaccessible (hors connexion ?)'); return null;}}
-      return await new Promise(res=>{this.cb=res; this.tc.requestAccessToken({prompt:this.on()?'':'consent'});});
+      return await new Promise(res=>{const t=setTimeout(()=>{if(this.cb===res){this.cb=null; toast('Connexion Google sans réponse : la fenêtre a peut-être été bloquée'); res(null);}},90000);
+        this.cb=v=>{clearTimeout(t); res(v);}; try{this.tc.requestAccessToken({prompt:this.on()?'':'consent'});}catch(e){this.cb=null; clearTimeout(t); res(null);}});
     }
     if(S.gd&&S.gd.rt){
       const r=await httpReq('POST','https://oauth2.googleapis.com/token',{'Content-Type':'application/x-www-form-urlencoded'},new URLSearchParams({client_id:GOOGLE.desktop,client_secret:GOOGLE.secret,refresh_token:S.gd.rt,grant_type:'refresh_token'}).toString());
@@ -10305,16 +10309,16 @@ const Sync={
   async remove(name){try{if(this.mode==='drive')return await this.prov.remove(name); if(APP)await sx('delete',name); else await this.handle.removeEntry(name);}catch(e){}},
   held(s){if(s.conf)return true; const bl=s.baseLen||0, n=hvLen(s); if(bl>200&&n<bl*0.3&&!s.shrinkOk){s.shrink={from:bl,to:n}; return true;} delete s.shrink; return false;},
   async pushSong(s,name,put){if(s.up!==s.base||!s.by)s.by=devLabel(); await histAdd(s,s,'envoyée'); if(await put(name,JSON.stringify(stripSong(s)))){s.base=s.up; s.baseLen=hvLen(s); delete s.shrinkOk; delete s.shrink;}},
-  async histSync(names){for(const id of [...HV.dirty]){if(!songById(id)){HV.dirty.delete(id); continue;} const fn=`hist-${id}.json`; let rem=[];
+  async histSync(names){await pool([...HV.dirty],4,async id=>{if(!songById(id)){HV.dirty.delete(id); return;} const fn=`hist-${id}.json`; let rem=[];
       if(names.has(fn)){try{rem=JSON.parse(await this.read(fn)).items||[];}catch(e){}}
-      const m=hvMerge(await hvGet(id),rem); if(!m.length&&!names.has(fn)){HV.dirty.delete(id); continue;} await hvPut(id,m); if((await this.write(fn,JSON.stringify({up:Date.now(),items:m})))!==false){names.add(fn); HV.dirty.delete(id);}}
+      const m=hvMerge(await hvGet(id),rem); if(!m.length&&!names.has(fn)){HV.dirty.delete(id); return;} await hvPut(id,m); if((await this.write(fn,JSON.stringify({up:Date.now(),items:m})))!==false){names.add(fn); HV.dirty.delete(id);}});
     hvSaveDirty();},
   async run(quiet){
-    if(!this.ready||this.busy)return; this.busy=true; this.err=null; syncUI(); $('#syncStatus').textContent='Synchronisation…';
+    if(!this.ready)return; if(this.busy&&Date.now()-(this.busyAt||0)<180000)return; this.busy=true; this.busyAt=Date.now(); this.err=null; syncUI(); $('#syncStatus').textContent='Synchronisation…';
     if(this.mode==='drive'){const P=this.prov, t=await P.token(!quiet); if(!t){$('#syncStatus').textContent=P.name+' : touche « Synchroniser » pour te reconnecter.'; this.busy=false; this.err=P.name+' demande de te reconnecter'; cloudUI(); syncUI(); return;}}
     try{
       if(!APP&&this.handle&&(await this.handle.queryPermission({mode:'readwrite'}))!=='granted'){const p=await this.handle.requestPermission({mode:'readwrite'}); if(p!=='granted')throw new Error('refusé');}
-      const files=await this.list(), names=new Set(files.map(f=>f.name)); let changed=false, pulled=0, pushed=0, fails=0, done=0;
+      $('#syncStatus').textContent='Lecture du cloud…'; const files=await this.list(), names=new Set(files.map(f=>f.name)); let changed=false, pulled=0, pushed=0, fails=0, done=0;
       const put=async(n,t)=>{const ok=(await this.write(n,t))!==false; if(!ok)fails++; else {pushed++; names.add(n);} if(++done%10===0)$('#syncStatus').textContent='Synchronisation… '+done; return ok;}; let conflicts=0; const shrunkIn=[], rmOrig=Sync._rm0||(Sync._rm0=Sync.remove), rm0=rmOrig.bind(this); this.remove=async n=>{names.delete(n); return rm0(n);};
       // suppressions
       let rdel={songs:{},lists:{}}; if(names.has('deleted.json')){try{rdel=JSON.parse(await this.read('deleted.json'));}catch(e){}}
@@ -10350,15 +10354,17 @@ const Sync={
         if(!this.held(loc))await this.pushSong(loc,f.name,put);
       }
       // locaux absents du dossier
-      for(const s of S.songs){if(!names.has(`song-${s.id}.json`)){await this.pushSong(s,`song-${s.id}.json`,put);}}
+      const miss=S.songs.filter(s=>!names.has(`song-${s.id}.json`));
+      if(miss.length)$('#syncStatus').textContent='Envoi de '+miss.length+' morceau'+(miss.length>1?'x':'')+'…';
+      await pool(miss,4,s=>this.pushSong(s,`song-${s.id}.json`,put));
       await this.histSync(names);
-      for(const l of S.lists){if(!names.has(`list-${l.id}.json`)){await put(`list-${l.id}.json`,JSON.stringify(l));}}
+      await pool(S.lists.filter(l=>!names.has(`list-${l.id}.json`)),4,l=>put(`list-${l.id}.json`,JSON.stringify(l)));
       // réglages : le plus récent gagne
       let rset=null; if(names.has('settings.json')){try{rset=JSON.parse(await this.read('settings.json'));}catch(e){}}
       const keys=['menuMode','fr','sec','sort','vmax','vmin','scrollSpeed','metroSound','defDur','shareBase','refs','bigBtns','vlayout','vfixSize','vfixMode','pedalNext','pedalPrev','pedalMode','vhead'];
       if(rset&&(rset.up||0)>(S.setUp||0)){keys.forEach(k=>{if(rset[k]!==undefined)S[k]=rset[k];}); S.setUp=rset.up; changed=true;}
       else if(!rset||(S.setUp||0)>(rset.up||0)){const o={up:S.setUp||Date.now()}; keys.forEach(k=>o[k]=S[k]); await this.write('settings.json',JSON.stringify(o));}
-      await this.write('deleted.json',JSON.stringify(mdel)); S.del=mdel;
+      if(!names.has('deleted.json')||JSON.stringify(mdel)!==JSON.stringify(rdel))await this.write('deleted.json',JSON.stringify(mdel)); S.del=mdel;
       let med={up:0,down:0}; try{med=await this.media(files,quiet);}catch(e){console.warn(e);}
       pulled+=med.down; pushed+=med.up;
       S.lastSync=Date.now(); localStorage.setItem(KEY,JSON.stringify(S,(k,v)=>k[0]==='_'?undefined:v));
